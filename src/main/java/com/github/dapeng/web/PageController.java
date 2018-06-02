@@ -1,4 +1,4 @@
-package com.github.dapeng.controller;
+package com.github.dapeng.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

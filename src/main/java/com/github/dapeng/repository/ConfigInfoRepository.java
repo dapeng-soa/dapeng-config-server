@@ -1,7 +1,9 @@
 package com.github.dapeng.repository;
 
-import com.github.dapeng.dto.ConfigInfo;
-import org.springframework.data.repository.CrudRepository;
+import com.github.dapeng.entity.ConfigInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,6 +13,14 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface ConfigInfoRepository extends CrudRepository<ConfigInfo,Long> {
+public interface ConfigInfoRepository extends JpaRepository<ConfigInfo,Long> {
 
+    /**
+     * 模糊查找配置，方法名，版本号
+     * @param serviceName
+     * @param version
+     * @param pageable
+     * @return
+     */
+    Page<ConfigInfo> findAllByServiceNameLikeOrVersionLike(String serviceName, String version, Pageable pageable);
 }

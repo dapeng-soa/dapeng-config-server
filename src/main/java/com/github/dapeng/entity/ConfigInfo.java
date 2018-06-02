@@ -1,8 +1,12 @@
-package com.github.dapeng.dto;
+package com.github.dapeng.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 
 /**
  * @author struy
@@ -16,6 +20,7 @@ public class ConfigInfo {
   /**
    * 服务全限定名
    */
+  @Column(name = "service_name")
   private String serviceName;
   /**
    * 唯一的版本,用于回滚和历史查看(uuid?)
@@ -28,42 +33,54 @@ public class ConfigInfo {
   /**
    * 超时配置
    */
+  @Column(name = "timeout_config")
   private String timeoutConfig;
   /**
    * 负载均衡配置
    */
+  @Column(name = "loadbalance_config")
   private String loadbalanceConfig;
   /**
    * 路由配置
    */
+  @Column(name = "router_config")
   private String routerConfig;
   /**
    * 限流配置
    */
+  @Column(name = "freq_config")
   private String freqConfig;
   /**
    * 发布人(发布人默认为0,实为未发布状态，发布更新此id)
    */
+  @Column(name = "published_by")
   private long publishedBy;
   /**
    * 发布时间
    */
+  @Column(name = "published_at")
   private java.sql.Timestamp publishedAt;
   /**
    * 添加人
    */
+  @Column(name = "created_by")
   private long createdBy;
   /**
    * 最后更新人
    */
+  @Column(name = "updated_by")
   private long updatedBy;
   /**
    * 添加时间
    */
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @Column(name = "created_at")
   private java.sql.Timestamp createdAt;
   /**
    * 最后更新时间
    */
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+  @Column(name = "updated_at")
   private java.sql.Timestamp updatedAt;
 
 

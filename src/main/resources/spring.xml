@@ -6,6 +6,14 @@
 
     <!--参数配置-->
     <context:property-placeholder location="classpath:config_server.properties"/>
+    <!--视图配置-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--openApi-->
+    <bean id="zkBootstrap" class="com.github.dapeng.openapi.cache.ZkBootstrap" init-method="init"/>
 
     <!-- 数据库和事务配置 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
@@ -25,12 +33,17 @@
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
         </property>
         <!-- 配置实体类所在的包 -->
-        <property name="packagesToScan" value="com.github.dapeng.dto"/>
+        <property name="packagesToScan" value="com.github.dapeng.entity"/>
 
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <!--develop-->
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
             </props>
+
         </property>
     </bean>
     <!-- 配置jpa的事务管理器 -->
@@ -38,5 +51,5 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
     <!--配置支持基于注解事务配置  -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven/>
 </beans>
