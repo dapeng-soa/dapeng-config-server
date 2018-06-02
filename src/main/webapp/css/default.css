@@ -7,6 +7,7 @@
 .bs-docs-nav .navbar-brand, .bs-docs-nav .navbar-nav > li > a {
     color: white;
     font-weight: bold;
+    font-size: 28px;
 }
 
 .bs-docs-nav .navbar-nav > .active > a, .bs-docs-nav .navbar-nav > .active > a:hover, .bs-docs-nav .navbar-nav > li > a:hover {
@@ -75,7 +76,7 @@ pre {
 
 .sidebar-left {
     color: #333;
-    position: absolute;
+    position: fixed;
     left: 0;
     bottom: 0;
     top: 51px;
@@ -83,19 +84,17 @@ pre {
     box-sizing: border-box;
     box-shadow: 1px 3px 5px #ccc;
     overflow: visible!important;
-    background: #fff;
+    background-color: #393D49;
 }
-/**
-去除圆角
- */
-.nav-pills>li>a{
-    border-radius: unset !important;
+.sidebar-left .layui-nav-child a:hover,
+.sidebar-left .layui-nav-item a:hover,
+.sidebar-left .layui-nav-child a:focus,
+.sidebar-left .layui-nav-item a:focus{
+    text-decoration: none !important;
 }
-.nav>li>a{
-    padding: 15px !important;
-}
-.sidebar-left li a{
-    color: #222 !important;
+
+i.fa{
+    padding-right: 5px;
 }
 
 /**
@@ -126,6 +125,11 @@ pre {
 
 
 /*表格内样式*/
-.link-button-table{
-    padding: 5px;
+.link-button-table>a{
+    padding:0 5px;
+}
+.panel-button-group button{
+    border-radius: 4px !important;
+    outline: unset !important;
+    margin: 0 10px;
 }

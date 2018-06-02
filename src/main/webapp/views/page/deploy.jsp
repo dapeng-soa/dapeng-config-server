@@ -12,7 +12,8 @@
 </head>
 <body>
 <jsp:include page="../core/header.jsp"/>
-<div class="bs-docs-content container">
+<jsp:include page="../core/sidebar.jsp"/>
+<div class="container-right">
     <h1>${tagName}</h1>
 </div>
 </body>

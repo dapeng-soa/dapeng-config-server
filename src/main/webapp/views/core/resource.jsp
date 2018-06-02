@@ -17,8 +17,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="format-detection" content="telephone=no">
 <meta name="format-detection" content="email=no">
-
-<link rel="shortcut icon" href="${basePath}/images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="${basePath}/images/favicon.ico" type="image/x-icon"/>
 <link rel="stylesheet" href="${basePath}/css/model/struct.css">
 <link rel="stylesheet" href="${basePath}/css/default.css" type="text/css"/>
 <!-- 新 Bootstrap 核心 CSS 文件 -->
@@ -30,6 +29,31 @@
 <script src="${basePath}/js/jquery/1.11.3/jquery.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="${basePath}/js/bootstrap/3.3.5/bootstrap.min.js"></script>
+
+<%--bootstrap-table--%>
+<link href="${basePath}/css/table/bootstrap-table.min.css" rel="stylesheet">
+<script src="${basePath}/js/table/bootstrap-table.min.js"></script>
+<script src="${basePath}/js/table/bootstrap-table-zh-CN.min.js"></script>
+
+<%--layui--%>
+<link href="${basePath}/plugins/layui/css/layui.css" rel="stylesheet">
+<script src="${basePath}/plugins/layui/layui.js"></script>
+<link href="${basePath}/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <script>
     window.basePath = "${basePath}";
+
+    layui.use('element', function(){
+        var element = layui.element;
+
+        //一些事件监听
+        element.on('nav(filter)', function(elem){
+            console.log(elem); //得到当前点击的DOM对象
+        });
+
+        element.on('collapse(filter)', function(data){
+            console.log(data.show); //得到当前面板的展开状态，true或者false
+            console.log(data.title); //得到当前点击面板的标题区域DOM对象
+            console.log(data.content); //得到当前点击面板的内容区域DOM对象
+        });
+    });
 </script>

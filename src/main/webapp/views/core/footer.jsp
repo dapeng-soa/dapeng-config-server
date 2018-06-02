@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<footer class="footer">
+<footer class="footer" <%--style="margin-left: 215px"--%>>
     <div class="container">
         <div class="row footer-top">
             <h4 class="text-center">
