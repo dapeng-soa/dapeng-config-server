@@ -10,23 +10,23 @@ public class ConfigInfoDto {
     /**
      * 服务全限定名
      */
-    private String serviceName;
+    private String serviceName = "";
     /**
      * 超时配置
      */
-    private String timeoutConfig;
+    private String timeoutConfig = "";
     /**
      * 负载均衡配置
      */
-    private String loadbalanceConfig;
+    private String loadbalanceConfig = "";
     /**
      * 路由配置
      */
-    private String routerConfig;
+    private String routerConfig = "";
     /**
      * 限流配置
      */
-    private String freqConfig;
+    private String freqConfig = "";
 
     public String getServiceName() {
         return serviceName;

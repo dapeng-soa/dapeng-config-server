@@ -9,20 +9,21 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
-    <script src="${basePath}/js/api/config-api.js"></script>
 </head>
 <body>
+<jsp:include page="../core/model.jsp"/>
+<script src="${basePath}/js/api/config-api.js"></script>
 <jsp:include page="../core/header.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
-    <div class="container-right-context">
+    <div class="container-right-context animated fadeIn">
 
         <div class="panel-header">
             <div class="input-group">
                 <p class="left-panel-title">服务配置管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <button type="button" class="btn btn-primary">新增</button>
-                    <button type="button" class="btn btn-success">刷新</button>
+                    <button type="button" class="btn btn-primary" onclick="addCinfig()">新增</button>
+                    <button type="button" class="btn btn-success" onclick="refresh()">刷新</button>
                     <button type="button" class="btn btn-default">发布历史</button>
                 </span>
             </div>

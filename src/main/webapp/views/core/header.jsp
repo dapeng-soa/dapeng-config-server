@@ -3,10 +3,10 @@
 <header class="navbar navbar-fixed-top bs-docs-nav" id="top" role="banner" style="background-color: #393D49">
   <div <%--class="container"--%>>
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+      <%--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
-      </button>
+      </button>--%>
       <a href="${basePath}/" class="navbar-brand">大鹏配置中心</a>
     </div>
     <%--<nav class="collapse navbar-collapse bs-navbar-collapse" id="navbar">

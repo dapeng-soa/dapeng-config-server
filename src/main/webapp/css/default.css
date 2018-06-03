@@ -83,53 +83,173 @@ pre {
     width: 200px;
     box-sizing: border-box;
     box-shadow: 1px 3px 5px #ccc;
-    overflow: visible!important;
+    overflow: visible !important;
     background-color: #393D49;
 }
+
 .sidebar-left .layui-nav-child a:hover,
 .sidebar-left .layui-nav-item a:hover,
 .sidebar-left .layui-nav-child a:focus,
-.sidebar-left .layui-nav-item a:focus{
+.sidebar-left .layui-nav-item a:focus {
     text-decoration: none !important;
 }
 
-i.fa{
+i.fa {
     padding-right: 5px;
 }
 
 /**
 自定义的容器内容布局
  */
-.container-right{;
+.container-right {;
     margin: 66px 15px 0 215px;
 }
-.container-right-header{
+
+.container-right-header {
     height: 80px;
     box-shadow: 0 0 1em #ccc;
     border-radius: 4px;
     padding: 15px;
 }
-.container-right-context{
+
+.container-right-context {
     border-radius: 4px;
     margin-top: 40px;
     box-shadow: 0 0 1em #ccc;
     padding: 15px;
 }
-.panel-header{
+
+.panel-header {
     border-bottom: 1px solid #ccc;
 }
-.left-panel-title{
+
+.left-panel-title {
     font-size: 24px;
     line-height: 250%;
 }
-
-
-/*表格内样式*/
-.link-button-table>a{
-    padding:0 5px;
+#table{
+    font-size: 14px;
 }
-.panel-button-group button{
+/*表格内样式*/
+.link-button-table > a {
+    padding: 0 0;
+    color: #337ab7;
+    text-decoration: none;
+}
+.link-button-table > a:hover,
+.link-button-table > a:focus{
+    text-decoration: none;
+}
+
+.panel-button-group button {
     border-radius: 4px !important;
     outline: unset !important;
     margin: 0 10px;
 }
+
+#struct-model {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    z-index: 1333;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: none;
+}
+
+#struct-model.model-opened {
+    display: block !important;
+}
+
+body.model-opened {
+    overflow: hidden !important;
+    position: absolute !important;
+}
+
+#struct-model .struct-model-container {
+    width: 70%;
+    height: 72%;
+    max-width: 1200px;
+    background: #fff;
+    position: relative;
+    z-index: 1334;
+    margin: 0 auto;
+    top: 47%;
+    padding: 10px;
+    overflow-x: hidden;
+    border-radius: 3px;
+    -webkit-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.back-to-previous {
+    display: inline-block;
+    width: 55px;
+    height: 30px;
+    font-size: 16px;
+    position: absolute;
+    z-index: 1400;
+    top: 10px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.model-close {
+    display: inline-block;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+    position: absolute;
+    z-index: 1400;
+    right: 20px;
+    top: 10px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.back-to-previous:hover,
+.back-to-previous:focus,
+.model-close:focus,
+.model-close:hover {
+    text-decoration: none;
+    outline: none;
+}
+
+#struct-model .struct-model-context {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/*
+动画
+ */
+* {
+    animation-duration: .7s !important;
+    /*动画持续时间*/
+    animation-delay: 0.1ms !important;
+    /*动画延迟时间*/
+    animation-iteration-count: 1;
+    /*动画执行次数*/
+}
+
+/**
+只能调整垂直大小
+ */
+textarea {
+    resize: vertical !important;
+    min-height: 70px;
+    max-height: 500px;
+}
+
+.panel-header.window-header {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    z-index: 1300;
+    background: #fff;
+}
+

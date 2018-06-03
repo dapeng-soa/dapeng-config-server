@@ -18,7 +18,6 @@
 <meta name="format-detection" content="telephone=no">
 <meta name="format-detection" content="email=no">
 <link rel="shortcut icon" href="${basePath}/images/favicon.ico" type="image/x-icon"/>
-<link rel="stylesheet" href="${basePath}/css/model/struct.css">
 <link rel="stylesheet" href="${basePath}/css/default.css" type="text/css"/>
 <!-- 新 Bootstrap 核心 CSS 文件 -->
 <link rel="stylesheet" href="${basePath}/css/bootstrap/3.3.5/bootstrap.min.css">
@@ -39,7 +38,12 @@
 <link href="${basePath}/plugins/layui/css/layui.css" rel="stylesheet">
 <script src="${basePath}/plugins/layui/layui.js"></script>
 <link href="${basePath}/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<%--animate--%>
+<link href="${basePath}/plugins/animate/animate.min.css" rel="stylesheet">
+
+<script src="${basePath}/js/api/Config.js"></script>
 <script>
+
     window.basePath = "${basePath}";
 
     layui.use('element', function(){
@@ -56,4 +60,14 @@
             console.log(data.content); //得到当前点击面板的内容区域DOM对象
         });
     });
+
+    window.layer = {};
+
+    layui.use('layer', function(){
+        window.layui = layui.layer;
+    });
+
+    window.refresh = function(){
+        window.location.reload();
+    };
 </script>

@@ -11,6 +11,9 @@ public class Commons {
      * 页数错误
      */
     public static final String PAGENO_ERROR_MSG = "pageNumber must be > zero";
+    public static final String DATA_NOTFOUND_MSG = "data not found";
+    public static final String CONFIG_PUBLISHED_MSG = "configuration has been published";
+    public static final String SERVICE_ISEMPTY_MSG = "serviceName isEmpty,the required";
     public static final String SAVE_SUCCESS_MSG = "save config successful";
     public static final String DEL_SUCCESS_MSG = "delete config successful";
     public static final String PUBLISH_SUCCESS_MSG = "publish config successful";

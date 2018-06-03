@@ -26,11 +26,11 @@ public enum ConfigStatusEnum {
         this.value = value;
     }
 
-    public int getStatus() {
+    public int key() {
         return status;
     }
 
-    public String getValue() {
+    public String value() {
         return value;
     }
 
