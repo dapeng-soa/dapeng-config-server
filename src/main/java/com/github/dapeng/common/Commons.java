@@ -1,4 +1,4 @@
-package com.github.dapeng.constant;
+package com.github.dapeng.common;
 
 /**
  * @author with struy.
@@ -15,9 +15,11 @@ public class Commons {
     public static final String CONFIG_PUBLISHED_MSG = "configuration has been published";
     public static final String SERVICE_ISEMPTY_MSG = "serviceName isEmpty,the required";
     public static final String SAVE_SUCCESS_MSG = "save config successful";
+    public static final String EDITED_PUBLISH_SUCCESS_MSG = "save and publish config successful";
     public static final String DEL_SUCCESS_MSG = "delete config successful";
     public static final String PUBLISH_SUCCESS_MSG = "publish config successful";
     public static final String ROLLBACK_SUCCESS_MSG = "rollback successful";
     public static final int SUCCESS_CODE = 200;
+    public static final int ERROR_CODE = 4004;
 
 }

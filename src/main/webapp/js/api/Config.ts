@@ -40,15 +40,13 @@ module api {
                 }
                     <div class="form-group">${
                 `
-                    <label class="col-sm-2 control-label">${type == c.add ? "选择服务:" : "服务名:"}</label>
+                    <label class="col-sm-2 control-label">${type == c.add ? "服务名(全限定名):" : "服务名:"}</label>
                         <div class="col-sm-9">
-                            ${
-                    type == c.add ?
-                        `<select class="form-control" id="services-sel">
-                            </select>
-                            ` : `
-                            <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" value="${data.serviceName}"/>
-                    `}
+                          
+                        <!--<select class="form-control" id="services-sel">
+                            </select>-->
+                            <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" id="service-name" value="${type != c.add ? data.serviceName : ""}"/>
+                   
                         </div>`
                 }
                     </div>
@@ -56,36 +54,41 @@ module api {
                         <label class="col-sm-2 control-label">超时配置:</label>
                         <!--超时配置-->
                         <div class="col-sm-9">
-                            <textarea ${type != c.add ? "disabled" : ""} id="timeout-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.timeoutConfig : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id="timeout-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.timeoutConfig : ""}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">负载均衡:</label>
                         <!--负载均衡配置-->
                         <div class="col-sm-9">
-                            <textarea ${type != c.add ? "disabled" : ""} id="loadbalance-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.loadbalanceConfig : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id="loadbalance-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.loadbalanceConfig : ""}</textarea>
                         </div>
                     </div>
                     <!--路由配置-->
                     <div class="form-group">
                         <label class="col-sm-2 control-label">路由配置:</label>
                         <div class="col-sm-9">
-                            <textarea ${type != c.add ? "disabled" : ""} id="router-config-area" class="form-control" rows="5">${type != c.add ? data.routerConfig : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id="router-config-area" class="form-control" rows="5">${type != c.add ? data.routerConfig : ""}</textarea>
                         </div>
                     </div>
                     <!--限流配置-->
                     <div class="form-group">
                         <label class="col-sm-2 control-label">限流配置:</label>
                         <div class="col-sm-9">
-                            <textarea ${type != c.add ? "disabled" : ""} id="freq-config-area" class="form-control" rows="7">${type != c.add ? data.freqConfig : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id="freq-config-area" class="form-control" rows="7">${type != c.add ? data.freqConfig : ""}</textarea>
                         </div>
                     </div>
-                    ${type != c.add ? "" : `
+                    ${type == c.add ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveconfig()">保存配置</button>
                     <button type="button" class="btn btn-danger" onclick="clearConfigInput()">清空配置</button>
                     </span>
-                    `}
+                    ` :(type == c.edit ?`
+                        <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedConfig(data.id)">保存修改</button>
+                    <button type="button" class="btn btn-danger" onclick="editedAndPublish(data.id)">修改并发布</button>
+                    </span>
+                    ` :"")}
                 </div>
             `;
         }
@@ -105,9 +108,10 @@ module api {
 
         //表格操作模版
         public exportTableActionContext(id: string, status: Number) {
+            //${status==3?`<a href="javascript:void(0)"  onclick="rollback(${id})">回滚</a>`:""}
             return `<span class="link-button-table">
-            ${status!=3?`<a href="javascript:void(0)" onclick="publishConfig(${id})">发布</a>`:""}
-            ${status==3?`<a href="javascript:void(0)"  onclick="rollback(${id})">回滚</a>`:""}
+            ${status != 3 ? `<a href="javascript:void(0)" onclick="publishConfig(${id})">发布</a>` : ""}
+            <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'edit')">修改</a>
             <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'view')">详情</a>
             </span>`
         }
