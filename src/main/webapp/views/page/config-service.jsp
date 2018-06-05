@@ -9,10 +9,10 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
+    <script src="${basePath}/js/api/config-api.js"></script>
 </head>
 <body>
 <jsp:include page="../core/model.jsp"/>
-<script src="${basePath}/js/api/config-api.js"></script>
 <jsp:include page="../core/header.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
@@ -24,7 +24,7 @@
                 <span class="input-group-btn panel-button-group">
                     <button type="button" class="btn btn-primary" onclick="addCinfig()">新增</button>
                     <button type="button" class="btn btn-success" onclick="refresh()">刷新</button>
-                    <button type="button" class="btn btn-default">发布历史</button>
+                    <%--<button type="button" class="btn btn-default">发布历史</button>--%>
                 </span>
             </div>
         </div>

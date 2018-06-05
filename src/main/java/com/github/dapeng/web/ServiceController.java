@@ -1,7 +1,7 @@
 package com.github.dapeng.web;
 
 import com.github.dapeng.common.CommonRepose;
-import com.github.dapeng.constant.Commons;
+import com.github.dapeng.common.Commons;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import org.springframework.http.ResponseEntity;

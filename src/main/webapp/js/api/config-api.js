@@ -152,7 +152,7 @@ viewOrEditByID = function (id, viewOrEdit) {
         // 初始化弹窗
         initModelContext(context, refresh);
         // 初始化服务信息
-        config.initServices();
+        //config.initServices();
     }, "json")
 };
 
@@ -172,31 +172,18 @@ addCinfig = function () {
     // 初始化弹窗
     initModelContext(context, refresh);
     // 初始化服务信息
-    config.initServices();
+    //config.initServices();
 };
 
 /**
  * 保存配置
  */
 saveconfig = function () {
-    var serviceName = $("#services-sel").find("option:selected").val();
-    var timeoutConfig = $("#timeout-config-area").val();
-    var loadbalanceConfig = $("#loadbalance-config-area").val();
-    var routerConfig = $("#router-config-area").val();
-    var freqConfig = $("#freq-config-area").val();
-
     var url = basePath + "/api/config/add";
-    var data = {
-        serviceName: serviceName,
-        timeoutConfig: timeoutConfig,
-        loadbalanceConfig: loadbalanceConfig,
-        routerConfig: routerConfig,
-        freqConfig: freqConfig
-    };
     var settings = {
         type: "post",
         url: url,
-        data: JSON.stringify(data),
+        data: JSON.stringify(processConfigData()),
         dataType: "json",
         contentType: "application/json"
     };
@@ -204,6 +191,21 @@ saveconfig = function () {
         layer.msg(res.context);
         refresh();
     });
+};
+
+processConfigData = function () {
+    var serviceName = $("#service-name").val();
+    var timeoutConfig = $("#timeout-config-area").val();
+    var loadbalanceConfig = $("#loadbalance-config-area").val();
+    var routerConfig = $("#router-config-area").val();
+    var freqConfig = $("#freq-config-area").val();
+    return {
+        serviceName: serviceName,
+        timeoutConfig: timeoutConfig,
+        loadbalanceConfig: loadbalanceConfig,
+        routerConfig: routerConfig,
+        freqConfig: freqConfig
+    };
 };
 
 /**
@@ -217,5 +219,43 @@ clearConfigInput = function () {
         layer.msg("已清空");
     }, function () {
         layer.msg("取消清空");
+    });
+};
+/**
+ *配置修改后的保存
+ * @param id
+ */
+editedConfig = function (id) {
+    var url = basePath +"/api/config/edit/"+id;
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify(processConfigData()),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.context);
+        refresh();
+    });
+};
+
+/**
+ * 保存修改并发布
+ * @param id
+ */
+editedAndPublish = function (id) {
+
+    var url = basePath +"/api/config/editAndPublish/"+id;
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify(processConfigData()),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.context);
+        refresh();
     });
 };

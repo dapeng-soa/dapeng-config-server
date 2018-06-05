@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author with struy.
  * Create by 2018/5/31 11:59
@@ -15,14 +17,22 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface ConfigInfoRepository extends JpaRepository<ConfigInfo,Long> {
+public interface ConfigInfoRepository extends JpaRepository<ConfigInfo, Long> {
 
     /**
      * 模糊查找配置，方法名，版本号
+     *
      * @param serviceName
      * @param version
      * @param pageable
      * @return
      */
     Page<ConfigInfo> findAllByServiceNameLikeOrVersionLike(String serviceName, String version, Pageable pageable);
+
+    /**
+     * 通过配置名称查找
+     *
+     * @return
+     */
+    List<ConfigInfo> findByServiceName(String serviceName);
 }

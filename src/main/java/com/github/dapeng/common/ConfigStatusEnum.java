@@ -1,4 +1,4 @@
-package com.github.dapeng.constant;
+package com.github.dapeng.common;
 
 /**
  * @author with struy.

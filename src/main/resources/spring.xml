@@ -12,9 +12,6 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <!--openApi-->
-    <bean id="zkBootstrap" class="com.github.dapeng.openapi.cache.ZkBootstrap" init-method="init"/>
-
     <!-- 数据库和事务配置 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
         <!-- 基本属性 url、user、password -->

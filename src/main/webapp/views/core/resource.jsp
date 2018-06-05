@@ -42,6 +42,7 @@
 <link href="${basePath}/plugins/animate/animate.min.css" rel="stylesheet">
 
 <script src="${basePath}/js/api/Config.js"></script>
+<script src="${basePath}/plugins/model.js"></script>
 <script>
 
     window.basePath = "${basePath}";
