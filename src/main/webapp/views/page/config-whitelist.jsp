@@ -51,9 +51,11 @@
                     <div class="panel-body">
                         <div class="form-group">
                             <textarea class="form-control" rows="15" id="white-list-text"></textarea>
+                            <br>
+                            <code>tip:使用服务全限定名,回车换行即可一次配置多个!</code>
                         </div>
                         <span class="input-group-btn panel-button-group">
-                            <button class="btn btn-primary" onclick="addWhiteItem()">保存</button>
+                            <button class="btn btn-primary" onclick="addWhiteItem()">添加</button>
                         </span>
                     </div>
                 </div>
