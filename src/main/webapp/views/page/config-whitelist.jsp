@@ -21,12 +21,44 @@
             <div class="input-group">
                 <p class="left-panel-title">网关服务白名单管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <button type="button" class="btn btn-primary" onclick="addWhiteItem()">新增</button>
-                    <button type="button" class="btn btn-success" onclick="refresh()">刷新</button>
+                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
                 </span>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 40px" >
+
+            <div class="col-xs-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">白名单列表</h3>
+                        <div class="panel-btn-group-left">
+                            <i class="fa fa-refresh" style="cursor: pointer" onclick="InitWhiteList()" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="panel-body" >
+                        <ul class="list-group"  id="white-list-group">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">新增白名单</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <textarea class="form-control" rows="15" id="white-list-text"></textarea>
+                        </div>
+                        <span class="input-group-btn panel-button-group">
+                            <button class="btn btn-primary" onclick="addWhiteItem()">保存</button>
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 </body>
-</html>
