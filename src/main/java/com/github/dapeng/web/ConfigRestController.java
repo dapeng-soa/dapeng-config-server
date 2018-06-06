@@ -6,7 +6,10 @@ import com.github.dapeng.entity.ConfigInfo;
 import com.github.dapeng.openapi.cache.ZookeeperClient;
 import com.github.dapeng.openapi.utils.Constants;
 import com.github.dapeng.repository.ConfigInfoRepository;
+import com.github.dapeng.util.CheckConfigUtil;
 import com.github.dapeng.util.ZkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +35,7 @@ import com.github.dapeng.common.Commons;
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
 public class ConfigRestController {
+    private static Logger LOGGER = LoggerFactory.getLogger(ConfigRestController.class);
 
     @Autowired
     ConfigInfoRepository repository;
@@ -45,10 +49,11 @@ public class ConfigRestController {
                 .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.SERVICE_ISEMPTY_MSG));
         // 校验呢配置规则？
         try {
-            saveConfig(configInfoDto,ConfigStatusEnum.PASS.key());
+            saveConfig(configInfoDto, ConfigStatusEnum.PASS.key());
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
-        }catch (Exception e){
+        } catch (Exception e) {
+            LOGGER.error("添加服务配置出错:", e);
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.ERROR_CODE, e.getMessage()));
         }
@@ -81,10 +86,11 @@ public class ConfigRestController {
     @PostMapping(value = "/config/edit/{id}")
     public ResponseEntity<?> editConfig(@PathVariable Long id, @RequestBody ConfigInfoDto configInfoDto) {
         try {
-            saveConfig(configInfoDto,ConfigStatusEnum.PASS.key());
+            saveConfig(configInfoDto, ConfigStatusEnum.PASS.key());
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
-        }catch (Exception e){
+        } catch (Exception e) {
+            LOGGER.error("保存新改配置出错:", e);
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.ERROR_CODE, e.getMessage()));
         }
@@ -111,13 +117,14 @@ public class ConfigRestController {
             });
             // 1.保存修改配置为新配置,并且状态为已发布
 
-            saveConfigAndPublish(configInfoDto,ConfigStatusEnum.PUBLISHED.key());
+            saveConfigAndPublish(configInfoDto, ConfigStatusEnum.PUBLISHED.key());
             // 2.发布当前提交修改的配置
             processPublish(configInfoDto);
 
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.EDITED_PUBLISH_SUCCESS_MSG));
-        }catch (Exception e){
+        } catch (Exception e) {
+            LOGGER.error("保存新改配置出错:", e);
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.ERROR_CODE, e.getMessage()));
         }
@@ -186,7 +193,7 @@ public class ConfigRestController {
      *
      * @param configInfoDto
      */
-    private ConfigInfo saveConfig(ConfigInfoDto configInfoDto,int status) {
+    private ConfigInfo saveConfig(ConfigInfoDto configInfoDto, int status) {
         ConfigInfo configInfo = new ConfigInfo();
         configInfo.setServiceName(configInfoDto.getServiceName());
         configInfo.setStatus(status);
@@ -205,7 +212,7 @@ public class ConfigRestController {
      *
      * @param configInfoDto
      */
-    private ConfigInfo saveConfigAndPublish(ConfigInfoDto configInfoDto,int status) {
+    private ConfigInfo saveConfigAndPublish(ConfigInfoDto configInfoDto, int status) {
         ConfigInfo configInfo = new ConfigInfo();
         configInfo.setServiceName(configInfoDto.getServiceName());
         configInfo.setStatus(status);
@@ -242,7 +249,6 @@ public class ConfigRestController {
                 if (c.getId() != ci.getId()) {
                     c.setStatus(ConfigStatusEnum.PASS.key());
                 }
-                //repository.saveAndFlush(c);
             });
 
             ConfigInfoDto cid = new ConfigInfoDto();
@@ -252,7 +258,12 @@ public class ConfigRestController {
             cid.setTimeoutConfig(cid.getTimeoutConfig());
             cid.setRouterConfig(cid.getRouterConfig());
 
-            processPublish(cid);
+            try {
+                processPublish(cid);
+            } catch (Exception e) {
+                return ResponseEntity
+                        .ok(CommonRepose.of(Commons.SUCCESS_CODE, e.getMessage()));
+            }
             // 已发布
             ci.setStatus(ConfigStatusEnum.PUBLISHED.key());
             Long now = System.currentTimeMillis();
@@ -268,7 +279,7 @@ public class ConfigRestController {
         }
     }
 
-    private void processPublish(ConfigInfoDto cid){
+    private void processPublish(ConfigInfoDto cid) throws Exception {
         ZookeeperClient zk = ZkUtil.getCurrInstance();
         String service = cid.getServiceName();
         // 超时，负载均衡
@@ -276,6 +287,11 @@ public class ConfigRestController {
         // 路由
         zk.createData(Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
         // 限流
-        zk.createData(Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
+        boolean freqCheckStatus = CheckConfigUtil.doParseRuleData(cid.getFreqConfig());
+        if (freqCheckStatus){
+            zk.createData(Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
+        }else {
+            throw new Exception("限流配置格式错误，请检查！");
+        }
     }
 }
