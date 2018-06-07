@@ -16,9 +16,9 @@
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
         <!-- 基本属性 url、user、password -->
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="${CONFIG_SERVER_DB_URL}"/>
-        <property name="username" value="${CONFIG_SERVER_DB_USER}"/>
-        <property name="password" value="${CONFIG_SERVER_DB_PWD}"/>
+        <property name="url" value="${DB_CONFIG_SERVER_URL}"/>
+        <property name="username" value="${DB_CONFIG_SERVER_USER}"/>
+        <property name="password" value="${DB_CONFIG_SERVER__PWD}"/>
     </bean>
 
     <!--配置 EntityManagerFactory -->
