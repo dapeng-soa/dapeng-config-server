@@ -14,7 +14,20 @@
 <jsp:include page="../core/header.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
-    <h1>${tagName}</h1>
+    <div class="container-right-context animated fadeIn">
+        <div class="panel-header">
+            <div class="input-group">
+                <p class="left-panel-title">服务监控</p>
+                <span class="input-group-btn panel-button-group">
+                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
+                </span>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 40px" >
+            <code>暂时没有新内容</code>
+        </div>
+    </div>
 </div>
 </body>
 </html>

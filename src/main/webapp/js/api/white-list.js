@@ -14,7 +14,6 @@ InitWhiteList = function () {
             whiteContext += '<li class="list-group-item">'+res.context[i]+'</li>'
         }
         $("#white-list-group").html(whiteContext);
-        $("#white-list-group").addClass("animated fadeIn");
     },"json")
 };
 
@@ -29,5 +28,6 @@ addWhiteItem = function () {
     },function (res) {
         layer.msg(res.context);
         InitWhiteList();
+        $("#white-list-text").val("");
     },"json")
 };
