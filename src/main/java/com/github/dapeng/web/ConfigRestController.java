@@ -287,11 +287,12 @@ public class ConfigRestController {
         // 路由
         zk.createData(Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
         // 限流
-        boolean freqCheckStatus = CheckConfigUtil.doParseRuleData(cid.getFreqConfig());
+        zk.createData(Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
+        /*boolean freqCheckStatus = CheckConfigUtil.doParseRuleData(cid.getFreqConfig());
         if (freqCheckStatus){
-            zk.createData(Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
+
         }else {
             throw new Exception("限流配置格式错误，请检查！");
-        }
+        }*/
     }
 }
