@@ -259,3 +259,12 @@ textarea {
     top: 10px;
     font-size: 16px;
 }
+
+#login-from{
+    position: absolute;
+    bottom: 50%;
+    display: block;
+    width: 300px;
+    left: 50%;
+    margin-left: -150px;
+}

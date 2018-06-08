@@ -1,6 +1,7 @@
 $(document).ready(function () {
     InitApiTable();
 });
+var config1 = new api.Config();
 
 function InitApiTable() {
     //记录页面bootstrap-table全局变量$table，方便应用
@@ -49,11 +50,11 @@ function InitApiTable() {
         },
         columns: [{
             checkbox: false,
-            visible: false,
-            formatter: numberFormatter//是否显示复选框
+            visible: false//是否显示复选框
         }, {
             field: 'id',
-            title: '#'
+            title: '#',
+            formatter: numberFormatter
 
         }, {
             field: 'ApiKey',
@@ -102,3 +103,14 @@ function InitApiTable() {
         }
     });
 }
+
+numberFormatter = function (value, row, index) {
+    return index + 1;
+};
+
+openAddApiKeyModle = function () {
+    // 导出弹窗内容模版
+    var context = config1.exportAddApiKeyContext("add");
+    // 初始化弹窗
+    initModelContext(context, refresh);
+};

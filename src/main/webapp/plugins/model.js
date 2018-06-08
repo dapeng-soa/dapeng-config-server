@@ -56,4 +56,4 @@ window.backPreviousModle = function () {
 window.initModelContext = function (context, closeCallback) {
     $(".struct-model-context").html(context);
     toggleModel(closeCallback);
-}
+};
