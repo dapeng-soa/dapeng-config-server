@@ -83,12 +83,12 @@ module api {
                     <button type="button" class="btn btn-success" onclick="saveconfig()">保存配置</button>
                     <button type="button" class="btn btn-danger" onclick="clearConfigInput()">清空配置</button>
                     </span>
-                    ` :(type == c.edit ?`
+                    ` : (type == c.edit ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedConfig(data.id)">保存修改</button>
                     <button type="button" class="btn btn-danger" onclick="editedAndPublish(data.id)">修改并发布</button>
                     </span>
-                    ` :"")}
+                    ` : "")}
                 </div>
             `;
         }
@@ -114,6 +114,62 @@ module api {
             <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'edit')">修改</a>
             <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'view')">详情</a>
             </span>`
+        }
+
+        //导出添加/修改/apikey信息
+        public exportAddApiKeyContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
+            let c = this;
+            return `
+            <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">${type == c.add ? "添加ApiKey" : (type == c.edit ? "修改ApiKey:" + biz : (type == c.view ? "ApiKey详情:" + biz : ""))}</p>
+                    </div>
+                </div>
+                <div class="form-horizontal" style="margin-top: 81px;">
+               ${type != c.add ? ` <div class="form-group">
+                        <label class="col-sm-2 control-label">更新时间:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" value="${data.updatedAt}"/>
+                        </div>
+                    </div>` : ""}
+               <div class="form-group">
+                        <label class="col-sm-2 control-label">ApiKey:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="timeout-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.timeoutConfig : ""}</input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">密码:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="loadbalance-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.loadbalanceConfig : ""}</input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">业务:</label>
+                        <div class="col-sm-9">
+                            <input type="text"  ${type == c.view ? "disabled" : ""} id="router-config-area" class="form-control" >${type != c.add ? data.routerConfig : ""}</input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">ip规则:</label>
+                        <div class="col-sm-9">
+                            <textarea ${type == c.view ? "disabled" : ""} id="router-config-area" class="form-control" rows="5">${type != c.add ? data.routerConfig : ""}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注:</label>
+                        <div class="col-sm-9">
+                            <textarea ${type == c.view ? "disabled" : ""} id="router-config-area" class="form-control" rows="5">${type != c.add ? data.routerConfig : ""}</textarea>
+                        </div>
+                    </div>
+                    ${type == c.add ? `
+                    <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="saveApiKey()">保存</button>
+                    <button type="button" class="btn btn-danger" onclick="clearApiKeyInput()">清空</button>
+                    </span>` : ""}
+                    </div>
+                    
+            `
         }
 
     }

@@ -26,6 +26,16 @@ public class PageController {
     }
 
     /**
+     * 登录
+     *
+     * @return
+     */
+    @GetMapping("security_login")
+    public String login() {
+        return "login";
+    }
+
+    /**
      * 服务监控
      *
      * @return

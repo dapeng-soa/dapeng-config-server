@@ -9,29 +9,29 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
-    <script src=""></script>
+    <script src="${basePath}/js/api/apikey.js"></script>
 </head>
 <body>
+<jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/header.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
-    <div class="container-right-context">
+    <div class="container-right-context animated fadeIn">
 
         <div class="panel-header">
             <div class="input-group">
-                <p class="left-panel-title">API-KEY管理</p>
+                <p class="left-panel-title">网关ApiKey管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <button type="button" class="btn btn-primary">新增</button>
-                    <button type="button" class="btn btn-success">刷新</button>
-                    <button type="button" class="btn btn-default">发布历史</button>
+                    <button type="button" class="btn btn-primary" onclick="openAddApiKeyModle()">新增</button>
+                    <button type="button" class="btn btn-success" onclick="refresh()">刷新</button>
                 </span>
             </div>
         </div>
 
         <table id="apikey-table">
-
         </table>
 
+        <jsp:include page="../core/footer.jsp"/>
     </div>
 </div>
 </body>

@@ -25,8 +25,11 @@
         </div>
 
         <div class="row" style="margin-top: 40px" >
-            <code>暂时没有新内容</code>
+            <div class="col-xs-12">
+                <code>暂时没有新内容</code>
+            </div>
         </div>
+        <jsp:include page="../core/footer.jsp"/>
     </div>
 </div>
 </body>
