@@ -86,7 +86,7 @@ module api {
                     ` : (type == c.edit ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedConfig(data.id)">保存修改</button>
-                    <button type="button" class="btn btn-danger" onclick="editedAndPublish(data.id)">修改并发布</button>
+                    <!--<button type="button" class="btn btn-danger" onclick="editedAndPublish(data.id)">修改并发布</button>-->
                     </span>
                     ` : "")}
                 </div>

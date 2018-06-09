@@ -13,7 +13,7 @@
     </bean>
 
     <!-- 数据库和事务配置 -->
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <!-- 基本属性 url、user、password -->
         <property name="driverClass" value="org.sqlite.JDBC"/>
         <property name="url" value="jdbc:sqlite:${DB_CONFIG_SERVER_PATH}"/>
@@ -22,7 +22,7 @@
     <!--配置 EntityManagerFactory -->
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
         <!--配置jpa提供商的适配器，可以通过内部bean的方式来配置 -->
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>

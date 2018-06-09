@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.github.dapeng.common.ConfigStatusEnum;
@@ -248,7 +247,7 @@ public class ConfigRestController {
             // 更新历史发布为初始状态
             List<ConfigInfo> configInfos = repository.findByServiceName(config.getServiceName());
             configInfos.forEach(c -> {
-                if (!c.getId().equals(config.getId())) {
+                if (c.getId() != config.getId()) {
                     c.setStatus(ConfigStatusEnum.PASS.key());
                 }
             });
