@@ -11,12 +11,10 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "config_info")
-//hibernate相关属性忽略
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ConfigInfo {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private long id ;
     /**
      * 服务全限定名
