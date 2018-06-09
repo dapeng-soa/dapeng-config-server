@@ -3,4 +3,6 @@
 target/
 /logs
 /docker/apps
+*/.DS_Store
+.DS_Store
 
