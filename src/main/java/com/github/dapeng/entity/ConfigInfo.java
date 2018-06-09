@@ -1,6 +1,7 @@
 package com.github.dapeng.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Generated;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -14,7 +15,8 @@ import javax.persistence.*;
 public class ConfigInfo {
 
     @Id
-    private long id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id ;
     /**
      * 服务全限定名
      */
@@ -82,15 +84,13 @@ public class ConfigInfo {
     @Column(name = "updated_at")
     private java.sql.Timestamp updatedAt;
 
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getServiceName() {
         return serviceName;

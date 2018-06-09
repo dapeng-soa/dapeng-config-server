@@ -6,7 +6,6 @@ import com.github.dapeng.entity.ConfigInfo;
 import com.github.dapeng.openapi.cache.ZookeeperClient;
 import com.github.dapeng.openapi.utils.Constants;
 import com.github.dapeng.repository.ConfigInfoRepository;
-import com.github.dapeng.util.CheckConfigUtil;
 import com.github.dapeng.util.ZkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,8 +134,8 @@ public class ConfigRestController {
      */
     @GetMapping(value = "/config/{id}")
     public ResponseEntity<?> findOne(@PathVariable Long id) {
-        Optional<ConfigInfo> configInfo = repository.findById(id);
-        if (configInfo.isPresent()) {
+        ConfigInfo configInfo = repository.getOne(id);
+        if (null != configInfo) {
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.SUCCESS_CODE, configInfo));
         } else {
@@ -159,8 +158,8 @@ public class ConfigRestController {
                                        @RequestParam(required = false) String keyword) {
         if (page <= 0) return ResponseEntity
                 .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.PAGENO_ERROR_MSG));
-        PageRequest pageRequest = PageRequest
-                .of(page - 1, rows,
+        PageRequest pageRequest = new PageRequest
+                (page - 1, rows,
                         new Sort("desc".toUpperCase().equals(sortOrder.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
                                 null == sort ? "updatedAt" : sort));
 
@@ -196,6 +195,9 @@ public class ConfigRestController {
     private ConfigInfo saveConfig(ConfigInfoDto configInfoDto, int status) {
         ConfigInfo configInfo = new ConfigInfo();
         configInfo.setServiceName(configInfoDto.getServiceName());
+        Long now = System.currentTimeMillis();
+        configInfo.setCreatedAt(new Timestamp(now));
+        configInfo.setUpdatedAt(new Timestamp(now));
         configInfo.setStatus(status);
         configInfo.setVersion(UUID.randomUUID().toString());
         configInfo.setFreqConfig(configInfoDto.getFreqConfig());
@@ -222,6 +224,7 @@ public class ConfigRestController {
         configInfo.setTimeoutConfig(configInfoDto.getTimeoutConfig());
         configInfo.setLoadbalanceConfig(configInfoDto.getLoadbalanceConfig());
         Long now = System.currentTimeMillis();
+        configInfo.setCreatedAt(new Timestamp(now));
         configInfo.setUpdatedAt(new Timestamp(now));
         configInfo.setPublishedAt(new Timestamp(now));
         configInfo.setUpdatedBy(0);
@@ -235,26 +238,25 @@ public class ConfigRestController {
      */
     private ResponseEntity<?> publish(Long id) {
         // 将配置发布到对应的zk节点data或者node
-        Optional<ConfigInfo> config = repository.findById(id);
-        if (config.isPresent()) {
-            ConfigInfo ci = config.get();
-            if (ci.getStatus() == ConfigStatusEnum.PUBLISHED.key()) {
+        ConfigInfo config = repository.getOne(id);
+        if (null != config) {
+            if (config.getStatus() == ConfigStatusEnum.PUBLISHED.key()) {
                 return ResponseEntity
                         .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.CONFIG_PUBLISHED_MSG));
             }
 
             // 更新历史发布为初始状态
-            List<ConfigInfo> configInfos = repository.findByServiceName(ci.getServiceName());
+            List<ConfigInfo> configInfos = repository.findByServiceName(config.getServiceName());
             configInfos.forEach(c -> {
-                if (c.getId() != ci.getId()) {
+                if (!c.getId().equals(config.getId())) {
                     c.setStatus(ConfigStatusEnum.PASS.key());
                 }
             });
 
             ConfigInfoDto cid = new ConfigInfoDto();
-            cid.setServiceName(ci.getServiceName());
-            cid.setFreqConfig(ci.getFreqConfig());
-            cid.setLoadbalanceConfig(ci.getLoadbalanceConfig());
+            cid.setServiceName(config.getServiceName());
+            cid.setFreqConfig(config.getFreqConfig());
+            cid.setLoadbalanceConfig(config.getLoadbalanceConfig());
             cid.setTimeoutConfig(cid.getTimeoutConfig());
             cid.setRouterConfig(cid.getRouterConfig());
 
@@ -265,12 +267,12 @@ public class ConfigRestController {
                         .ok(CommonRepose.of(Commons.SUCCESS_CODE, e.getMessage()));
             }
             // 已发布
-            ci.setStatus(ConfigStatusEnum.PUBLISHED.key());
+            config.setStatus(ConfigStatusEnum.PUBLISHED.key());
             Long now = System.currentTimeMillis();
-            ci.setUpdatedAt(new Timestamp(now));
-            ci.setPublishedAt(new Timestamp(now));
-            ci.setUpdatedBy(0);
-            ci.setPublishedBy(0);
+            config.setUpdatedAt(new Timestamp(now));
+            config.setPublishedAt(new Timestamp(now));
+            config.setUpdatedBy(0);
+            config.setPublishedBy(0);
             return ResponseEntity
                     .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.PUBLISH_SUCCESS_MSG));
         } else {

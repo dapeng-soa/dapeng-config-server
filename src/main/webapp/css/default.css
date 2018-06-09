@@ -268,3 +268,16 @@ textarea {
     left: 50%;
     margin-left: -150px;
 }
+
+.header-right-icons{
+    position: absolute;
+    right: 30px;
+    height: 50px;
+    top: 30%;
+}
+
+.header-icon-item{
+    color: #FFF;
+    padding: 0 5px;
+    line-height: 200%;
+}

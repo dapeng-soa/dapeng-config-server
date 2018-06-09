@@ -4,6 +4,7 @@ import com.github.dapeng.entity.ConfigInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 
 @Repository
-public interface ConfigInfoRepository extends JpaRepository<ConfigInfo, Long> {
+public interface ConfigInfoRepository extends JpaRepository<ConfigInfo, Long> ,JpaSpecificationExecutor<ConfigInfo> {
 
     /**
      * 模糊查找配置，方法名，版本号

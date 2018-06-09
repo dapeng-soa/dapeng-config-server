@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +34,13 @@ public class WhiteListRestController {
         Optional<List<String>> children = ZkUtil
                 .getCurrInstance()
                 .getNodeChildren(Constants.SERVICE_WITHELIST_PATH);
-        return ResponseEntity
-                .ok(CommonRepose.of(Commons.SUCCESS_CODE, children));
+        if (children.isPresent()){
+            return ResponseEntity
+                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, children.get()));
+        }else {
+            return ResponseEntity
+                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, new ArrayList<>()));
+        }
     }
 
     /**

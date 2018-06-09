@@ -15,10 +15,8 @@
     <!-- 数据库和事务配置 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
         <!-- 基本属性 url、user、password -->
-        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="${DB_CONFIG_SERVER_URL}"/>
-        <property name="username" value="${DB_CONFIG_SERVER_USER}"/>
-        <property name="password" value="${DB_CONFIG_SERVER__PWD}"/>
+        <property name="driverClass" value="org.sqlite.JDBC"/>
+        <property name="url" value="jdbc:sqlite:${DB_CONFIG_SERVER_PATH}"/>
     </bean>
 
     <!--配置 EntityManagerFactory -->
@@ -34,11 +32,11 @@
 
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.dialect">com.enigmabridge.hibernate.dialect.SQLiteDialect</prop>
                 <!--develop-->
                 <!--<prop key="hibernate.format_sql">true</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>-->
+                <prop key="hibernate.show_sql">true</prop>-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
             </props>
 
         </property>
