@@ -12,17 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("/")
 public class PageController {
     /**
      * 首页
      *
      * @return
      */
-    @GetMapping()
+    @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("tagName", "index");
-        return "redirect:monitor";
+        return "redirect:config";
     }
 
     /**
@@ -30,9 +29,9 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping("security_login")
+    @GetMapping(value = "/login")
     public String login() {
-        return "login";
+        return "security_login";
     }
 
     /**
@@ -40,7 +39,7 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping(value = "monitor")
+    @GetMapping(value = "/monitor")
     public String monitor(Model model) {
         model.addAttribute("tagName", "monitor");
         return "page/monitor";
@@ -51,7 +50,7 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping(value = "config")
+    @GetMapping(value = "/config")
     public String config(Model model) {
         model.addAttribute("tagName", "config");
         return "redirect:config/service";
@@ -62,7 +61,7 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping(value = "config/service")
+    @GetMapping(value = "/config/service")
     public String service(Model model) {
         model.addAttribute("tagName", "config");
         model.addAttribute("sideName", "config-service");
@@ -74,7 +73,7 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping(value = "config/whitelist")
+    @GetMapping(value = "/config/whitelist")
     public String whitelist(Model model) {
         model.addAttribute("tagName", "config");
         model.addAttribute("sideName", "config-whitelist");
@@ -86,7 +85,7 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping(value = "config/apikey")
+    @GetMapping(value = "/config/apikey")
     public String apikey(Model model) {
         model.addAttribute("tagName", "config");
         model.addAttribute("sideName", "config-apikey");
@@ -99,7 +98,7 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping(value = "deploy")
+    @GetMapping(value = "/deploy")
     public String deploy(Model model) {
         model.addAttribute("tagName", "deploy");
         return "page/deploy";
