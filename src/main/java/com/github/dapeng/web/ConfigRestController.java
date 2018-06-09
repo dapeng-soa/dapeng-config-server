@@ -256,8 +256,8 @@ public class ConfigRestController {
             cid.setServiceName(config.getServiceName());
             cid.setFreqConfig(config.getFreqConfig());
             cid.setLoadbalanceConfig(config.getLoadbalanceConfig());
-            cid.setTimeoutConfig(cid.getTimeoutConfig());
-            cid.setRouterConfig(cid.getRouterConfig());
+            cid.setTimeoutConfig(config.getTimeoutConfig());
+            cid.setRouterConfig(config.getRouterConfig());
 
             try {
                 processPublish(cid);
