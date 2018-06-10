@@ -6,6 +6,7 @@ import com.github.dapeng.entity.ConfigInfo;
 import com.github.dapeng.openapi.cache.ZookeeperClient;
 import com.github.dapeng.openapi.utils.Constants;
 import com.github.dapeng.repository.ConfigInfoRepository;
+import com.github.dapeng.util.CheckConfigUtil;
 import com.github.dapeng.util.ZkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,52 +188,6 @@ public class ConfigRestController {
 
 
     /**
-     * 通过dto信息保存配置信息
-     *
-     * @param configInfoDto
-     */
-    private ConfigInfo saveConfig(ConfigInfoDto configInfoDto, int status) {
-        ConfigInfo configInfo = new ConfigInfo();
-        configInfo.setServiceName(configInfoDto.getServiceName());
-        Long now = System.currentTimeMillis();
-        configInfo.setCreatedAt(new Timestamp(now));
-        configInfo.setUpdatedAt(new Timestamp(now));
-        configInfo.setStatus(status);
-        configInfo.setVersion(UUID.randomUUID().toString());
-        configInfo.setFreqConfig(configInfoDto.getFreqConfig());
-        configInfo.setRouterConfig(configInfoDto.getRouterConfig());
-        configInfo.setTimeoutConfig(configInfoDto.getTimeoutConfig());
-        configInfo.setLoadbalanceConfig(configInfoDto.getLoadbalanceConfig());
-
-        return repository.saveAndFlush(configInfo);
-    }
-
-
-    /**
-     * 通过dto信息保存配置信息
-     *
-     * @param configInfoDto
-     */
-    private ConfigInfo saveConfigAndPublish(ConfigInfoDto configInfoDto, int status) {
-        ConfigInfo configInfo = new ConfigInfo();
-        configInfo.setServiceName(configInfoDto.getServiceName());
-        configInfo.setStatus(status);
-        configInfo.setVersion(UUID.randomUUID().toString());
-        configInfo.setFreqConfig(configInfoDto.getFreqConfig());
-        configInfo.setRouterConfig(configInfoDto.getRouterConfig());
-        configInfo.setTimeoutConfig(configInfoDto.getTimeoutConfig());
-        configInfo.setLoadbalanceConfig(configInfoDto.getLoadbalanceConfig());
-        Long now = System.currentTimeMillis();
-        configInfo.setCreatedAt(new Timestamp(now));
-        configInfo.setUpdatedAt(new Timestamp(now));
-        configInfo.setPublishedAt(new Timestamp(now));
-        configInfo.setUpdatedBy(0);
-        configInfo.setPublishedBy(0);
-
-        return repository.saveAndFlush(configInfo);
-    }
-
-    /**
      * 发布逻辑
      */
     private ResponseEntity<?> publish(Long id) {
@@ -280,6 +235,75 @@ public class ConfigRestController {
         }
     }
 
+
+    /**
+     * 通过dto信息保存配置信息
+     *
+     * @param configInfoDto
+     */
+    private ConfigInfo saveConfig(ConfigInfoDto configInfoDto, int status) throws Exception {
+        CheckGrammar(configInfoDto);
+        ConfigInfo configInfo = new ConfigInfo();
+        configInfo.setServiceName(configInfoDto.getServiceName());
+        Long now = System.currentTimeMillis();
+        configInfo.setCreatedAt(new Timestamp(now));
+        configInfo.setUpdatedAt(new Timestamp(now));
+        configInfo.setStatus(status);
+        configInfo.setVersion(UUID.randomUUID().toString());
+        configInfo.setFreqConfig(configInfoDto.getFreqConfig());
+        configInfo.setRouterConfig(configInfoDto.getRouterConfig());
+        configInfo.setTimeoutConfig(configInfoDto.getTimeoutConfig());
+        configInfo.setLoadbalanceConfig(configInfoDto.getLoadbalanceConfig());
+
+        return repository.saveAndFlush(configInfo);
+    }
+
+
+    /**
+     * 通过dto信息保存配置信息
+     *
+     * @param configInfoDto
+     */
+    private ConfigInfo saveConfigAndPublish(ConfigInfoDto configInfoDto, int status) throws Exception {
+        CheckGrammar(configInfoDto);
+        ConfigInfo configInfo = new ConfigInfo();
+        configInfo.setServiceName(configInfoDto.getServiceName());
+        configInfo.setStatus(status);
+        configInfo.setVersion(UUID.randomUUID().toString());
+        configInfo.setFreqConfig(configInfoDto.getFreqConfig());
+        configInfo.setRouterConfig(configInfoDto.getRouterConfig());
+        configInfo.setTimeoutConfig(configInfoDto.getTimeoutConfig());
+        configInfo.setLoadbalanceConfig(configInfoDto.getLoadbalanceConfig());
+        Long now = System.currentTimeMillis();
+        configInfo.setCreatedAt(new Timestamp(now));
+        configInfo.setUpdatedAt(new Timestamp(now));
+        configInfo.setPublishedAt(new Timestamp(now));
+        configInfo.setUpdatedBy(0);
+        configInfo.setPublishedBy(0);
+
+        return repository.saveAndFlush(configInfo);
+    }
+
+    private void CheckGrammar(ConfigInfoDto cofig) throws Exception {
+        // 语法检查
+        boolean freqCheckStatus = CheckConfigUtil.doCheckFreq(cofig.getFreqConfig());
+        if (!freqCheckStatus) {
+            throw new Exception("限流配置格式错误，请检查！");
+        }
+        boolean routerCheckStatus = CheckConfigUtil.doCheckRouter(cofig.getRouterConfig());
+        if (!routerCheckStatus) {
+            throw new Exception("路由配置格式错误，请检查！");
+        }
+        boolean timeoutCheckStatus = CheckConfigUtil.doCheckTimeOut(cofig.getTimeoutConfig());
+        if (!timeoutCheckStatus) {
+            throw new Exception("超时配置格式错误，请检查！");
+        }
+        boolean loadbalanceCheckStatus = CheckConfigUtil.doCheckLoadbalance(cofig.getLoadbalanceConfig());
+        if (!loadbalanceCheckStatus) {
+            throw new Exception("负载均衡配置格式错误，请检查！");
+        }
+    }
+
     private void processPublish(ConfigInfoDto cid) throws Exception {
         ZookeeperClient zk = ZkUtil.getCurrInstance();
         String service = cid.getServiceName();
@@ -289,11 +313,5 @@ public class ConfigRestController {
         zk.createData(Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
         // 限流
         zk.createData(Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
-        /*boolean freqCheckStatus = CheckConfigUtil.doParseRuleData(cid.getFreqConfig());
-        if (freqCheckStatus){
-
-        }else {
-            throw new Exception("限流配置格式错误，请检查！");
-        }*/
     }
 }
