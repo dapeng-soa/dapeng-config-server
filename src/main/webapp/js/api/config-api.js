@@ -130,7 +130,7 @@ statusFormatter = function (value) {
 
 // 操作格式化
 actionFormatter = function (id, row) {
-    return config.exportTableActionContext(id, row.status);
+    return config.exportTableActionContext(id, row);
 };
 
 // 发布
@@ -150,9 +150,7 @@ viewOrEditByID = function (id, viewOrEdit) {
         // 导出弹窗内容模版
         var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
         // 初始化弹窗
-        initModelContext(context, refresh);
-        // 初始化服务信息
-        //config.initServices();
+        initModelContext(context, viewOrEdit==="view"?refresh:"");
     }, "json")
 };
 

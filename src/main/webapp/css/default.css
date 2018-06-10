@@ -75,6 +75,7 @@ pre {
 }
 
 .sidebar-left {
+    z-index: 1500;
     color: #333;
     position: fixed;
     left: 0;
@@ -281,3 +282,31 @@ textarea {
     padding: 0 5px;
     line-height: 200%;
 }
+
+/*侧边开关=======================*/
+
+.toggle-sidebar-btn {
+    text-decoration: none;
+    position: absolute;
+    right: -30px;
+    display: inline;
+    cursor: pointer;
+    color: #303a40;
+    font-size: 16px;
+    top: 10px;
+}
+
+.toggle-sidebar-btn:focus,
+.toggle-sidebar-btn:hover{
+    text-decoration: none;
+    color: #303a40;
+}
+
+.sidebar-left.closed{
+    left: -205px;
+}
+
+.container-right.closed{
+    margin: 50px 0 0 0;
+}
+
