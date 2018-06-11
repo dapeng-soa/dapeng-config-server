@@ -1,8 +1,7 @@
 package com.github.dapeng.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.Generated;
-import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
@@ -12,11 +11,11 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "config_info")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ConfigInfo {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id ;
+    private long id ;
     /**
      * 服务全限定名
      */
@@ -84,11 +83,11 @@ public class ConfigInfo {
     @Column(name = "updated_at")
     private java.sql.Timestamp updatedAt;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -19,7 +19,7 @@ public class CheckConfigUtil {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CheckConfigUtil.class);
 
-    public static Boolean doParseRuleData(String ruleData)  {
+    public static Boolean doCheckFreq(String ruleData)  {
         LOGGER.debug("doParseRuleData,限流规则解析前：{}", ruleData);
         List<FreqControlRule> datasOfRule = new ArrayList<>();
         String[] str = ruleData.split("\n|\r|\r\n");
@@ -87,6 +87,18 @@ public class CheckConfigUtil {
             }
         }
         LOGGER.debug("doParseRuleData,限流规则解析后：{}", datasOfRule);
+        return true;
+    }
+
+    public static Boolean doCheckTimeOut(String timeout){
+        return true;
+    }
+
+    public static Boolean doCheckRouter(String router){
+        return true;
+    }
+
+    public static Boolean doCheckLoadbalance(String loadbalance){
         return true;
     }
 }
