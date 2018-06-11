@@ -9,6 +9,7 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
+    <script src="${basePath}/js/api/monitor.js"></script>
 </head>
 <body>
 <jsp:include page="../core/header.jsp"/>
@@ -24,11 +25,17 @@
             </div>
         </div>
 
-        <div class="row" style="margin-top: 40px" >
+        <%--<div class="row" style="margin-top: 40px" >
             <div class="col-xs-12">
                 <code>暂时没有新内容</code>
             </div>
-        </div>
+        </div>--%>
+
+
+        <table id="monitor-table">
+        </table>
+
+
         <jsp:include page="../core/footer.jsp"/>
     </div>
 </div>
