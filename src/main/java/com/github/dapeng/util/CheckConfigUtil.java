@@ -1,6 +1,9 @@
 package com.github.dapeng.util;
 
 import com.github.dapeng.core.helper.IPUtils;
+import com.github.dapeng.router.Route;
+import com.github.dapeng.router.RoutesExecutor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +22,7 @@ public class CheckConfigUtil {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CheckConfigUtil.class);
 
-    public static Boolean doCheckFreq(String ruleData)  {
+    public static Boolean doCheckFreq(String ruleData) {
         LOGGER.debug("doParseRuleData,限流规则解析前：{}", ruleData);
         List<FreqControlRule> datasOfRule = new ArrayList<>();
         String[] str = ruleData.split("\n|\r|\r\n");
@@ -90,15 +93,24 @@ public class CheckConfigUtil {
         return true;
     }
 
-    public static Boolean doCheckTimeOut(String timeout){
+    public static Boolean doCheckTimeOut(String timeout) {
         return true;
     }
 
-    public static Boolean doCheckRouter(String router){
-        return true;
+    public static Boolean doCheckRouter(String routeData) {
+        List<Route> zkRoutes = null;
+        if (StringUtils.isNotBlank(routeData)) {
+            try {
+                zkRoutes = RoutesExecutor.parseAll(routeData);
+            } catch (Exception e) {
+                zkRoutes = new ArrayList<>(16);
+                LOGGER.error("parser routes 信息 失败，请检查路由规则写法是否正确!");
+            }
+        }
+        return zkRoutes != null && !zkRoutes.isEmpty();
     }
 
-    public static Boolean doCheckLoadbalance(String loadbalance){
+    public static Boolean doCheckLoadbalance(String loadbalance) {
         return true;
     }
 }
