@@ -31,9 +31,8 @@ var api;
             }, "json");
         };
         //表格操作模版
-        Config.prototype.exportTableActionContext = function (id, status) {
-            //${status==3?`<a href="javascript:void(0)"  onclick="rollback(${id})">回滚</a>`:""}
-            return "<span class=\"link-button-table\">\n            " + (status != 3 ? "<a href=\"javascript:void(0)\" onclick=\"publishConfig(" + id + ")\">\u53D1\u5E03</a>" : "") + "\n            <a href=\"javascript:void(0)\"  onclick=\"viewOrEditByID(" + id + ",'edit')\">\u4FEE\u6539</a>\n            <a href=\"javascript:void(0)\"  onclick=\"viewOrEditByID(" + id + ",'view')\">\u8BE6\u60C5</a>\n            </span>";
+        Config.prototype.exportTableActionContext = function (id, row) {
+            return "<span class=\"link-button-table\">\n            " + (row.status != 3 ? "<a href=\"javascript:void(0)\" onclick=\"publishConfig(" + id + ")\">\u53D1\u5E03</a>" : "") + "\n            <a href=\"javascript:void(0)\"  onclick=\"viewOrEditByID(" + id + ",'edit')\">\u4FEE\u6539</a>\n            <a href=\"javascript:void(0)\"  onclick=\"viewHistory(" + id + ")\">\u5386\u53F2</a>\n            <a href=\"javascript:void(0)\"  onclick=\"viewOrEditByID(" + id + ",'view')\">\u8BE6\u60C5</a>\n            </span>";
         };
         //导出添加/修改/apikey信息
         Config.prototype.exportAddApiKeyContext = function (type, biz, data) {

@@ -107,11 +107,11 @@ module api {
         }
 
         //表格操作模版
-        public exportTableActionContext(id: string, status: Number) {
-            //${status==3?`<a href="javascript:void(0)"  onclick="rollback(${id})">回滚</a>`:""}
+        public exportTableActionContext(id: string, row: any) {
             return `<span class="link-button-table">
-            ${status != 3 ? `<a href="javascript:void(0)" onclick="publishConfig(${id})">发布</a>` : ""}
+            ${row.status != 3 ? `<a href="javascript:void(0)" onclick="publishConfig(${id})">发布</a>` : ""}
             <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'edit')">修改</a>
+            <a href="javascript:void(0)"  onclick="viewHistory(${id})">历史</a>
             <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'view')">详情</a>
             </span>`
         }
