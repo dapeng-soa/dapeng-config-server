@@ -22,6 +22,7 @@ public class CheckConfigUtil {
 
     private static Logger LOGGER = LoggerFactory.getLogger(CheckConfigUtil.class);
 
+    // 限流格式检查
     public static Boolean doCheckFreq(String ruleData) {
         LOGGER.debug("doParseRuleData,限流规则解析前：{}", ruleData);
         List<FreqControlRule> datasOfRule = new ArrayList<>();
@@ -93,10 +94,7 @@ public class CheckConfigUtil {
         return true;
     }
 
-    public static Boolean doCheckTimeOut(String timeout) {
-        return true;
-    }
-
+    //路由格式检查
     public static Boolean doCheckRouter(String routeData) {
         List<Route> zkRoutes = null;
         if (StringUtils.isNotBlank(routeData)) {
@@ -110,7 +108,28 @@ public class CheckConfigUtil {
         return zkRoutes != null && !zkRoutes.isEmpty();
     }
 
-    public static Boolean doCheckLoadbalance(String loadbalance) {
+    //配置格式检查
+    public static Boolean doCheckConfig(String configData) {
+        //全局配置，格式  timeout/800ms;loadBalance/random
+        //服务级别和方法级别   timeout/800ms,register:4001ms,modifySupplier:200ms;loadBalance/leastActive,createSupplier:random,modifySupplier:roundRobin;
+        if (StringUtils.isNotBlank(configData)) {
+            String[] configArr = configData.split(";");
+            for (String item : configArr) {
+                if (item.contains(",")) {
+                    String[] config_item = item.split(",");
+                    for (String _item : config_item) {
+                        if (!(_item.contains("/") || _item.contains(":"))) {
+                            return false;
+                        }
+                    }
+
+                } else {
+                    if (!item.contains("/")) {
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
     }
 }
