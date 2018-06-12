@@ -24,7 +24,6 @@
                 <span class="input-group-btn panel-button-group">
                     <button type="button" class="btn btn-primary" onclick="openAddConfig()">新增</button>
                     <button type="button" class="btn btn-success" onclick="refresh()">刷新</button>
-                    <%--<button type="button" class="btn btn-default">发布历史</button>--%>
                 </span>
             </div>
         </div>

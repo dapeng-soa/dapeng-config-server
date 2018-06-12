@@ -30,13 +30,7 @@ module api {
                     </div>
                 ` : ""} 
                
-               <!-- <div class="form-group">
-                        <label class="col-sm-2 control-label">版本号:</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" value=""/>
-                        </div>
-                    </div>-->
-               
+              
                     <div class="form-group">${
                 `
                     <label class="col-sm-2 control-label">${type == c.add ? "服务名(全限定名):" : "服务名:"}</label>
@@ -53,10 +47,9 @@ module api {
                         <!--超时配置-->
                         <div class="col-sm-9">
                             <textarea ${type == c.view ? "disabled" : ""} id="timeout-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.timeoutConfig : ""}</textarea>
-                            <div class="layui-collapse" lay-accordion>
-                              <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" onclick="toggleBlock(this)" >超时配置规则</h2>
-                                <div class="layui-colla-content">
+                              <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
                                   <pre>
 超时配置：
 1.全局配置在/soa/config/services节点data上
@@ -68,7 +61,6 @@ module api {
                                   </pre>
                                 </div>
                               </div>
-                            </div>
                         </div>
                     </div>
                 `
@@ -79,10 +71,9 @@ module api {
                         <!--负载均衡配置-->
                         <div class="col-sm-9">
                             <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="loadbalance-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? (type == c.real ? data.timeoutBalanceConfig : data.loadbalanceConfig):""}</textarea>
-                            <div class="layui-collapse" lay-accordion>
-                              <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" onclick="toggleBlock(this)" >负载均衡配置规则</h2>
-                                <div class="layui-colla-content">
+                              <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
                                   <pre>
 负载均衡配置：
 1.全局配置在/soa/config/services节点data上
@@ -94,7 +85,6 @@ module api {
 服务：loadbalance/LeastActive,createSupplier:Random,modifySupplier:RoundRobin;
                                   </pre>
                                 </div>
-                              </div>
                             </div>
                         </div>
                     </div>
@@ -103,10 +93,9 @@ module api {
                         <label class="col-sm-2 control-label">路由配置:</label>
                         <div class="col-sm-9">
                             <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="router-config-area" class="form-control" rows="5">${type != c.add ? data.routerConfig : ""}</textarea>
-                            <div class="layui-collapse" lay-accordion>
-                              <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" onclick="toggleBlock(this)" >路由配置规则</h2>
-                                <div class="layui-colla-content">
+                              <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
                                   <pre>
 路由配置：
 1.路由配置在/soa/config/routes/{serviceName}节点data上
@@ -116,7 +105,6 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/Dapeng-Routing
                                   </pre>
                                 </div>
                               </div>
-                            </div>
                         </div>
                     </div>
                     <!--限流配置-->
@@ -124,10 +112,9 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/Dapeng-Routing
                         <label class="col-sm-2 control-label">限流配置:</label>
                         <div class="col-sm-9">
                             <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="freq-config-area" class="form-control" rows="7">${type != c.add ? data.freqConfig : ""}</textarea>
-                            <div class="layui-collapse" lay-accordion>
-                              <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" onclick="toggleBlock(this)" >限流配置规则</h2>
-                                <div class="layui-colla-content">
+                              <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
                                   <pre>
 限流配置：
 1.限流配置在/soa/config/freq/{serviceName}节点data上
@@ -178,7 +165,6 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                                   </pre>
                                 </div>
                               </div>
-                            </div>
                         </div>
                     </div>
                     
@@ -220,10 +206,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                     </div>
                 </div>
                 
-              <div class="list-group" style="margin-top: 81px;">
-                  <div class="layui-collapse" id="publishHistory" lay-accordion>
-                      
-                    </div>
+              <div class="list-group" id="publishHistory" style="margin-top: 81px;">
                 </div>
             `
         }
