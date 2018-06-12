@@ -10,6 +10,7 @@ public class Commons {
 
     public static final String PAGENO_ERROR_MSG = "页数不能小于0";
     public static final String DATA_NOTFOUND_MSG = "数据不存在";
+    public static final String SYS_CONFIG_ERROR = "同步服务配置出错";
     public static final String CONFIG_PUBLISHED_MSG = "配置已经发布过了";
     public static final String SERVICE_ISEMPTY_MSG = "服务名不能为空";
     public static final String SERVICE_ISEXISTS_MSG = "此服务已经存在配置";

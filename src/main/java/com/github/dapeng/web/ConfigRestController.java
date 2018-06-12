@@ -2,6 +2,7 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ConfigInfoDto;
+import com.github.dapeng.dto.RealConfig;
 import com.github.dapeng.entity.ConfigInfo;
 import com.github.dapeng.entity.ConfigPublishHistory;
 import com.github.dapeng.openapi.cache.ZookeeperClient;
@@ -18,10 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import com.github.dapeng.common.ConfigStatusEnum;
 import com.github.dapeng.common.Commons;
-
 import java.util.List;
 
 /**
@@ -226,6 +225,24 @@ public class ConfigRestController {
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.ROLLBACK_SUCCESS_MSG));
     }
 
+    /**
+     * 同步线上配置
+     *
+     * @return
+     */
+    @GetMapping(value = "/config/sysRealConfig")
+    public ResponseEntity<?> sysRealConfig(@RequestParam String serviceName) {
+        try {
+            RealConfig realConfig = proccessSysConfig(serviceName);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, realConfig));
+        } catch (Exception e) {
+            LOGGER.error("同步服务配置出错::", e);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SYS_CONFIG_ERROR));
+        }
+    }
+
 
     /**
      * 发布逻辑
@@ -306,23 +323,40 @@ public class ConfigRestController {
             throw new Exception("限流配置格式错误，请检查！");
         }
 
-        boolean routerIsOk = NullUtil.isEmpty(cofig.getFreqConfig()) ?
+        boolean routerIsOk = NullUtil.isEmpty(cofig.getRouterConfig()) ?
                 true : CheckConfigUtil.doCheckRouter(cofig.getRouterConfig());
         if (!routerIsOk) {
             throw new Exception("路由配置格式错误，请检查！");
         }
 
-        boolean timeoutIsOk = NullUtil.isEmpty(cofig.getFreqConfig()) ?
+        boolean timeoutIsOk = NullUtil.isEmpty(cofig.getTimeoutConfig()) ?
                 true : CheckConfigUtil.doCheckConfig(cofig.getTimeoutConfig());
         if (!timeoutIsOk) {
             throw new Exception("超时配置格式错误，请检查！");
         }
 
-        boolean loadbalanceIsOk = NullUtil.isEmpty(cofig.getFreqConfig()) ?
+        boolean loadbalanceIsOk = NullUtil.isEmpty(cofig.getLoadbalanceConfig()) ?
                 true : CheckConfigUtil.doCheckConfig(cofig.getLoadbalanceConfig());
         if (!loadbalanceIsOk) {
             throw new Exception("负载均衡配置格式错误，请检查！");
         }
+    }
+
+    /**
+     * 执行同步
+     *
+     * @param service
+     */
+    private RealConfig proccessSysConfig(String service) throws Exception {
+        RealConfig realConfig = new RealConfig();
+        ZookeeperClient zk = ZkUtil.getCurrInstance();
+        String timeoutBalanceConfig = zk.getNodeData(Constants.CONFIG_SERVICE_PATH + "/" + service);
+        String freqConfig = zk.getNodeData(Constants.CONFIG_FREQ_PATH + "/" + service);
+        String routerConfig = zk.getNodeData(Constants.CONFIG_ROUTER_PATH + "/" + service);
+        realConfig.setTimeoutBalanceConfig(timeoutBalanceConfig);
+        realConfig.setFreqConfig(freqConfig);
+        realConfig.setRouterConfig(routerConfig);
+        return realConfig;
     }
 
     /**

@@ -28,21 +28,21 @@
 <script src="${basePath}/js/jquery/1.11.3/jquery.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="${basePath}/js/bootstrap/3.3.5/bootstrap.min.js"></script>
+<%--layui--%>
+<link href="${basePath}/plugins/layui/css/layui.css" rel="stylesheet">
+<script src="${basePath}/plugins/layui/layui.js"></script>
 
 <%--bootstrap-table--%>
 <link href="${basePath}/css/table/bootstrap-table.min.css" rel="stylesheet">
 <script src="${basePath}/js/table/bootstrap-table.min.js"></script>
 <script src="${basePath}/js/table/bootstrap-table-zh-CN.min.js"></script>
 
-<%--layui--%>
-<link href="${basePath}/plugins/layui/css/layui.css" rel="stylesheet">
-<script src="${basePath}/plugins/layui/layui.js"></script>
 <link href="${basePath}/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <%--animate--%>
 <link href="${basePath}/plugins/animate/animate.min.css" rel="stylesheet">
-
 <script src="${basePath}/js/api/Config.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
+
 <script>
 
     window.basePath = "${basePath}";
