@@ -12,10 +12,12 @@ public class Commons {
     public static final String DATA_NOTFOUND_MSG = "数据不存在";
     public static final String CONFIG_PUBLISHED_MSG = "配置已经发布过了";
     public static final String SERVICE_ISEMPTY_MSG = "服务名不能为空";
+    public static final String SERVICE_ISEXISTS_MSG = "此服务已经存在配置";
     public static final String SERVICE_FORMAT_EROR_MSG = "服务名格式有误";
     public static final String SAVE_SUCCESS_MSG = "保存配置成功";
-    public static final String EDITED_PUBLISH_SUCCESS_MSG = "配置保存并发布成功";
+    public static final String LOADED_DATA = "数据载入成功";
     public static final String DEL_SUCCESS_MSG = "删除配置成功";
+    public static final String DEL_ERROR_MSG = "删除配置失败";
     public static final String PUBLISH_SUCCESS_MSG = "发布配置成功";
     public static final String ROLLBACK_SUCCESS_MSG = "回滚配置成功";
     public static final String ADD_WHITELIST_SUCCESS_MSG = "白名单添加成功";

@@ -16,7 +16,7 @@ module api {
             return `
                 <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加配置" : (type == c.edit ? "修改配置:" + biz : (type == c.view ? "配置详情:" + biz : ""))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加配置" : (type == c.edit ? "修改配置" : (type == c.view ? "配置详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
@@ -28,23 +28,18 @@ module api {
                         </div>
                     </div>
                 ` : ""} 
-                       ${
-                type != c.add ? `
-                <div class="form-group">
+               
+               <!-- <div class="form-group">
                         <label class="col-sm-2 control-label">版本号:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" value="${data.version}"/>
+                            <input type="text" class="form-control" value=""/>
                         </div>
-                    </div>
-                ` : ""
-                }
+                    </div>-->
+               
                     <div class="form-group">${
                 `
                     <label class="col-sm-2 control-label">${type == c.add ? "服务名(全限定名):" : "服务名:"}</label>
                         <div class="col-sm-9">
-                          
-                        <!--<select class="form-control" id="services-sel">
-                            </select>-->
                             <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" id="service-name" value="${type != c.add ? data.serviceName : ""}"/>
                    
                         </div>`
@@ -78,6 +73,13 @@ module api {
                             <textarea ${type == c.view ? "disabled" : ""} id="freq-config-area" class="form-control" rows="7">${type != c.add ? data.freqConfig : ""}</textarea>
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">备注:</label>
+                        <div class="col-sm-9">
+                            <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="7">${type != c.add ? data.remark : ""}</textarea>
+                        </div>
+                    </div>
                     ${type == c.add ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveconfig()">保存配置</button>
@@ -86,11 +88,30 @@ module api {
                     ` : (type == c.edit ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedConfig(data.id)">保存修改</button>
-                    <button type="button" class="btn btn-danger" onclick="editedAndPublish(data.id)">修改并发布</button>
                     </span>
                     ` : "")}
                 </div>
             `;
+        }
+
+        /**
+         * 发布历史
+         * @param serviceName
+         * @returns {string}
+         */
+        public exportPublishHistoryContext(serviceName) {
+            // html
+            return `
+            <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">发布历史<small>${serviceName}</small></p>
+                    </div>
+                </div>
+                
+              <div class="list-group" id="publishHistory" style="margin-top: 81px;">
+                  
+                </div>
+            `
         }
 
         // 初始化服务信息
@@ -109,10 +130,11 @@ module api {
         //表格操作模版
         public exportTableActionContext(id: string, row: any) {
             return `<span class="link-button-table">
-            ${row.status != 3 ? `<a href="javascript:void(0)" onclick="publishConfig(${id})">发布</a>` : ""}
-            <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'edit')">修改</a>
-            <a href="javascript:void(0)"  onclick="viewHistory(${id})">历史</a>
-            <a href="javascript:void(0)"  onclick="viewOrEditByID(${id},'view')">详情</a>
+            ${row.status != 3 ? `<a href="javascript:void(0)" title="发布" onclick="publishConfig(${id})"><span class="glyphicon glyphicon-send"></span></a>` : ""}
+            <a href="javascript:void(0)" title="修改"  onclick="viewOrEditByID(${id},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="发布历史"  onclick="viewHistory(${id},'${row.serviceName}')"><span class="glyphicon glyphicon-time"></span></a>
+            <a href="javascript:void(0)" title="详情"  onclick="viewOrEditByID(${id},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
+            <a href="javascript:void(0)" title="删除"  onclick="delConfig(${id})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`
         }
 

@@ -1,6 +1,6 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.CommonRepose;
+import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.openapi.utils.Constants;
 import com.github.dapeng.util.ZkUtil;
@@ -34,12 +34,12 @@ public class WhiteListRestController {
         Optional<List<String>> children = ZkUtil
                 .getCurrInstance()
                 .getNodeChildren(Constants.SERVICE_WITHELIST_PATH);
-        if (children.isPresent()){
+        if (children.isPresent()) {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, children.get()));
-        }else {
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, children.get()));
+        } else {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, new ArrayList<>()));
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG, new ArrayList<>()));
         }
     }
 
@@ -52,16 +52,16 @@ public class WhiteListRestController {
     public ResponseEntity<?> addWhiteItem(String service) {
         if (service.isEmpty()) {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.SERVICE_ISEMPTY_MSG));
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SERVICE_ISEMPTY_MSG));
         } else if (!service.contains(".")) {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.SERVICE_FORMAT_EROR_MSG));
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SERVICE_FORMAT_EROR_MSG));
         }
         String[] services = service.split("\n|\r|\r\n");
         for (int i = 0; i < services.length; i++) {
             ZkUtil.getCurrInstance().createNode(Constants.SERVICE_WITHELIST_PATH + "/" + services[i], false);
         }
         return ResponseEntity
-                .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.ADD_WHITELIST_SUCCESS_MSG));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.ADD_WHITELIST_SUCCESS_MSG));
     }
 }
