@@ -28,6 +28,8 @@ public class ConfigInfoDto {
      */
     private String freqConfig = "";
 
+    private String remark = "";
+
     public String getServiceName() {
         return serviceName;
     }
@@ -66,5 +68,13 @@ public class ConfigInfoDto {
 
     public void setFreqConfig(String freqConfig) {
         this.freqConfig = freqConfig;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

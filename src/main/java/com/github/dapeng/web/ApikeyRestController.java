@@ -1,6 +1,6 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.CommonRepose;
+import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,6 @@ public class ApikeyRestController {
 
         List datas = new ArrayList();
         return ResponseEntity
-                .ok(CommonRepose.of(Commons.SUCCESS_CODE, datas));
+                .ok(Resp.of(Commons.SUCCESS_CODE,Commons.LOADED_DATA, datas));
     }
 }
