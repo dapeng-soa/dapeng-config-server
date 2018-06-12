@@ -212,9 +212,21 @@ processHistoryData = function (data) {
 
     var historyHtml = "";
     for (var i = 0; i < data.length; i++) {
-        historyHtml += '<a href="#" class="list-group-item">' + data[i].version + '</a>'
+
+        historyHtml += '<div class="layui-colla-item">';
+        historyHtml += '<h2 class="layui-colla-title" onclick="toggleBlock(this)">v-' + data[i].version + '</h2>';
+        historyHtml += '<div class="layui-colla-content">' +
+            '<h4>超时配置:<h4/>' +
+            '<pre>' + data[i].timeoutConfig + '<pre/>' +
+            '<h4>负载均衡:<h4/>' +
+            '<pre>' + data[i].loadbalanceConfig + '<pre/>' +
+            '<h4>路由配置:<h4/>' +
+            '<pre>' + data[i].routerConfig + '<pre/>' +
+            '<h4>限流配置:<h4/>' +
+            '<pre>' + data[i].freqConfig + '<pre/>' +
+            '</div>';
+        historyHtml += '</div>'
     }
-    console.log(historyHtml);
     $("#publishHistory").html(historyHtml);
 };
 
@@ -240,12 +252,26 @@ publishConfig = function (id) {
 viewOrEditByID = function (id, viewOrEdit) {
     var url = basePath + "/api/config/" + id;
     $.get(url, function (res) {
-        var config = new api.Config();
         // 导出弹窗内容模版
         var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
-        // 初始化弹窗
-        initModelContext(context, viewOrEdit === "view" ? refresh : "");
+        initModelContext(context, viewOrEdit === "view" ? refresh : function () {});
     }, "json")
+};
+
+/**
+ * 同步服务配置
+ * @param service
+ */
+viewRealConfig = function (service) {
+    var url = basePath + "/api/config/sysRealConfig/";
+    $.get(url, {
+        serviceName: service
+    }, function (res) {
+        var realdata = res.context;
+        realdata.serviceName = service;
+        var context = config.exportAddConfigContext("real",biz ="", data = realdata);
+        initModelContext(context, function () {});
+    }, "json");
 };
 
 /**
@@ -312,4 +338,8 @@ openPublishHistory = function (serviceName) {
     var context = config.exportPublishHistoryContext(serviceName);
     // 初始化弹窗
     initModelContext(context, refresh);
+};
+
+toggleBlock = function (a) {
+    $(a).next(".layui-colla-content").toggle();
 };
