@@ -310,3 +310,13 @@ textarea {
     margin: 50px 0 0 0;
 }
 
+.advance-format-item{
+
+}
+.advance-format-title{
+    cursor: pointer;
+}
+.advance-format-content{
+    display: none;
+}
+

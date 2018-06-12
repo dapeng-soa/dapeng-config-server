@@ -215,7 +215,7 @@ processHistoryData = function (data) {
 
         historyHtml += '<div class="layui-colla-item">';
         historyHtml += '<h2 class="layui-colla-title" onclick="toggleBlock(this)">v-' + data[i].version + '</h2>';
-        historyHtml += '<div class="layui-colla-content">' +
+        historyHtml += '<div class="advance-format-content">' +
             '<h4>超时配置:<h4/>' +
             '<pre>' + data[i].timeoutConfig + '<pre/>' +
             '<h4>负载均衡:<h4/>' +
@@ -341,5 +341,5 @@ openPublishHistory = function (serviceName) {
 };
 
 toggleBlock = function (a) {
-    $(a).next(".layui-colla-content").toggle();
+    $(a).next(".advance-format-content").toggle();
 };
