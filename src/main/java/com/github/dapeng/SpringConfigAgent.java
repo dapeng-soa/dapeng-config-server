@@ -1,4 +1,4 @@
-package com.github.dapeng.config;
+package com.github.dapeng;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
