@@ -242,7 +242,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
             return `
             <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加ApiKey" : (type == c.edit ? "修改ApiKey:" + biz : (type == c.view ? "ApiKey详情:" + biz : ""))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加ApiKey" : (type == c.edit ? "修改ApiKey": (type == c.view ? "ApiKey详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
@@ -255,31 +255,31 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                <div class="form-group">
                         <label class="col-sm-2 control-label">ApiKey:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} id="timeout-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.timeoutConfig : ""}</input>
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="authApikey" class="col-sm-2 form-control">${type != c.add ? data.apiKey : ""}</input>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">密码:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} id="loadbalance-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? data.loadbalanceConfig : ""}</input>
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="authPassWord" class="col-sm-2 form-control">${type != c.add ? data.password : ""}</input>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">业务:</label>
                         <div class="col-sm-9">
-                            <input type="text"  ${type == c.view ? "disabled" : ""} id="router-config-area" class="form-control" >${type != c.add ? data.routerConfig : ""}</input>
+                            <input type="text"  ${type == c.view ? "disabled" : ""} id="authBiz" class="form-control" >${type != c.add ? data.biz : ""}</input>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">ip规则:</label>
                         <div class="col-sm-9">
-                            <textarea ${type == c.view ? "disabled" : ""} id="router-config-area" class="form-control" rows="5">${type != c.add ? data.routerConfig : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id=authIps class="form-control" rows="5">${type != c.add ? data.ips : ""}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">备注:</label>
                         <div class="col-sm-9">
-                            <textarea ${type == c.view ? "disabled" : ""} id="router-config-area" class="form-control" rows="5">${type != c.add ? data.routerConfig : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id="notes" class="form-control" rows="5">${type != c.add ? data.notes : ""}</textarea>
                         </div>
                     </div>
                     ${type == c.add ? `
@@ -290,6 +290,15 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                     </div>
                     
             `
+        }
+
+        //表格操作模版
+        public exportApiKeyTableActionContext(id: string, row: any) {
+            return `<span class="link-button-table">
+            <a href="javascript:void(0)" title="修改"  onclick="viewApiKeyOrEditByID(${id},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <!--<a href="javascript:void(0)" title="详情"  onclick="viewApiKeyOrEditByID(${id},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>-->
+            <a href="javascript:void(0)" title="禁用"  onclick="delApiKey(${id})"><span class="glyphicon glyphicon-remove"></span></a>
+            </span>`
         }
 
     }
