@@ -4,6 +4,7 @@ import com.github.dapeng.entity.ConfigPublishHistory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * Create by 2018/6/11 18:02
  * email :yq1724555319@gmail.com
  */
-
+@Repository
 public interface ConfigPublishRepository extends JpaRepository<ConfigPublishHistory, Long> {
 
 
