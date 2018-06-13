@@ -11,7 +11,7 @@ InitWhiteList = function () {
     var whiteContext = "";
     $.get(url, function (res) {
         for (var i = 0; i < res.context.length; i++) {
-            whiteContext += '<li class="list-group-item">' + res.context[i] + '</li>'
+            whiteContext += '<li ondblclick=delWhiteItem("' + res.context[i] + '") style="cursor: pointer" class="list-group-item">' + res.context[i] + '</li>'
         }
         $("#white-list-group").html(whiteContext);
     }, "json")
@@ -31,3 +31,25 @@ addWhiteItem = function () {
         $("#white-list-text").val("");
     }, "json")
 };
+
+/**
+ * 删除白名单
+ */
+delWhiteItem = function (service) {
+    bodyAbs();
+    layer.confirm('删除白名单\n[' + service + ']?', {
+        btn: ['确认', '取消']
+    }, function () {
+        url = basePath + "/api/white/del";
+        $.post(url, {
+            path: service
+        }, function (res) {
+            layer.msg(res.msg);
+            rmBodyAbs();
+        }, "json")
+    }, function () {
+        layer.msg("未做任何变更");
+        rmBodyAbs();
+    });
+};
+

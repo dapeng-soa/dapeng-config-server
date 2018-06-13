@@ -147,13 +147,16 @@ saveApiKey = function () {
  * 清空配置
  */
 clearApiKeyInput = function () {
+    bodyAbs();
     layer.confirm('清空已填写配置？', {
         btn: ['确认', '取消']
     }, function () {
         $("textarea.form-control").val("");
         layer.msg("已清空");
+        rmBodyAbs();
     }, function () {
         layer.msg("取消清空");
+        rmBodyAbs();
     });
 };
 

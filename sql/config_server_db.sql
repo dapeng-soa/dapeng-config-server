@@ -80,4 +80,19 @@ CREATE TABLE `users` (
   UNIQUE KEY `idx_username` (`username`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `white_list_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `serveice` varchar(255) NOT NULL DEFAULT '' COMMENT '服务名',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `white_list_history` (
+  `id` int(11) NOT NULL,
+  `service` varchar(255) NOT NULL DEFAULT '' COMMENT '服务',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '添加时间',
+  `created_by` int(11) NOT NULL DEFAULT 0 COMMENT '添加人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 SET FOREIGN_KEY_CHECKS = 1;

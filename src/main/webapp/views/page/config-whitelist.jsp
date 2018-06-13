@@ -37,7 +37,9 @@
                         </div>
                     </div>
                     <div class="panel-body" >
+                        <code>tip:双击单项白名单以删除!</code>
                         <ul class="list-group"  id="white-list-group">
+
                         </ul>
                     </div>
                 </div>
