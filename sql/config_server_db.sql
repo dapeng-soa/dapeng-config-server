@@ -1,7 +1,8 @@
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
+CREATE SCHEMA config_server_db;
+USE config_server_db;
 -- ----------------------------
 --  Table structure for `api_key_info`
 -- ----------------------------
