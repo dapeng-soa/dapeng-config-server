@@ -28,7 +28,7 @@
 
         <div class="row" style="margin-top: 40px" >
 
-            <div class="col-xs-5">
+            <div class="col-lg-5 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">白名单列表</h3>
@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="col-xs-7">
+            <div class="col-lg-7 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">新增白名单</h3>
