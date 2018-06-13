@@ -45,6 +45,7 @@ delWhiteItem = function (service) {
             path: service
         }, function (res) {
             layer.msg(res.msg);
+            InitWhiteList();
             rmBodyAbs();
         }, "json")
     }, function () {
