@@ -2,6 +2,7 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
+import com.github.dapeng.datasource.DataSource;
 import com.github.dapeng.dto.ApiKeyInfoDto;
 import com.github.dapeng.entity.ApiKeyInfo;
 import com.github.dapeng.repository.ApiKeyInfoRepository;
@@ -10,9 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
+import static com.github.dapeng.common.Commons.EXTRA_DATASOURCE;
 
 /**
  * @author with struy.
@@ -31,6 +31,7 @@ public class ApikeyRestController {
      * @return
      */
     @GetMapping(value = "/authkeys")
+    @DataSource(EXTRA_DATASOURCE)
     public ResponseEntity<?> getApiKeys() {
         List<ApiKeyInfo> apiKeyInfos = repository.findAll();
         return ResponseEntity
@@ -43,6 +44,7 @@ public class ApikeyRestController {
      * @return
      */
     @PostMapping(value = "/apikey/add")
+    @DataSource(EXTRA_DATASOURCE)
     public ResponseEntity<?> addKey(@RequestBody ApiKeyInfoDto dto) {
 
         // 前置判断
