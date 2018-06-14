@@ -5,15 +5,15 @@ var config1 = new api.Config();
 
 function InitApiTable() {
     //记录页面bootstrap-table全局变量$table，方便应用
-    var queryUrl = basePath + '/api/apikey';
-    var rows = 10;
+    var queryUrl = basePath + '/api/authkeys';
+    var rows = 20;
     $table = $('#apikey-table').bootstrapTable({
         url: queryUrl,                      //请求后台的URL（*）
         method: 'GET',                      //请求方式（*）
         responseHandler: function (res) {     //格式化返回数据
             return {
-                total: res.context.totalElements,
-                rows: res.context.content
+                total: res.context.length,
+                rows: res.context
             };
         },
         //toolbar: '#toolbar',              //工具按钮用哪个容器
@@ -57,7 +57,7 @@ function InitApiTable() {
             formatter: numberFormatter
 
         }, {
-            field: 'ApiKey',
+            field: 'apiKey',
             title: 'ApiKey',
             sortable: true
         }, {
@@ -89,7 +89,8 @@ function InitApiTable() {
             title: '操作',
             width: 160,
             align: 'center',
-            valign: 'middle'
+            valign: 'middle',
+            formatter: ApiActionFormatter
         }],
         onLoadSuccess: function () {
         },
@@ -104,6 +105,13 @@ function InitApiTable() {
     });
 }
 
+/**
+ * @return {string}
+ */
+ApiActionFormatter = function (value, row, index) {
+    return config1.exportApiKeyTableActionContext(value, row);
+};
+
 numberFormatter = function (value, row, index) {
     return index + 1;
 };
@@ -114,3 +122,66 @@ openAddApiKeyModle = function () {
     // 初始化弹窗
     initModelContext(context, refresh);
 };
+
+/**
+ * 保存
+ */
+saveApiKey = function () {
+    var url = basePath + "/api/apikey/add";
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify(processApiKeyData()),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            refresh();
+        }
+    });
+};
+
+/**
+ * 清空配置
+ */
+clearApiKeyInput = function () {
+    bodyAbs();
+    layer.confirm('清空已填写配置？', {
+        btn: ['确认', '取消']
+    }, function () {
+        $("textarea.form-control").val("");
+        layer.msg("已清空");
+        rmBodyAbs();
+    }, function () {
+        layer.msg("取消清空");
+        rmBodyAbs();
+    });
+};
+
+processApiKeyData = function () {
+    var authApikey = $("#authApikey").val();
+    var authPassWord = $("#authPassWord").val();
+    var authBiz = $("#authBiz").val();
+    var authIps = $("#authIps").val();
+    var notes = $("#notes").val();
+
+    return {
+        apiKey: authApikey,
+        password: authPassWord,
+        biz: authBiz,
+        ips: authIps,
+        notes: notes
+    }
+};
+
+viewApiKeyOrEditByID = function () {
+    layer.msg("暂无权限")
+};
+
+delApiKey = function () {
+    layer.msg("暂无权限")
+};
+
+

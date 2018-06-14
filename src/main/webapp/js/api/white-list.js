@@ -9,12 +9,12 @@ $(document).ready(function () {
 InitWhiteList = function () {
     var url = basePath + "/api/sysWhiteList";
     var whiteContext = "";
-    $.get(url,function (res) {
-        for(var i = 0;i<res.context.length;i++){
-            whiteContext += '<li class="list-group-item">'+res.context[i]+'</li>'
+    $.get(url, function (res) {
+        for (var i = 0; i < res.context.length; i++) {
+            whiteContext += '<li ondblclick=delWhiteItem("' + res.context[i] + '") style="cursor: pointer" class="list-group-item">' + res.context[i] + '</li>'
         }
         $("#white-list-group").html(whiteContext);
-    },"json")
+    }, "json")
 };
 
 /**
@@ -22,12 +22,35 @@ InitWhiteList = function () {
  */
 addWhiteItem = function () {
     var text = $("#white-list-text").val();
-    var url = basePath+"/api/white/add";
-    $.post(url,{
-        service:text
-    },function (res) {
-        layer.msg(res.context);
+    var url = basePath + "/api/white/add";
+    $.post(url, {
+        service: text
+    }, function (res) {
+        layer.msg(res.msg);
         InitWhiteList();
         $("#white-list-text").val("");
-    },"json")
+    }, "json")
 };
+
+/**
+ * 删除白名单
+ */
+delWhiteItem = function (service) {
+    bodyAbs();
+    layer.confirm('删除白名单\n[' + service + ']?', {
+        btn: ['确认', '取消']
+    }, function () {
+        url = basePath + "/api/white/del";
+        $.post(url, {
+            path: service
+        }, function (res) {
+            layer.msg(res.msg);
+            InitWhiteList();
+            rmBodyAbs();
+        }, "json")
+    }, function () {
+        layer.msg("未做任何变更");
+        rmBodyAbs();
+    });
+};
+

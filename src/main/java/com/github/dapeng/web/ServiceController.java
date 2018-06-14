@@ -1,6 +1,6 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.CommonRepose;
+import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.core.metadata.Service;
 import com.github.dapeng.openapi.cache.ServiceCache;
@@ -25,15 +25,16 @@ import java.util.Map;
 public class ServiceController {
     /**
      * 获取服务缓存列表
+     *
      * @return
      */
     @GetMapping(value = "/services")
-    public ResponseEntity<?> serviceList(){
+    public ResponseEntity<?> serviceList() {
         Map<String, Service> services = ServiceCache.getServices();
         List<String> list = new ArrayList(16);
         services.forEach((k, v) -> {
             list.add(v.namespace + "." + v.name);
         });
-        return ResponseEntity.ok(CommonRepose.of(Commons.SUCCESS_CODE,list));
+        return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, list));
     }
 }

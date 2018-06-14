@@ -60,9 +60,6 @@ function InitMainTable() {
             title: '服务名',
             sortable: true
         }, {
-            field: 'version',
-            title: '版本号'
-        }, {
             field: 'status',
             title: '状态',
             sortable: true,
@@ -70,13 +67,8 @@ function InitMainTable() {
             valign: 'middle',
             formatter: statusFormatter
         }, {
-            field: 'publishedBy',
-            title: '发布人',
-            //formatter: linkFormatter
-        }, {
-            field: 'publishedAt',
-            title: '发布时间',
-            sortable: true
+            field: 'remark',
+            title: '备注'
         }, {
             field: 'createdAt',
             title: '添加时间',
@@ -118,9 +110,9 @@ statusFormatter = function (value) {
         case 0:
             return '<span class="label label-danger">无效</span>';
         case 1:
-            return '<span class="label label-default">新建</span>';
+            return '<span class="label label-default">新建>待审核</span>';
         case 2:
-            return '<span class="label label-primary">审核通过</span>';
+            return '<span class="label label-primary">已审>待发布</span>';
         case 3:
             return '<span class="label label-success">已发布</span>';
         default:
@@ -133,45 +125,6 @@ actionFormatter = function (id, row) {
     return config.exportTableActionContext(id, row);
 };
 
-// 发布
-publishConfig = function (id) {
-    var url = basePath + "/api/config/publish/" + id;
-    $.post(url, function (res) {
-        layer.msg(res.context);
-        refresh();
-    }, "json")
-};
-
-// 详情
-viewOrEditByID = function (id, viewOrEdit) {
-    var url = basePath + "/api/config/" + id;
-    $.get(url, function (res) {
-        var config = new api.Config();
-        // 导出弹窗内容模版
-        var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
-        // 初始化弹窗
-        initModelContext(context, viewOrEdit==="view"?refresh:"");
-    }, "json")
-};
-
-// 回滚
-rollback = function (id) {
-    var url = basePath + "/api/config/rollback/" + id;
-    $.post(url, function (res) {
-        layer.msg(res.context);
-        refresh();
-    }, "json")
-};
-
-// 打开新增并添加关闭回调
-addCinfig = function () {
-    // 导出弹窗内容模版
-    var context = config.exportAddConfigContext("add");
-    // 初始化弹窗
-    initModelContext(context, refresh);
-    // 初始化服务信息
-    //config.initServices();
-};
 
 /**
  * 保存配置
@@ -186,23 +139,171 @@ saveconfig = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.context);
-        refresh();
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            refresh();
+        }
     });
 };
 
+/**
+ * 删除配置
+ * @param id
+ */
+delConfig = function (id) {
+
+    layer.confirm('删除此当前配置？', {
+        btn: ['删除', '取消']
+    }, function () {
+        var url = basePath + "/api/config/delete/" + id;
+        var settings = {
+            type: "post",
+            url: url,
+            dataType: "json",
+            contentType: "application/json"
+        };
+        $.ajax(settings).done(function (res) {
+            layer.msg(res.msg);
+            if (res.code === SUCCESS_CODE) {
+                refresh();
+            }
+        });
+    }, function () {
+        layer.msg("未做任何变更");
+    });
+};
+
+/**
+ * 修改配置
+ * @param id
+ */
+editedConfig = function (id) {
+    var url = basePath + "/api/config/edit/" + id;
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify(processConfigData()),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            refresh();
+        }
+    });
+};
+/**
+ * 发布历史
+ * @param id
+ */
+viewHistory = function (id, serviceName) {
+    var url = basePath + "/api/config/publish-history/" + id;
+    $.get(url, function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            openPublishHistory(serviceName);
+            processHistoryData(res.context);
+        }
+    }, "json")
+};
+
+processHistoryData = function (data) {
+
+    var historyHtml = "";
+    for (var i = 0; i < data.length; i++) {
+
+        historyHtml += '<div class="layui-colla-item">';
+        historyHtml += '<h2 class="layui-colla-title" onclick="toggleBlock(this)">v-' + data[i].version + '</h2>';
+        historyHtml += '<div class="advance-format-content">' +
+            '<h4>超时配置:<h4/>' +
+            '<pre>' + data[i].timeoutConfig + '<pre/>' +
+            '<h4>负载均衡:<h4/>' +
+            '<pre>' + data[i].loadbalanceConfig + '<pre/>' +
+            '<h4>路由配置:<h4/>' +
+            '<pre>' + data[i].routerConfig + '<pre/>' +
+            '<h4>限流配置:<h4/>' +
+            '<pre>' + data[i].freqConfig + '<pre/>' +
+            '</div>';
+        historyHtml += '</div>'
+    }
+    $("#publishHistory").html(historyHtml);
+};
+
+/**
+ * 发布配置
+ * @param id
+ */
+publishConfig = function (id) {
+    var url = basePath + "/api/config/publish/" + id;
+    $.post(url, function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            refresh();
+        }
+    }, "json")
+};
+
+/**
+ * 配置详情
+ * @param id
+ * @param viewOrEdit
+ */
+viewOrEditByID = function (id, viewOrEdit) {
+    var url = basePath + "/api/config/" + id;
+    $.get(url, function (res) {
+        // 导出弹窗内容模版
+        var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
+        initModelContext(context, viewOrEdit === "view" ? refresh : function () {});
+    }, "json")
+};
+
+/**
+ * 同步服务配置
+ * @param service
+ */
+viewRealConfig = function (service) {
+    var url = basePath + "/api/config/sysRealConfig/";
+    $.get(url, {
+        serviceName: service
+    }, function (res) {
+        var realdata = res.context;
+        realdata.serviceName = service;
+        var context = config.exportAddConfigContext("real",biz ="", data = realdata);
+        initModelContext(context, function () {});
+    }, "json");
+};
+
+/**
+ * 回滚配置
+ * @param id
+ */
+rollback = function (id) {
+    var url = basePath + "/api/config/rollback/" + id;
+    $.post(url, function (res) {
+        layer.msg(res.msg);
+        refresh();
+    }, "json")
+};
+
+/**
+ * 获取配置关键信息
+ * @returns
+ */
 processConfigData = function () {
     var serviceName = $("#service-name").val();
     var timeoutConfig = $("#timeout-config-area").val();
     var loadbalanceConfig = $("#loadbalance-config-area").val();
     var routerConfig = $("#router-config-area").val();
     var freqConfig = $("#freq-config-area").val();
+    var remark = $("#remark-area").val();
     return {
         serviceName: serviceName,
         timeoutConfig: timeoutConfig,
         loadbalanceConfig: loadbalanceConfig,
         routerConfig: routerConfig,
-        freqConfig: freqConfig
+        freqConfig: freqConfig,
+        remark: remark
     };
 };
 
@@ -219,41 +320,26 @@ clearConfigInput = function () {
         layer.msg("取消清空");
     });
 };
+
 /**
- *配置修改后的保存
- * @param id
+ * 打开添加配置弹窗
  */
-editedConfig = function (id) {
-    var url = basePath +"/api/config/edit/"+id;
-    var settings = {
-        type: "post",
-        url: url,
-        data: JSON.stringify(processConfigData()),
-        dataType: "json",
-        contentType: "application/json"
-    };
-    $.ajax(settings).done(function (res) {
-        layer.msg(res.context);
-        refresh();
-    });
+openAddConfig = function () {
+    // 导出弹窗内容模版
+    var context = config.exportAddConfigContext("add");
+    // 初始化弹窗
+    initModelContext(context, refresh);
 };
 
-/**
- * 保存修改并发布
- * @param id
- */
-editedAndPublish = function (id) {
 
-    var url = basePath +"/api/config/editAndPublish/"+id;
-    var settings = {
-        type: "post",
-        url: url,
-        data: JSON.stringify(processConfigData()),
-        dataType: "json",
-        contentType: "application/json"
-    };
-    $.ajax(settings).done(function (res) {
-        layer.msg(res.context);
-        refresh();
-    });
+openPublishHistory = function (serviceName) {
+
+    // 导出弹窗内容模版
+    var context = config.exportPublishHistoryContext(serviceName);
+    // 初始化弹窗
+    initModelContext(context, refresh);
+};
+
+toggleBlock = function (a) {
+    $(a).next(".advance-format-content").toggle();
 };

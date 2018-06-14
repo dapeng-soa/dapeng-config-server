@@ -1,14 +1,14 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.CommonRepose;
+import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.openapi.utils.Constants;
 import com.github.dapeng.util.ZkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class WhiteListRestController {
 
+    private static Logger LOGGER = LoggerFactory.getLogger(WhiteListRestController.class);
 
     /**
      * 同步线上白名单
@@ -34,12 +35,12 @@ public class WhiteListRestController {
         Optional<List<String>> children = ZkUtil
                 .getCurrInstance()
                 .getNodeChildren(Constants.SERVICE_WITHELIST_PATH);
-        if (children.isPresent()){
+        if (children.isPresent()) {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, children.get()));
-        }else {
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, children.get()));
+        } else {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, new ArrayList<>()));
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG, new ArrayList<>()));
         }
     }
 
@@ -48,20 +49,39 @@ public class WhiteListRestController {
      *
      * @return
      */
-    @RequestMapping(value = "/white/add")
+    @PostMapping(value = "/white/add")
     public ResponseEntity<?> addWhiteItem(String service) {
         if (service.isEmpty()) {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.SERVICE_ISEMPTY_MSG));
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SERVICE_ISEMPTY_MSG));
         } else if (!service.contains(".")) {
             return ResponseEntity
-                    .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.SERVICE_FORMAT_EROR_MSG));
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SERVICE_FORMAT_EROR_MSG));
         }
         String[] services = service.split("\n|\r|\r\n");
         for (int i = 0; i < services.length; i++) {
             ZkUtil.getCurrInstance().createNode(Constants.SERVICE_WITHELIST_PATH + "/" + services[i], false);
         }
         return ResponseEntity
-                .ok(CommonRepose.of(Commons.SUCCESS_CODE, Commons.ADD_WHITELIST_SUCCESS_MSG));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.ADD_WHITELIST_SUCCESS_MSG));
+    }
+
+    /**
+     * 删除白名单|单个
+     *
+     * @param path
+     * @return
+     */
+    @PostMapping(value = "/white/del")
+    public ResponseEntity<?> delWhiteItem(@RequestParam String path) {
+        try {
+            ZkUtil.getCurrInstance().delNode(Constants.SERVICE_WITHELIST_PATH + "/" + path);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
+        } catch (Exception e) {
+            LOGGER.error("删除白名单出错::", e);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.DEL_ERROR_MSG));
+        }
     }
 }

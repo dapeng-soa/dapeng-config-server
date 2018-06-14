@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!--参数配置-->
     <context:property-placeholder location="classpath:config_server.properties"/>
@@ -12,13 +12,22 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <!-- 数据库和事务配置 -->
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <!-- 默认数据源，配置中心数据源 -->
+    <bean id="mainDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <!-- 基本属性 url、user、password -->
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${DB_CONFIG_SERVER_URL}"/>
         <property name="username" value="${DB_CONFIG_SERVER_USER}"/>
-        <property name="password" value="${DB_CONFIG_SERVER__PWD}"/>
+        <property name="password" value="${DB_CONFIG_SERVER_PASSWD}"/>
+    </bean>
+
+    <!-- 其他数据源 -->
+    <bean id="extraDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <!-- 基本属性 url、user、password -->
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="${DB_ADMIN_URL}"/>
+        <property name="username" value="${DB_ADMIN_USER}"/>
+        <property name="password" value="${DB_ADMIN_PASSWD}"/>
     </bean>
 
     <!--配置 EntityManagerFactory -->
@@ -36,9 +45,9 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <!--develop-->
-                <!--<prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>-->
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
             </props>
 
         </property>
@@ -47,6 +56,18 @@
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
+
+    <!-- 配置数据源路由规则，使用动态数据源 -->
+    <bean id="dataSource" class="com.github.dapeng.datasource.CustomerRoutingDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="mainSource" value-ref="mainDataSource"/>
+                <entry key="extraSource" value-ref="extraDataSource"/>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="mainDataSource"/>
+    </bean>
+
     <!--配置支持基于注解事务配置  -->
     <tx:annotation-driven/>
 </beans>

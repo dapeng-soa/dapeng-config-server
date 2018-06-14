@@ -71,8 +71,10 @@
 }
 
 pre {
-    padding: 0px !important;
+    padding: 0 !important;
 }
+
+
 
 .sidebar-left {
     z-index: 1500;
@@ -131,9 +133,9 @@ i.fa {
 #table{
     font-size: 14px;
 }
-/*表格内样式*/
+/*================================表格操作图标*/
 .link-button-table > a {
-    padding: 0 0;
+    padding: 0 4px;
     color: #337ab7;
     text-decoration: none;
 }
@@ -153,7 +155,7 @@ i.fa {
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
     position: fixed;
-    z-index: 1333;
+    z-index: 9999;
     overflow-x: hidden;
     overflow-y: hidden;
     display: none;
@@ -170,7 +172,7 @@ body.model-opened {
 
 #struct-model .struct-model-container {
     width: 70%;
-    height: 72%;
+    height: 80%;
     max-width: 1200px;
     background: #fff;
     position: relative;
@@ -308,5 +310,19 @@ textarea {
 
 .container-right.closed{
     margin: 50px 0 0 0;
+}
+
+.advance-format-item{
+
+}
+.advance-format-title{
+    cursor: pointer;
+}
+.advance-format-content{
+    display: none;
+}
+
+#apikey-table{
+    font-size: 14px;
 }
 
