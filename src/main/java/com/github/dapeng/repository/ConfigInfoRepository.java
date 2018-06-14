@@ -18,17 +18,17 @@ import java.util.List;
  */
 
 @Repository
-public interface ConfigInfoRepository extends JpaRepository<ConfigInfo, Long> ,JpaSpecificationExecutor<ConfigInfo> {
+public interface ConfigInfoRepository extends JpaRepository<ConfigInfo, Long>, JpaSpecificationExecutor<ConfigInfo> {
 
     /**
      * 模糊查找配置，方法名，版本号
      *
      * @param serviceName
-     * @param version
+     * @param status      状态
      * @param pageable
      * @return
      */
-    Page<ConfigInfo> findAllByServiceNameLikeOrVersionLike(String serviceName, String version, Pageable pageable);
+    Page<ConfigInfo> findAllByStatusIsNotAndServiceNameLike(int status, String serviceName, Pageable pageable);
 
     /**
      * 通过配置名称查找
@@ -36,4 +36,13 @@ public interface ConfigInfoRepository extends JpaRepository<ConfigInfo, Long> ,J
      * @return
      */
     List<ConfigInfo> findByServiceName(String serviceName);
+
+    /**
+     * 检查指定服务配置是否已经存在
+     *
+     * @param serviceName
+     * @param notIs       排除某个状态
+     * @return
+     */
+    boolean existsConfigInfoByServiceNameAndStatusIsNot(String serviceName, int notIs);
 }

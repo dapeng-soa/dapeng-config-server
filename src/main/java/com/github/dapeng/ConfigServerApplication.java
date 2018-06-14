@@ -2,7 +2,9 @@ package com.github.dapeng;
 
 import com.github.dapeng.util.PropertiesUtil;
 import org.springframework.boot.Banner;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import java.util.List;
  * @author struy
  */
 @SpringBootApplication
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class ConfigServerApplication {
 
 	public static void main(String[] args) {

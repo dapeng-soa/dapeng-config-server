@@ -28,15 +28,15 @@
 <script src="${basePath}/js/jquery/1.11.3/jquery.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="${basePath}/js/bootstrap/3.3.5/bootstrap.min.js"></script>
+<%--layui--%>
+<link href="${basePath}/plugins/layui/css/layui.css" rel="stylesheet">
+<script src="${basePath}/plugins/layui/layui.js"></script>
 
 <%--bootstrap-table--%>
 <link href="${basePath}/css/table/bootstrap-table.min.css" rel="stylesheet">
 <script src="${basePath}/js/table/bootstrap-table.min.js"></script>
 <script src="${basePath}/js/table/bootstrap-table-zh-CN.min.js"></script>
 
-<%--layui--%>
-<link href="${basePath}/plugins/layui/css/layui.css" rel="stylesheet">
-<script src="${basePath}/plugins/layui/layui.js"></script>
 <link href="${basePath}/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <%--animate--%>
 <link href="${basePath}/plugins/animate/animate.min.css" rel="stylesheet">
@@ -52,19 +52,20 @@
 
 <script src="${basePath}/js/api/Config.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
+
 <script>
 
     window.basePath = "${basePath}";
 
-    layui.use('element', function () {
+    layui.use('element', function(){
         var element = layui.element;
 
         //一些事件监听
-        element.on('nav(filter)', function (elem) {
+        element.on('nav(filter)', function(elem){
             console.log(elem); //得到当前点击的DOM对象
         });
 
-        element.on('collapse(filter)', function (data) {
+        element.on('collapse(filter)', function(data){
             console.log(data.show); //得到当前面板的展开状态，true或者false
             console.log(data.title); //得到当前点击面板的标题区域DOM对象
             console.log(data.content); //得到当前点击面板的内容区域DOM对象
@@ -73,11 +74,13 @@
 
     window.layer = {};
 
-    layui.use('layer', function () {
+    layui.use('layer', function(){
         window.layui = layui.layer;
     });
 
-    window.refresh = function () {
+    window.refresh = function(){
         window.location.reload();
     };
+    window.SUCCESS_CODE = 200;
+    window.ERROR_CODE = 4004;
 </script>
