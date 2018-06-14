@@ -6,7 +6,7 @@ package com.github.dapeng.common;
  * email :yq1724555319@gmail.com
  */
 
-public enum ConfigStatusEnum {
+public enum ConfigStatus {
     /**
      * 配置状态默认审核通过
      */
@@ -21,7 +21,7 @@ public enum ConfigStatusEnum {
     private int status;
     private String value;
 
-    ConfigStatusEnum(int status, String value) {
+    ConfigStatus(int status, String value) {
         this.status = status;
         this.value = value;
     }

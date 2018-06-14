@@ -24,5 +24,6 @@ public class Commons {
     public static final String ADD_WHITELIST_SUCCESS_MSG = "白名单添加成功";
     public static final int SUCCESS_CODE = 200;
     public static final int ERROR_CODE = 4004;
-
+    public static final String MAIN_DATASOURCE = "mainSource";
+    public static final String EXTRA_DATASOURCE = "extraSource";
 }

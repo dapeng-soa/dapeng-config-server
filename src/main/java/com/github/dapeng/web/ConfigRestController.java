@@ -19,7 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import com.github.dapeng.common.ConfigStatusEnum;
+import com.github.dapeng.common.ConfigStatus;
 import com.github.dapeng.common.Commons;
 import java.util.List;
 
@@ -54,14 +54,14 @@ public class ConfigRestController {
         try {
             checkGrammar(configInfoDto);
             boolean hasService = repository.existsConfigInfoByServiceNameAndStatusIsNot(
-                    configInfoDto.getServiceName(), ConfigStatusEnum.FAILURE.key());
+                    configInfoDto.getServiceName(), ConfigStatus.FAILURE.key());
             // 如果存在此服务的配置
             if (hasService) {
                 return ResponseEntity
                         .ok(Resp.of(Commons.ERROR_CODE, Commons.SERVICE_ISEXISTS_MSG));
             }
             // 状态应暂时默认为通过(后期添加审核流程)正常情况下应当是新建
-            saveNewConfig(configInfoDto, ConfigStatusEnum.PASS.key());
+            saveNewConfig(configInfoDto, ConfigStatus.PASS.key());
             return ResponseEntity
                     .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class ConfigRestController {
      */
     @GetMapping(value = "/config/exists/{serviceName}")
     public ResponseEntity<?> checkServiceExists(@PathVariable String serviceName) {
-        boolean serviceIsExits = repository.existsConfigInfoByServiceNameAndStatusIsNot(serviceName, ConfigStatusEnum.FAILURE.key());
+        boolean serviceIsExits = repository.existsConfigInfoByServiceNameAndStatusIsNot(serviceName, ConfigStatus.FAILURE.key());
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, serviceIsExits));
     }
@@ -99,7 +99,7 @@ public class ConfigRestController {
             if (null != info) {
                 // 失效
                 info.setUpdatedAt(DateUtil.now());
-                info.setStatus(ConfigStatusEnum.FAILURE.key());
+                info.setStatus(ConfigStatus.FAILURE.key());
                 return ResponseEntity
                         .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
             } else {
@@ -125,7 +125,7 @@ public class ConfigRestController {
         try {
             ConfigInfo info = repository.getOne(id);
             if (null != info) {
-                info.setStatus(ConfigStatusEnum.PASS.key());
+                info.setStatus(ConfigStatus.PASS.key());
                 info.setUpdatedBy(0);
                 info.setUpdatedAt(DateUtil.now());
                 info.setRemark(infoDto.getRemark());
@@ -182,7 +182,7 @@ public class ConfigRestController {
                         new Sort("desc".toUpperCase().equals(sortOrder.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
                                 null == sort ? "updatedAt" : sort));
 
-        Page<ConfigInfo> infos = repository.findAllByStatusIsNotAndServiceNameLike(ConfigStatusEnum.FAILURE.key(), '%' + keyword + '%', pageRequest);
+        Page<ConfigInfo> infos = repository.findAllByStatusIsNotAndServiceNameLike(ConfigStatus.FAILURE.key(), '%' + keyword + '%', pageRequest);
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, infos));
     }
@@ -253,16 +253,16 @@ public class ConfigRestController {
     private ResponseEntity<?> publish(Long id) {
         ConfigInfo config = repository.getOne(id);
         if (null != config) {
-            if (config.getStatus() == ConfigStatusEnum.PUBLISHED.key()) {
+            if (config.getStatus() == ConfigStatus.PUBLISHED.key()) {
                 return ResponseEntity
                         .ok(Resp.of(Commons.ERROR_CODE, Commons.CONFIG_PUBLISHED_MSG));
-            } else if (config.getStatus() == ConfigStatusEnum.FAILURE.key()) {
+            } else if (config.getStatus() == ConfigStatus.FAILURE.key()) {
                 return ResponseEntity
                         .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG));
             }
 
             // 修改当前状态
-            config.setStatus(ConfigStatusEnum.PUBLISHED.key());
+            config.setStatus(ConfigStatus.PUBLISHED.key());
             repository.save(config);
 
             ConfigInfoDto cid = new ConfigInfoDto();
