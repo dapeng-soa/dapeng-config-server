@@ -1,6 +1,8 @@
 package com.github.dapeng.web;
 
 import com.github.dapeng.common.CommonRepose;
+import com.github.dapeng.common.Commons;
+import com.github.dapeng.common.ConfigStatusEnum;
 import com.github.dapeng.dto.ConfigInfoDto;
 import com.github.dapeng.entity.ConfigInfo;
 import com.github.dapeng.openapi.cache.ZookeeperClient;
@@ -21,9 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
-
-import com.github.dapeng.common.ConfigStatusEnum;
-import com.github.dapeng.common.Commons;
 
 /**
  * @author with struy.
@@ -294,11 +293,13 @@ public class ConfigRestController {
         if (!routerCheckStatus) {
             throw new Exception("路由配置格式错误，请检查！");
         }
-        boolean timeoutCheckStatus = CheckConfigUtil.doCheckTimeOut(cofig.getTimeoutConfig());
+        //boolean timeoutCheckStatus = CheckConfigUtil.doCheckTimeOut(cofig.getTimeoutConfig());
+        boolean timeoutCheckStatus = CheckConfigUtil.doCheckConfig(cofig.getTimeoutConfig());
         if (!timeoutCheckStatus) {
             throw new Exception("超时配置格式错误，请检查！");
         }
-        boolean loadbalanceCheckStatus = CheckConfigUtil.doCheckLoadbalance(cofig.getLoadbalanceConfig());
+        //boolean loadbalanceCheckStatus = CheckConfigUtil.doCheckLoadbalance(cofig.getLoadbalanceConfig());
+        boolean loadbalanceCheckStatus = CheckConfigUtil.doCheckConfig(cofig.getLoadbalanceConfig());
         if (!loadbalanceCheckStatus) {
             throw new Exception("负载均衡配置格式错误，请检查！");
         }
