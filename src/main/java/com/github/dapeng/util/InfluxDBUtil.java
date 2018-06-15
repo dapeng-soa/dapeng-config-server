@@ -59,9 +59,8 @@ public class InfluxDBUtil {
             try {
                 influxDB.createDatabase(database);
             } catch (Exception e) {
-                logger.error("openurl:[{}],username:[{}], password:[{}] influxdb connect failed ... Cause：[{}]", openurl, username, password, e.getMessage());
-                e.printStackTrace();
-                throw new SoaException("Influxdb连接失败","openurl:["+openurl+"],username:["+username+"], password:["+password+"] influxdb connect failed ... Cause：["+e.getMessage()+"]");
+                logger.error("openurl:[{}],username:[{}], password:[{}] influxdb connect failed ... Cause：[{}]", openurl, username, password, e);
+                throw new SoaException("Influxdb连接失败", "openurl:[" + openurl + "],username:[" + username + "], password:[" + password + "] influxdb connect failed ... Cause：[" + e.getMessage() + "]");
             }
         }
         return influxDB;
@@ -101,8 +100,8 @@ public class InfluxDBUtil {
             return lists;
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("--- influxdb query[command:[{}]] failed ... Cause：[{}]", command, e.getMessage());
-            throw new SoaException("查询Influxdb数据出错","--- influxdb query[command:[{"+command+"}]] failed ... Cause：[{"+ e.getMessage()+"}]");
+            logger.error("--- influxdb query[command:[{}]] failed ... Cause：[{}]", command, e);
+            throw new SoaException("查询Influxdb数据出错", "--- influxdb query[command:[{" + command + "}]] failed ... Cause：[{" + e.getMessage() + "}]");
         }
     }
 

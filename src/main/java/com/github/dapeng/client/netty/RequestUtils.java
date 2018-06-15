@@ -13,6 +13,11 @@ import com.github.dapeng.metadata.getServiceMetadata_result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*import com.github.dapeng.echo.echo_args;
+import com.github.dapeng.echo.echo_argsSerializer;
+import com.github.dapeng.echo.echo_result;
+import com.github.dapeng.echo.echo_resultSerializer;*/
+
 /**
  * 调用远程服务的工具
  *
