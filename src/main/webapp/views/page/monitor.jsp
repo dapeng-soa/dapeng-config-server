@@ -25,16 +25,22 @@
             </div>
         </div>
 
-        <%--<div class="row" style="margin-top: 40px" >
-            <div class="col-xs-12">
-                <code>暂时没有新内容</code>
-            </div>
+        <table id="monitor-table"></table>
+
+        <%--<div id="toolbar">
+            <select id="slpk" class="selectpicker" data-live-search="true" multiple></select>
         </div>--%>
-
-
-        <table id="monitor-table">
-        </table>
-
+        <div id="toolbar" class="col-sm-12">
+            <div class="row">
+                <label class="col-sm-5 control-label">注册中心:</label>
+                <div class="col-sm-7">
+                    <select id="nodeSelect" name="select" class="selectpicker show-tick form-control">
+                        　　<%--<option value="127.0.0.1">127.0.0.1</option>
+                        　　<option value="10.10.10.45">10.10.10.45</option>--%>
+                    </select>
+                </div>
+            </div>
+        </div>
 
         <jsp:include page="../core/footer.jsp"/>
     </div>

@@ -40,6 +40,16 @@
 <link href="${basePath}/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <%--animate--%>
 <link href="${basePath}/plugins/animate/animate.min.css" rel="stylesheet">
+
+<%--selectpicker--%>
+<link rel="stylesheet" href="${basePath}/plugins/selectpicker/css/bootstrap-select.css">
+<script src="${basePath}/plugins/selectpicker/js/bootstrap-select.js"></script>
+
+<%--toastr--%>
+<script src="${basePath}/plugins/toastr/js/toastr.min.js"></script>
+<link rel="stylesheet" href="${basePath}/plugins/toastr/css/toastr.css">
+
+
 <script src="${basePath}/js/api/Config.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
 

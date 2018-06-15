@@ -1,5 +1,6 @@
 package com.github.dapeng;
 
+import com.github.dapeng.util.PropertiesUtil;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
 public class ConfigServerApplication {
 
 	public static void main(String[] args) {
+        PropertiesUtil.loadProperties();
 		new SpringApplicationBuilder()
 				.bannerMode(Banner.Mode.CONSOLE)
 				.sources(ConfigServerApplication.class)

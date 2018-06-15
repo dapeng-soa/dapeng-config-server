@@ -24,6 +24,13 @@ public class Commons {
     public static final String ADD_WHITELIST_SUCCESS_MSG = "白名单添加成功";
     public static final int SUCCESS_CODE = 200;
     public static final int ERROR_CODE = 4004;
+
+    /*influxdb*/
+    public static final String INFLUXDB_USERNAME = "influxdb_username";//用户名
+    public static final String INFLUXDB_PASSWORD = "influxdb_password";//密码
+    public static final String INFLUXDB_OPENURL = "influxdb_openurl";//连接地址
+    public static final String INFLUXDB_DATABASE = "influxdb_database";//数据库
+
     public static final String MAIN_DATASOURCE = "mainSource";
     public static final String EXTRA_DATASOURCE = "extraSource";
 }
