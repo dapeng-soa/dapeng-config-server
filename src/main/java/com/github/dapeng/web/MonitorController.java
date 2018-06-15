@@ -51,7 +51,12 @@ public class MonitorController {
         ZkNode zkNode = zkNodeRepository.findById(nodeHost);
         List<MonitorService> monitorServiceList = new ArrayList<>();
         String zkHost = Objects.isNull(zkNode) ? "127.0.0.1" : zkNode.getZkHost();
-        ZooKeeper zooKeeper = ZkUtil.createZooKeeperClient(zkHost);
+        ZooKeeper zooKeeper = null;
+        try {
+            zooKeeper = ZkUtil.createZooKeeperClient(zkHost);
+        } catch (Exception e) {
+            return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
+        }
         List<String> services = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH, false);
 
         if(services != null && !services.isEmpty()){

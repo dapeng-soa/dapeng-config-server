@@ -9,7 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.zookeeper.ZooKeeper.States.CONNECTED;
 
 /**
  * @author with struy.
@@ -25,7 +29,7 @@ public class ZkUtil {
         return ZookeeperClient.getCurrInstance(zkHost);
     }
 
-    public static ZooKeeper createZooKeeperClient(String host) {
+    public static ZooKeeper createZooKeeperClient(String host) throws Exception {
         CountDownLatch semaphore = new CountDownLatch(1);
         ZooKeeper zkClient = null;
         try {
@@ -34,20 +38,29 @@ public class ZkUtil {
              * 构造函数在处理完客户端的初始化工作后立即返回，在大多数情况下，并没有真正地建立好会话
              * 当会话真正创建完毕后，Zookeeper服务器会向客户端发送一个事件通知
              */
-            zkClient = new ZooKeeper(host, 5000, (event) -> {
-                //System.out.println("回调watcher实例： 路径" + event.getPath() + " 类型：" + event.getType());
+            zkClient = new ZooKeeper(host, 500, (event) -> {
+                System.out.println("waiting  连接 Zk ....");
                 if (event.getState() == Watcher.Event.KeeperState.SyncConnected) {
                     semaphore.countDown();
                 }
             });
             logger.info("build zk connect state1[{}]...", zkClient.getState());
-            semaphore.await();
+            //semaphore.await();
+            semaphore.await(1000, TimeUnit.MILLISECONDS);
             logger.info("build zk connect state2[{}]...", zkClient.getState());
             logger.info("build zk connect on [{}]...", host);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
         }
-        return zkClient;
+        if (Objects.nonNull(zkClient) && zkClient.getState() == CONNECTED) {
+            return zkClient;
+        } else {
+            if(zkClient != null ){
+                zkClient.close();
+            }
+            logger.info("ZK build connect on [{}] failed ...", host);
+            throw new Exception("ZK build connect on [" + host + "] failed ...");
+        }
     }
 
     public static List<String> getChildren(ZooKeeper zooKeeper, String path, boolean watcher) {
