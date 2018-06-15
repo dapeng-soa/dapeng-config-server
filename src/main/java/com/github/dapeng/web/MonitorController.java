@@ -63,17 +63,15 @@ public class MonitorController {
         }
         List<String> services = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH, false);
 
-        logger.info("******************"+services.size());
-        logger.error("******************"+services.size());
-        if(services != null && !services.isEmpty()){
-            for(String service:services){
+        logger.info("***services.size() = [{}]", services.size());
+        if (services != null && !services.isEmpty()) {
+            for (String service : services) {
                 MonitorService monitorService = new MonitorService(service);
                 List<String> instances = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH + "/" + service, false);
-                logger.info("******************"+services.size());
-                logger.error("******************"+services.size());
+                logger.info("***instances.size() = [{}]", instances.size());
                 if (instances != null && !instances.isEmpty()) {
                     List<MonitorInstance> instancesList = new ArrayList<>();
-                    for(String inst_item:instances) {
+                    for (String inst_item : instances) {
                         MonitorInstance monitorInstance = null;
                         try {
                             //获取 实例信息
@@ -81,8 +79,7 @@ public class MonitorController {
                             //获得方法实例信息
                             fillInstanceMethodInfo(inst_item, service, zkNode, monitorInstance);
                         } catch (Exception e) {
-                            e.getMessage();
-                            logger.error("get fluxdb data ..."+e.getMessage());
+                            logger.error("get fluxdb data ..." + e);
                             return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
                         }
 
@@ -99,9 +96,7 @@ public class MonitorController {
             try {
                 zooKeeper.close();
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                e.getMessage();
-                logger.error("zk close .."+e.getMessage());
+                logger.error("zk close .." + e);
             }
         }
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", monitorServiceList));
@@ -124,7 +119,7 @@ public class MonitorController {
     }
 
     // 获得服务实例信息
-    private MonitorInstance fillInstanceInfo(String instance, String serviceName, ZkNode zkNode) throws Exception{
+    private MonitorInstance fillInstanceInfo(String instance, String serviceName, ZkNode zkNode) throws Exception {
         long callCount = 0;
         double averageTime = 0;
         long failCount = 0;
@@ -168,7 +163,7 @@ public class MonitorController {
 
 
     // 获得实例方法信息
-    private MonitorInstance fillInstanceMethodInfo(String instance, String serviceName, ZkNode zkNode, MonitorInstance monitorInstance) throws Exception{
+    private MonitorInstance fillInstanceMethodInfo(String instance, String serviceName, ZkNode zkNode, MonitorInstance monitorInstance) throws Exception {
         String[] instanceArr = instance.split("[:]");
         InfluxDBUtil influxDBUtil = new InfluxDBUtil(zkNode.getInfluxdbUser(), zkNode.getInfluxdbPass(), InfluxDBUtil.getOpenUrl(zkNode), "dapengState");
         String queryStr = "SELECT sum(fail_calls) as failCount,sum(total_calls) as callCount,sum(i_total_time) as totalTime,max(i_max_time) as maxTime " +
