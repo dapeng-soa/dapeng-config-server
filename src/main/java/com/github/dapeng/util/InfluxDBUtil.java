@@ -55,7 +55,12 @@ public class InfluxDBUtil {
     private InfluxDB influxDbBuild() {
         if (influxDB == null) {
             influxDB = InfluxDBFactory.connect(openurl, username, password);
-            influxDB.createDatabase(database);
+            try {
+                influxDB.createDatabase(database);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error("--- openurl:[{}],username:[{}], password:[{}] influxdb connect failed ... Cause：[{}]", openurl, username, password, e.getMessage());
+            }
         }
         return influxDB;
     }
@@ -77,20 +82,26 @@ public class InfluxDBUtil {
      * @return
      */
     public List<HashMap<String, Object>> query(String command) {
-        List<HashMap<String, Object>> lists = new ArrayList<HashMap<String, Object>>();
-        QueryResult queryResult = influxDB.query(new Query(command, database));
-        if (queryResult.getResults() == null) {
-            return lists;
-        }
-        for (Result result : queryResult.getResults()) {
-            List<Series> series = result.getSeries();
-            if (series != null && !series.isEmpty()) {
-                for (Series serie : series) {
-                    lists.add(getQueryData(serie));
+        try {
+            List<HashMap<String, Object>> lists = new ArrayList<HashMap<String, Object>>();
+            QueryResult queryResult = influxDB.query(new Query(command, database));
+            if (queryResult.getResults() == null) {
+                return lists;
+            }
+            for (Result result : queryResult.getResults()) {
+                List<Series> series = result.getSeries();
+                if (series != null && !series.isEmpty()) {
+                    for (Series serie : series) {
+                        lists.add(getQueryData(serie));
+                    }
                 }
             }
+            return lists;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("--- influxdb query[command:[{}]] failed ... Cause：[{}]", command, e.getMessage());
         }
-        return lists;
+        return null;
     }
 
 

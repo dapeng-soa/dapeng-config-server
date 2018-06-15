@@ -1,5 +1,6 @@
 package com.github.dapeng.util;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,10 @@ public class DateUtil {
         return dateToStamp(getStringDate(date, DATE_FORMAT));
     }*/
 
+    public static Timestamp now() {
+        long nowMil = System.currentTimeMillis();
+        return new Timestamp(nowMil);
+    }
 
     /**
      * 时间 格式化

@@ -1,8 +1,8 @@
 package com.github.dapeng.web;
 
 import com.github.dapeng.client.netty.RequestUtils;
-import com.github.dapeng.common.CommonRepose;
 import com.github.dapeng.common.Commons;
+import com.github.dapeng.common.Resp;
 import com.github.dapeng.entity.ZkNode;
 import com.github.dapeng.entity.monitor.MonitorInstance;
 import com.github.dapeng.entity.monitor.MonitorMethod;
@@ -80,7 +80,7 @@ public class MonitorController {
                 e.printStackTrace();
             }
         }
-        return ResponseEntity.ok(CommonRepose.of(Commons.SUCCESS_CODE, monitorServiceList));
+        return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", monitorServiceList));
     }
 
     /**
@@ -96,7 +96,7 @@ public class MonitorController {
         nodeList.add("10.10.10.38");
         nodeList.add("10.10.10.35");
         nodeList.add("10.10.10.36");*/
-        return ResponseEntity.ok(CommonRepose.of(Commons.SUCCESS_CODE, zkNodeRepository.findAll()));
+        return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", zkNodeRepository.findAll()));
     }
 
     // 获得服务实例信息
