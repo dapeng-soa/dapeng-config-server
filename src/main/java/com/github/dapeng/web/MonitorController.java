@@ -12,6 +12,8 @@ import com.github.dapeng.util.InfluxDBUtil;
 import com.github.dapeng.util.ZkUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.ZooKeeper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,8 @@ import static com.github.dapeng.openapi.utils.Constants.SERVICE_RUNTIME_PATH;
 @Transactional(rollbackFor = Throwable.class)
 public class MonitorController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MonitorController.class);
+
     @Autowired
     ZkNodeRepository zkNodeRepository;
 
@@ -59,10 +63,14 @@ public class MonitorController {
         }
         List<String> services = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH, false);
 
+        logger.info("******************"+services.size());
+        logger.error("******************"+services.size());
         if(services != null && !services.isEmpty()){
             for(String service:services){
                 MonitorService monitorService = new MonitorService(service);
                 List<String> instances = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH + "/" + service, false);
+                logger.info("******************"+services.size());
+                logger.error("******************"+services.size());
                 if (instances != null && !instances.isEmpty()) {
                     List<MonitorInstance> instancesList = new ArrayList<>();
                     for(String inst_item:instances) {
@@ -73,6 +81,8 @@ public class MonitorController {
                             //获得方法实例信息
                             fillInstanceMethodInfo(inst_item, service, zkNode, monitorInstance);
                         } catch (Exception e) {
+                            e.getMessage();
+                            logger.error("get fluxdb data ..."+e.getMessage());
                             return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
                         }
 
@@ -90,6 +100,8 @@ public class MonitorController {
                 zooKeeper.close();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                e.getMessage();
+                logger.error("zk close .."+e.getMessage());
             }
         }
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", monitorServiceList));
