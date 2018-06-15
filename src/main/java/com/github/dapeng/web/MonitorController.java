@@ -66,6 +66,12 @@ public class MonitorController {
         logger.info("***services.size() = [{}]", services.size());
         if (services != null && !services.isEmpty()) {
             for (String service : services) {
+
+                if ("com.today.api.member.service.MemberService".equals(service)) {
+                    logger.info("---------- [serviceList] ==>  filter com.today.api.member.service.MemberService");
+                    continue;
+                }
+
                 MonitorService monitorService = new MonitorService(service);
                 List<String> instances = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH + "/" + service, false);
                 logger.info("***instances.size() = [{}]", instances.size());
