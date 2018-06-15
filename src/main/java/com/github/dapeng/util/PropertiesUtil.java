@@ -26,7 +26,7 @@ public class PropertiesUtil {
 
 
     public static String getProperty(String key, String defaultValue) {
-        return Objects.isNull(properties.get(key)) ? defaultValue : (String) properties.get(key);
+        return Objects.isNull(properties) ||  Objects.isNull(properties.get(key)) ? defaultValue : (String) properties.get(key);
     }
 
 }
