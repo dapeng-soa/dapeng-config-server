@@ -2,7 +2,10 @@ package com.github.dapeng.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
@@ -18,14 +21,15 @@ public class PropertiesUtil {
     public static Properties properties;
 
     public static void loadProperties() {
-        System.out.println("");
         logger.info("---------start load properties...-----------");
         properties = new Properties();
         try {
-            // properties.load(in);
-            properties.load(ClassLoader.getSystemResourceAsStream("config_server.properties"));
+            File file = ResourceUtils.getFile("classpath:config_server.properties");
+            FileInputStream inputStream = new FileInputStream(file);
+            properties.load(inputStream);
+            logger.info("---------load propertie success...-----------");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info("load config_server.properties error::",e);
         }
     }
 
