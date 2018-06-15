@@ -2,10 +2,14 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
+import com.github.dapeng.entity.WhiteListInfo;
 import com.github.dapeng.openapi.utils.Constants;
+import com.github.dapeng.repository.WhiteListHistoryRepository;
+import com.github.dapeng.repository.WhiteListInfoRepository;
 import com.github.dapeng.util.ZkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +31,12 @@ public class WhiteListRestController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(WhiteListRestController.class);
 
+    @Autowired
+    WhiteListInfoRepository listInfoRepository;
+
+    @Autowired
+    WhiteListHistoryRepository historyRepository;
+
     /**
      * 同步线上白名单
      */
@@ -38,6 +48,7 @@ public class WhiteListRestController {
         if (children.isPresent()) {
             return ResponseEntity
                     .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, children.get()));
+            // 同步至数据库进行备份，增量备份
         } else {
             return ResponseEntity
                     .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG, new ArrayList<>()));
