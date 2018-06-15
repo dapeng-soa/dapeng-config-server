@@ -152,6 +152,7 @@ saveconfig = function () {
  */
 delConfig = function (id) {
 
+    bodyAbs();
     layer.confirm('删除此当前配置？', {
         btn: ['删除', '取消']
     }, function () {
@@ -170,6 +171,7 @@ delConfig = function (id) {
         });
     }, function () {
         layer.msg("未做任何变更");
+        rmBodyAbs();
     });
 };
 
