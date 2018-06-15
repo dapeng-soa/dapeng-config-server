@@ -1,5 +1,6 @@
 package com.github.dapeng.util;
 
+import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
 import com.github.dapeng.entity.ZkNode;
 import org.influxdb.InfluxDB;
@@ -32,11 +33,11 @@ public class InfluxDBUtil {
 
     private InfluxDB influxDB;
 
-    public InfluxDBUtil() {
+    public InfluxDBUtil() throws Exception {
         influxDbBuild();
     }
 
-    public InfluxDBUtil(String username, String password, String openurl, String database) {
+    public InfluxDBUtil(String username, String password, String openurl, String database) throws Exception {
         this.username = username;
         this.password = password;
         this.openurl = openurl;
@@ -52,14 +53,15 @@ public class InfluxDBUtil {
     /**
      * 连接时序数据库；获得InfluxDB
      **/
-    private InfluxDB influxDbBuild() {
+    private InfluxDB influxDbBuild() throws Exception {
         if (influxDB == null) {
             influxDB = InfluxDBFactory.connect(openurl, username, password);
             try {
                 influxDB.createDatabase(database);
             } catch (Exception e) {
+                logger.error("openurl:[{}],username:[{}], password:[{}] influxdb connect failed ... Cause：[{}]", openurl, username, password, e.getMessage());
                 e.printStackTrace();
-                logger.error("--- openurl:[{}],username:[{}], password:[{}] influxdb connect failed ... Cause：[{}]", openurl, username, password, e.getMessage());
+                throw new SoaException("Influxdb连接失败","openurl:["+openurl+"],username:["+username+"], password:["+password+"] influxdb connect failed ... Cause：["+e.getMessage()+"]");
             }
         }
         return influxDB;
@@ -69,7 +71,7 @@ public class InfluxDBUtil {
      * 设置数据保存策略
      * defalut 策略名 /database 数据库名/ 30d 数据保存时限30天/ 1  副本个数为1/ 结尾DEFAULT 表示 设为默认的策略
      */
-    public void createRetentionPolicy() {
+    public void createRetentionPolicy() throws Exception {
         String command = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION %s DEFAULT",
                 "defalut", database, "30d", 1);
         this.query(command);
@@ -81,7 +83,7 @@ public class InfluxDBUtil {
      * @param command 查询语句
      * @return
      */
-    public List<HashMap<String, Object>> query(String command) {
+    public List<HashMap<String, Object>> query(String command) throws Exception {
         try {
             List<HashMap<String, Object>> lists = new ArrayList<HashMap<String, Object>>();
             QueryResult queryResult = influxDB.query(new Query(command, database));
@@ -100,8 +102,8 @@ public class InfluxDBUtil {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("--- influxdb query[command:[{}]] failed ... Cause：[{}]", command, e.getMessage());
+            throw new SoaException("查询Influxdb数据出错","--- influxdb query[command:[{"+command+"}]] failed ... Cause：[{"+ e.getMessage()+"}]");
         }
-        return null;
     }
 
 
