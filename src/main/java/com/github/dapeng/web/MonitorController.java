@@ -79,7 +79,7 @@ public class MonitorController {
                             //获得方法实例信息
                             fillInstanceMethodInfo(inst_item, service, zkNode, monitorInstance);
                         } catch (Exception e) {
-                            logger.error("get fluxdb data ..." + e);
+                            logger.error("get fluxdb data ...", e.getMessage(), e);
                             return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
                         }
 
