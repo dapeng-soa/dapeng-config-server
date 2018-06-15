@@ -27,7 +27,7 @@ import java.util.List;
 @ImportResource(locations = {"classpath:spring.xml"})
 public class InfluxdbTest {
     @Test
-    public void influxdbQuery() {
+    public void influxdbQuery() throws Exception {
         PropertiesUtil.loadProperties();
 
         InfluxDBUtil influxDBUtil = new InfluxDBUtil();
