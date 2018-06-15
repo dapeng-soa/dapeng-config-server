@@ -8,6 +8,7 @@ import com.github.dapeng.entity.monitor.MonitorInstance;
 import com.github.dapeng.entity.monitor.MonitorMethod;
 import com.github.dapeng.entity.monitor.MonitorService;
 import com.github.dapeng.repository.ZkNodeRepository;
+import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.InfluxDBUtil;
 import com.github.dapeng.util.ZkUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -67,11 +68,10 @@ public class MonitorController {
         if (services != null && !services.isEmpty()) {
             for (String service : services) {
 
-                if ("com.today.api.member.service.MemberService".equals(service)) {
+               /* if ("com.today.api.member.service.MemberService".equals(service)) {
                     logger.info("---------- [serviceList] ==>  filter com.today.api.member.service.MemberService");
                     continue;
-                }
-
+                }*/
                 MonitorService monitorService = new MonitorService(service);
                 List<String> instances = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH + "/" + service, false);
                 logger.info("***instances.size() = [{}]", instances.size());
@@ -138,6 +138,7 @@ public class MonitorController {
         String queryStr = "SELECT sum(fail_calls) as failCount,sum(total_calls)  as callCount,sum(i_total_time) as totalTime " +
                 "FROM dapeng_service_process " +
                 "where service_name = '" + serviceName + "' " +
+                "and time >= '" + DateUtil.getInfluxDbDate() + "'" +
                 "and server_ip = '" + instanceArr[0] + "'  " +
                 "and server_port = '" + instanceArr[1] + "'";
         List<HashMap<String, Object>> hashMaps = influxDBUtil.query(queryStr);
@@ -175,6 +176,7 @@ public class MonitorController {
         String queryStr = "SELECT sum(fail_calls) as failCount,sum(total_calls) as callCount,sum(i_total_time) as totalTime,max(i_max_time) as maxTime " +
                 "FROM dapeng_service_process " +
                 "where service_name = '" + serviceName + "' " +
+                "and time >= '" + DateUtil.getInfluxDbDate() + "'" +
                 "and server_ip = '" + instanceArr[0] + "'  " +
                 "and server_port = '" + instanceArr[1] + "' " +
                 "GROUP BY method_name";

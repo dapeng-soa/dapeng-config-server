@@ -29,7 +29,7 @@ public class InfluxDBUtil {
     private String username = SoaSystemEnvProperties.get(INFLUXDB_USERNAME, PropertiesUtil.getProperty(INFLUXDB_USERNAME, "admin"));//用户名
     private String password = SoaSystemEnvProperties.get(INFLUXDB_PASSWORD, PropertiesUtil.getProperty(INFLUXDB_PASSWORD, "admin"));//密码
     private String openurl = SoaSystemEnvProperties.get(INFLUXDB_OPENURL, PropertiesUtil.getProperty(INFLUXDB_OPENURL, "http://127.0.0.1:8086"));//连接地址
-    private String database = SoaSystemEnvProperties.get(INFLUXDB_DATABASE, PropertiesUtil.getProperty(INFLUXDB_DATABASE, null));//数据库
+    private String database = SoaSystemEnvProperties.get(INFLUXDB_DATABASE, PropertiesUtil.getProperty(INFLUXDB_DATABASE, "dapengState"));//数据库
 
     private InfluxDB influxDB;
 
