@@ -46,6 +46,17 @@ public class PageController {
     }
 
     /**
+     * 集群管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/clusters")
+    public String clusters(Model model) {
+        model.addAttribute("tagName", "clusters");
+        return "page/clusters";
+    }
+
+    /**
      * 配置管理
      *
      * @return

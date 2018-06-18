@@ -9,7 +9,7 @@
 <%--model--%>
 <div id="struct-model">
     <div class="struct-model-container animated fadeIn">
-        <a class="back-to-previous" href="javascript:void(0)" onclick="backPreviousModle()"><span
+        <a class="back-to-previous" href="javascript:void(0)" onclick="backPreviousModel()"><span
                 class="glyphicon glyphicon-arrow-left"></span>返回</a>
         <a class="model-close" title="关闭" onclick=closeModel()><span
                 class="glyphicon glyphicon-remove"></span></a>

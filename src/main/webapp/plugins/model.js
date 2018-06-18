@@ -43,7 +43,7 @@ window.initModel = function () {
 /**
  * 回到上一个弹窗内容
  */
-window.backPreviousModle = function () {
+window.backPreviousModel = function () {
     var maxIndex = window.$previousModle.length - 1;
     maxIndex !== 1 ? void(0) : $(".back-to-previous").hide();
     if (maxIndex >= 1) {

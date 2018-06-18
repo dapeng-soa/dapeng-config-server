@@ -108,6 +108,51 @@ i.fa {
     margin: 66px 15px 0 215px;
 }
 
+
+/*侧边开关=======================*/
+
+.toggle-sidebar-btn {
+    text-decoration: none;
+    position: absolute;
+    right: -35px;
+    display: inline;
+    cursor: pointer;
+    color: #303a40;
+    font-size: 22px;
+    bottom: 15px;
+}
+
+.toggle-sidebar-btn:focus,
+.toggle-sidebar-btn:hover{
+    text-decoration: none;
+    color: #303a40;
+}
+
+.sidebar-left.closed{
+    left: -205px;
+}
+.sidebar-left.opened{
+    left: 0;
+}
+.container-right.closed{
+    margin: 50px 0 0 0;
+}
+.container-right.opened{
+    margin: 66px 15px 0 215px;
+}
+
+@media screen and (max-width: 1024px)  {
+    .sidebar-left{
+        left: -205px;
+    }
+    .container-right{
+        margin: 50px 0 0 0;
+    }
+    .navbar-brand{
+        font-size: 16px;
+    }
+}
+
 .container-right-header {
     height: 80px;
     box-shadow: 0 0 1em #ccc;
@@ -283,33 +328,6 @@ textarea {
     color: #FFF;
     padding: 0 5px;
     line-height: 200%;
-}
-
-/*侧边开关=======================*/
-
-.toggle-sidebar-btn {
-    text-decoration: none;
-    position: absolute;
-    right: -30px;
-    display: inline;
-    cursor: pointer;
-    color: #303a40;
-    font-size: 16px;
-    top: 10px;
-}
-
-.toggle-sidebar-btn:focus,
-.toggle-sidebar-btn:hover{
-    text-decoration: none;
-    color: #303a40;
-}
-
-.sidebar-left.closed{
-    left: -205px;
-}
-
-.container-right.closed{
-    margin: 50px 0 0 0;
 }
 
 .advance-format-item{
