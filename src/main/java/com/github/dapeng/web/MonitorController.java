@@ -82,8 +82,10 @@ public class MonitorController {
                         try {
                             //获取 实例信息
                             monitorInstance = fillInstanceInfo(inst_item, service, zkNode);
+
+                            //可以使用延迟加载
                             //获得方法实例信息
-                            fillInstanceMethodInfo(inst_item, service, zkNode, monitorInstance);
+                            //monitorInstance.setMethodList(fillInstanceMethodInfo(inst_item, service, zkNode));
                         } catch (Exception e) {
                             logger.error("get fluxdb data ...", e.getMessage(), e);
                             return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
@@ -107,6 +109,26 @@ public class MonitorController {
         }
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", monitorServiceList));
     }
+
+    /**
+     * 获取服务缓存列表
+     *
+     * @return
+     */
+    @GetMapping(value = "/loadMethodInfo")
+    public ResponseEntity<?> loadMethodInfo(@RequestParam String instance, @RequestParam String serviceName, @RequestParam Long zkNode) {
+        ZkNode zk_node = zkNodeRepository.findById(zkNode);
+        List<MonitorMethod> methodList = new ArrayList<>();
+        try {
+            //获得方法实例信息
+            methodList = fillInstanceMethodInfo(instance, serviceName, zk_node);
+        } catch (Exception e) {
+            logger.error("loadMethodInfo:: get fluxdb data ...", e.getMessage(), e);
+            return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, "[loadMethodInfo fail]  :: " + e.getMessage(), null));
+        }
+        return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", methodList));
+    }
+
 
     /**
      * 获取服务缓存列表
@@ -170,7 +192,7 @@ public class MonitorController {
 
 
     // 获得实例方法信息
-    private MonitorInstance fillInstanceMethodInfo(String instance, String serviceName, ZkNode zkNode, MonitorInstance monitorInstance) throws Exception {
+    private List<MonitorMethod> fillInstanceMethodInfo(String instance, String serviceName, ZkNode zkNode) throws Exception {
         String[] instanceArr = instance.split("[:]");
         InfluxDBUtil influxDBUtil = new InfluxDBUtil(zkNode.getInfluxdbUser(), zkNode.getInfluxdbPass(), InfluxDBUtil.getOpenUrl(zkNode), "dapengState");
         String queryStr = "SELECT sum(fail_calls) as failCount,sum(total_calls) as callCount,sum(i_total_time) as totalTime,max(i_max_time) as maxTime " +
@@ -200,8 +222,7 @@ public class MonitorController {
         }
 
         methodList.sort(Comparator.comparing(MonitorMethod::getCallCount).reversed());
-        monitorInstance.setMethodList(methodList);
-        return monitorInstance;
+        return methodList;
     }
 }
 
