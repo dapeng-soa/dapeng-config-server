@@ -2,10 +2,10 @@ package com.github.dapeng.client.netty;
 
 import com.github.dapeng.core.InvocationContextImpl;
 import com.github.dapeng.core.helper.DapengUtil;
-import com.github.dapeng.echo.echo_args;
+/*import com.github.dapeng.echo.echo_args;
 import com.github.dapeng.echo.echo_argsSerializer;
 import com.github.dapeng.echo.echo_result;
-import com.github.dapeng.echo.echo_resultSerializer;
+import com.github.dapeng.echo.echo_resultSerializer;*/
 import com.github.dapeng.metadata.GetServiceMetadata_argsSerializer;
 import com.github.dapeng.metadata.GetServiceMetadata_resultSerializer;
 import com.github.dapeng.metadata.getServiceMetadata_args;
@@ -51,8 +51,8 @@ public class RequestUtils {
     }
 
     //远程调用 echo 方法
-    public static String getRomoteServiceEcho(String romoteIp, Integer remotePort, String serviceName, String version) {
-        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
+   public static String getRomoteServiceEcho(String romoteIp, Integer remotePort, String serviceName, String version) {
+       /*  InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
         SubPool subPool = new SubPool(romoteIp, remotePort);
         echo_result result = null;
         try {
@@ -66,5 +66,7 @@ public class RequestUtils {
             logger.error("----- service[{}:{}:{}] get echo failed .. Cause : {}", serviceName, romoteIp, remotePort, e.getMessage());
             return "";
         }
+        */
+       return "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
     }
 }
