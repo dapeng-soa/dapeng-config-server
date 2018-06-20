@@ -9,6 +9,7 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
+    <script src="${basePath}/js/api/clusters.js"></script>
 </head>
 <body>
 <jsp:include page="../core/header.jsp"/>
@@ -19,7 +20,7 @@
             <div class="input-group">
                 <p class="left-panel-title">集群管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
+                    <button type="button" class="btn btn-primary" onclick="openAddCluster()">新增</button>
                 </span>
             </div>
         </div>

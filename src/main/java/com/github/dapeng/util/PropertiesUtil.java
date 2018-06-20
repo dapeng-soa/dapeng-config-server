@@ -27,7 +27,7 @@ public class PropertiesUtil {
             File file = ResourceUtils.getFile("classpath:config_server.properties");
             FileInputStream inputStream = new FileInputStream(file);
             properties.load(inputStream);
-            logger.info("---------load propertie success...-----------");
+            logger.info("---------load properties success...-----------");
         } catch (IOException e) {
             logger.info("load config_server.properties error::",e);
         }

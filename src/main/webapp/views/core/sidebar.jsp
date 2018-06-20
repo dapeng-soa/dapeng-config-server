@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="sidebar-left">
     <ul class="layui-nav layui-nav-tree" lay-filter="test">
-        <li class="layui-nav-item"><a href="${basePath}/clusters"><i class="fa fa-paper-plane" aria-hidden="true"></i>集群管理</a>
+        <li class="layui-nav-item"><a href="${basePath}/clusters"><i class="fa fa-server" aria-hidden="true"></i>集群管理</a>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
             <a href="javascript:void(0);"><i class="fa fa-cogs" aria-hidden="true"></i>配置管理</a>
@@ -29,17 +29,18 @@
 </div>
 <script>
     function toggleSidebar() {
-        var isclosed = $(".sidebar-left,.container-right").hasClass("closed");
-        var isopened = $(".sidebar-left,.container-right").hasClass("opened");
+        var sc = $(".sidebar-left,.container-right");
+        var isclosed = sc.hasClass("closed");
+        var isopened = sc.hasClass("opened");
         if (isclosed){
-            $(".sidebar-left,.container-right").removeClass("closed");
-            $(".sidebar-left,.container-right").addClass("opened");
+            sc.removeClass("closed");
+            sc.addClass("opened");
         }
         if (isopened){
-            $(".sidebar-left,.container-right").removeClass("opened");
-            $(".sidebar-left,.container-right").addClass("closed");
+            sc.removeClass("opened");
+            sc.addClass("closed");
         }else {
-            $(".sidebar-left,.container-right").addClass("opened");
+            sc.addClass("opened");
         }
     }
 </script>

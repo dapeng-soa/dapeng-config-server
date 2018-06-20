@@ -70,9 +70,23 @@
     margin: 5px 15px 10px;
 }
 
+/*=============================全局*/
+
 pre {
     padding: 0 !important;
 }
+
+
+i.fa {
+    padding-right: 5px;
+}
+
+button[type="button"][name="refresh"]{
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+
+/*==============================end*/
 
 
 
@@ -95,10 +109,6 @@ pre {
 .sidebar-left .layui-nav-child a:focus,
 .sidebar-left .layui-nav-item a:focus {
     text-decoration: none !important;
-}
-
-i.fa {
-    padding-right: 5px;
 }
 
 /**

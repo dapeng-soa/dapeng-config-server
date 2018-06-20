@@ -29,7 +29,7 @@ function InitMainTable() {
         search: true,                      //是否显示表格搜索
         strictSearch: false,                 //设置为 true启用全匹配搜索，否则为模糊搜索。
         showColumns: true,                  //是否显示所有的列（选择显示的列）
-        showRefresh: false,                  //是否显示刷新按钮
+        showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
         clickToSelect: false,                //是否启用点击选中行
         //height: 900,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
