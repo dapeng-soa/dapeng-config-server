@@ -27,7 +27,7 @@
 
         <div class="row" style="margin-top: 40px" >
 
-            <div class="col-lg-5 col-xs-12">
+            <div class="col-lg-6 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">白名单列表</h3>
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-7 col-xs-12">
+            <div class="col-lg-6 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">新增白名单</h3>
@@ -63,7 +63,7 @@
                             <code>tip:使用服务全限定名,回车换行即可一次配置多个!</code>
                         </div>
                         <span class="input-group-btn panel-button-group">
-                            <button class="btn btn-primary" onclick="addWhiteItem()">添加</button>
+                            <button class="btn btn-primary col-lg-2 col-xs-12" onclick="addWhiteItem()">添加</button>
                         </span>
                     </div>
                 </div>

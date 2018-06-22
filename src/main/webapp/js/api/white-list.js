@@ -30,7 +30,7 @@ refreshWhiteList = function (cid) {
         cid: cid === undefined ? $("#whiteNodeSelect").find("option:selected").val() : cid
     }, function (res) {
         for (var i = 0; i < res.context.length; i++) {
-            whiteContext += '<li ondblclick=delWhiteItem("' + res.context[i] + '") style="cursor: pointer" class="list-group-item">' + res.context[i] + '</li>'
+            whiteContext += '<li ondblclick=delWhiteItem("' + res.context[i] + '") style="cursor: pointer;white-space: pre-line;word-wrap: break-word;" class="list-group-item">' + res.context[i] + '</li>'
         }
         $("#white-list-group").html(whiteContext);
     }, "json")

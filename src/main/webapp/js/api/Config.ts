@@ -205,8 +205,10 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                     </div>
                 </div>
                 
-              <div class="list-group" id="publishHistory" style="margin-top: 81px;">
-                </div>
+                <ul class="layui-timeline" id="publishHistory" style="margin-top: 81px;">
+                  
+                </ul>
+             
             `
         }
 
@@ -368,7 +370,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                                 <div class="advance-format-content">
                                   <pre>
 influxdb为监控数据地址,默认端口为8086
-如:127.0.0.1:8086
+只需写host:127.0.0.1
                                   </pre>
                                 </div>
                               </div>
