@@ -34,8 +34,8 @@ function InitMainTable() {
         clickToSelect: false,                //是否启用点击选中行
         //height: 900,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
         uniqueId: "id",                     //每一行的唯一标识，一般为主键列
-        showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
-        cardView: false,                    //是否显示详细视图
+        showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+        cardView: ($(window).width()<1024),                    //是否显示详细视图
         detailView: false,                  //是否显示父子表
         //得到查询的参数
         queryParams: function (params) {
@@ -202,7 +202,6 @@ editedConfig = function (id) {
 viewHistory = function (id, serviceName) {
     var url = basePath + "/api/config/publish-history/" + id;
     $.get(url, function (res) {
-        layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
             openPublishHistory(serviceName);
             processHistoryData(res.context);
@@ -213,23 +212,34 @@ viewHistory = function (id, serviceName) {
 processHistoryData = function (data) {
 
     var historyHtml = "";
-    for (var i = 0; i < data.length; i++) {
+    for (var i = data.length - 1; i >= 0; i--) {
 
-        historyHtml += '<div class="layui-colla-item">';
-        historyHtml += '<h2 class="layui-colla-title" onclick="toggleBlock(this)">v-' + data[i].version + '</h2>';
-        historyHtml += '<div class="advance-format-content">' +
-            '<h4>超时配置:<h4/>' +
-            '<pre>' + data[i].timeoutConfig + '<pre/>' +
-            '<h4>负载均衡:<h4/>' +
-            '<pre>' + data[i].loadbalanceConfig + '<pre/>' +
-            '<h4>路由配置:<h4/>' +
-            '<pre>' + data[i].routerConfig + '<pre/>' +
-            '<h4>限流配置:<h4/>' +
-            '<pre>' + data[i].freqConfig + '<pre/>' +
-            '</div>';
-        historyHtml += '</div>'
+        historyHtml += '<li class="layui-timeline-item">' +
+            '<i class="layui-icon layui-timeline-axis" onclick="toggleHistory(this)" >&#xe63f;</i>' +
+            '<div class="layui-timeline-content layui-text">' +
+            '<h3 class="layui-timeline-title advance-format-title" onclick="toggleBlock(this)">' + data[i].version + '</h3>' +
+            '<div class="advance-format-content">' +
+            '<p>发布日期：' + data[i].publishedAt + '</p>' +
+            '<p>备注：' + (data[i].remark === "" ? "无" : data[i].remark) + '</p>' +
+            '<p>超时配置</p>' +
+            '<pre>' + (data[i].timeoutConfig === "" ? "无" : data[i].timeoutConfig) + '</pre>' +
+            '<p>负载均衡</p>' +
+            '<pre>' + (data[i].loadbalanceConfig === "" ? "无" : data[i].loadbalanceConfig) + '</pre>' +
+            '<p>路由配置</p>' +
+            '<pre>' + (data[i].routerConfig === "" ? "无" : data[i].routerConfig) + '</pre>' +
+            '<p>限流配置</p>' +
+            '<pre>' + (data[i].freqConfig === "" ? "无" : data[i].freqConfig) + '</pre>' +
+            '</div>' +
+            '</div>' +
+            '</li>';
     }
     $("#publishHistory").html(historyHtml);
+
+
+};
+
+toggleHistory = function (obj) {
+    $(obj).next().children(".advance-format-title").click();
 };
 
 /**
@@ -256,7 +266,7 @@ publishConfig = function (id) {
                 btn: ['确认发布', '取消发布'],
                 yes: function (index, layero) {
 
-                    processPublishConfig($("#nodeSelect").find("option:selected").val());
+                    processPublishConfig(id, $("#nodeSelect").find("option:selected").val());
 
                 }, btn2: function (index, layero) {
                     layer.msg("取消发布");
@@ -274,7 +284,7 @@ publishConfig = function (id) {
  * 执行发布
  * @param cid
  */
-processPublishConfig = function (cid) {
+processPublishConfig = function (id, cid) {
     var url = basePath + "/api/config/publish/" + id;
     $.post(url, {
         cid: cid
@@ -324,7 +334,7 @@ viewRealConfig = function (service) {
                 btn: ['查看', '取消'],
                 yes: function (index, layero) {
                     layer.close(index);
-                    processSysRealConfig($("#nodeSelect").find("option:selected").val(),service);
+                    processSysRealConfig($("#nodeSelect").find("option:selected").val(), service);
                 }, btn2: function (index, layero) {
                     layer.msg("操作取消");
                 }, cancel: function () {
@@ -341,7 +351,7 @@ viewRealConfig = function (service) {
  * 执行配置同步
  * @param cid
  */
-processSysRealConfig = function (cid,service) {
+processSysRealConfig = function (cid, service) {
     var url = basePath + "/api/config/sysRealConfig/";
     $.get(url, {
         cid: cid,
