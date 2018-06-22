@@ -7,10 +7,10 @@ import com.github.dapeng.entity.ZkNode;
 import com.github.dapeng.entity.monitor.MonitorInstance;
 import com.github.dapeng.entity.monitor.MonitorMethod;
 import com.github.dapeng.entity.monitor.MonitorService;
+import com.github.dapeng.openapi.utils.ZkUtil;
 import com.github.dapeng.repository.ZkNodeRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.InfluxDBUtil;
-import com.github.dapeng.util.ZkUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
@@ -53,27 +53,23 @@ public class MonitorController {
      */
     @GetMapping(value = "/serviceList")
     public ResponseEntity<?> serviceList(@RequestParam long nodeHost) {
-        ZkNode zkNode = zkNodeRepository.findById(nodeHost);
+        ZkNode zkNode = zkNodeRepository.findOne(nodeHost);
         List<MonitorService> monitorServiceList = new ArrayList<>();
         String zkHost = Objects.isNull(zkNode) ? "127.0.0.1" : zkNode.getZkHost();
-        ZooKeeper zooKeeper = null;
+        ZooKeeper zooKeeper;
         try {
-            zooKeeper = ZkUtil.createZooKeeperClient(zkHost);
+            zooKeeper = ZkUtil.createZkByHost(zkHost);
         } catch (Exception e) {
             return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
         }
-        List<String> services = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH, false);
+        List<String> services = ZkUtil.getNodeChildren(zooKeeper, SERVICE_RUNTIME_PATH, false);
 
         logger.info("***services.size() = [{}]", services.size());
         if (services != null && !services.isEmpty()) {
             for (String service : services) {
 
-               /* if ("com.today.api.member.service.MemberService".equals(service)) {
-                    logger.info("---------- [serviceList] ==>  filter com.today.api.member.service.MemberService");
-                    continue;
-                }*/
                 MonitorService monitorService = new MonitorService(service);
-                List<String> instances = ZkUtil.getChildren(zooKeeper, SERVICE_RUNTIME_PATH + "/" + service, false);
+                List<String> instances = ZkUtil.getNodeChildren(zooKeeper, SERVICE_RUNTIME_PATH + "/" + service, false);
                 logger.info("***instances.size() = [{}]", instances.size());
                 if (instances != null && !instances.isEmpty()) {
                     List<MonitorInstance> instancesList = new ArrayList<>();
@@ -83,9 +79,6 @@ public class MonitorController {
                             //获取 实例信息
                             monitorInstance = fillInstanceInfo(inst_item, service, zkNode);
 
-                            //可以使用延迟加载
-                            //获得方法实例信息
-                            //monitorInstance.setMethodList(fillInstanceMethodInfo(inst_item, service, zkNode));
                         } catch (Exception e) {
                             logger.error("get fluxdb data ...", e.getMessage(), e);
                             return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
@@ -99,14 +92,7 @@ public class MonitorController {
                 monitorServiceList.add(monitorService);
             }
         }
-
-        if (zooKeeper != null) {
-            try {
-                zooKeeper.close();
-            } catch (InterruptedException e) {
-                logger.error("zk close .." + e);
-            }
-        }
+        ZkUtil.closeZk(zooKeeper);
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", monitorServiceList));
     }
 
@@ -116,9 +102,9 @@ public class MonitorController {
      * @return
      */
     @GetMapping(value = "/loadMethodInfo")
-    public ResponseEntity<?> loadMethodInfo(@RequestParam String instance, @RequestParam String serviceName, @RequestParam Long zkNode) {
-        ZkNode zk_node = zkNodeRepository.findById(zkNode);
-        List<MonitorMethod> methodList = new ArrayList<>();
+    public ResponseEntity<?> loadMethodInfo(@RequestParam String instance, @RequestParam String serviceName, @RequestParam Long id) {
+        ZkNode zk_node = zkNodeRepository.findOne(id);
+        List<MonitorMethod> methodList;
         try {
             //获得方法实例信息
             methodList = fillInstanceMethodInfo(instance, serviceName, zk_node);
@@ -131,18 +117,12 @@ public class MonitorController {
 
 
     /**
-     * 获取服务缓存列表
+     * 获取集群列表
      *
      * @return
      */
     @GetMapping(value = "/loadNodes")
-    public ResponseEntity<?> loadNodes(String nodeHost) {
-       /* List<String> nodeList = new ArrayList<>();
-        nodeList.add("10.10.10.45");
-        nodeList.add("127.0.0.1");
-        nodeList.add("10.10.10.38");
-        nodeList.add("10.10.10.35");
-        nodeList.add("10.10.10.36");*/
+    public ResponseEntity<?> loadNodes() {
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", zkNodeRepository.findAll()));
     }
 
@@ -180,9 +160,6 @@ public class MonitorController {
             Pattern pattern = Pattern.compile("terminated\\[(.+?)\\] .* poolSize\\[(.+?)\\] .* totalTasks\\[(.+?)\\]");
             Matcher m = pattern.matcher(containerInfo);
             while (m.find()) {
-                /*System.out.println(m.group(1));
-                System.out.println(m.group(2));
-                System.out.println(m.group(3));*/
                 containerPool = "[ " + m.group(2) + " ]";
                 containerTask = "[ " + m.group(3) + " ]";
             }

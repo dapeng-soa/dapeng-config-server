@@ -5,11 +5,14 @@ import com.github.dapeng.dto.ConfigInfoDto;
 import com.github.dapeng.dto.RealConfig;
 import com.github.dapeng.entity.ConfigInfo;
 import com.github.dapeng.entity.ConfigPublishHistory;
-import com.github.dapeng.openapi.cache.ZookeeperClient;
+import com.github.dapeng.entity.ZkNode;
 import com.github.dapeng.openapi.utils.Constants;
+import com.github.dapeng.openapi.utils.ZkUtil;
 import com.github.dapeng.repository.ConfigInfoRepository;
 import com.github.dapeng.repository.ConfigPublishRepository;
+import com.github.dapeng.repository.ZkNodeRepository;
 import com.github.dapeng.util.*;
+import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.github.dapeng.common.ConfigStatus;
 import com.github.dapeng.common.Commons;
-import java.util.List;
 
-
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author with struy.
@@ -44,6 +43,9 @@ public class ConfigRestController {
 
     @Autowired
     ConfigPublishRepository publishRepository;
+
+    @Autowired
+    ZkNodeRepository nodeRepository;
 
     /**
      * 添加配置
@@ -196,8 +198,21 @@ public class ConfigRestController {
      * 发布配置信息
      */
     @PostMapping(value = "/config/publish/{id}")
-    public ResponseEntity<?> publishConfig(@PathVariable Long id) {
-        return publish(id);
+    public ResponseEntity<?> publishConfig(@PathVariable Long id,
+                                           @RequestParam Long cid) {
+        ZkNode node = nodeRepository.findOne(cid);
+        if (!NullUtil.isEmpty(node)){
+            String host = node.getZkHost();
+            return publish(host, id);
+        }else if (cid == -1){
+            List<ZkNode> list = nodeRepository.findAll();
+            list.forEach(zkNode -> {
+                publish(zkNode.getZkHost(), id);
+            });
+            return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE,Commons.COMMON_ERRO_MSG));
+        }else {
+            return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE,Commons.COMMON_ERRO_MSG));
+        }
     }
 
 
@@ -236,9 +251,10 @@ public class ConfigRestController {
      * @return
      */
     @GetMapping(value = "/config/sysRealConfig")
-    public ResponseEntity<?> sysRealConfig(@RequestParam String serviceName) {
+    public ResponseEntity<?> sysRealConfig(@RequestParam(required = false) String host,
+                                           @RequestParam String serviceName) {
         try {
-            RealConfig realConfig = proccessSysConfig(serviceName);
+            RealConfig realConfig = proccessSysConfig(host, serviceName);
             return ResponseEntity
                     .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, realConfig));
         } catch (Exception e) {
@@ -255,7 +271,7 @@ public class ConfigRestController {
      * 2.将本次的发布信息同步到发布历史表并且以==>年月日时分秒:20180611083030作为版本号
      * 3.执行具体的发布,发布出错则回滚
      */
-    private ResponseEntity<?> publish(Long id) {
+    private ResponseEntity<?> publish(String host, Long id) {
         ConfigInfo config = repository.getOne(id);
         if (null != config) {
             if (config.getStatus() == ConfigStatus.PUBLISHED.key()) {
@@ -279,7 +295,7 @@ public class ConfigRestController {
             cid.setRemark(config.getRemark());
 
             try {
-                processPublish(cid);
+                processPublish(host, cid);
                 return ResponseEntity
                         .ok(Resp.of(Commons.SUCCESS_CODE, Commons.PUBLISH_SUCCESS_MSG));
             } catch (Exception e) {
@@ -321,6 +337,11 @@ public class ConfigRestController {
      * @throws Exception
      */
     private void checkGrammar(ConfigInfoDto cofig) throws Exception {
+
+        if (!cofig.getServiceName().contains(".")) {
+            throw new Exception("服务名格式有误，请检查！");
+        }
+
         // 语法检查
         boolean freqIsOk = NullUtil.isEmpty(cofig.getFreqConfig()) ?
                 true : CheckConfigUtil.doCheckFreq(cofig.getFreqConfig());
@@ -352,15 +373,17 @@ public class ConfigRestController {
      *
      * @param service
      */
-    private RealConfig proccessSysConfig(String service) throws Exception {
+    private RealConfig proccessSysConfig(String host, String service) throws Exception {
+        host = "127.0.0.1:2181";
+        ZooKeeper zk = ZkUtil.createZkByHost(host);
         RealConfig realConfig = new RealConfig();
-        ZookeeperClient zk = ZkUtil.getCurrInstance();
-        String timeoutBalanceConfig = zk.getNodeData(Constants.CONFIG_SERVICE_PATH + "/" + service);
-        String freqConfig = zk.getNodeData(Constants.CONFIG_FREQ_PATH + "/" + service);
-        String routerConfig = zk.getNodeData(Constants.CONFIG_ROUTER_PATH + "/" + service);
+        String timeoutBalanceConfig = ZkUtil.getNodeData(zk, Constants.CONFIG_SERVICE_PATH + "/" + service);
+        String freqConfig = ZkUtil.getNodeData(zk, Constants.CONFIG_FREQ_PATH + "/" + service);
+        String routerConfig = ZkUtil.getNodeData(zk, Constants.CONFIG_ROUTER_PATH + "/" + service);
         realConfig.setTimeoutBalanceConfig(timeoutBalanceConfig);
         realConfig.setFreqConfig(freqConfig);
         realConfig.setRouterConfig(routerConfig);
+        ZkUtil.closeZk(zk);
         return realConfig;
     }
 
@@ -370,7 +393,8 @@ public class ConfigRestController {
      * @param cid
      * @throws Exception
      */
-    private void processPublish(ConfigInfoDto cid) throws Exception {
+    private void processPublish(String host, ConfigInfoDto cid) throws Exception {
+        ZooKeeper zk = ZkUtil.createZkByHost(host);
         ConfigPublishHistory history = new ConfigPublishHistory();
         history.setVersion(VersionUtil.version());
         history.setRemark(cid.getRemark());
@@ -382,14 +406,13 @@ public class ConfigRestController {
         history.setPublishedAt(DateUtil.now());
         history.setPublishedBy(0);
         publishRepository.save(history);
-
-        ZookeeperClient zk = ZkUtil.getCurrInstance();
         String service = cid.getServiceName();
         // 超时，负载均衡 针对服务的配置，全局的配置在 /soa/config/services 节点
-        zk.createData(Constants.CONFIG_SERVICE_PATH + "/" + service, cid.getTimeoutConfig() + cid.getLoadbalanceConfig());
+        ZkUtil.createData(zk, Constants.CONFIG_SERVICE_PATH + "/" + service, cid.getTimeoutConfig() + cid.getLoadbalanceConfig());
         // 路由
-        zk.createData(Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
+        ZkUtil.createData(zk, Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
         // 限流
-        zk.createData(Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
+        ZkUtil.createData(zk, Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
+        ZkUtil.closeZk(zk);
     }
 }

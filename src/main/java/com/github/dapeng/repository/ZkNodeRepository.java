@@ -13,17 +13,5 @@ import java.util.List;
  */
 @Repository
 public interface ZkNodeRepository extends JpaRepository<ZkNode, Long>, JpaSpecificationExecutor<ZkNode> {
-    /**
-     * 通过配置名称查找
-     *
-     * @return
-     */
-    ZkNode findById(long id);
 
-    /**
-     * 通过配置名称查找
-     *
-     * @return
-     */
-    List<ZkNode> findAll();
 }

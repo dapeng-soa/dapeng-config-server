@@ -100,7 +100,6 @@ function InitApiTable() {
         // 双击行事件
         onDblClickRow: function (row) {
             var id = row.id;
-            viewOrEditByID(id, 'view');
         }
     });
 }
@@ -148,7 +147,7 @@ saveApiKey = function () {
  */
 clearApiKeyInput = function () {
     bodyAbs();
-    layer.confirm('清空已填写配置？', {
+    layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
     }, function () {
         $("textarea.form-control").val("");

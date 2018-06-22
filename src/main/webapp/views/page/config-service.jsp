@@ -23,12 +23,11 @@
                 <p class="left-panel-title">服务配置管理</p>
                 <span class="input-group-btn panel-button-group">
                     <button type="button" class="btn btn-primary" onclick="openAddConfig()">新增</button>
-                    <button type="button" class="btn btn-success" onclick="refresh()">刷新</button>
                 </span>
             </div>
         </div>
 
-        <table id="table"></table>
+        <table id="config-table"></table>
         <jsp:include page="../core/footer.jsp"/>
     </div>
 </div>
