@@ -43,6 +43,9 @@ public class ApiKeyInfo {
     @Column(name = "biz")
     private String biz;
 
+    @Column(name = "timeout")
+    private Long timeout;
+
 
     public long getId() {
         return id;
@@ -133,4 +136,11 @@ public class ApiKeyInfo {
         this.biz = biz;
     }
 
+    public Long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Long timeout) {
+        this.timeout = timeout;
+    }
 }

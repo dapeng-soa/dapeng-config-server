@@ -81,6 +81,10 @@
     window.refresh = function(){
         window.location.reload();
     };
+
+    window.toggleBlock = function (a) {
+        $(a).next(".advance-format-content").toggle();
+    };
     window.SUCCESS_CODE = 200;
     window.ERROR_CODE = 4004;
 </script>

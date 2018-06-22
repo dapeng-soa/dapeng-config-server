@@ -2,8 +2,11 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
+import com.github.dapeng.dto.ZkNodeDto;
 import com.github.dapeng.entity.ZkNode;
 import com.github.dapeng.repository.ZkNodeRepository;
+import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +35,46 @@ public class ClustersRestController {
      *
      * @return
      */
-    @PostMapping(value = "/cluster/add/")
-    public ResponseEntity<?> addKey() {
+    @PostMapping(value = "/cluster/add")
+    public ResponseEntity<?> addCluster(@RequestBody ZkNodeDto dto) {
+        if (NullUtil.isEmpty(dto.getZkHost())) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.ZKHOST_NOTNULL));
+        }
+        ZkNode node = new ZkNode();
+        node.setZkHost(dto.getZkHost());
+        node.setRemark(dto.getRemark());
+        node.setInfluxdbHost(dto.getInfluxdbHost());
+        node.setInfluxdbPass(dto.getInfluxdbPass());
+        node.setInfluxdbUser(dto.getInfluxdbUser());
+        node.setCreatedAt(DateUtil.now());
+        node.setUpdatedAt(DateUtil.now());
+        node.setCreatedBy(0);
+        node.setUpdatedBy(0);
+        nodeRepository.save(node);
+
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
     }
+
+    /**
+     * 删除单个集群
+     *
+     * @return
+     */
+    @PostMapping(value = "/cluster/del/{cid}")
+    public ResponseEntity<?> delCluster(@PathVariable Long cid) {
+        try {
+            nodeRepository.delete(cid);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+        }
+    }
+
+
 
     /**
      * 获取集群列表

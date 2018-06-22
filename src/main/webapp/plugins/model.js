@@ -59,7 +59,6 @@ window.initModelContext = function (context, closeCallback) {
 };
 
 window.bodyAbs = function () {
-    console.log("sss");
     $("body").addClass("model-opened");
 };
 window.rmBodyAbs = function () {

@@ -75,7 +75,6 @@ function InitMonitorTable() {
             sortable: true
         }, {
             field: 'runStatus',
-            /*events: runStatusOperateEvents,*/
             title: '服务状态',
             align: 'center',
             valign: 'middle',
@@ -87,11 +86,7 @@ function InitMonitorTable() {
             align: 'center',
             valign: 'middle',
             formatter: healthStatusFormatter
-        }/*, {
-            field: 'notes',
-            title: '备注',
-            sortable: true
-        }*/],
+        }],
         onLoadSuccess: function () {
             console.info("onLoadSuccess")
             $("[data-toggle='tooltip']").tooltip();

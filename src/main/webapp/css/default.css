@@ -185,7 +185,10 @@ button[type="button"][name="refresh"]{
     font-size: 24px;
     line-height: 250%;
 }
-#table{
+#clusters-table,
+#apikey-table,
+#config-table,
+#monitor-table{
     font-size: 14px;
 }
 /*================================表格操作图标*/

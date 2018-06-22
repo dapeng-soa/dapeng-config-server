@@ -36,6 +36,6 @@ public class NullUtil {
 
 
     public static boolean isEmpty(Long l) {
-        return ((l == null) || (l.longValue() == 0L));
+        return ((l == null) || (l == 0L));
     }
 }

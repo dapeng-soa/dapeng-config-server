@@ -12,6 +12,7 @@
     <script src="${basePath}/js/api/clusters.js"></script>
 </head>
 <body>
+<jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/header.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
@@ -25,11 +26,8 @@
             </div>
         </div>
 
-        <div class="row" style="margin-top: 40px" >
-            <div class="col-xs-12">
-                <code>暂时没有新内容</code>
-            </div>
-        </div>
+        <table id="clusters-table">
+        </table>
         <jsp:include page="../core/footer.jsp"/>
     </div>
 </div>

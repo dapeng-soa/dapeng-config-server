@@ -21,7 +21,6 @@
             <div class="input-group">
                 <p class="left-panel-title">网关服务白名单管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
                 </span>
             </div>
         </div>
@@ -32,8 +31,15 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">白名单列表</h3>
+                        <div class="row" style="margin-top: 10px;">
+                            <label for="whiteNodeSelect" style="line-height: 250%"  class="col-sm-2  control-label">集群:</label>
+                            <div class="col-sm-10">
+                                <select  id="whiteNodeSelect" onchange="nodeChanged(this)" class="form-control col-xs-8">
+                                </select>
+                            </div>
+                        </div>
                         <div class="panel-btn-group-left">
-                            <i class="fa fa-refresh" style="cursor: pointer" onclick="InitWhiteList()" aria-hidden="true"></i>
+                            <i class="fa fa-refresh" style="cursor: pointer" onclick="refreshWhiteList()" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="panel-body" >

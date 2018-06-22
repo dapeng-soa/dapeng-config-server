@@ -4,7 +4,6 @@
 module api {
     export class Config {
         //
-        servicesUrl: string = `${window.basePath}/api/services`;
         add: string = "add";
         view: string = "view";
         edit: string = "edit";
@@ -67,10 +66,10 @@ module api {
                 : ""}
                    
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">${type == c.real?"超时/":""}负载均衡:</label>
+                        <label class="col-sm-2 control-label">${type == c.real ? "超时/" : ""}负载均衡:</label>
                         <!--负载均衡配置-->
                         <div class="col-sm-9">
-                            <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="loadbalance-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? (type == c.real ? data.timeoutBalanceConfig : data.loadbalanceConfig):""}</textarea>
+                            <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="loadbalance-config-area" class="col-sm-2 form-control" rows="5">${type != c.add ? (type == c.real ? data.timeoutBalanceConfig : data.loadbalanceConfig) : ""}</textarea>
                               <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -175,7 +174,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                             <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="7">${type != c.add ? data.remark : ""}</textarea>
                         </div>
                     </div>
-                    `:""}
+                    ` : ""}
                     ${type == c.add ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveconfig()">保存配置</button>
@@ -211,21 +210,8 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
             `
         }
 
-        // 初始化服务信息
-        public initServices() {
-            const config = this;
-            let optionsEl = "";
-            $.get(config.servicesUrl, function (res) {
-                let services = res.context;
-                for (const s of services) {
-                    optionsEl += `<option value=${s}>${s}</option>`
-                }
-                $("#services-sel").html(optionsEl);
-            }, "json");
-        }
-
         //表格操作模版
-        public exportTableActionContext(id: string, row: any) {
+        public exportConfigTableActionContext(id: string, row: any) {
             return `<span class="link-button-table">
             ${row.status != 3 ? `<a href="javascript:void(0)" title="发布" onclick="publishConfig(${id})"><span class="glyphicon glyphicon-send"></span></a>` : ""}
             <a href="javascript:void(0)" title="修改"  onclick="viewOrEditByID(${id},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
@@ -242,7 +228,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
             return `
             <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加ApiKey" : (type == c.edit ? "修改ApiKey": (type == c.view ? "ApiKey详情" : ""))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加ApiKey" : (type == c.edit ? "修改ApiKey" : (type == c.view ? "ApiKey详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
@@ -262,6 +248,29 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                         <label class="col-sm-2 control-label">密码:</label>
                         <div class="col-sm-9">
                             <input type="text" ${type == c.view ? "disabled" : ""} id="authPassWord" class="col-sm-2 form-control">${type != c.add ? data.password : ""}</input>
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+注:密码必须大于等于12位
+                                  </pre>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">超时时间(秒):</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="authTimeout" class="col-sm-2 form-control">${type != c.add ? data.timeout : ""}</input>
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+注:超时时间单位[秒],默认为60s
+输入值应当大于等于60秒,如果输入小于60秒将使用默认值
+                                  </pre>
+                                </div>
+                              </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -274,6 +283,18 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                         <label class="col-sm-2 control-label">ip规则:</label>
                         <div class="col-sm-9">
                             <textarea ${type == c.view ? "disabled" : ""} id=authIps class="form-control" rows="5">${type != c.add ? data.ips : ""}</textarea>
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+注:
+单个ip: 127.0.0.1
+多个ip: 127.0.0.1,127.0.0.2
+掩码: 10.0.0.5/24
+默认(不限制ip): *
+                                  </pre>
+                                </div>
+                              </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -292,12 +313,95 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
             `
         }
 
-        //表格操作模版
+        //ApiKey表格操作模版
         public exportApiKeyTableActionContext(id: string, row: any) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="修改"  onclick="viewApiKeyOrEditByID(${id},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <!--<a href="javascript:void(0)" title="详情"  onclick="viewApiKeyOrEditByID(${id},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>-->
             <a href="javascript:void(0)" title="禁用"  onclick="delApiKey(${id})"><span class="glyphicon glyphicon-remove"></span></a>
+            </span>`
+        }
+
+        //导出添加/修改/集群信息
+        public exportAddClusterContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
+            let c = this;
+            return `
+            <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">${type == c.add ? "添加集群" : (type == c.edit ? "修改集群" : (type == c.view ? "集群详情" : ""))}</p>
+                    </div>
+                </div>
+                <div class="form-horizontal" style="margin-top: 81px;">
+               ${type != c.add ? ` <div class="form-group">
+                        <label class="col-sm-2 control-label">更新时间:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" value="${data.updatedAt}"/>
+                        </div>
+                    </div>` : ""}
+               <div class="form-group">
+                        <label class="col-sm-2 control-label">zookeeper集群:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="zookeeperHost" class="col-sm-2 form-control">${type != c.add ? data.zkHost : ""}</input>
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+如:127.0.0.1或127.0.0.1:2181
+集群:127.0.0.1:2181,127.0.0.2:2181,127.0.0.3:2181
+                                  </pre>
+                                </div>
+                              </div>
+                        </div>
+                       
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">描述:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="remark" class="col-sm-2 form-control">${type != c.add ? data.remark : ""}</input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">influxdb主机地址:</label>
+                        <div class="col-sm-9">
+                            <input type="text"  ${type == c.view ? "disabled" : ""} id="influxdbHost" class="form-control" >${type != c.add ? data.influxdbHost : ""}</input>
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+influxdb为监控数据地址,默认端口为8086
+如:127.0.0.1:8086
+                                  </pre>
+                                </div>
+                              </div>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">influxdb用户名:</label>
+                        <div class="col-sm-9">
+                            <input ${type == c.view ? "disabled" : ""} id="influxdbUser" class="form-control">${type != c.add ? data.influxdbUser : ""}</input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">influxdb密码:</label>
+                        <div class="col-sm-9">
+                            <input ${type == c.view ? "disabled" : ""} id="influxdbPass" class="form-control" >${type != c.add ? data.influxdbPass : ""}</input>
+                        </div>
+                    </div>
+                    ${type == c.add ? `
+                    <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="saveCluster()">保存</button>
+                    <button type="button" class="btn btn-danger" onclick="clearClusterInput()">清空</button>
+                    </span>` : ""}
+                    </div>
+                    
+            `
+        }
+
+        //集群列表表格操作模版
+        public exportClustersTableActionContext(id: string, row: any) {
+            return `<span class="link-button-table">
+            <a href="javascript:void(0)" title="修改"  onclick="viewClusterOrEditByID(${id},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="删除"  onclick="delCluster(${id})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`
         }
 

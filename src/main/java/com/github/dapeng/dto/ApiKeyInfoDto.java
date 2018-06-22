@@ -9,9 +9,10 @@ package com.github.dapeng.dto;
 public class ApiKeyInfoDto {
     private String apiKey;
     private String password;
-    private String ips;
+    private String ips = "*";
     private String notes;
     private String biz;
+    private Long timeout = 60L;
 
     public String getApiKey() {
         return apiKey;
@@ -51,5 +52,13 @@ public class ApiKeyInfoDto {
 
     public void setBiz(String biz) {
         this.biz = biz;
+    }
+
+    public Long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Long timeout) {
+        this.timeout = timeout;
     }
 }

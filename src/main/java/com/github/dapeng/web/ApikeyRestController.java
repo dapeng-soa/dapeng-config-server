@@ -55,6 +55,9 @@ public class ApikeyRestController {
         if (NullUtil.isEmpty(dto.getApiKey()) || NullUtil.isEmpty(dto.getPassword())) {
             return ResponseEntity
                     .ok(Resp.of(Commons.ERROR_CODE, Commons.APIKEY_PWD_NOTNULL));
+        } else if (dto.getPassword().length() < Commons.DEF_PWD_LENGTH) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.PWD_LENGTH_ERROR));
         }
         ApiKeyInfo info = new ApiKeyInfo();
         // 前置判断
@@ -62,6 +65,7 @@ public class ApikeyRestController {
         info.setBiz(dto.getBiz());
         info.setIps(NullUtil.isEmpty(dto.getIps()) ? "*" : dto.getIps());
         info.setPassword(dto.getPassword());
+        info.setTimeout((NullUtil.isEmpty(dto.getTimeout()) || Math.abs(dto.getTimeout()) < 60) ? 60 : Math.abs(dto.getTimeout()));
         info.setNotes(dto.getNotes());
         info.setCreatedAt(DateUtil.now());
         info.setUpdatedAt(DateUtil.now());

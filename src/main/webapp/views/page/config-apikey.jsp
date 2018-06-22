@@ -23,7 +23,6 @@
                 <p class="left-panel-title">网关ApiKey管理</p>
                 <span class="input-group-btn panel-button-group">
                     <button type="button" class="btn btn-primary" onclick="openAddApiKeyModle()">新增</button>
-                    <%--<button type="button" class="btn btn-success" onclick="refresh()">刷新</button>--%>
                 </span>
             </div>
         </div>

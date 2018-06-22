@@ -201,17 +201,17 @@ public class ConfigRestController {
     public ResponseEntity<?> publishConfig(@PathVariable Long id,
                                            @RequestParam Long cid) {
         ZkNode node = nodeRepository.findOne(cid);
-        if (!NullUtil.isEmpty(node)){
+        if (!NullUtil.isEmpty(node)) {
             String host = node.getZkHost();
             return publish(host, id);
-        }else if (cid == -1){
+        } else if (cid == -1) {
             List<ZkNode> list = nodeRepository.findAll();
             list.forEach(zkNode -> {
                 publish(zkNode.getZkHost(), id);
             });
-            return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE,Commons.COMMON_ERRO_MSG));
-        }else {
-            return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE,Commons.COMMON_ERRO_MSG));
+            return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_ERRO_MSG));
+        } else {
+            return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
         }
     }
 
@@ -251,14 +251,20 @@ public class ConfigRestController {
      * @return
      */
     @GetMapping(value = "/config/sysRealConfig")
-    public ResponseEntity<?> sysRealConfig(@RequestParam(required = false) String host,
+    public ResponseEntity<?> sysRealConfig(@RequestParam Long cid,
                                            @RequestParam String serviceName) {
-        try {
-            RealConfig realConfig = proccessSysConfig(host, serviceName);
-            return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, realConfig));
-        } catch (Exception e) {
-            LOGGER.error("同步服务配置出错::", e);
+        ZkNode node = nodeRepository.findOne(cid);
+        if (!NullUtil.isEmpty(node)) {
+            try {
+                RealConfig realConfig = proccessSysConfig(node.getZkHost(), serviceName);
+                return ResponseEntity
+                        .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, realConfig));
+            } catch (Exception e) {
+                LOGGER.error("同步服务配置出错::", e);
+                return ResponseEntity
+                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SYS_CONFIG_ERROR));
+            }
+        } else {
             return ResponseEntity
                     .ok(Resp.of(Commons.ERROR_CODE, Commons.SYS_CONFIG_ERROR));
         }
@@ -374,7 +380,6 @@ public class ConfigRestController {
      * @param service
      */
     private RealConfig proccessSysConfig(String host, String service) throws Exception {
-        host = "127.0.0.1:2181";
         ZooKeeper zk = ZkUtil.createZkByHost(host);
         RealConfig realConfig = new RealConfig();
         String timeoutBalanceConfig = ZkUtil.getNodeData(zk, Constants.CONFIG_SERVICE_PATH + "/" + service);
@@ -397,7 +402,7 @@ public class ConfigRestController {
         ZooKeeper zk = ZkUtil.createZkByHost(host);
         ConfigPublishHistory history = new ConfigPublishHistory();
         history.setVersion(VersionUtil.version());
-        history.setRemark(cid.getRemark());
+        history.setRemark("publish to [" + host + "]");
         history.setServiceName(cid.getServiceName());
         history.setTimeoutConfig(cid.getTimeoutConfig());
         history.setLoadbalanceConfig(cid.getLoadbalanceConfig());

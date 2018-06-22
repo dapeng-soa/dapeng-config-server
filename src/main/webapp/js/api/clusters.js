@@ -5,9 +5,9 @@ var config1 = new api.Config();
 
 function initClusters() {
     //记录页面bootstrap-table全局变量$table，方便应用
-    var queryUrl = basePath + '/api/authkeys';
+    var queryUrl = basePath + '/api/clusters';
     var rows = 20;
-    $table = $('#apikey-table').bootstrapTable({
+    $table = $('#clusters-table').bootstrapTable({
         url: queryUrl,                      //请求后台的URL（*）
         method: 'GET',                      //请求方式（*）
         responseHandler: function (res) {     //格式化返回数据
@@ -29,7 +29,7 @@ function initClusters() {
         search: true,                      //是否显示表格搜索
         strictSearch: false,                 //设置为 true启用全匹配搜索，否则为模糊搜索。
         showColumns: true,                  //是否显示所有的列（选择显示的列）
-        showRefresh: false,                  //是否显示刷新按钮
+        showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
         clickToSelect: false,                //是否启用点击选中行
         //height: 900,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
@@ -39,7 +39,6 @@ function initClusters() {
         detailView: false,                  //是否显示父子表
         //得到查询的参数
         queryParams: function (params) {
-            //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
             return {
                 keyword: params.search,
                 rows: params.limit,                         //页面大小
@@ -57,25 +56,14 @@ function initClusters() {
             formatter: numberFormatter
 
         }, {
-            field: 'apiKey',
-            title: 'ApiKey',
-            sortable: true
+            field: 'zkHost',
+            title: 'zookeeper集群地址'
         }, {
-            field: 'password',
-            title: '密码'
+            field: 'remark',
+            title: '描述'
         }, {
-            field: 'biz',
-            title: '所属业务',
-            sortable: true,
-            align: 'center',
-            valign: 'middle'
-        }, {
-            field: 'ips',
-            title: 'IP规则'
-        }, {
-            field: 'notes',
-            title: '备注',
-            sortable: true
+            field: 'influxdbHost',
+            title: 'influxdb',
         }, {
             field: 'createdAt',
             title: '添加时间',
@@ -90,7 +78,7 @@ function initClusters() {
             width: 160,
             align: 'center',
             valign: 'middle',
-            formatter: ApiActionFormatter
+            formatter: clustersActionFormatter
         }],
         onLoadSuccess: function () {
         },
@@ -108,17 +96,101 @@ function initClusters() {
 /**
  * @return {string}
  */
-ApiActionFormatter = function (value, row, index) {
-    return config1.exportApiKeyTableActionContext(value, row);
+clustersActionFormatter = function (value, row, index) {
+    return config1.exportClustersTableActionContext(value, row);
 };
 
 numberFormatter = function (value, row, index) {
     return index + 1;
 };
 
-// test
-openAddCluster =function () {
-  console.log("openAddCluster");
+/**
+ * 查看或者删除集群
+ */
+viewClusterOrEditByID = function (cid, op) {
+    layer.msg("暂无权限");
+};
 
+/**
+ * 删除单个集群
+ */
+delCluster = function (cid) {
+    bodyAbs();
+    layer.confirm('确定删除？', {
+        btn: ['确认', '取消']
+    }, function () {
+        var url = basePath + "/api/cluster/del/" + cid
+        $.post(url, function (res) {
+            layer.msg(res.msg);
+        }, "json");
+        rmBodyAbs();
+    }, function () {
+        layer.msg("未做任何改动");
+        rmBodyAbs();
+    });
+};
+
+/**
+ * 保存集群
+ */
+saveCluster = function () {
+
+    var url = basePath + "/api/cluster/add";
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify(processClusterData()),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            refresh();
+        }
+    });
+};
+
+
+/**
+ *
+ */
+processClusterData = function () {
+    var zkHost = $("#zookeeperHost").val();
+    var remark = $("#remark").val();
+    var influxdbHost = $("#influxdbHost").val();
+    var influxdbUser = $("#influxdbUser").val();
+    var influxdbPass = $("#influxdbPass").val();
+
+    return {
+        zkHost: zkHost,
+        remark: remark,
+        influxdbHost: influxdbHost,
+        influxdbUser: influxdbUser,
+        influxdbPass: influxdbPass
+    }
+};
+
+/**
+ * 清空输入
+ */
+clearClusterInput = function () {
+    bodyAbs();
+    layer.confirm('将清空当前所有输入？', {
+        btn: ['确认', '取消']
+    }, function () {
+        $("textarea.form-control,input.form-control").val("");
+        layer.msg("已清空");
+    }, function () {
+        layer.msg("取消清空");
+    });
+};
+
+
+openAddCluster = function () {
+    // 导出弹窗内容模版
+    var context = config1.exportAddClusterContext("add");
+    // 初始化弹窗
+    initModelContext(context, refresh);
 };
 
