@@ -19,6 +19,7 @@ CREATE TABLE  `api_key_info` (
   `updated_by` int(11) NOT NULL COMMENT '最后更新人',
   `notes` varchar(255) DEFAULT NULL COMMENT '描述',
   `biz` varchar(100) NOT NULL DEFAULT '' COMMENT '业务',
+  `timeout` int(11) NOT NULL DEFAULT 60 COMMENT '网关请求超时时间,unit(秒)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `api_key_unique` (`api_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

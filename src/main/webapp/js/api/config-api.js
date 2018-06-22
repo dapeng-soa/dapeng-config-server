@@ -122,7 +122,7 @@ statusFormatter = function (value) {
 
 // 操作格式化
 actionFormatter = function (id, row) {
-    return config.exportTableActionContext(id, row);
+    return config.exportConfigTableActionContext(id, row);
 };
 
 
@@ -240,12 +240,11 @@ publishConfig = function (id) {
 
     var curl = basePath + "/api/clusters";
     $.get(curl, function (res) {
-        console.log(res);
         if (res.code === SUCCESS_CODE) {
             var html = "<select style='width: 80%;margin: 0 auto' id='nodeSelect' class='form-control'>" +
                 "<option value='-1'>全部</option>";
             for (var i = 0; i < res.context.length; i++) {
-                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>'
+                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>';
             }
             html += '</select>';
             bodyAbs();
@@ -257,18 +256,9 @@ publishConfig = function (id) {
                 btn: ['确认发布', '取消发布'],
                 yes: function (index, layero) {
 
-                    var url = basePath + "/api/config/publish/" + id;
-                    $.post(url, {
-                        cid: $("#nodeSelect").find("option:selected").val()
-                    }, function (res) {
-                        layer.msg(res.msg);
-                        if (res.code === SUCCESS_CODE) {
-                            refresh();
-                        }
-                    }, "json")
+                    processPublishConfig($("#nodeSelect").find("option:selected").val());
 
-                },
-                btn2: function (index, layero) {
+                }, btn2: function (index, layero) {
                     layer.msg("取消发布");
                 }, cancel: function () {
                     layer.msg("取消发布");
@@ -278,15 +268,22 @@ publishConfig = function (id) {
             rmBodyAbs();
         }
     }, "json");
+};
 
-
-    /*var url = basePath + "/api/config/publish/" + id;
-    $.post(url, function (res) {
+/**
+ * 执行发布
+ * @param cid
+ */
+processPublishConfig = function (cid) {
+    var url = basePath + "/api/config/publish/" + id;
+    $.post(url, {
+        cid: cid
+    }, function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
             refresh();
         }
-    }, "json")*/
+    }, "json")
 };
 
 /**
@@ -309,8 +306,45 @@ viewOrEditByID = function (id, viewOrEdit) {
  * @param service
  */
 viewRealConfig = function (service) {
+
+    var curl = basePath + "/api/clusters";
+    $.get(curl, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var html = "<select style='width: 80%;margin: 0 auto' id='nodeSelect' class='form-control'>";
+            for (var i = 0; i < res.context.length; i++) {
+                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>';
+            }
+            html += '</select>';
+            bodyAbs();
+            // 选择集群发布
+            layer.open({
+                type: 1,
+                title: '请选择需要查看的集群',
+                content: html,
+                btn: ['查看', '取消'],
+                yes: function (index, layero) {
+                    layer.close(index);
+                    processSysRealConfig($("#nodeSelect").find("option:selected").val(),service);
+                }, btn2: function (index, layero) {
+                    layer.msg("操作取消");
+                }, cancel: function () {
+                    layer.msg("操作取消");
+                    //return false 开启该代码可禁止点击该按钮关闭
+                }
+            });
+            rmBodyAbs();
+        }
+    }, "json");
+
+};
+/**
+ * 执行配置同步
+ * @param cid
+ */
+processSysRealConfig = function (cid,service) {
     var url = basePath + "/api/config/sysRealConfig/";
     $.get(url, {
+        cid: cid,
         serviceName: service
     }, function (res) {
         var realdata = res.context;
@@ -385,8 +419,4 @@ openPublishHistory = function (serviceName) {
     var context = config.exportPublishHistoryContext(serviceName);
     // 初始化弹窗
     initModelContext(context, refresh);
-};
-
-toggleBlock = function (a) {
-    $(a).next(".advance-format-content").toggle();
 };

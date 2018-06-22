@@ -29,7 +29,7 @@ function InitApiTable() {
         search: true,                      //是否显示表格搜索
         strictSearch: false,                 //设置为 true启用全匹配搜索，否则为模糊搜索。
         showColumns: true,                  //是否显示所有的列（选择显示的列）
-        showRefresh: false,                  //是否显示刷新按钮
+        showRefresh: true,                  //是否显示刷新按钮
         minimumCountColumns: 2,             //最少允许的列数
         clickToSelect: false,                //是否启用点击选中行
         //height: 900,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
@@ -64,11 +64,12 @@ function InitApiTable() {
             field: 'password',
             title: '密码'
         }, {
+            field: 'timeout',
+            title: '超时时间',
+            sortable: true
+        },{
             field: 'biz',
-            title: '所属业务',
-            sortable: true,
-            align: 'center',
-            valign: 'middle'
+            title: '所属业务'
         }, {
             field: 'ips',
             title: 'IP规则'
@@ -152,10 +153,8 @@ clearApiKeyInput = function () {
     }, function () {
         $("textarea.form-control").val("");
         layer.msg("已清空");
-        rmBodyAbs();
     }, function () {
         layer.msg("取消清空");
-        rmBodyAbs();
     });
 };
 
@@ -165,13 +164,14 @@ processApiKeyData = function () {
     var authBiz = $("#authBiz").val();
     var authIps = $("#authIps").val();
     var notes = $("#notes").val();
-
+    var timeout = $("#authTimeout").val();
     return {
         apiKey: authApikey,
         password: authPassWord,
         biz: authBiz,
         ips: authIps,
-        notes: notes
+        notes: notes,
+        timeout: timeout
     }
 };
 

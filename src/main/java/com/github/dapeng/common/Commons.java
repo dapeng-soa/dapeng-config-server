@@ -15,7 +15,8 @@ public class Commons {
     public static final String SERVICE_ISEMPTY_MSG = "服务名不能为空";
     public static final String SERVICE_ISEXISTS_MSG = "此服务已经存在配置";
     public static final String SERVICE_FORMAT_EROR_MSG = "服务名格式有误";
-    public static final String SAVE_SUCCESS_MSG = "保存配置成功";
+    public static final String SAVE_SUCCESS_MSG = "保存成功";
+    public static final String SAVE_ERROR_MSG = "保存失败";
     public static final String LOADED_DATA = "数据载入成功";
     public static final String LOAD_DATA_ERROR = "数据载入失败";
     public static final String DEL_SUCCESS_MSG = "删除成功";
@@ -26,9 +27,11 @@ public class Commons {
     public static final String COMMON_ERRO_MSG = "操作失败";
     public static final String COMMON_SUCCESS_MSG = "操作成功";
     public static final String APIKEY_PWD_NOTNULL = "ApiKey和密码不能为空";
+    public static final String PWD_LENGTH_ERROR = "密码必须大于等于12位";
+    public static final String ZKHOST_NOTNULL = "zookeeper集群地址不能为空";
     public static final int SUCCESS_CODE = 200;
     public static final int ERROR_CODE = 4004;
-
+    public static final int DEF_PWD_LENGTH = 12;
 
     public static final String INFLUXDB_USERNAME = "influxdb_username";
     public static final String INFLUXDB_PASSWORD = "influxdb_password";
