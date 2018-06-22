@@ -22,7 +22,7 @@ function InitMonitorTable() {
         method: 'GET',                      //请求方式（*）
         responseHandler: function (res) {     //格式化返回数据
             //console.info(res)
-            if (res.code == '4004') {
+            if (res.code === '4004') {
                 //layer.msg(res.msg);
                 showMessage("Error", res.msg, "加载失败");
                 return {data: []};
@@ -231,7 +231,7 @@ function InitMonitorTable() {
 }
 
 
-function loadNodeList() {//获取下拉学校列表
+function loadNodeList() {
     $('#nodeSelect.selectpicker').selectpicker({
         liveSearch: true,
         maxOptions: 1,

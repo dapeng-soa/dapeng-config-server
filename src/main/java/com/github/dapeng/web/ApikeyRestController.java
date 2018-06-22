@@ -7,11 +7,14 @@ import com.github.dapeng.dto.ApiKeyInfoDto;
 import com.github.dapeng.entity.ApiKeyInfo;
 import com.github.dapeng.repository.ApiKeyInfoRepository;
 import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 import static com.github.dapeng.common.Commons.EXTRA_DATASOURCE;
 
 /**
@@ -28,6 +31,7 @@ public class ApikeyRestController {
 
     /**
      * 获取历史apikey配置信息
+     *
      * @return
      */
     @GetMapping(value = "/authkeys")
@@ -35,11 +39,12 @@ public class ApikeyRestController {
     public ResponseEntity<?> getApiKeys() {
         List<ApiKeyInfo> apiKeyInfos = repository.findAll();
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE,Commons.LOADED_DATA, apiKeyInfos));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, apiKeyInfos));
     }
 
     /**
      * 添加
+     *
      * @param dto
      * @return
      */
@@ -47,12 +52,15 @@ public class ApikeyRestController {
     @DataSource(EXTRA_DATASOURCE)
     public ResponseEntity<?> addKey(@RequestBody ApiKeyInfoDto dto) {
 
-        // 前置判断
-
+        if (NullUtil.isEmpty(dto.getApiKey()) || NullUtil.isEmpty(dto.getPassword())) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.APIKEY_PWD_NOTNULL));
+        }
         ApiKeyInfo info = new ApiKeyInfo();
+        // 前置判断
         info.setApiKey(dto.getApiKey());
         info.setBiz(dto.getBiz());
-        info.setIps(dto.getIps());
+        info.setIps(NullUtil.isEmpty(dto.getIps()) ? "*" : dto.getIps());
         info.setPassword(dto.getPassword());
         info.setNotes(dto.getNotes());
         info.setCreatedAt(DateUtil.now());
@@ -62,6 +70,6 @@ public class ApikeyRestController {
         repository.save(info);
 
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE,Commons.SAVE_SUCCESS_MSG));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
     }
 }

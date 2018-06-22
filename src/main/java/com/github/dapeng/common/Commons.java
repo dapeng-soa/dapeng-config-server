@@ -17,19 +17,23 @@ public class Commons {
     public static final String SERVICE_FORMAT_EROR_MSG = "服务名格式有误";
     public static final String SAVE_SUCCESS_MSG = "保存配置成功";
     public static final String LOADED_DATA = "数据载入成功";
+    public static final String LOAD_DATA_ERROR = "数据载入失败";
     public static final String DEL_SUCCESS_MSG = "删除成功";
     public static final String DEL_ERROR_MSG = "删除失败";
     public static final String PUBLISH_SUCCESS_MSG = "发布配置成功";
     public static final String ROLLBACK_SUCCESS_MSG = "回滚配置成功";
     public static final String ADD_WHITELIST_SUCCESS_MSG = "白名单添加成功";
+    public static final String COMMON_ERRO_MSG = "操作失败";
+    public static final String COMMON_SUCCESS_MSG = "操作成功";
+    public static final String APIKEY_PWD_NOTNULL = "ApiKey和密码不能为空";
     public static final int SUCCESS_CODE = 200;
     public static final int ERROR_CODE = 4004;
 
-    /*influxdb*/
-    public static final String INFLUXDB_USERNAME = "influxdb_username";//用户名
-    public static final String INFLUXDB_PASSWORD = "influxdb_password";//密码
-    public static final String INFLUXDB_OPENURL = "influxdb_openurl";//连接地址
-    public static final String INFLUXDB_DATABASE = "influxdb_database";//数据库
+
+    public static final String INFLUXDB_USERNAME = "influxdb_username";
+    public static final String INFLUXDB_PASSWORD = "influxdb_password";
+    public static final String INFLUXDB_OPENURL = "influxdb_openurl";
+    public static final String INFLUXDB_DATABASE = "influxdb_database";
 
     public static final String MAIN_DATASOURCE = "mainSource";
     public static final String EXTRA_DATASOURCE = "extraSource";

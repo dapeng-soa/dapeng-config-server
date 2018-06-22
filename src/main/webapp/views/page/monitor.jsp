@@ -20,23 +20,18 @@
             <div class="input-group">
                 <p class="left-panel-title">服务监控</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
                 </span>
             </div>
         </div>
 
         <table id="monitor-table"></table>
 
-        <%--<div id="toolbar">
-            <select id="slpk" class="selectpicker" data-live-search="true" multiple></select>
-        </div>--%>
         <div id="toolbar" class="col-sm-12">
             <div class="row">
-                <label class="col-sm-5 control-label">注册中心:</label>
+                <label class="col-sm-5 control-label">集群:</label>
                 <div class="col-sm-7">
                     <select id="nodeSelect" name="select" class="selectpicker show-tick form-control">
-                        　　<%--<option value="127.0.0.1">127.0.0.1</option>
-                        　　<option value="10.10.10.45">10.10.10.45</option>--%>
+                        　
                     </select>
                 </div>
             </div>

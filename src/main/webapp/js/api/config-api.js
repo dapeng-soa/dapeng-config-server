@@ -7,7 +7,7 @@ function InitMainTable() {
     //记录页面bootstrap-table全局变量$table，方便应用
     var queryUrl = basePath + '/api/configs';
     var rows = 10;
-    $table = $('#table').bootstrapTable({
+    $table = $('#config-table').bootstrapTable({
         url: queryUrl,                      //请求后台的URL（*）
         method: 'GET',                      //请求方式（*）
         responseHandler: function (res) {     //格式化返回数据
@@ -16,7 +16,7 @@ function InitMainTable() {
                 rows: res.context.content
             };
         },
-        //toolbar: '#toolbar',              //工具按钮用哪个容器
+        toolbar: '#config-toolbar',              //工具按钮用哪个容器
         striped: true,                      //是否显示行间隔色
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
         pagination: true,                   //是否显示分页（*）
@@ -237,13 +237,56 @@ processHistoryData = function (data) {
  * @param id
  */
 publishConfig = function (id) {
-    var url = basePath + "/api/config/publish/" + id;
+
+    var curl = basePath + "/api/clusters";
+    $.get(curl, function (res) {
+        console.log(res);
+        if (res.code === SUCCESS_CODE) {
+            var html = "<select style='width: 80%;margin: 0 auto' id='nodeSelect' class='form-control'>" +
+                "<option value='-1'>全部</option>";
+            for (var i = 0; i < res.context.length; i++) {
+                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>'
+            }
+            html += '</select>';
+            bodyAbs();
+            // 选择集群发布
+            layer.open({
+                type: 1,
+                title: '请选择需要发布的集群',
+                content: html,
+                btn: ['确认发布', '取消发布'],
+                yes: function (index, layero) {
+
+                    var url = basePath + "/api/config/publish/" + id;
+                    $.post(url, {
+                        cid: $("#nodeSelect").find("option:selected").val()
+                    }, function (res) {
+                        layer.msg(res.msg);
+                        if (res.code === SUCCESS_CODE) {
+                            refresh();
+                        }
+                    }, "json")
+
+                },
+                btn2: function (index, layero) {
+                    layer.msg("取消发布");
+                }, cancel: function () {
+                    layer.msg("取消发布");
+                    //return false 开启该代码可禁止点击该按钮关闭
+                }
+            });
+            rmBodyAbs();
+        }
+    }, "json");
+
+
+    /*var url = basePath + "/api/config/publish/" + id;
     $.post(url, function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
             refresh();
         }
-    }, "json")
+    }, "json")*/
 };
 
 /**
@@ -256,7 +299,8 @@ viewOrEditByID = function (id, viewOrEdit) {
     $.get(url, function (res) {
         // 导出弹窗内容模版
         var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
-        initModelContext(context, viewOrEdit === "view" ? refresh : function () {});
+        initModelContext(context, viewOrEdit === "view" ? refresh : function () {
+        });
     }, "json")
 };
 
@@ -271,8 +315,9 @@ viewRealConfig = function (service) {
     }, function (res) {
         var realdata = res.context;
         realdata.serviceName = service;
-        var context = config.exportAddConfigContext("real",biz ="", data = realdata);
-        initModelContext(context, function () {});
+        var context = config.exportAddConfigContext("real", biz = "", data = realdata);
+        initModelContext(context, function () {
+        });
     }, "json");
 };
 
