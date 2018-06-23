@@ -14,7 +14,6 @@ $(document).ready(function () {
 });
 
 function InitMonitorTable() {
-    //记录页面bootstrap-table全局变量$table，方便应用
     var queryUrl = basePath + '/api/serviceList';
     var rows = 10;
     $table = $('#monitor-table').bootstrapTable({
@@ -45,7 +44,7 @@ function InitMonitorTable() {
         clickToSelect: true,                //是否启用点击选中行
         height: 700,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
         uniqueId: "id",                     //每一行的唯一标识，一般为主键列
-        showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
+        showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
         cardView: false,                    //是否显示详细视图
         detailView: true,                  //是否显示父子表
         //得到查询的参数
@@ -99,10 +98,6 @@ function InitMonitorTable() {
         },
         // 双击行事件
         onDblClickRow: function (row) {
-            console.info("onDblClickRow")
-            //var id = row.serviceName;
-            //viewOrEditByID(id, 'view');
-            //$table.bootstrapTable('expandRow', 1);
         },
         //注册加载子表的事件。你可以理解为点击父表中+号时触发的事件-- 实例信息表
         onExpandRow: function (index, row, $detail) {
@@ -209,8 +204,6 @@ function InitMonitorTable() {
                             valign: 'middle'
                         }]
                     });
-                    //console.info(row.methodList)
-                    //$(cur_table).bootstrapTable("load", row.methodList);
                 }
             });
             $(cur_table).bootstrapTable("load", row.instanceList);
@@ -246,20 +239,17 @@ function loadNodeList() {
 }
 
 
-/-----------------------------------------------------------------------------------------------------------------/
 serviceRunStatusFormatter = function (value, row, index) {
     if (value) {
-        //var instanceInfo = row.instanceList.join("</br>");
         var instanceInfo = "";
         row.instanceList.forEach(function (node, index) {
-            // console.info(node.instance)
             instanceInfo += node.instance + "  </br>"
         });
         return "<span class='label label-success'>AVAILABLE</span><a href='javascript:void(0)' data-toggle='tooltip' data-placement='right' data-html='true' title='" + instanceInfo + "'> <span class='badge'>" + row.instanceSize + "</span></a>";
     } else {
         return "<span class='label label-warning'>UN-AVAILABLE</span>";
     }
-}
+};
 
 healthStatusFormatter = function (value, row, index) {
     if (value == 1) {//没有可用实力
@@ -273,7 +263,7 @@ healthStatusFormatter = function (value, row, index) {
     } else {//未知
         return "<span class='label label-info'>UNKNOWN</span>";
     }
-}
+};
 
 
 instanceStatusFormatter = function (value, row, index) {
@@ -282,12 +272,12 @@ instanceStatusFormatter = function (value, row, index) {
     } else {
         return "<span class='label label-warning'>OFF-LINE</span>";
     }
-}
+};
 
 instanceOperateFormatter = function (value, row, index) {
     return "<button type='button' id ='inst_down' class='btn btn-info btn-xs' style='text-shadow: black 4px 2px 2px;'> <span class='glyphicon glyphicon-sort-by-attributes-alt'></span>&nbsp;降级</button>&nbsp;" +
         "<button type='button' id ='inst_close' class='btn btn-danger btn-xs' style='text-shadow: black 4px 2px 2px;'> <span class='glyphicon glyphicon-trash'></span>&nbsp;屏蔽</button>";
-}
+};
 
 window.instanceOperateEvents = {
     "click #inst_close": function (e, value, row, index) {
@@ -296,6 +286,6 @@ window.instanceOperateEvents = {
     "click #inst_down": function (e, value, row, index) {
         showMessage("Warn", row, "此功能正在努力开发中...");
     }
-}
+};
 
 
