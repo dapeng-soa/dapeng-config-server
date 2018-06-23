@@ -2,6 +2,8 @@ package com.github.dapeng.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "api_key_info")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ApiKeyInfo {
 
     @Id
@@ -45,6 +48,12 @@ public class ApiKeyInfo {
 
     @Column(name = "timeout")
     private Long timeout;
+
+    @Column(name = "validated")
+    private int validated;
+
+    @Column(name = "status")
+    private int status;
 
 
     public long getId() {
@@ -142,5 +151,21 @@ public class ApiKeyInfo {
 
     public void setTimeout(Long timeout) {
         this.timeout = timeout;
+    }
+
+    public int getValidated() {
+        return validated;
+    }
+
+    public void setValidated(int validated) {
+        this.validated = validated;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

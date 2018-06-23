@@ -7,6 +7,8 @@ import com.github.dapeng.entity.ZkNode;
 import com.github.dapeng.repository.ZkNodeRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.NullUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,8 @@ public class ClustersRestController {
 
     @Autowired
     ZkNodeRepository nodeRepository;
+
+    private static Logger LOGGER = LoggerFactory.getLogger(ClustersRestController.class);
 
     /**
      * 添加集群
@@ -69,11 +73,11 @@ public class ClustersRestController {
             return ResponseEntity
                     .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
         } catch (Exception e) {
+            LOGGER.error("del cluster error::", e);
             return ResponseEntity
                     .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
         }
     }
-
 
 
     /**

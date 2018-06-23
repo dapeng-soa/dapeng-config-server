@@ -27,7 +27,7 @@ public class Commons {
     public static final String COMMON_ERRO_MSG = "操作失败";
     public static final String COMMON_SUCCESS_MSG = "操作成功";
     public static final String APIKEY_PWD_NOTNULL = "ApiKey和密码不能为空";
-    public static final String PWD_LENGTH_ERROR = "密码必须大于等于12位";
+    public static final String PWD_LENGTH_ERROR = "密码必须等于12位";
     public static final String ZKHOST_NOTNULL = "zookeeper集群地址不能为空";
     public static final int SUCCESS_CODE = 200;
     public static final int ERROR_CODE = 4004;
