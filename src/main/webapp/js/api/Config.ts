@@ -228,7 +228,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
         public exportAddApiKeyContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
             let c = this;
             return `
-            <div class="panel-header window-header">
+                <div class="panel-header window-header">
                     <div class="input-group">
                         <p class="left-panel-title">${type == c.add ? "添加ApiKey" : (type == c.edit ? "修改ApiKey" : (type == c.view ? "ApiKey详情" : ""))}</p>
                     </div>
@@ -240,16 +240,16 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                             <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" value="${data.updatedAt}"/>
                         </div>
                     </div>` : ""}
-               <div class="form-group">
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">ApiKey:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} id="authApikey" class="col-sm-2 form-control">${type != c.add ? data.apiKey : ""}</input>
+                            <input type="text" ${type != c.add ? "disabled" : ""} id="authApikey" class="col-sm-2 form-control" value="${type != c.add ? data.apiKey : ""}"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">密码:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} id="authPassWord" class="col-sm-2 form-control">${type != c.add ? data.password : ""}</input>
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="authPassWord" class="col-sm-2 form-control" value="${type != c.add ? data.password : ""}"/>
                             <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -263,7 +263,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                     <div class="form-group">
                         <label class="col-sm-2 control-label">超时时间(秒):</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} id="authTimeout" class="col-sm-2 form-control">${type != c.add ? data.timeout : ""}</input>
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="authTimeout" class="col-sm-2 form-control" value="${type != c.add ? data.timeout : ""}"/>
                             <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -276,9 +276,18 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">是否验证超时时间:</label>
+                        <div class="col-sm-9">
+                            <select ${type == c.view ? "disabled" : ""} id="authValidated" class="col-sm-2 form-control">
+                              <option value="0" ${data.validated == 0 ? "selected" : ""}>是</option>
+                              <option value="1" ${data.validated == 1 ? "selected" : ""}>否</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">业务:</label>
                         <div class="col-sm-9">
-                            <input type="text"  ${type == c.view ? "disabled" : ""} id="authBiz" class="form-control" >${type != c.add ? data.biz : ""}</input>
+                            <input type="text"  ${type == c.view ? "disabled" : ""} id="authBiz" class="form-control" value="${type != c.add ? data.biz : ""}" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -310,6 +319,12 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                     <button type="button" class="btn btn-success" onclick="saveApiKey()">保存</button>
                     <button type="button" class="btn btn-danger" onclick="clearApiKeyInput()">清空</button>
                     </span>` : ""}
+                    
+                    ${type == c.edit ? `
+                     <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedApiKey(${data.id})">保存修改</button>
+                    </span>
+                    `:``}
                     </div>
                     
             `

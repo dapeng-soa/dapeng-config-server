@@ -8,6 +8,8 @@ import com.github.dapeng.entity.ApiKeyInfo;
 import com.github.dapeng.repository.ApiKeyInfoRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.NullUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,8 @@ import static com.github.dapeng.common.Commons.EXTRA_DATASOURCE;
 public class ApikeyRestController {
     @Autowired
     ApiKeyInfoRepository repository;
+
+    private static Logger LOGGER = LoggerFactory.getLogger(ApikeyRestController.class);
 
     /**
      * 获取历史apikey配置信息
@@ -55,7 +59,7 @@ public class ApikeyRestController {
         if (NullUtil.isEmpty(dto.getApiKey()) || NullUtil.isEmpty(dto.getPassword())) {
             return ResponseEntity
                     .ok(Resp.of(Commons.ERROR_CODE, Commons.APIKEY_PWD_NOTNULL));
-        } else if (dto.getPassword().length() < Commons.DEF_PWD_LENGTH) {
+        } else if (dto.getPassword().length() != Commons.DEF_PWD_LENGTH) {
             return ResponseEntity
                     .ok(Resp.of(Commons.ERROR_CODE, Commons.PWD_LENGTH_ERROR));
         }
@@ -66,6 +70,8 @@ public class ApikeyRestController {
         info.setIps(NullUtil.isEmpty(dto.getIps()) ? "*" : dto.getIps());
         info.setPassword(dto.getPassword());
         info.setTimeout((NullUtil.isEmpty(dto.getTimeout()) || Math.abs(dto.getTimeout()) < 60) ? 60 : Math.abs(dto.getTimeout()));
+        info.setStatus(0);
+        info.setValidated(dto.getValidated());
         info.setNotes(dto.getNotes());
         info.setCreatedAt(DateUtil.now());
         info.setUpdatedAt(DateUtil.now());
@@ -75,5 +81,46 @@ public class ApikeyRestController {
 
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/apikey/{id}")
+    @DataSource(EXTRA_DATASOURCE)
+    public ResponseEntity<?> finOneKey(@PathVariable Long id) {
+        ApiKeyInfo info = repository.getOne(id);
+        return ResponseEntity
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, info));
+    }
+
+
+    /**
+     * 修改apikey
+     *
+     * @param id
+     * @param dto
+     * @return
+     */
+    @PostMapping(value = "/apikey/edit/{id}")
+    @DataSource(EXTRA_DATASOURCE)
+    public ResponseEntity<?> updateApiKey(@PathVariable Long id, @RequestBody ApiKeyInfoDto dto) {
+        try {
+            ApiKeyInfo info = repository.getOne(id);
+            info.setPassword(dto.getPassword());
+            info.setTimeout(dto.getTimeout());
+            info.setBiz(dto.getBiz());
+            info.setIps(dto.getIps());
+            info.setNotes(dto.getNotes());
+            info.setValidated(dto.getValidated());
+            repository.save(info);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            LOGGER.error("save apikey error::", e);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+        }
     }
 }

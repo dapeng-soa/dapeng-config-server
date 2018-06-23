@@ -35,7 +35,7 @@ function InitApiTable() {
         //height: 900,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
         uniqueId: "id",                     //每一行的唯一标识，一般为主键列
         showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
-        cardView: ($(window).width()<1024),                    //是否显示详细视图
+        cardView: ($(window).width() < 1024),                    //是否显示详细视图
         detailView: false,                  //是否显示父子表
         //得到查询的参数
         queryParams: function (params) {
@@ -67,7 +67,17 @@ function InitApiTable() {
             field: 'timeout',
             title: '超时时间',
             sortable: true
-        },{
+        }, {
+            field: 'validated',
+            title: '验证超时',
+            sortable: true,
+            formatter: validatedFormatter
+        }, {
+            field: 'status',
+            title: '状态',
+            sortable: true,
+            formatter: dataStatusFormatter
+        }, {
             field: 'biz',
             title: '所属业务'
         }, {
@@ -77,7 +87,7 @@ function InitApiTable() {
             field: 'notes',
             title: '备注',
             sortable: true
-        }, {
+        }, /*{
             field: 'createdAt',
             title: '添加时间',
             sortable: true
@@ -85,7 +95,7 @@ function InitApiTable() {
             field: 'updatedAt',
             title: '修改时间',
             sortable: true
-        }, {
+        }*/ {
             field: 'id',
             title: '操作',
             width: 160,
@@ -114,6 +124,42 @@ ApiActionFormatter = function (value, row, index) {
 
 numberFormatter = function (value, row, index) {
     return index + 1;
+};
+
+/**
+ * 超时验证状态
+ * @param value
+ * @returns {string}
+ */
+validatedFormatter = function (value) {
+    //0:默认验证,1:不验证超时
+    //0:default,1:danger
+    switch (value) {
+        case 0:
+            return '<span class="label label-default">验证</span>';
+        case 1:
+            return '<span class="label label-danger">不验证</span>';
+        default:
+            return '<span class="label label-default">验证</span>';
+    }
+};
+
+/**
+ * 超时状态
+ * @param value
+ * @returns {string}
+ */
+dataStatusFormatter = function (value) {
+    //0:有效,1:禁用
+    //0:success,1:danger
+    switch (value) {
+        case 0:
+            return '<span class="label label-success">有效</span>';
+        case 1:
+            return '<span class="label label-danger">禁用</span>';
+        default:
+            return '<span class="label label-success">有效</span>';
+    }
 };
 
 openAddApiKeyModle = function () {
@@ -165,18 +211,53 @@ processApiKeyData = function () {
     var authIps = $("#authIps").val();
     var notes = $("#notes").val();
     var timeout = $("#authTimeout").val();
+    var validated = $("#authValidated").find("option:selected").val();
     return {
         apiKey: authApikey,
         password: authPassWord,
         biz: authBiz,
         ips: authIps,
         notes: notes,
-        timeout: timeout
+        timeout: timeout,
+        validated: validated
     }
 };
 
-viewApiKeyOrEditByID = function () {
-    layer.msg("暂无权限")
+/**
+ * 修改
+ * @param id
+ * @param op
+ */
+viewApiKeyOrEditByID = function (id, op) {
+    var url = basePath + "/api/apikey/" + id;
+    $.get(url, function (res) {
+        // 导出弹窗内容模版
+        var context = config1.exportAddApiKeyContext(op, "", res.context);
+        // 初始化弹窗
+        initModelContext(context, refresh);
+    }, "json");
+};
+
+/**
+ * 修改apikey
+ * @param id
+ */
+editedApiKey = function (id) {
+    var url = basePath + "/api/apikey/edit/" + id;
+
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify(processApiKeyData()),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            refresh();
+        }
+    });
 };
 
 delApiKey = function () {

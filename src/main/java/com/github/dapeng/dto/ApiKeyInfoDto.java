@@ -13,6 +13,7 @@ public class ApiKeyInfoDto {
     private String notes;
     private String biz;
     private Long timeout = 60L;
+    private int validated = 0;
 
     public String getApiKey() {
         return apiKey;
@@ -60,5 +61,13 @@ public class ApiKeyInfoDto {
 
     public void setTimeout(Long timeout) {
         this.timeout = timeout;
+    }
+
+    public int getValidated() {
+        return validated;
+    }
+
+    public void setValidated(int validated) {
+        this.validated = validated;
     }
 }
