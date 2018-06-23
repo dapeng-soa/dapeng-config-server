@@ -21,9 +21,7 @@ function InitMonitorTable() {
         url: queryUrl,                      //请求后台的URL（*）
         method: 'GET',                      //请求方式（*）
         responseHandler: function (res) {     //格式化返回数据
-            //console.info(res)
             if (res.code === '4004') {
-                //layer.msg(res.msg);
                 showMessage("Error", res.msg, "加载失败");
                 return {data: []};
             }
@@ -54,7 +52,7 @@ function InitMonitorTable() {
         queryParams: function (params) {
             //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
             return {
-                nodeHost: $('#nodeSelect.selectpicker').val(),
+                id: $('#nodeSelect.selectpicker').val(),
                 keyword: params.search,
                 rows: params.limit,                         //页面大小
                 page: (params.offset / params.limit) + 1,   //页码
@@ -175,13 +173,8 @@ function InitMonitorTable() {
                         },
                         //得到查询的参数
                         queryParams: function (params) {
-                            //这里的键的名字和控制器的变量名必须一致，这边改动，控制器也需要改成一样的
-                            /*console.info(row.instance)
-                            console.info($('#nodeSelect.selectpicker').val())
-                            console.info($($detail.parents("tr.detail-view")[1]).prev().find("td").eq(2).html())*/
-                            //console.info($($detail.parents("tr.detail-view")[1]).prev().find("td").eq(2).html())
                             return {
-                                zkNode: $('#nodeSelect.selectpicker').val(),
+                                id: $('#nodeSelect.selectpicker').val(),
                                 instance: row.instance,
                                 serviceName: $($detail.parents("tr.detail-view")[1]).prev().find("td").eq(2).html()
                             };

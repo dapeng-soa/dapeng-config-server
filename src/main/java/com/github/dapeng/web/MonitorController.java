@@ -52,8 +52,8 @@ public class MonitorController {
      * @return
      */
     @GetMapping(value = "/serviceList")
-    public ResponseEntity<?> serviceList(@RequestParam long nodeHost) {
-        ZkNode zkNode = zkNodeRepository.findOne(nodeHost);
+    public ResponseEntity<?> serviceList(@RequestParam long id) {
+        ZkNode zkNode = zkNodeRepository.findOne(id);
         List<MonitorService> monitorServiceList = new ArrayList<>();
         String zkHost = Objects.isNull(zkNode) ? "127.0.0.1" : zkNode.getZkHost();
         ZooKeeper zooKeeper;
@@ -65,19 +65,19 @@ public class MonitorController {
         List<String> services = ZkUtil.getNodeChildren(zooKeeper, SERVICE_RUNTIME_PATH, false);
 
         logger.info("***services.size() = [{}]", services.size());
-        if (services != null && !services.isEmpty()) {
+        if (!services.isEmpty()) {
             for (String service : services) {
 
                 MonitorService monitorService = new MonitorService(service);
                 List<String> instances = ZkUtil.getNodeChildren(zooKeeper, SERVICE_RUNTIME_PATH + "/" + service, false);
                 logger.info("***instances.size() = [{}]", instances.size());
-                if (instances != null && !instances.isEmpty()) {
+                if (!instances.isEmpty()) {
                     List<MonitorInstance> instancesList = new ArrayList<>();
-                    for (String inst_item : instances) {
+                    for (String instItem : instances) {
                         MonitorInstance monitorInstance = null;
                         try {
                             //获取 实例信息
-                            monitorInstance = fillInstanceInfo(inst_item, service, zkNode);
+                            monitorInstance = fillInstanceInfo(instItem, service, zkNode);
 
                         } catch (Exception e) {
                             logger.error("get fluxdb data ...", e.getMessage(), e);
@@ -97,17 +97,18 @@ public class MonitorController {
     }
 
     /**
-     * 获取服务缓存列表
+     * 获取实例方法调用信息
      *
      * @return
      */
     @GetMapping(value = "/loadMethodInfo")
     public ResponseEntity<?> loadMethodInfo(@RequestParam String instance, @RequestParam String serviceName, @RequestParam Long id) {
-        ZkNode zk_node = zkNodeRepository.findOne(id);
+        ZkNode zkNode;
+        zkNode = zkNodeRepository.findOne(id);
         List<MonitorMethod> methodList;
         try {
             //获得方法实例信息
-            methodList = fillInstanceMethodInfo(instance, serviceName, zk_node);
+            methodList = fillInstanceMethodInfo(instance, serviceName, zkNode);
         } catch (Exception e) {
             logger.error("loadMethodInfo:: get fluxdb data ...", e.getMessage(), e);
             return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, "[loadMethodInfo fail]  :: " + e.getMessage(), null));
@@ -126,7 +127,15 @@ public class MonitorController {
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, "", zkNodeRepository.findAll()));
     }
 
-    // 获得服务实例信息
+    /**
+     * 获得服务实例信息
+     *
+     * @param instance
+     * @param serviceName
+     * @param zkNode
+     * @return
+     * @throws Exception
+     */
     private MonitorInstance fillInstanceInfo(String instance, String serviceName, ZkNode zkNode) throws Exception {
         long callCount = 0;
         double averageTime = 0;
@@ -168,7 +177,15 @@ public class MonitorController {
     }
 
 
-    // 获得实例方法信息
+    /**
+     * 获得实例方法信息
+     *
+     * @param instance
+     * @param serviceName
+     * @param zkNode
+     * @return
+     * @throws Exception
+     */
     private List<MonitorMethod> fillInstanceMethodInfo(String instance, String serviceName, ZkNode zkNode) throws Exception {
         String[] instanceArr = instance.split("[:]");
         InfluxDBUtil influxDBUtil = new InfluxDBUtil(zkNode.getInfluxdbUser(), zkNode.getInfluxdbPass(), InfluxDBUtil.getOpenUrl(zkNode), "dapengState");
