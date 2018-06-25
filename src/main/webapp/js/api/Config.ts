@@ -254,7 +254,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-注:密码必须大于等于12位
+注:密码必须等于12位
                                   </pre>
                                 </div>
                               </div>
@@ -276,11 +276,11 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">是否验证超时时间:</label>
+                        <label class="col-sm-2 control-label">验证超时时间:</label>
                         <div class="col-sm-9">
                             <select ${type == c.view ? "disabled" : ""} id="authValidated" class="col-sm-2 form-control">
-                              <option value="0" ${data.validated == 0 ? "selected" : ""}>是</option>
-                              <option value="1" ${data.validated == 1 ? "selected" : ""}>否</option>
+                              <option value="0" ${type != c.add ? (data.validated == 0 ? "selected" : "") : ""}>是</option>
+                              <option value="1" ${type != c.add ? (data.validated == 1 ? "selected" : "") : ""}>否</option>
                             </select>
                         </div>
                     </div>
@@ -324,7 +324,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                      <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedApiKey(${data.id})">保存修改</button>
                     </span>
-                    `:``}
+                    ` : ``}
                     </div>
                     
             `
