@@ -101,7 +101,6 @@ public class CheckConfigUtil {
             try {
                 zkRoutes = RoutesExecutor.parseAll(routeData);
             } catch (Exception e) {
-                zkRoutes = new ArrayList<>(16);
                 LOGGER.error("parser routes 信息 失败，请检查路由规则写法是否正确!");
             }
         }
