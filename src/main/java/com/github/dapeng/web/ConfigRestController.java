@@ -130,6 +130,7 @@ public class ConfigRestController {
     @PostMapping(value = "/config/edit/{id}")
     public ResponseEntity<?> editConfig(@PathVariable Long id, @RequestBody ConfigInfoDto infoDto) {
         try {
+            checkGrammar(infoDto);
             ConfigInfo info = repository.getOne(id);
             if (null != info) {
                 info.setStatus(ConfigStatus.PASS.key());
