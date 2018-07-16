@@ -12,7 +12,6 @@
     <script src="${basePath}/js/api/monitor.js"></script>
 </head>
 <body>
-<jsp:include page="../core/header.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
     <div class="container-right-context animated fadeIn">
