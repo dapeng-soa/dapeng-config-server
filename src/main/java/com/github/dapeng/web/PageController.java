@@ -112,7 +112,55 @@ public class PageController {
     @GetMapping(value = "/deploy")
     public String deploy(Model model) {
         model.addAttribute("tagName", "deploy");
-        return "page/deploy";
+        return "redirect:deploy/exec";
+    }
+
+    /**
+     * 环境集管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy/set")
+    public String deploySet(Model model) {
+        model.addAttribute("tagName", "deploy-set");
+        model.addAttribute("sideName", "deploy-set");
+        return "page/deploy-set";
+    }
+
+    /**
+     * 节点信息管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy/host")
+    public String deployHost(Model model) {
+        model.addAttribute("tagName", "deploy-host");
+        model.addAttribute("sideName", "deploy-host");
+        return "page/deploy-host";
+    }
+
+    /**
+     * 服务信息管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy/service")
+    public String deployService(Model model) {
+        model.addAttribute("tagName", "deploy-service");
+        model.addAttribute("sideName", "deploy-service");
+        return "page/deploy-service";
+    }
+
+    /**
+     * 部署管理管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy/exec")
+    public String deployExec(Model model) {
+        model.addAttribute("tagName", "deploy-exec");
+        model.addAttribute("sideName", "deploy-exec");
+        return "page/deploy-exec";
     }
 
 }

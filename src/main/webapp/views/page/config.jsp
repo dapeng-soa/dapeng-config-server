@@ -11,7 +11,6 @@
     <jsp:include page="../core/resource.jsp"/>
 </head>
 <body>
-<jsp:include page="../core/header.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
 

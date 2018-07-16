@@ -15,7 +15,7 @@
                 <a href="https://github.com/dapeng-soa" target="_blank">@大鹏开源出品</a>
             </h4>
         </div>
-        <hr>
+        <%--<hr>--%>
         <div class="row footer-bottom">
             <ul class="list-inline text-center">
                 <a target="_blank" href="https://github.com/dapeng-soa">Copyright © 2018 Today中台架构</a>
