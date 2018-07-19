@@ -51,6 +51,7 @@
 
 
 <script src="${basePath}/js/api/Config.js"></script>
+<script src="${basePath}/js/api/Deploy.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
 
 <script>

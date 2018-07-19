@@ -9,7 +9,7 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
-    <script src="${basePath}/js/api/deploy-service.js"></script>
+    <script src="${basePath}/js/api/deploy-unit.js"></script>
 </head>
 <body>
 <jsp:include page="../core/model.jsp"/>
@@ -18,15 +18,14 @@
     <div class="container-right-context animated fadeIn">
         <div class="panel-header">
             <div class="input-group">
-                <p class="left-panel-title">服务管理</p>
+                <p class="left-panel-title">部署单元管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
-                    <button type="button" class="btn btn-primary" onclick="openAddDeployServiceModle()">新增</button>
+                    <button type="button" class="btn btn-primary" onclick="openAddDeployUnitModle()">新增</button>
                 </span>
             </div>
         </div>
 
-        <table id="deploy-service-table">
+        <table id="deploy-unit-table">
         </table>
         <jsp:include page="../core/footer.jsp"/>
     </div>
