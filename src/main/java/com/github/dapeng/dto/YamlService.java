@@ -1,16 +1,21 @@
 package com.github.dapeng.dto;
 
-
+/**
+ * @author with struy.
+ * Create by 2018/6/22 16:09
+ * email :yq1724555319@gmail.com
+ * docker-compose .yaml文件映射关系bean
+ */
 public class YamlService {
 
   private String name;
   private String image;
-  private String labels;
-  private String env;
-  private String volumes;
-  private String ports;
-  private String composeLabels;
-  private String dockerExtras;
+  private String labels = "";
+  private String env = "";
+  private String volumes = "";
+  private String ports = "";
+  private String composeLabels = "";
+  private String dockerExtras = "";
 
 
 
