@@ -1,6 +1,6 @@
 /// <reference path="../../plugins/ts-lib/jquerytemplate.d.ts"/>
 /// <reference path="../../plugins/ts-lib/jquery.d.ts"/>
-
+/*配置模块ts模版代码*/
 module api {
     export class Config {
         //

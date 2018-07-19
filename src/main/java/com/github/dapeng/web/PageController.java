@@ -152,7 +152,19 @@ public class PageController {
     }
 
     /**
-     * 部署管理管理
+     * 部署单元管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy/unit")
+    public String deployUnit(Model model) {
+        model.addAttribute("tagName", "deploy-unit");
+        model.addAttribute("sideName", "deploy-unit");
+        return "page/deploy-unit";
+    }
+
+    /**
+     * 执行发布管理
      *
      * @return
      */
