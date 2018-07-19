@@ -399,3 +399,12 @@ textarea {
     font-size: 14px;
 }
 
+
+/* box下拉菜单 */
+.panel-box{
+    min-height: 300px;
+}
+.panel-box-menu{
+    position: absolute;
+    right: 25px;
+}

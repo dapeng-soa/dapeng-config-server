@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div class="sidebar-left">
+<div class="sidebar-left" style="overflow-y: auto">
     <div class="sidebar-top-box">
         <div class="sidebar-cover">
             <span>
@@ -40,8 +40,11 @@
                 <dd class="${sideName == 'deploy-service' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/service"><i class="fa fa-wifi" aria-hidden="true"></i>服务管理</a>
                 </dd>
+                <dd class="${sideName == 'deploy-unit' ? 'layui-this' : ''}">
+                    <a href="${basePath}/deploy/unit"><i class="fa fa-rocket" aria-hidden="true"></i> 部署单元</a>
+                </dd>
                 <dd class="${sideName == 'deploy-exec' ? 'layui-this' : ''}">
-                    <a href="${basePath}/deploy/exec"><i class="fa fa-rocket" aria-hidden="true"></i> 部署管理</a>
+                    <a href="${basePath}/deploy/exec"><i class="fa fa-rocket" aria-hidden="true"></i>上线部署</a>
                 </dd>
             </dl>
         </li>

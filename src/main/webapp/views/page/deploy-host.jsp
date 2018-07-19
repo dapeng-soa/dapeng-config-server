@@ -9,25 +9,25 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
+    <script src="${basePath}/js/api/deploy-host.js"></script>
 </head>
 <body>
+<jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
     <div class="container-right-context animated fadeIn">
         <div class="panel-header">
             <div class="input-group">
-                <p class="left-panel-title">发布部署</p>
+                <p class="left-panel-title">节点管理</p>
                 <span class="input-group-btn panel-button-group">
                     <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
+                    <button type="button" class="btn btn-primary" onclick="openAddDeployHostModle()">新增</button>
                 </span>
             </div>
         </div>
 
-        <div class="row" style="margin-top: 40px" >
-            <div class="col-xs-12">
-                <code>暂时没有新内容</code>
-            </div>
-        </div>
+        <table id="deploy-host-table">
+        </table>
         <jsp:include page="../core/footer.jsp"/>
     </div>
 </div>
