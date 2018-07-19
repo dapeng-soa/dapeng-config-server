@@ -2,8 +2,10 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
+import com.github.dapeng.dto.SetDto;
 import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.deploy.SetRepository;
+import com.github.dapeng.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +29,8 @@ public class DeploySetRestController {
 
     @Autowired
     SetRepository setRepository;
+
     /**
-     *
      * @return
      */
     @GetMapping("/deploy-sets")
@@ -45,15 +47,22 @@ public class DeploySetRestController {
         set.setRemark("测试一哈");
         sets.add(set);
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA,sets));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, sets));
     }
 
 
     @PostMapping("/deploy-set/add")
-    public ResponseEntity<?> addSet() {
+    public ResponseEntity<?> addSet(SetDto setDto) {
+        TSet set = new TSet();
+        set.setName(setDto.getName());
+        set.setRemark(setDto.getRemark());
+        set.setEnv(setDto.getEnv());
+        set.setUpdatedAt(DateUtil.now());
+        set.setCreatedAt(DateUtil.now());
+        setRepository.save(set);
 
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE,Commons.SAVE_SUCCESS_MSG));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
     }
 
 }
