@@ -105,6 +105,7 @@ numberFormatter = function (value, row, index) {
 openAddDeploySetModle = function () {
     // 导出弹窗内容模版
     var context = deploy.exportAddDeploySetContext("add");
+    console.log(context);
     // 初始化弹窗
     initModelContext(context, refresh);
 };
