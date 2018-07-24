@@ -28,6 +28,12 @@ public class SocketServer {
     private static final int port = 9095;
 
     public void start() {
+        new Thread(() ->{
+            init();
+        }).start();
+    }
+
+    public void init() {
         Configuration config = new Configuration();
         config.setPort(port);
 
