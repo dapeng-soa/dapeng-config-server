@@ -10,7 +10,7 @@ public class HostDto {
 
     private String name;
     private long setId;
-    private long ip;
+    private String ip;
     private String labels = "";
     private long extra;
     private String env = "";
@@ -33,15 +33,13 @@ public class HostDto {
         this.setId = setId;
     }
 
-
-    public long getIp() {
+    public String getIp() {
         return ip;
     }
 
-    public void setIp(long ip) {
+    public void setIp(String ip) {
         this.ip = ip;
     }
-
 
     public String getLabels() {
         return labels;

@@ -2,6 +2,8 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
+import com.github.dapeng.core.helper.DapengUtil;
+import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.dto.HostDto;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.repository.deploy.HostRepository;
@@ -9,10 +11,9 @@ import com.github.dapeng.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author with struy.
@@ -32,14 +33,44 @@ public class DeployHostRestController {
      */
     @GetMapping("/deploy-hosts")
     public ResponseEntity<?> deployHosts() {
+        List<THost> hosts = hostRepository.findAll();
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA,hosts));
     }
 
+    /**
+     * 根据setId获取该节点
+     * @return
+     */
+    @GetMapping("/deploy-hosts/{setId}")
+    public ResponseEntity<?> deployHostsBySetId(@PathVariable long setId) {
+        List<THost> hosts = hostRepository.findBySetId(setId);
+        return ResponseEntity
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA,hosts));
+    }
+
+
+    /**
+     * 根据Id获取当前节点信息
+     * @return
+     */
+    @GetMapping("/deploy-host/{id}")
+    public ResponseEntity<?> deployHostById(@PathVariable long id) {
+        THost host = hostRepository.findOne(id);
+        return ResponseEntity
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA,host));
+    }
+
+
+    /**
+     * 添加host
+     * @param hostDto
+     * @return
+     */
     @PostMapping("/deploy-host/add")
-    public ResponseEntity<?> addHost(HostDto hostDto) {
+    public ResponseEntity<?> addHost(@RequestBody HostDto hostDto) {
         THost host = new THost();
-        host.setIp(hostDto.getIp());
+        host.setIp(IPUtils.transferIp(hostDto.getIp()));
         host.setName(hostDto.getName());
         host.setEnv(hostDto.getEnv());
         host.setRemark(hostDto.getRemark());

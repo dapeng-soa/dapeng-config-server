@@ -114,13 +114,26 @@ openAddDeploySetModle = function () {
  * 保存
  */
 saveDeploySet = function () {
-
+    var url = basePath + "/api/deploy-set/add";
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify(processDeploySetData()),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            refresh();
+        }
+    });
 };
 
 /**
  * 清空配置
  */
-clearDeployInput = function () {
+clearDeploySetInput = function () {
     bodyAbs();
     layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
@@ -133,21 +146,13 @@ clearDeployInput = function () {
 };
 
 processDeploySetData = function () {
-    var authApikey = $("#authApikey").val();
-    var authPassWord = $("#authPassWord").val();
-    var authBiz = $("#authBiz").val();
-    var authIps = $("#authIps").val();
-    var notes = $("#notes").val();
-    var timeout = $("#authTimeout").val();
-    var validated = $("#authValidated").find("option:selected").val();
+    var name = $("#name").val();
+    var env = $("#env-area").val();
+    var remark = $("#remark-area").val();
     return {
-        apiKey: authApikey,
-        password: authPassWord,
-        biz: authBiz,
-        ips: authIps,
-        notes: notes,
-        timeout: timeout,
-        validated: validated
+        name: name,
+        env: env,
+        remark: remark
     }
 };
 
@@ -157,7 +162,7 @@ processDeploySetData = function () {
  * @param op
  */
 viewDeploySetEditByID = function (id, op) {
-    var url = basePath + "/api/apikey/" + id;
+    var url = basePath + "/api/deploy-set/" + id;
     $.get(url, function (res) {
         // 导出弹窗内容模版
         var context = deploy.exportAddDeploySetContext(op, "", res.context);
@@ -171,7 +176,7 @@ viewDeploySetEditByID = function (id, op) {
  * @param id
  */
 editedDeploySet = function (id) {
-    var url = basePath + "/api/apikey/edit/" + id;
+    var url = basePath + "/api/deploy-set/edit/" + id;
 
     var settings = {
         type: "post",

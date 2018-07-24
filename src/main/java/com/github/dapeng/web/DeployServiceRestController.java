@@ -9,10 +9,9 @@ import com.github.dapeng.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author with struy.
@@ -31,13 +30,25 @@ public class DeployServiceRestController {
      * @return
      */
     @GetMapping("/deploy-services")
-    public ResponseEntity<?> deployServices(ServiceDto serviceDto) {
+    public ResponseEntity<?> deployServices() {
+        List<TService> services = serviceRepository.findAll();
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA,services));
+    }
+
+    /**
+     * 根据Id获取当前服务信息信息
+     * @return
+     */
+    @GetMapping("/deploy-service/{id}")
+    public ResponseEntity<?> deployServiceById(@PathVariable long id) {
+        TService service = serviceRepository.findOne(id);
+        return ResponseEntity
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA,service));
     }
 
     @PostMapping("/deploy-service/add")
-    public ResponseEntity<?> addService(ServiceDto serviceDto) {
+    public ResponseEntity<?> addService(@RequestBody ServiceDto serviceDto) {
         TService service = new TService();
         service.setName(serviceDto.getName());
         service.setRemark(serviceDto.getRemark());

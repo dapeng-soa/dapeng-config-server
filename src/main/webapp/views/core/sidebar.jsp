@@ -41,7 +41,7 @@
                     <a href="${basePath}/deploy/service"><i class="fa fa-wifi" aria-hidden="true"></i>服务管理</a>
                 </dd>
                 <dd class="${sideName == 'deploy-unit' ? 'layui-this' : ''}">
-                    <a href="${basePath}/deploy/unit"><i class="fa fa-rocket" aria-hidden="true"></i> 部署单元</a>
+                    <a href="${basePath}/deploy/unit"><i class="fa fa-microchip" aria-hidden="true"></i> 部署单元</a>
                 </dd>
                 <dd class="${sideName == 'deploy-exec' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/exec"><i class="fa fa-rocket" aria-hidden="true"></i>上线部署</a>
