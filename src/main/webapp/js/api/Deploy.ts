@@ -26,7 +26,7 @@ module api {
                   <div class="form-group">
                         <label class="col-sm-2 control-label">环境集名称:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control">${type != c.add ? data.name : ""}</input>
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control" value="${type != c.add ? data.name : ""}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -41,7 +41,13 @@ module api {
                             <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                         </div>
                     </div>
-                </div>`;
+                    
+                    <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="saveDeploySet()">保存</button>
+                    <button type="button" class="btn btn-danger" onclick="clearDeploySetInput()">清空</button>
+                    </span>
+                </div>
+`;
         }
 
         /**
@@ -62,19 +68,19 @@ module api {
                    <div class="form-group">
                             <label class="col-sm-2 control-label">服务名字:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control">${type != c.add ? data.name : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control" value="${type != c.add ? data.name : ""}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">服务镜像:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="ip" class="col-sm-2 form-control">${type != c.add ? data.image : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="image" class="col-sm-2 form-control" value="${type != c.add ? data.image : ""}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">标签:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control">${type != c.add ? data.labels : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control" value="${type != c.add ? data.labels : ""}">
                             </div>
                         </div>
                         
@@ -115,6 +121,10 @@ module api {
                                 <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
+                        <span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="saveDeployService()">保存</button>
+                        <button type="button" class="btn btn-danger" onclick="clearDeployServiceInput()">清空</button>
+                        </span>
                 </div>
             
             `;
@@ -138,27 +148,26 @@ module api {
                     <div class="form-group">
                             <label class="col-sm-2 control-label">节点名称:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control">${type != c.add ? data.name : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control" value="${type != c.add ? data.name : ""}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">IP地址:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="ip" class="col-sm-2 form-control">${type != c.add ? data.ip : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="ip" class="col-sm-2 form-control" value="${type != c.add ? data.ip : ""}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">标签:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control">${type != c.add ? data.labels : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control" value="${type != c.add ? data.labels : ""}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属环境集:</label>
                             <div class="col-sm-9">
                                <select ${type == c.view ? "disabled" : ""} id="setSelect" class="col-sm-2 form-control">
-                                  <option value="0" ${type != c.add ? (data.set == 0 ? "selected" : "") : ""}>生产环境</option>
-                                  <option value="1" ${type != c.add ? (data.set == 1 ? "selected" : "") : ""}>测试环境</option>
+                                 
                                 </select>
                             </div>
                         </div>
@@ -183,6 +192,10 @@ module api {
                                 <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
+                        <span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="saveDeployHost()">保存</button>
+                        <button type="button" class="btn btn-danger" onclick="clearDeployHostInput()">清空</button>
+                        </span>
                 </div>
             
             `;
@@ -206,25 +219,22 @@ module api {
                     <div class="form-group">
                             <label class="col-sm-2 control-label">发布TAG:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="gitTag" class="col-sm-2 form-control">${type != c.add ? data.name : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="gitTag" class="col-sm-2 form-control" value="${type != c.add ? data.gitTag : ""}">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属环境集:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view ? "disabled" : ""} id="setSelect" class="col-sm-2 form-control">
-                                  <option value="0" ${type != c.add ? (data.set == 0 ? "selected" : "") : ""}>生产环境</option>
-                                  <option value="1" ${type != c.add ? (data.set == 1 ? "selected" : "") : ""}>测试环境</option>
+                               <select ${type == c.view ? "disabled" : ""} id="setSelect" onchange="addUnitSetChanged(this)" class="col-sm-2 form-control">
+          
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属主机:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view ? "disabled" : ""} id="setSelect" class="col-sm-2 form-control">
-                                  <option value="0" ${type != c.add ? (data.set == 0 ? "selected" : "") : ""}>生产环境</option>
-                                  <option value="1" ${type != c.add ? (data.set == 1 ? "selected" : "") : ""}>测试环境</option>
+                               <select ${type == c.view ? "disabled" : ""} onchange="addUnitHostChanged(this)" id="hostSelect" class="col-sm-2 form-control">
                                 </select>
                             </div>
                         </div>
@@ -232,9 +242,7 @@ module api {
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属服务:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view ? "disabled" : ""} id="setSelect" class="col-sm-2 form-control">
-                                  <option value="0" ${type != c.add ? (data.set == 0 ? "selected" : "") : ""}>生产环境</option>
-                                  <option value="1" ${type != c.add ? (data.set == 1 ? "selected" : "") : ""}>测试环境</option>
+                               <select ${type == c.view ? "disabled" : ""} onchange="addUnitServiceChanged(this)" id="serviceSelect" class="col-sm-2 form-control">
                                 </select>
                             </div>
                         </div>
@@ -242,48 +250,41 @@ module api {
                         <div class="form-group">
                             <label class="col-sm-2 control-label">镜像TAG:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="ip" class="col-sm-2 form-control">${type != c.add ? data.ip : ""}</input>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">标签:</label>
-                            <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control">${type != c.add ? data.labels : ""}</input>
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="imageTag" class="col-sm-2 form-control" value="${type != c.add ? data.imageTag : ""}">
                             </div>
                         </div>
                        
                         <div class="form-group">
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <textarea disabled id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">备注:</label>
-                            <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
-                            </div>
-                        </div>
-                        
+                      
+                  
                         <div class="form-group">
                             <label class="col-sm-2 control-label">VOLUMES:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
+                                <textarea disabled id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">PORTS:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
+                                <textarea disabled id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">dockerExtras:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
+                                <textarea disabled id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
                             </div>
                         </div>
+                        
+                        <span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="saveDeployUnit()">保存</button>
+                        <button type="button" class="btn btn-danger" onclick="clearDeployUnitInput()">清空</button>
+                        </span>
                 </div>
             
             `;

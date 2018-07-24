@@ -71,11 +71,7 @@ function InitDeployHosts() {
             field: 'extra',
             title: '是否外部机器',
             sortable: true
-        }, {
-            field: 'status',
-            title: '状态',
-            sortable: true
-        }, {
+        },{
             field: 'remark',
             title: '备注'
         },{
@@ -123,13 +119,15 @@ openAddDeployHostModle = function () {
     var context = deploy.exportAddDeployHostContext("add");
     // 初始化弹窗
     initModelContext(context, refresh);
+    initSetList();
 };
 
 /**
  * 保存
  */
 saveDeployHost = function () {
-    var url = basePath + "/api/apikey/add";
+    console.log(processDeployHostData());
+    var url = basePath + "/api/deploy-host/add";
     var settings = {
         type: "post",
         url: url,
@@ -161,21 +159,21 @@ clearDeployHostInput = function () {
 };
 
 processDeployHostData = function () {
-    var authDeployHost = $("#authApikey").val();
-    var authPassWord = $("#authPassWord").val();
-    var authBiz = $("#authBiz").val();
-    var authIps = $("#authIps").val();
-    var notes = $("#notes").val();
-    var timeout = $("#authTimeout").val();
-    var validated = $("#authValidated").find("option:selected").val();
+    var name = $("#name").val();
+    var ip = $("#ip").val();
+    var labels = $("#labels").val();
+    var env = $("#env-area").val();
+    var remark = $("#remark-area").val();
+    var setSelect = $("#setSelect").find("option:selected").val();
+    var extraSelect = $("#extraSelect").find("option:selected").val();
     return {
-        apiKey: authApikey,
-        password: authPassWord,
-        biz: authBiz,
-        ips: authIps,
-        notes: notes,
-        timeout: timeout,
-        validated: validated
+        name: name,
+        ip: ip,
+        labels: labels,
+        env: env,
+        setId: setSelect,
+        extra: extraSelect,
+        remark:remark
     }
 };
 
@@ -185,12 +183,13 @@ processDeployHostData = function () {
  * @param op
  */
 viewDeployHostOrEditByID = function (id, op) {
-    var url = basePath + "/api/apikey/" + id;
+    var url = basePath + "/api/deploy-host/" + id;
     $.get(url, function (res) {
         // 导出弹窗内容模版
-        var context = config1.exportAddDeployHostContext(op, "", res.context);
+        var context = deploy.exportAddDeployHostContext(op, "", res.context);
         // 初始化弹窗
         initModelContext(context, refresh);
+        initSetList(res.context.setId);
     }, "json");
 };
 
@@ -199,7 +198,7 @@ viewDeployHostOrEditByID = function (id, op) {
  * @param id
  */
 editedDeployHost = function (id) {
-    var url = basePath + "/api/apikey/edit/" + id;
+    var url = basePath + "/api/deploy-host/edit/" + id;
 
     var settings = {
         type: "post",
@@ -218,6 +217,27 @@ editedDeployHost = function (id) {
 
 delDeployHost = function () {
     layer.msg("暂无权限")
+};
+
+/**
+ * 初始化set
+ * @constructor
+ */
+initSetList = function (id) {
+    var curl = basePath + "/api/deploy-sets";
+    $.get(curl, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var html = "";
+            for (var i = 0; i < res.context.length; i++) {
+                var seled = "";
+                if (id !== undefined && id !==""){
+                    seled = res.context[i].id === id?"selected":"";
+                }
+                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+            }
+            $("#setSelect").html(html);
+        }
+    }, "json");
 };
 
 

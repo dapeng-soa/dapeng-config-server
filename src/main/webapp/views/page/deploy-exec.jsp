@@ -9,7 +9,7 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
-    <script src="${basePath}/js/api/deploy-unit.js"></script>
+    <script src="${basePath}/js/api/deploy-exec.js"></script>
 </head>
 <body>
 <jsp:include page="../core/model.jsp"/>
@@ -20,17 +20,15 @@
             <div class="input-group">
                 <p class="left-panel-title">执行发布</p>
                 <span class="input-group-btn panel-button-group">
-                    <button type="button" class="btn btn-success" onclick="addDeployUnit()">新增部署单元</button>
+
                 </span>
             </div>
         </div>
 
         <div class="">
             <span>选择环境： <span>
-                <select class="form-control " style="display: inline-block;width: 120px">
-                    <option>生产环境</option>
-                    <option>sandbox</option>
-                    <option>demo</option>
+                <select id="setSelect" class="form-control " style="display: inline-block;width: 120px">
+
                 </select>
             </span></span>
 
@@ -40,110 +38,102 @@
                     <option>主机视图</option>
                 </select>
             </span></span>
+
+            <span>服务： <span>
+                <select class="form-control" style="display: inline-block;width: 120px">
+                    <option>goodsService</option>
+                    <option>categoryService</option>
+                </select>
+            </span></span>
         </div>
 
         <div class="row" style="margin-top: 40px">
-            <div class="col-sm-12 col-xs-12">
+            <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
-                    <div class="panel-heading">bizService1
-                        <span class="panel-box-menu">
-                        <!-- Split button -->
+                    <div class="panel-heading"><p style="text-align: center">bizService</p>
+                        <%--<span class="panel-box-menu">
                         <div class="btn-group">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                   aria-haspopup="true" aria-expanded="false">
                             <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
+                            <span class="sr-only"></span>
                           </button>
                           <ul class="dropdown-menu">
-                            <li><a href="#">添加配置</a></li>
-                            <li><a href="#">查看配置</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">删除</a></li>
-                            <li><a href="#">修改</a></li>
+                            <li><a href="#">全部升级</a></li>
+                              <li><a href="#">全部启动</a></li>
                           </ul>
                         </div>
-                    </span>
+                    </span>--%>
                     </div>
-                    <div class="panel-body" style="overflow-y: auto;max-height: 450px">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>部署tag</th>
-                                <th>镜像tag</th>
-                                <th>环境变量</th>
-                                <th>端口</th>
-                                <th>卷配置</th>
-                                <th>其他配置</th>
-                                <th>操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>t_20180707_01_bugfix</td>
-                                <td>43862f9</td>
-                                <td><pre>
-soa_zookeeper_host=soa_zookeeper:2181
-soa_core_pool_size=100
-soa_monitor_enable=false
-soa_transactional_enable=false
-soa_jmxrmi_enable=false
-slow_service_check_enable=false
-                                </pre></td>
-                                <td><pre>9090:9090</pre></td>
-                                <td><pre>/data/logs/openApi:/usr/local/tomcat/logs</pre></td>
-                                <td><pre>restart: on-failure:3</pre></td>
-                                <td><span class="link-button-table">
-                                    <a>详情</a>
-                                    <a>yml</a>
-                                    <a>删除</a>
-                                </span></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>t_20180707_01_bugfix</td>
-                                <td>43862f9</td>
-                                <td><pre>
-soa_zookeeper_host=soa_zookeeper:2181
-soa_core_pool_size=100
-soa_monitor_enable=false
-soa_transactional_enable=false
-soa_jmxrmi_enable=false
-slow_service_check_enable=false
-                                </pre></td>
-                                <td><pre>9090:9090</pre></td>
-                                <td><pre>/data/logs/openApi:/usr/local/tomcat/logs</pre></td>
-                                <td><pre>restart: on-failure:3</pre></td>
-                                <td><span class="link-button-table">
-                                    <a>详情</a>
-                                    <a>yml</a>
-                                    <a>删除</a>
-                                </span></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>t_20180707_01_bugfix</td>
-                                <td>43862f9</td>
-                                <td><pre>
-soa_zookeeper_host=soa_zookeeper:2181
-soa_core_pool_size=100
-soa_monitor_enable=false
-soa_transactional_enable=false
-soa_jmxrmi_enable=false
-slow_service_check_enable=false
-                                </pre></td>
-                                <td><pre>9090:9090</pre></td>
-                                <td><pre>/data/logs/openApi:/usr/local/tomcat/logs</pre></td>
-                                <td><pre>restart: on-failure:3</pre></td>
-                                <td><span class="link-button-table">
-                                    <a>详情</a>
-                                    <a>yml</a>
-                                    <a>删除</a>
-                                </span></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="panel-body" style="overflow-y: auto;max-height: 400px">
+                        <div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
+                            <div class="col-sm-3 col-xs-12">
+                                <p >app1</p>
+                                <p >192.168.0.11</p>
+                                <p >需要更新：是</p>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <p>配置更新时间:2018-07-24 09:09:30</p>
+                                <p>主机服务时间:2018-07-23 10:09:30</p>
+                                <p>服务状态:<spa style="color: #00AA00">运行中</spa></p>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <p ><a href="#" style="color: #1E9FFF" onclick="">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">停止</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">重启</a></p>
+                            </div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
+                            <div class="col-sm-3 col-xs-12">
+                                <p >app2</p>
+                                <p >192.168.0.12</p>
+                                <p >需要更新：否</p>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <p>配置更新时间:2018-07-24 09:09:30</p>
+                                <p>主机服务时间:2018-07-23 10:09:30</p>
+                                <p>服务状态:<spa style="color: #00AA00">运行中</spa></p>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <p ><a href="#" style="color: #1E9FFF">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">停止</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">重启</a></p>
+                            </div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
+                            <div class="col-sm-3 col-xs-12">
+                                <p >app2</p>
+                                <p >192.168.0.12</p>
+                                <p >需要更新：是</p>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <p>配置更新时间:2018-07-24 09:09:30</p>
+                                <p>主机服务时间:2018-07-23 10:09:30</p>
+                                <p>服务状态:<spa style="color: #00AA00">停止</spa></p>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <p ><a href="#" style="color: #1E9FFF">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">停止</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">重启</a></p>
+                            </div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
+                            <div class="col-sm-3 col-xs-12">
+                                <p >app2</p>
+                                <p >192.168.0.12</p>
+                                <p >需要更新：否</p>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <p>配置更新时间:2018-07-24 09:09:30</p>
+                                <p>主机服务时间:2018-07-23 10:09:30</p>
+                                <p>服务状态:<spa style="color: #00AA00">停止</spa></p>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <p ><a href="#" style="color: #1E9FFF">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">停止</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">重启</a></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

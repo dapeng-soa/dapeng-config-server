@@ -63,7 +63,6 @@ public class THost {
     this.setId = setId;
   }
 
-
   public long getIp() {
     return ip;
   }
@@ -71,7 +70,6 @@ public class THost {
   public void setIp(long ip) {
     this.ip = ip;
   }
-
 
   public String getLabels() {
     return labels;
