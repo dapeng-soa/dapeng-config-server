@@ -2,10 +2,22 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
+import com.github.dapeng.socket.SocketUtil;
+import com.github.dapeng.socket.client.CmdExecutor;
+import com.github.dapeng.socket.enums.EventType;
+import com.github.dapeng.socket.listener.DeployServerOperations;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URISyntaxException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author with struy.
@@ -15,7 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
-public class DeployExecRestController {
+public class DeployExecRestController implements ApplicationListener<ContextRefreshedEvent> {
+
+    private Socket socketClient = null;
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
+        socketClient = SocketUtil.registerWebSocketClient("127.0.0.1", 9095, "127.0.0.1", "DeployExecSocket");
+    }
+
     /**
      * 向agent发送问询指令
      *
@@ -23,8 +43,11 @@ public class DeployExecRestController {
     @RequestMapping("/deploy/checkRealService")
     public ResponseEntity checkRealService(){
         // 问询->返回
+        socketClient.emit(EventType.WEB_EVENT().name(), "serverTime");
+
         // 过滤-
         // 返回unit
+
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
     }

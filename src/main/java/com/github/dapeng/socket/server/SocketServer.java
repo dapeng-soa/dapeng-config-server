@@ -1,4 +1,4 @@
-package com.github.dapeng.socket;
+package com.github.dapeng.socket.server;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
@@ -13,6 +13,10 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+import com.github.dapeng.socket.AgentEvent;
+import com.github.dapeng.socket.HostAgent;
+import com.github.dapeng.socket.enums.EventType;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +81,7 @@ public class SocketServer {
                         String name = data.split(":")[0];
                         String ip = data.split(":")[1];
                         nodesMap.put(client.getSessionId().toString(), new HostAgent(name, ip, client.getSessionId().toString()));
-                        //notifyWebClients(nodesMap, server);
+                        notifyWebClients(nodesMap, server);
                     }
                 }
 
@@ -99,31 +103,23 @@ public class SocketServer {
 
         );
 
-        server.addEventListener("webEvent", String.class, new DataListener<String>() {
+        server.addEventListener(EventType.WEB_EVENT().name(), String.class, new DataListener<String>() {
 
             @Override
             public void onData(SocketIOClient socketIOClient, String agentEvent, AckRequest ackRequest) throws Exception {
                // logger.info(" receive webEvent: " + agentEvent.getCmd());
                 System.out.println("==================================================");
                 System.out.println(" agentEvent: " + agentEvent);
-                String[] values = agentEvent.split(" ");
-                String sessionId = values[0];
-                String cmd = values[1];
-                String serviceName = values[2];
-                String content = values[3];
 
-                SocketIOClient socketClient = server.getClient(UUID.fromString(sessionId));
-                socketClient.sendEvent("webCmd", agentEvent);
-//                agentEvent.getClientSessionIds().stream().forEach(event -> {
-//                    SocketIOClient client = server.getClient(UUID.randomUUID());
-//                    if (client != null) {
-//                        client.sendEvent("webCmd", agentEvent);
-//                    }
-//                });
-                ackRequest.sendAckData(true);
+                AgentEvent agentEventObj = new Gson().fromJson(agentEvent, AgentEvent.class);
+                System.out.println(" agentEventObj: " + agentEventObj);
+
+                agentEventObj.getClientSessionIds().forEach(sessionId -> {
+                    SocketIOClient client = server.getClient(UUID.fromString(sessionId));
+                    client.sendEvent(EventType.WEB_EVENT().name(), agentEvent);
+                });
             }
         });
-
 
         server.start();
         System.out.println("websocket server started at " + port);

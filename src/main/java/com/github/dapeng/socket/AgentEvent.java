@@ -1,5 +1,7 @@
 package com.github.dapeng.socket;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -56,8 +58,6 @@ public class AgentEvent implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(128);
-        sb.append(clientSessionIds.get(0)).append(" ").append(cmd).append(" ").append(serviceName).append(" ").append(content);
-        return sb.toString();
+        return new Gson().toJson(this);
     }
 }

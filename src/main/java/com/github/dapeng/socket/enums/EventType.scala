@@ -20,7 +20,7 @@ object EventType {
   val NODE_EVENT = new EventType(3, "nodeEvent")
   val WEB_REG = new EventType(4, "webReg")
   val WEB_EVENT = new EventType(5, "webEvent")
-
+  val WEB_CMD = new EventType(6, "webCmd")
   def unknown(id: Int) = new EventType(id, id + "")
 
   def valueOf(id: Int): EventType = id match {
@@ -29,6 +29,7 @@ object EventType {
     case 3 => NODE_EVENT
     case 4 => WEB_REG
     case 5 => WEB_EVENT
+    case 6 => WEB_CMD
     case _ => unknown(id)
   }
 

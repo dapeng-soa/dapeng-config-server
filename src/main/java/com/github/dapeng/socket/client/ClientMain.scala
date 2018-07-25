@@ -8,6 +8,7 @@ import com.github.dapeng.entity.deploy.TService
 import com.github.dapeng.socket.{AgentEvent, HostAgent}
 import com.github.dapeng.socket.enums.EventType
 import com.github.dapeng.socket.listener.DeployServerOperations
+import com.google.gson.Gson
 import io.socket.client.{IO, Socket}
 import io.socket.emitter.Emitter
 
@@ -18,7 +19,7 @@ object ClientMain {
     val opts = new IO.Options()
     opts.forceNew = true
 
-    val socketClient = IO.socket("http://127.0.0.1:9095", opts)
+    val socketClient: Socket = IO.socket("http://127.0.0.1:9095", opts)
 
     val queue = new LinkedBlockingQueue()
     val cmdExecutor = new CmdExecutor(queue, socketClient)
@@ -38,7 +39,8 @@ object ClientMain {
         val ids = new util.ArrayList[String]()
         ids.add(socketClient.id())
         val agentEvent = new AgentEvent(ids, "deploy", "orderService", "helloWorld")
-        socketClient.emit("webEvent", agentEvent.toString)
+        socketClient.emit("webEvent", new Gson().toJson(agentEvent))
+
       }
     }).on("webCmd", new DeployServerOperations(queue,socketClient)).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
       override def call( args: AnyRef*) {

@@ -71,5 +71,5 @@
     <!--配置支持基于注解事务配置  -->
     <tx:annotation-driven/>
 
-    <bean id="socketServer" class="com.github.dapeng.socket.SocketServer" init-method="start" />
+    <bean id="socketServer" class="com.github.dapeng.socket.server.SocketServer" init-method="start" />
 </beans>
