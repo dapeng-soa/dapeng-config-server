@@ -8,6 +8,9 @@ var api;
             this.add = "add";
             this.view = "view";
             this.edit = "edit";
+            this.api = new api.Api();
+            this.serviceView = "serviceView";
+            this.hostView = "hostView";
         }
         /**
          * 环境集-导出添加/修改/详情模版
@@ -86,14 +89,14 @@ var api;
             return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u8BE6\u60C5\"  onclick=\"viewDeployUnitOrEditByID(" + value + ",'view')\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewDeployUnitOrEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5220\u9664\"  onclick=\"delDeployUnit(" + value + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
         };
         /**
-         * 服务视图
+         * 服务/主机视图
          */
-        Deploy.prototype.deployServiceView = function () {
-        };
-        /**
-         * 主机视图
-         */
-        Deploy.prototype.deployHostView = function () {
+        Deploy.prototype.deployViewChange = function (viewType, data) {
+            var view = "";
+            data.forEach(function (x) {
+                view += "\n            <div class=\"col-sm-6 col-xs-12\">\n                <div class=\"panel panel-default panel-box\">\n                    <div class=\"panel-heading\"><p style=\"text-align: center\">x</p>\n                    </div>\n                    <div class=\"panel-body\" style=\"overflow-y: auto;max-height: 400px\">\n                        <div class=\"row\" style=\"border-bottom: 1px solid gainsboro;padding: 10px 0;\">\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p >app1</p>\n                                <p >192.168.0.11</p>\n                                <p >\u9700\u8981\u66F4\u65B0\uFF1A\u662F</p>\n                            </div>\n                            <div class=\"col-sm-6 col-xs-12\">\n                                <p>\u914D\u7F6E\u66F4\u65B0\u65F6\u95F4:2018-07-24 09:09:30</p>\n                                <p>\u4E3B\u673A\u670D\u52A1\u65F6\u95F4:2018-07-23 10:09:30</p>\n                                <p>\u670D\u52A1\u72B6\u6001:<spa style=\"color: #00AA00\">\u8FD0\u884C\u4E2D</spa></p>\n                            </div>\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"updateService()\">\u5347\u7EA7</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\">\u505C\u6B62</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\">\u91CD\u542F</a></p>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            ";
+            });
+            return view;
         };
         /**
          * 预览yaml
