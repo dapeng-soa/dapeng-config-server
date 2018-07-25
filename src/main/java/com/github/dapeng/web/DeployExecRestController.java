@@ -100,7 +100,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 //        });
         // 获取四个配置表最后的更新时间，用于对比是否需要更新
 
-        socketClient.on(EventType.GET_SERVER_TIME().name(), objects -> {
+        socketClient.on(EventType.SERVER_TIME().name(), objects -> {
             Map<String, Long> serverDeployTimes = (Map<String, Long>) objects[0];
             System.out.println(" serverDeployTimes...............");
         });

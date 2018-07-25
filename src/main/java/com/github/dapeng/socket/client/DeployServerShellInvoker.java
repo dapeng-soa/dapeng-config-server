@@ -1,6 +1,7 @@
 package com.github.dapeng.socket.client;
 
 import com.github.dapeng.socket.SystemParas;
+import com.github.dapeng.socket.enums.EventType;
 import io.socket.client.Socket;
 
 import java.io.BufferedReader;
@@ -54,7 +55,7 @@ public class DeployServerShellInvoker {
 
             String inline;
             while ((inline = br.readLine()) != null) {
-                socket.emit("nodeEvent", event + ":" + inline);
+                socket.emit(EventType.SERVER_TIME().name(), inline);
                 System.out.println(inline);
             }
             br.close();

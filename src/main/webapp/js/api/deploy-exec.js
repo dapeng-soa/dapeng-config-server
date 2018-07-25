@@ -123,7 +123,8 @@ checkService = function () {
     util.$get(url, function (res) {
         console.log(res);
         // 展示视图（默认服务视图）
-        deploy.deployViewChange();
+        var context = deploy.deployViewChange("serviceView",res.context);
+        $("#deployMain").html(context);
     })
 };
 
