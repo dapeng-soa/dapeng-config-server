@@ -3,6 +3,11 @@ package com.github.dapeng.web;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.UnitDto;
+import com.github.dapeng.socket.AgentEvent;
+import com.github.dapeng.socket.SocketUtil;
+import com.github.dapeng.socket.client.CmdExecutor;
+import com.github.dapeng.socket.enums.EventType;
+import com.github.dapeng.socket.listener.DeployServerOperations;
 import com.github.dapeng.dto.YamlService;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.vo.UnitVo;
@@ -16,16 +21,25 @@ import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.UnitUtil;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -38,7 +52,20 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 @RestController
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
-public class DeployUnitRestController {
+public class DeployUnitRestController implements ApplicationListener<ContextRefreshedEvent> {
+
+    private Socket socketClient = null;
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
+        socketClient = SocketUtil.registerWebSocketClient("127.0.0.1", 9095, "127.0.0.1", "DeployUnitSocket");
+        List<String> ids = new ArrayList();
+        ids.add(socketClient.id());
+        AgentEvent agentEvent = new AgentEvent(ids, "deploy", "orderService", "helloWorld");
+        socketClient.emit("webEvent", agentEvent);
+
+    }
+
     private static Logger LOGGER = LoggerFactory.getLogger(DeployUnitRestController.class);
 
     @Autowired
@@ -49,7 +76,6 @@ public class DeployUnitRestController {
     ServiceRepository serviceRepository;
     @Autowired
     DeployUnitRepository unitRepository;
-
 
     /**
      * @return 部署单元
@@ -153,8 +179,8 @@ public class DeployUnitRestController {
      */
     @GetMapping("/deploy-unit/process-envs")
     public ResponseEntity<?> processService(@RequestParam long setId,
-                                         @RequestParam long hostId,
-                                         @RequestParam long serviceId) {
+                                            @RequestParam long hostId,
+                                            @RequestParam long serviceId) {
         TSet set = setRepository.getOne(setId);
         THost host = hostRepository.getOne(hostId);
         TService service = serviceRepository.getOne(serviceId);

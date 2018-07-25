@@ -1,4 +1,4 @@
-package com.github.dapeng.socket;
+package com.github.dapeng.socket.server;
 
 import com.corundumstudio.socketio.SocketIOServer;
 
