@@ -36,6 +36,7 @@ public class SocketServer {
     public void init() {
         Configuration config = new Configuration();
         config.setPort(port);
+        config.setHostname("127.0.0.1");
 
         config.setAllowCustomRequests(true);
 
@@ -44,6 +45,7 @@ public class SocketServer {
 
         final SocketIOServer server = new SocketIOServer(config);
         final BlockingQueue queue = new LinkedBlockingQueue();
+
 
         server.addConnectListener(new ConnectListener() {
             @Override
@@ -93,24 +95,34 @@ public class SocketServer {
                         String name = data.split(":")[0];
                         String ip = data.split(":")[1];
                         webClientMap.put(client.getSessionId().toString(), new HostAgent(name, ip, client.getSessionId().toString()));
-//                        notifyWebClients(nodesMap, server);
+                        notifyWebClients(nodesMap, server);
                     }
                 }
 
         );
 
-        server.addEventListener("webEvent", AgentEvent.class, new DataListener<AgentEvent>() {
+        server.addEventListener("webEvent", String.class, new DataListener<String>() {
 
             @Override
-            public void onData(SocketIOClient socketIOClient, AgentEvent agentEvent, AckRequest ackRequest) throws Exception {
-                logger.info(" receive webEvent: " + agentEvent.getCmd());
+            public void onData(SocketIOClient socketIOClient, String agentEvent, AckRequest ackRequest) throws Exception {
+               // logger.info(" receive webEvent: " + agentEvent.getCmd());
+                System.out.println("==================================================");
+                System.out.println(" agentEvent: " + agentEvent);
+                String[] values = agentEvent.split(" ");
+                String sessionId = values[0];
+                String cmd = values[1];
+                String serviceName = values[2];
+                String content = values[3];
 
-                agentEvent.getClientSessionIds().stream().forEach(event -> {
-                    SocketIOClient client = server.getClient(UUID.randomUUID());
-                    if (client != null) {
-                        client.sendEvent("webCmd", agentEvent);
-                    }
-                });
+                SocketIOClient socketClient = server.getClient(UUID.fromString(sessionId));
+                socketClient.sendEvent("webCmd", agentEvent);
+//                agentEvent.getClientSessionIds().stream().forEach(event -> {
+//                    SocketIOClient client = server.getClient(UUID.randomUUID());
+//                    if (client != null) {
+//                        client.sendEvent("webCmd", agentEvent);
+//                    }
+//                });
+                ackRequest.sendAckData(true);
             }
         });
 
@@ -145,9 +157,7 @@ public class SocketServer {
 
         logger.info(" current agent clients size: " + agents.stream().map(i -> i.getIp()));
 
-        if (agents.size() > 0 && server.getRoomOperations("web").getClients().size() > 0) {
-            server.getRoomOperations("web").sendEvent("serverList", agents);
-        }
+        server.getRoomOperations("nodes").sendEvent("serverList", agents);
 
     }
 

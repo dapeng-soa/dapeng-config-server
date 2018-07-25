@@ -1,5 +1,6 @@
 package com.github.dapeng.socket;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,11 +9,18 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public class AgentEvent {
+public class AgentEvent implements Serializable {
     private List<String> clientSessionIds;
     private String cmd;
     private String serviceName;
     private String content;
+
+    public AgentEvent(List<String> sessionIds, String cmd, String serviceName, String content) {
+        this.clientSessionIds = sessionIds;
+        this.cmd = cmd;
+        this.serviceName = serviceName;
+        this.content = content;
+    }
 
     public List<String> getClientSessionIds() {
         return clientSessionIds;
@@ -44,5 +52,12 @@ public class AgentEvent {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(128);
+        sb.append(clientSessionIds.get(0)).append(" ").append(cmd).append(" ").append(serviceName).append(" ").append(content);
+        return sb.toString();
     }
 }
