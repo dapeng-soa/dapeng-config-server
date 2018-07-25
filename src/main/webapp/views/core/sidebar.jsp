@@ -21,10 +21,10 @@
                     <a href="${basePath}/config/service"><i class="fa fa-wrench" aria-hidden="true"></i>服务配置</a>
                 </dd>
                 <dd class="${sideName == 'config-whitelist' ? 'layui-this' : ''}">
-                    <a href="${basePath}/config/whitelist"><i class="fa fa-book" aria-hidden="true"></i>白名单管理</a>
+                    <a href="${basePath}/config/whitelist"><i class="fa fa-book" aria-hidden="true"></i>* 白名单 *</a>
                 </dd>
                 <dd class="${sideName == 'config-apikey' ? 'layui-this' : ''}">
-                    <a href="${basePath}/config/apikey"><i class="fa fa-unlock" aria-hidden="true"></i>ApiKey管理</a>
+                    <a href="${basePath}/config/apikey"><i class="fa fa-unlock" aria-hidden="true"></i>*ApiKey*</a>
                 </dd>
             </dl>
         </li>

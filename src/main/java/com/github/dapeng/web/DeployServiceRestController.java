@@ -6,12 +6,15 @@ import com.github.dapeng.dto.ServiceDto;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.NullUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
  * @author with struy.
@@ -49,6 +52,10 @@ public class DeployServiceRestController {
 
     @PostMapping("/deploy-service/add")
     public ResponseEntity<?> addService(@RequestBody ServiceDto serviceDto) {
+        if (isEmpty(serviceDto.getName())||isEmpty(serviceDto.getImage())){
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+        }
         TService service = new TService();
         service.setName(serviceDto.getName());
         service.setRemark(serviceDto.getRemark());
@@ -66,4 +73,18 @@ public class DeployServiceRestController {
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
     }
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    @PostMapping("/deploy-service/del/{id}")
+    public ResponseEntity delSet(@PathVariable long id){
+        serviceRepository.delete(id);
+        return ResponseEntity
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
+    }
+
+
 }

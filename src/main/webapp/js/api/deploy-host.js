@@ -70,7 +70,8 @@ function InitDeployHosts() {
         }, {
             field: 'extra',
             title: '是否外部机器',
-            sortable: true
+            sortable: true,
+            formatter: extraFormatter
         },{
             field: 'remark',
             title: '备注'
@@ -102,6 +103,9 @@ function InitDeployHosts() {
     });
 }
 
+extraFormatter = function () {
+
+};
 /**
  * @return {string}
  */

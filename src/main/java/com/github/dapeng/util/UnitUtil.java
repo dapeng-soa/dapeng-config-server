@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.github.dapeng.util.NullUtil.isEmpty;
+
 /**
  * @author with struy.
  * Create by 2018/7/23 15:09
@@ -21,7 +23,7 @@ public class UnitUtil {
     public static Map<String, String> ofEnv(String s) {
         Map<String, String> envMap = new HashMap<>(16);
         Arrays.asList(s.split(REGEX)).forEach(s1 -> {
-            if (!NullUtil.isEmpty(s1) && s1.contains(":")) {
+            if (!isEmpty(s1) && s1.contains(":")) {
                 String[] s2 = s1.split(":", 2);
                 envMap.put(s2[0].trim(), s2[1].trim());
             }
@@ -42,7 +44,7 @@ public class UnitUtil {
                 "      soa_jmxrmi_enable: \"false\"\n" +
                 "      soa_monitor_enable: \"true\"";
         ofEnv(sss).forEach((k, v) -> {
-            System.out.println(k +" ->" + v);
+            System.out.println(k + " ->" + v);
         });
     }
 }

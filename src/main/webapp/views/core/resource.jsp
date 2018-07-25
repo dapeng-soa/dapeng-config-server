@@ -50,8 +50,9 @@
 <link rel="stylesheet" href="${basePath}/plugins/toastr/css/toastr.css">
 
 
-<script src="${basePath}/js/api/Config.js"></script>
-<script src="${basePath}/js/api/Deploy.js"></script>
+<script src="${basePath}/js/ts/Config.js"></script>
+<script src="${basePath}/js/ts/Deploy.js"></script>
+<script src="${basePath}/js/ts/Api.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
 
 <script>
