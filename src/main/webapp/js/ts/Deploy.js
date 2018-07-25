@@ -92,11 +92,21 @@ var api;
          * 服务/主机视图
          */
         Deploy.prototype.deployViewChange = function (viewType, data) {
+            var dep = this;
             var view = "";
-            data.forEach(function (x) {
-                view += "\n            <div class=\"col-sm-6 col-xs-12\">\n                <div class=\"panel panel-default panel-box\">\n                    <div class=\"panel-heading\"><p style=\"text-align: center\">x</p>\n                    </div>\n                    <div class=\"panel-body\" style=\"overflow-y: auto;max-height: 400px\">\n                        <div class=\"row\" style=\"border-bottom: 1px solid gainsboro;padding: 10px 0;\">\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p >app1</p>\n                                <p >192.168.0.11</p>\n                                <p >\u9700\u8981\u66F4\u65B0\uFF1A\u662F</p>\n                            </div>\n                            <div class=\"col-sm-6 col-xs-12\">\n                                <p>\u914D\u7F6E\u66F4\u65B0\u65F6\u95F4:2018-07-24 09:09:30</p>\n                                <p>\u4E3B\u673A\u670D\u52A1\u65F6\u95F4:2018-07-23 10:09:30</p>\n                                <p>\u670D\u52A1\u72B6\u6001:<spa style=\"color: #00AA00\">\u8FD0\u884C\u4E2D</spa></p>\n                            </div>\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"updateService()\">\u5347\u7EA7</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\">\u505C\u6B62</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\">\u91CD\u542F</a></p>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            ";
-            });
+            for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+                var em = data_1[_i];
+                view += "\n            <div class=\"col-sm-6 col-xs-12\">\n                <div class=\"panel panel-default panel-box\">\n                    <div class=\"panel-heading\"><p style=\"text-align: center\">" + em.serviceName + "</p>\n                    </div>\n                    <div class=\"panel-body\" style=\"overflow-y: auto;max-height: 400px\">\n                         " + dep.serviceViewSubHost(em.deploySubHostVos) + "\n                    </div>\n                </div>\n            </div>\n            ";
+            }
             return view;
+        };
+        Deploy.prototype.serviceViewSubHost = function (sub) {
+            var subView = "";
+            for (var _i = 0, sub_1 = sub; _i < sub_1.length; _i++) {
+                var em = sub_1[_i];
+                subView += "<div class=\"row\" style=\"border-bottom: 1px solid gainsboro;padding: 10px 0;\">\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p >" + em.hostName + "</p>\n                                <p >" + em.hostIp + "</p>\n                                <p >\u9700\u8981\u66F4\u65B0\uFF1A" + em.needUpdate + "</p>\n                            </div>\n                            <div class=\"col-sm-6 col-xs-12\">\n                                <p>\u914D\u7F6E\u66F4\u65B0\u65F6\u95F4:" + em.configUpdateBy + "</p>\n                                <p>\u4E3B\u673A\u670D\u52A1\u65F6\u95F4:" + em.deployTime + "</p>\n                                <p>\u670D\u52A1\u72B6\u6001:<spa style=\"color: #00AA00\">" + em.serviceStatus + "</spa></p>\n                            </div>\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"updateService()\">\u5347\u7EA7</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\">\u505C\u6B62</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\">\u91CD\u542F</a></p>\n                            </div>\n                        </div>\n            ";
+            }
+            return subView;
         };
         /**
          * 预览yaml

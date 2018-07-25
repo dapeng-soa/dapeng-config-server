@@ -149,7 +149,7 @@ public class SocketServer {
                         String time = tempData[1];
                         serverDeployTime.put(ip,Long.valueOf(time));
                         if (serverDeployTime.size() == nodesMap.size()) {
-                            server.getClient(client.getSessionId()).sendEvent(EventType.SERVER_TIME().name(), serverDeployTime);
+                            server.getRoomOperations("web").sendEvent(EventType.SERVER_TIME().name(), serverDeployTime);
                         }
                     }
                 }

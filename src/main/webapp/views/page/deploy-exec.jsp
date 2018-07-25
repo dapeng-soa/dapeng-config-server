@@ -49,7 +49,7 @@
         </div>
 
         <div class="row" style="margin-top: 20px" id="deployMain">
-            <div class="col-sm-6 col-xs-12">
+           <%-- <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
                     <div class="panel-heading"><p style="text-align: center">bizService</p>
                     </div>
@@ -124,7 +124,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--%>
         </div>
         <jsp:include page="../core/footer.jsp"/>
     </div>

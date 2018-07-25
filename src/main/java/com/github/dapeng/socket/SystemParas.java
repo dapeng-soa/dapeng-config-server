@@ -11,7 +11,7 @@ public interface SystemParas {
 
     List<String> BUILDSERVERCOMMANDS = Arrays.asList(AllowedCopmmand.BRANCH.name().toLowerCase(), AllowedCopmmand.BUILD.name().toLowerCase(), AllowedCopmmand.IMAGES.name().toLowerCase());
 
-    String SHELLNAME = "sh ./agent.sh ";
+    String SHELLNAME = "sh /Users/struy/project/today/dapeng-config-server/src/main/resources/shell/agent.sh ";
 
     String COMMAS=";";
 

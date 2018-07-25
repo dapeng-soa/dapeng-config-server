@@ -350,27 +350,37 @@ module api {
          * 服务/主机视图
          */
         public deployViewChange(viewType:string,data:any) {
-
+            let dep = this;
             let view = "";
-
-            data.forEach(x => {
-
+            for (let em of data){
                 view +=`
             <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
-                    <div class="panel-heading"><p style="text-align: center">x</p>
+                    <div class="panel-heading"><p style="text-align: center">${em.serviceName}</p>
                     </div>
                     <div class="panel-body" style="overflow-y: auto;max-height: 400px">
-                        <div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
+                         ${dep.serviceViewSubHost(em.deploySubHostVos)}
+                    </div>
+                </div>
+            </div>
+            `
+            }
+            return view;
+        }
+
+        private serviceViewSubHost(sub:any){
+            let subView = "";
+            for(let em of sub){
+                subView +=`<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-3 col-xs-12">
-                                <p >app1</p>
-                                <p >192.168.0.11</p>
-                                <p >需要更新：是</p>
+                                <p >${em.hostName}</p>
+                                <p >${em.hostIp}</p>
+                                <p >需要更新：${em.needUpdate}</p>
                             </div>
                             <div class="col-sm-6 col-xs-12">
-                                <p>配置更新时间:2018-07-24 09:09:30</p>
-                                <p>主机服务时间:2018-07-23 10:09:30</p>
-                                <p>服务状态:<spa style="color: #00AA00">运行中</spa></p>
+                                <p>配置更新时间:${em.configUpdateBy}</p>
+                                <p>主机服务时间:${em.deployTime}</p>
+                                <p>服务状态:<spa style="color: #00AA00">${em.serviceStatus}</spa></p>
                             </div>
                             <div class="col-sm-3 col-xs-12">
                                 <p ><a href="#" style="color: #1E9FFF" onclick="updateService()">升级</a></p>
@@ -378,13 +388,10 @@ module api {
                                 <p ><a href="#" style="color: #1E9FFF">重启</a></p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
             `
-            });
+            }
 
-            return view;
+            return subView
         }
 
 
