@@ -1,5 +1,6 @@
 $(document).ready(function () {
     initSetList();
+    checkService();
 });
 var deploy = new api.Deploy();
 var util = new api.Api();
@@ -44,7 +45,8 @@ initServiceList = function (id) {
                 }
                 html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
-            $("#serviceSelect").html(html).selectpicker('refresh');;
+            $("#serviceSelect").html(html).selectpicker('refresh');
+            ;
         }
     }, "json");
 };
@@ -62,7 +64,7 @@ initHostList = function (id) {
                 }
                 html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
-            $("#hostSelect").html(html).selectpicker('refresh');;
+            $("#hostSelect").html(html).selectpicker('refresh');
         }
     }, "json");
 };
@@ -78,27 +80,25 @@ execViewTypeChanged = function (obj) {
         $("#viewTypeLabel").html("服务：");
         $("#viewTypeSelect").html(
             '<select id="serviceSelect" data-live-search="true" class="selectpicker form-control" onchange="execServiceChanged()" >\n' +
-            '                </select>'
+            '</select>'
         );
         // 初始化服务
         initServiceList();
         // 切换至服务视图
-
+        deploy.deployViewChange();
     } else {
         $("#viewTypeLabel").html("主机：");
         $("#viewTypeSelect").html(
             '<select id="hostSelect" data-live-search="true" class="selectpicker form-control" onchange="execHostChanged()" >\n' +
-            '                </select>'
+            '</select>'
         );
         // 初始化主机
         initHostList();
         // 切换至主机视图
-
+        deploy.deployViewChange();
     }
 
 };
-
-
 
 
 // 服务视图服务选择
@@ -119,17 +119,28 @@ updateService = function () {
 };
 // checkService
 checkService = function () {
-
+    var url = basePath + "/api/deploy/checkRealService";
+    util.$get(url, function (res) {
+        console.log(res);
+        // 展示视图（默认服务视图）
+        deploy.deployViewChange();
+    })
 };
 
 // stopService
 stopService = function () {
-
+    var url = basePath + "/api/deploy/stopRealService";
+    util.$get(url, function (res) {
+        console.log(res);
+    })
 };
 
 // restartService
 restartService = function () {
-
+    var url = basePath + "/api/deploy/restartRealService";
+    util.$get(url, function (res) {
+        console.log(res);
+    })
 };
 
 

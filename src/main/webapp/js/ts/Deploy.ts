@@ -2,12 +2,14 @@
 /// <reference path="../../plugins/ts-lib/jquery.d.ts"/>
 /*部署模块ts模版代码*/
 module api {
-    export class Deploy  {
+    export class Deploy {
 
         add: string = "add";
         view: string = "view";
         edit: string = "edit";
-
+        api = new api.Api();
+        serviceView: string = "serviceView";
+        hostView: string = "hostView";
 
         /**
          * 环境集-导出添加/修改/详情模版
@@ -15,12 +17,12 @@ module api {
          * @param {string} biz
          * @param data
          */
-        public exportAddDeploySetContext(type: string = this.add || this.edit || this.view , biz?: string, data?: any){
+        public exportAddDeploySetContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
             let c = this;
-           return`
+            return `
           <div class="panel-header window-header">
                 <div class="input-group">
-                    <p class="left-panel-title">${type == c.add ? "添加环境集" : (type == c.edit ? "修改环境集" : (type == c.view ? "环境集详情":"" ))}</p>
+                    <p class="left-panel-title">${type == c.add ? "添加环境集" : (type == c.edit ? "修改环境集" : (type == c.view ? "环境集详情" : ""))}</p>
                 </div>
             </div>
             <div class="form-horizontal" style="margin-top: 81px;">
@@ -57,12 +59,12 @@ module api {
          * @param {string} biz
          * @param data
          */
-        public exportAddDeployServiceContext(type: string = this.add || this.edit || this.view , biz?: string, data?: any){
+        public exportAddDeployServiceContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
             let c = this;
-            return`
+            return `
            <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加服务" : (type == c.edit ? "修改服务" : (type == c.view ? "服务详情":"" ))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加服务" : (type == c.edit ? "修改服务" : (type == c.view ? "服务详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
@@ -137,12 +139,12 @@ module api {
          * @param {string} biz
          * @param data
          */
-        public exportAddDeployHostContext(type: string = this.add || this.edit || this.view , biz?: string, data?: any){
+        public exportAddDeployHostContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
             let c = this;
-            return`
+            return `
            <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加节点" : (type == c.edit ? "修改节点" : (type == c.view ? "节点详情":"" ))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加节点" : (type == c.edit ? "修改节点" : (type == c.view ? "节点详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
@@ -208,12 +210,12 @@ module api {
          * @param {string} biz
          * @param data
          */
-        public exportAddDeployUnitContext(type: string = this.add || this.edit || this.view , biz?: string, data?: any){
+        public exportAddDeployUnitContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
             let c = this;
-            return`
+            return `
            <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加部署单元" : (type == c.edit ? "修改部署单元" : (type == c.view ? "部署单元详情":"" ))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加部署单元" : (type == c.edit ? "修改部署单元" : (type == c.view ? "部署单元详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
@@ -297,7 +299,7 @@ module api {
          * @param value
          * @param row
          */
-        public exportDeploySetActionContext(value, row){
+        public exportDeploySetActionContext(value, row) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeploySetEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeploySetEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
@@ -310,7 +312,7 @@ module api {
          * @param value
          * @param row
          */
-        public exportDeployHostActionContext(value, row){
+        public exportDeployHostActionContext(value, row) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeployHostOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeployHostOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
@@ -323,7 +325,7 @@ module api {
          * @param value
          * @param row
          */
-        public exportDeployServiceActionContext(value, row){
+        public exportDeployServiceActionContext(value, row) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeployServiceOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeployServiceOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
@@ -336,7 +338,7 @@ module api {
          * @param value
          * @param row
          */
-        public exportDeployUnitActionContext(value, row){
+        public exportDeployUnitActionContext(value, row) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeployUnitOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeployUnitOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
@@ -345,23 +347,52 @@ module api {
         }
 
         /**
-         * 服务视图
+         * 服务/主机视图
          */
-        public deployServiceView(){
+        public deployViewChange(viewType:string,data:any) {
 
+            let view = "";
+
+            data.forEach(x => {
+
+                view +=`
+            <div class="col-sm-6 col-xs-12">
+                <div class="panel panel-default panel-box">
+                    <div class="panel-heading"><p style="text-align: center">x</p>
+                    </div>
+                    <div class="panel-body" style="overflow-y: auto;max-height: 400px">
+                        <div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
+                            <div class="col-sm-3 col-xs-12">
+                                <p >app1</p>
+                                <p >192.168.0.11</p>
+                                <p >需要更新：是</p>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <p>配置更新时间:2018-07-24 09:09:30</p>
+                                <p>主机服务时间:2018-07-23 10:09:30</p>
+                                <p>服务状态:<spa style="color: #00AA00">运行中</spa></p>
+                            </div>
+                            <div class="col-sm-3 col-xs-12">
+                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService()">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">停止</a></p>
+                                <p ><a href="#" style="color: #1E9FFF">重启</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `
+            });
+
+            return view;
         }
 
-        /**
-         * 主机视图
-         */
-        public deployHostView(){
 
-        }
         /**
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext(){
+        public viewDeployYamlContext() {
             return `
 <div class="panel-header window-header">
                     <div class="input-group">
