@@ -10,10 +10,10 @@ public class YamlService {
 
   private String name;
   private String image;
-  private String labels = "";
   private String env = "";
   private String volumes = "";
   private String ports = "";
+  private String extraHosts = "";
   private String composeLabels = "";
   private String dockerExtras = "";
 
@@ -35,16 +35,6 @@ public class YamlService {
   public void setImage(String image) {
     this.image = image;
   }
-
-
-  public String getLabels() {
-    return labels;
-  }
-
-  public void setLabels(String labels) {
-    this.labels = labels;
-  }
-
 
   public String getEnv() {
     return env;
@@ -90,4 +80,11 @@ public class YamlService {
     this.dockerExtras = dockerExtras;
   }
 
+  public String getExtraHosts() {
+    return extraHosts;
+  }
+
+  public void setExtraHosts(String extraHosts) {
+    this.extraHosts = extraHosts;
+  }
 }

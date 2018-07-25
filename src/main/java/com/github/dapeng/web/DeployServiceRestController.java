@@ -80,7 +80,7 @@ public class DeployServiceRestController {
      * @return
      */
     @PostMapping("/deploy-service/del/{id}")
-    public ResponseEntity delSet(@PathVariable long id){
+    public ResponseEntity delService(@PathVariable long id){
         serviceRepository.delete(id);
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
