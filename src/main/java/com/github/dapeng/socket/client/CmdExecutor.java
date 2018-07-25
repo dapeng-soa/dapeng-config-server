@@ -24,7 +24,7 @@ public class CmdExecutor implements Runnable{
 
                     socket.emit("nodeEvent","started");
 
-                    //DeployServerShellInvoker.executeShell(socket, event);
+                    DeployServerShellInvoker.executeShell(socket, event);
 
                     socket.emit("nodeEvent","end");
                 } catch (Exception ex) {

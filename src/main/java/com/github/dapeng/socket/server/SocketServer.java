@@ -43,6 +43,7 @@ public class SocketServer {
         config.setAllowCustomRequests(true);
 
         Map<String, HostAgent> nodesMap = new ConcurrentHashMap<String, HostAgent>();
+        Map<String, Long> serverDeployTime = new ConcurrentHashMap<>();
         Map<String, HostAgent> webClientMap = new ConcurrentHashMap<String, HostAgent>();
 
         final SocketIOServer server = new SocketIOServer(config);
@@ -120,6 +121,36 @@ public class SocketServer {
                 });
             }
         });
+
+        //发送指令给agent获取当前节点的部署时间
+        server.addEventListener(EventType.GET_SERVER_TIME().name(), String.class, new DataListener<String>() {
+                    @Override
+                    public void onData(SocketIOClient client,
+                                       String data, AckRequest ackRequest) {
+                        logger.info(" received serverTime cmd.....");
+                        serverDeployTime.clear();
+                        server.getRoomOperations("nodes").sendEvent(EventType.GET_SERVER_TIME().name(),"");
+                    }
+                }
+        );
+
+        //获取到agent返回的时间，并转发给web节点
+        server.addEventListener(EventType.SERVER_TIME().name(), String.class, new DataListener<String>() {
+                    @Override
+                    public void onData(SocketIOClient client,
+                                       String data, AckRequest ackRequest) {
+                        logger.info(" received serverTime cmd.....");
+                        String[] tempData = data.split(":");
+                        String ip = tempData[0];
+                        String time = tempData[1];
+                        serverDeployTime.put(ip,Long.valueOf(time));
+                        if (serverDeployTime.size() == nodesMap.size()) {
+                            server.getClient(client.getSessionId()).sendEvent(EventType.SERVER_TIME().name(), serverDeployTime);
+                        }
+                    }
+                }
+        );
+
 
         server.start();
         System.out.println("websocket server started at " + port);
