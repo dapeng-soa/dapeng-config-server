@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -126,6 +128,17 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         YamlVo yamlVo = new YamlVo();
         yamlVo.setYamlService(yamlService);
         yamlVo.setLastDeployTime(System.currentTimeMillis());
+
+        socketClient.emit(EventType.GET_SERVER_TIME().name(),"");
+
+        socketClient.on(EventType.GET_SERVER_TIME().name(), objects -> {
+            Map<String, Long> serverDeployTimes = (Map<String, Long>) objects[0];
+            System.out.println(" serverDeployTimes...............");
+
+        });
+
+        //TODO: 过滤
+
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG, yamlVo));
     }
