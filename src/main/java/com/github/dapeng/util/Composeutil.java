@@ -1,6 +1,6 @@
 package com.github.dapeng.util;
 
-import com.github.dapeng.dto.YamlService;
+import com.github.dapeng.vo.YamlService;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.entity.deploy.TSet;
@@ -87,7 +87,7 @@ public class Composeutil {
                 rmEnvs.put(k1, v1);
             }
         }));
-        LOGGER.debug("host中重复的环境变量:[{}]", rmEnvs);
+        LOGGER.info("去除host中与服务[{}]重复的环境变量:[{}]", service.getName(), rmEnvs);
         rmEnvs.forEach(hostEnvs::remove);
         rmEnvs.clear();
         Map<String, String> realEnvs = new HashMap<>(serviceEnvs);
@@ -97,7 +97,7 @@ public class Composeutil {
                 rmEnvs.put(k1, v1);
             }
         }));
-        LOGGER.debug("set中重复的环境变量:[{}]", rmEnvs);
+        LOGGER.info("去除set中与节点[{}]服务[{}]重复的环境变量:[{}]",host.getName(), service.getName(), rmEnvs);
         rmEnvs.forEach(setEnvs::remove);
         rmEnvs.clear();
         realEnvs.putAll(setEnvs);

@@ -1,4 +1,6 @@
-package com.github.dapeng.dto;
+package com.github.dapeng.vo;
+
+import javax.persistence.Entity;
 
 /**
  * @author with struy.

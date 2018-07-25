@@ -258,9 +258,7 @@ initSetList = function (id) {
             }
             $("#setSelect").html(html);
             if (id === undefined || id === "") {
-                setTimeout(function () {
-                    initHostList()
-                }, 100);
+                initHostList()
             }
         }
     }, "json");
@@ -294,6 +292,9 @@ initHostList = function (id) {
                 html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#hostSelect").html(html);
+            setTimeout(function () {
+                processEnvsChanged();
+            },100);
         }
     }, "json");
 };
@@ -352,19 +353,20 @@ processEnvsChanged = function () {
     var hostId = $("#hostSelect").find("option:selected").val();
     var serviceId = $("#serviceSelect").find("option:selected").val();
 
-    var url = basePath + "api/deploy-unit/process-envs";
+    var url = basePath + "/api/deploy-unit/process-envs";
     $.get(url, {
         setId: setId,
         hostId: hostId,
         serviceId: serviceId
     }, function (res) {
+        console.log(res.context);
         if (res.code === SUCCESS_CODE) {
             $("#env-area").val();
             $("#volumes-area").val();
             $("#ports-area").val();
             $("#dockerExtras-area").val();
         }
-    });
+    },"json");
 };
 
 
