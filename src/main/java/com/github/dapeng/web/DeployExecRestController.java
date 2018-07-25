@@ -3,6 +3,8 @@ package com.github.dapeng.web;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.core.helper.DapengUtil;
+import com.github.dapeng.core.helper.IPUtils;
+import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.entity.deploy.TSet;
@@ -69,15 +71,16 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
     /**
      * 向agent发送问询指令
-     * @param setId  环境集id,根据环境筛选主机和服务
+     *
+     * @param setId     环境集id,根据环境筛选主机和服务
      * @param serviceId 服务id,如果有则只问询单个服务
-     * @param viewType 视图类型 [1:服务视图] [2:主机视图] 默认主机视图
+     * @param viewType  视图类型 [1:服务视图] [2:主机视图] 默认主机视图
      * @return
      */
     @RequestMapping("/deploy/checkRealService")
-    public ResponseEntity checkRealService(@RequestParam(defaultValue = "1") long setId,
-                                           @RequestParam(defaultValue = "1") long serviceId,
-                                           @RequestParam(defaultValue = "1") int viewType ) {
+    public ResponseEntity checkRealService(@RequestParam() Long setId,
+                                           @RequestParam(required = false) Long serviceId,
+                                           @RequestParam(defaultValue = "1") Integer viewType) {
 
         List<String> serviceNames = new ArrayList<>();
         if (isEmpty(serviceId)) {
@@ -108,31 +111,35 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
         // 根据视图类型返回对应的数据结构(test)
         List<DeployServiceVo> voList = new ArrayList<>();
-        if (viewType==1){
+        List<TDeployUnit> units = unitRepository.findAllBySetId(setId);
+        if (viewType == 1) {
             LOGGER.info("服务视图");
-            List<DeploySubHostVo> subHostVos = new ArrayList<>();
-            DeploySubHostVo subHostVo = new DeploySubHostVo();
-            subHostVo.setSetId(1L);
-            subHostVo.setHostId(1L);
-            subHostVo.setHostIp("192.66.66.66");
-            subHostVo.setHostName("app1");
-            subHostVo.setServiceStatus(1);
-            subHostVo.setNeedUpdate(true);
-            subHostVo.setConfigUpdateBy(DateUtil.now());
-            subHostVo.setDeployTime(DateUtil.now());
-            subHostVos.add(subHostVo);
-
-            DeployServiceVo deployServiceVo = new DeployServiceVo();
-            deployServiceVo.setServiceName("goodsService");
-            deployServiceVo.setServiceId(1L);
-            deployServiceVo.setDeploySubHostVos(subHostVos);
-            voList.add(deployServiceVo);
-        }else {
+            units.forEach(unit -> {
+                List<DeploySubHostVo> subHostVos = new ArrayList<>();
+                DeploySubHostVo subHostVo = new DeploySubHostVo();
+                subHostVo.setSetId(unit.getSetId());
+                subHostVo.setHostId(unit.getHostId());
+                THost tHost = hostRepository.getOne(unit.getHostId());
+                subHostVo.setHostIp(IPUtils.transferIp(tHost.getIp()));
+                subHostVo.setHostName(tHost.getName());
+                subHostVo.setServiceStatus(1);
+                subHostVo.setNeedUpdate(true);
+                subHostVo.setConfigUpdateBy(DateUtil.now());
+                subHostVo.setDeployTime(DateUtil.now());
+                subHostVos.add(subHostVo);
+                DeployServiceVo deployServiceVo = new DeployServiceVo();
+                TService tService = serviceRepository.getOne(unit.getServiceId());
+                deployServiceVo.setServiceName(tService.getName());
+                deployServiceVo.setServiceId(unit.getServiceId());
+                deployServiceVo.setDeploySubHostVos(subHostVos);
+                voList.add(deployServiceVo);
+            });
+        } else {
             LOGGER.info("主机视图");
         }
 
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA,voList));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, voList));
     }
 
     /**
@@ -183,7 +190,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         YamlService yamlService = Composeutil.processService(set, host, service);
         YamlVo yamlVo = new YamlVo();
         yamlVo.setYamlService(yamlService);
-        yamlVo.setLastDeployTime(System.currentTimeMillis()/1000);
+        yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
 
         //socketClient.emit(EventType.GET_SERVER_TIME().name(),yamlVo.getYamlService().getName());
 
