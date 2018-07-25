@@ -1,9 +1,14 @@
 $(document).ready(function () {
-    InitDeployUnits();
     initSetList();
     initServiceList();
+    setTimeout(function () {
+        InitDeployUnits();
+    }, 100);
 });
 var deploy = new api.Deploy();
+var sets = {};
+var hosts = {};
+var services = {};
 
 function InitDeployUnits() {
     //记录页面bootstrap-table全局变量$table，方便应用
@@ -59,14 +64,14 @@ function InitDeployUnits() {
             formatter: numberFormatter
 
         }, {
-            field: 'set',
+            field: 'setName',
             title: 'set',
             sortable: true
         }, {
-            field: 'host',
+            field: 'hostName',
             title: 'host'
         }, {
-            field: 'service',
+            field: 'serviceName',
             title: 'service',
             sortable: true
         }, {
@@ -109,6 +114,7 @@ function InitDeployUnits() {
  * @return {string}
  */
 deployUnitActionFormatter = function (value, row, index) {
+    console.log(row.setId);
     return deploy.exportDeployUnitActionContext(value, row);
 };
 
@@ -238,6 +244,7 @@ initSetList = function (id) {
     var curl = basePath + "/api/deploy-sets";
     $.get(curl, function (res) {
         if (res.code === SUCCESS_CODE) {
+            sets = res.context;
             var html = "";
             for (var i = 0; i < res.context.length; i++) {
                 var seled = "";
@@ -250,7 +257,6 @@ initSetList = function (id) {
                 html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#setSelect").html(html);
-            console.log("-->" + id);
             if (id === undefined || id === "") {
                 setTimeout(function () {
                     initHostList()
@@ -278,6 +284,7 @@ initHostList = function (id) {
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
     $.get(curl, function (res) {
         if (res.code === SUCCESS_CODE) {
+            hosts = res.context;
             var html = "";
             for (var i = 0; i < res.context.length; i++) {
                 var seled = "";
@@ -299,6 +306,7 @@ initServiceList = function (id) {
     var curl = basePath + "/api/deploy-services";
     $.get(curl, function (res) {
         if (res.code === SUCCESS_CODE) {
+            services = res.context;
             var html = "";
             for (var i = 0; i < res.context.length; i++) {
                 var seled = "";

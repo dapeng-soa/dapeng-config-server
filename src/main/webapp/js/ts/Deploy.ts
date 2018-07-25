@@ -342,5 +342,111 @@ module api {
             <a href="javascript:void(0)" title="删除"  onclick="delDeployUnit(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
         }
+
+        public viewDeployYamlContext(){
+            return `
+<div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">预览部署yaml</p>
+                    </div>
+                </div>
+            <pre style="margin-top: 81px">
+services:
+  adminService:
+    container_name: adminService
+    environment:
+      DB_ADMIN_PASSWD: dbpwdMask
+      DB_ADMIN_URL: jdbc:mysql://db-master:3360/admin_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
+      DB_ADMIN_USER: dbuserMask
+      DB_CATEGORYDB_PASSWD: dbpwdMask
+      DB_CATEGORYDB_URL: jdbc:mysql://db-master:3360/category_db?useUnicode=true
+      DB_CATEGORYDB_USER: dbuserMask
+      DB_COMMONDATADB_PASSWD: dbpwdMask
+      DB_COMMONDATADB_URL: jdbc:mysql://db-master:3360/common_data_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
+      DB_COMMONDATADB_USER: dbuserMask
+      DB_COMMONDB_PASSWD: dbpwdMask
+      DB_COMMONDB_URL: jdbc:mysql://db-master:3360/common_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
+      DB_COMMONDB_USER: dbuserMask
+      DB_CONFIG_SERVER_PASSWD: 9Pldhx6l1a9adV4VDVufbXOIdztKBI
+      DB_CONFIG_SERVER_URL: jdbc:mysql://db-master:3360/config_server_db?useUnicode=true&characterEncoding=utf8
+      DB_CONFIG_SERVER_USER: config_user
+      DB_FINANCE_PASSWD: hOYx54UdmpnTnHT9tgVaavWRJGGHSD
+      DB_FINANCE_REPORT_PASSWD: hOYx54UdmpnTnHT9tgVaavWRJGGHSD
+      DB_FINANCE_REPORT_URL: jdbc:mysql://192.168.41.10:3370/finance_report_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
+      DB_FINANCE_REPORT_USER: t_finance_user
+      DB_FINANCE_TASK_PASSWD: hOYx54UdmpnTnHT9tgVaavWRJGGHSD
+      DB_FINANCE_TASK_URL: jdbc:mysql://192.168.41.10:3370/finance_task_db?useUnicode=true&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
+      DB_FINANCE_TASK_USER: t_finance_user
+      DB_FINANCE_URL: "jdbc:mysql://192.168.41.10:3370/finance?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
+        true"
+      DB_FINANCE_USER: t_finance_user
+      DB_GOODSDB_PASSWD: dbpwdMask
+      DB_GOODSDB_URL: jdbc:mysql://db-master:3360/goods_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
+      DB_GOODSDB_USER: dbuserMask
+      DB_MEMBER_PASSWD: dbpwdMask1
+      DB_MEMBER_URL: jdbc:mysql://192.168.30.100:3363/member?useUnicode=true&characterEncoding=utf8
+      DB_MEMBER_USER: dbuserMask1
+      DB_ORDER_PASSWD: dbpwdMask
+      DB_ORDER_URL: "jdbc:mysql://db-master:3360/order_db?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
+        true"
+      DB_ORDER_USER: dbuserMask
+      DB_PURCHASEDB_PASSWD: dbpwdMask
+      DB_PURCHASEDB_URL: "jdbc:mysql://db-master:3360/purchase_db?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
+        true"
+      DB_PURCHASEDB_USER: dbuserMask
+      DB_STOCK_PASSWD: dbpwdMask
+      DB_STOCK_URL: "jdbc:mysql://db-master:3360/stock_db?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
+        true"
+      DB_STOCK_USER: dbuserMask
+      DB_SUPPLIERDB_PASSWD: dbpwdMask
+      DB_SUPPLIERDB_URL: jdbc:mysql://db-master:3360/supplier_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
+      DB_SUPPLIERDB_USER: dbuserMask
+      E_JAVA_OPTS: ' -Dname=adminService -Xms1024M -Xmx1024M -Xss256K -XX:MetaspaceSize=256M
+        -XX:MaxMetaspaceSize=256M -Dio.netty.leakDetectionLevel=advanced'
+      LANG: zh_CN.UTF-8
+      TZ: CST-8
+      cas_server_url: https://sso.today36524.com
+      fluent_bit_enable: "true"
+      kafka_consumer_host: 192.168.10.129:9092,192.168.20.103:9092,192.168.20.114:9092
+      redis_host_ip: redis_host
+      redis_host_port: '6008'
+      serviceName: adminService
+      slow_service_check_enable: "true"
+      soa_container_ip: 192.168.10.130
+      soa_container_port: '9083'
+      soa_core_pool_size: '100'
+      soa_jmxrmi_enable: "false"
+      soa_monitor_enable: "true"
+      soa_service_timeout: '10000'
+      soa_transactional_enable: "false"
+      soa_zookeeper_host: 192.168.10.129:2181,192.168.20.103:2181,192.168.20.114:2181
+    extra_hosts:
+      db-master: 192.168.20.100
+      fluentd: 192.168.20.200
+      fluentdStandby: 192.168.10.132
+      redis_host: 192.168.20.125
+      soa_zookeeper: 192.168.10.129
+    image: docker.today36524.com.cn:5000/biz/admin_service:48d4b33
+    labels:
+      project.depends: mysql,zookeeper,idGenService
+      project.operation: sh buildAdmin.sh
+      project.owner: XUSHENG
+      project.source: http://pms.today36524.com.cn:8083/central-services/admin.git@@master
+    ports:
+    - 9083:9083/tcp
+    restart: on-failure:3
+    volumes:
+    - /data/logs/dapeng/admin-service:/dapeng-container/logs:rw
+    - /data/var/fluent/adminService/logs.db:/fluent-bit/db/logs.db:rw
+    - /home/today/tscompose/config/fluent-bit-dapeng.conf:/opt/fluent-bit/etc/fluent-bit.conf:rw
+</pre>
+<div >
+<span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="">升级</button>
+                        </span>
+</div>
+            `
+
+        }
     }
 }

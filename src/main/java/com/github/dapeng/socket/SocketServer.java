@@ -28,9 +28,7 @@ public class SocketServer {
     private static final int port = 9095;
 
     public void start() {
-        new Thread(() ->{
-            init();
-        }).start();
+        new Thread(this::init).start();
     }
 
     public void init() {
@@ -79,7 +77,7 @@ public class SocketServer {
                         String name = data.split(":")[0];
                         String ip = data.split(":")[1];
                         nodesMap.put(client.getSessionId().toString(), new HostAgent(name, ip, client.getSessionId().toString()));
-                        notifyWebClients(nodesMap, server);
+                        //notifyWebClients(nodesMap, server);
                     }
                 }
 

@@ -18,52 +18,40 @@
     <div class="container-right-context animated fadeIn">
         <div class="panel-header">
             <div class="input-group">
-                <p class="left-panel-title">执行发布</p>
+                <p class="left-panel-title">发布部署</p>
                 <span class="input-group-btn panel-button-group">
 
                 </span>
             </div>
         </div>
 
-        <div class="">
-            <span>选择环境： <span>
-                <select id="setSelect" class="form-control " style="display: inline-block;width: 120px">
+        <div class="row" style="margin-top: 20px">
+            <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%">环境：</label>
+            <div class="col-sm-2">
+                <select id="setSelect" data-live-search="true" onchange="execSetChanged(this)" class="selectpicker form-control">
 
                 </select>
-            </span></span>
-
-            <span>选择视图： <span>
-                <select class="form-control" style="display: inline-block;width: 120px">
-                    <option>服务视图</option>
-                    <option>主机视图</option>
+            </div>
+            <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%">视图：</label>
+            <div class="col-sm-2">
+                <select data-live-search="true" class="selectpicker form-control" onchange="execViewTypeChanged(this)" >
+                    <option value="1" selected>服务视图</option>
+                    <option value="2">主机视图</option>
                 </select>
-            </span></span>
-
-            <span>服务： <span>
-                <select class="form-control" style="display: inline-block;width: 120px">
+            </div>
+            <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%" id="viewTypeLabel">服务：</label>
+            <div class="col-sm-2" id="viewTypeSelect">
+                <select data-live-search="true" class="selectpicker form-control" onchange="execServiceChanged()" >
                     <option>goodsService</option>
                     <option>categoryService</option>
                 </select>
-            </span></span>
+            </div>
         </div>
 
-        <div class="row" style="margin-top: 40px">
+        <div class="row" style="margin-top: 20px">
             <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
                     <div class="panel-heading"><p style="text-align: center">bizService</p>
-                        <%--<span class="panel-box-menu">
-                        <div class="btn-group">
-                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                                  aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"></span>
-                            <span class="sr-only"></span>
-                          </button>
-                          <ul class="dropdown-menu">
-                            <li><a href="#">全部升级</a></li>
-                              <li><a href="#">全部启动</a></li>
-                          </ul>
-                        </div>
-                    </span>--%>
                     </div>
                     <div class="panel-body" style="overflow-y: auto;max-height: 400px">
                         <div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
@@ -78,7 +66,7 @@
                                 <p>服务状态:<spa style="color: #00AA00">运行中</spa></p>
                             </div>
                             <div class="col-sm-3 col-xs-12">
-                                <p ><a href="#" style="color: #1E9FFF" onclick="">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService()">升级</a></p>
                                 <p ><a href="#" style="color: #1E9FFF">停止</a></p>
                                 <p ><a href="#" style="color: #1E9FFF">重启</a></p>
                             </div>

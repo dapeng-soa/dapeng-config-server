@@ -3,6 +3,7 @@ package com.github.dapeng.web;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.UnitDto;
+import com.github.dapeng.vo.UnitVo;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
@@ -18,10 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
  * @author with struy.
@@ -49,8 +51,27 @@ public class DeployUnitRestController {
     @GetMapping("/deploy-units")
     public ResponseEntity<?> deployUnits() {
         List<TDeployUnit> units = unitRepository.findAll();
+        List<UnitVo> unitVos = units.stream().map(u -> {
+            UnitVo vo = new UnitVo();
+            vo.setId(u.getId());
+            vo.setSetId(u.getSetId());
+            vo.setSetName(setRepository.getOne(u.getSetId()).getName());
+            vo.setHostId(u.getHostId());
+            vo.setHostName(hostRepository.getOne(u.getHostId()).getName());
+            vo.setServiceId(u.getServiceId());
+            vo.setServiceName(serviceRepository.getOne(u.getServiceId()).getName());
+            vo.setCreatedAt(u.getCreatedAt());
+            vo.setDockerExtras(u.getDockerExtras());
+            vo.setEnv(u.getEnv());
+            vo.setGitTag(u.getGitTag());
+            vo.setImageTag(u.getImageTag());
+            vo.setPorts(u.getPorts());
+            vo.setUpdatedAt(u.getUpdatedAt());
+            vo.setVolumes(u.getVolumes());
+            return vo;
+        }).collect(Collectors.toList());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, units));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, unitVos));
     }
 
     /**
@@ -90,6 +111,14 @@ public class DeployUnitRestController {
      */
     @PostMapping("/deploy-unit/add")
     public ResponseEntity<?> addUnit(@RequestBody UnitDto unitDto) {
+        if (isEmpty(unitDto.getSetId())
+                || isEmpty(unitDto.getHostId())
+                || isEmpty(unitDto.getServiceId())
+                || isEmpty(unitDto.getGitTag())
+                || isEmpty(unitDto.getImageTag())) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+        }
         TDeployUnit unit = new TDeployUnit();
         unit.setGitTag(unitDto.getGitTag());
         unit.setImageTag(unitDto.getImageTag());
@@ -126,13 +155,10 @@ public class DeployUnitRestController {
         THost host = hostRepository.getOne(hostId);
         TService service = serviceRepository.getOne(serviceId);
         Map<String, String> setEnvs = UnitUtil.ofEnv(set.getEnv());
-        Map<String, String>  hostEnvs = UnitUtil.ofEnv(host.getEnv());
-        Map<String, String>  serviceEnv = UnitUtil.ofEnv(service.getEnv());
-
-
+        Map<String, String> hostEnvs = UnitUtil.ofEnv(host.getEnv());
+        Map<String, String> serviceEnv = UnitUtil.ofEnv(service.getEnv());
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
     }
-
 
 }
