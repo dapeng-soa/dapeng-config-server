@@ -20,27 +20,6 @@ var api;
             $.ajax(settings)
                 .done(success);
         };
-        Api.prototype.change = function () {
-        };
-        // 下拉并默认选中第一个
-        Api.prototype.selectInitOption = function (url, el, id) {
-            this.get(url, {}, function (res) {
-                if (res.code === window.SUCCESS_CODE) {
-                    var html = "";
-                    for (var i = 0; i < res.context.length; i++) {
-                        var seled = "";
-                        if (i === 0) {
-                            seled = "selected";
-                        }
-                        if (id !== undefined && id !== "") {
-                            seled = res.context[i].id === id ? "selected" : "";
-                        }
-                        html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-                    }
-                    $(el).html(html);
-                }
-            });
-        };
         return Api;
     }());
     api.Api = Api;

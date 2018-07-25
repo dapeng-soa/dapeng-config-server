@@ -8,6 +8,7 @@ module api {
         view: string = "view";
         edit: string = "edit";
 
+
         /**
          * 环境集-导出添加/修改/详情模版
          * @param {string} type
@@ -343,6 +344,23 @@ module api {
             </span>`;
         }
 
+        /**
+         * 服务视图
+         */
+        public deployServiceView(){
+
+        }
+
+        /**
+         * 主机视图
+         */
+        public deployHostView(){
+
+        }
+        /**
+         * 预览yaml
+         * @returns {string}
+         */
         public viewDeployYamlContext(){
             return `
 <div class="panel-header window-header">
@@ -352,57 +370,9 @@ module api {
                 </div>
             <pre style="margin-top: 81px">
 services:
-  adminService:
+    sss:
     container_name: adminService
     environment:
-      DB_ADMIN_PASSWD: dbpwdMask
-      DB_ADMIN_URL: jdbc:mysql://db-master:3360/admin_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
-      DB_ADMIN_USER: dbuserMask
-      DB_CATEGORYDB_PASSWD: dbpwdMask
-      DB_CATEGORYDB_URL: jdbc:mysql://db-master:3360/category_db?useUnicode=true
-      DB_CATEGORYDB_USER: dbuserMask
-      DB_COMMONDATADB_PASSWD: dbpwdMask
-      DB_COMMONDATADB_URL: jdbc:mysql://db-master:3360/common_data_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
-      DB_COMMONDATADB_USER: dbuserMask
-      DB_COMMONDB_PASSWD: dbpwdMask
-      DB_COMMONDB_URL: jdbc:mysql://db-master:3360/common_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
-      DB_COMMONDB_USER: dbuserMask
-      DB_CONFIG_SERVER_PASSWD: 9Pldhx6l1a9adV4VDVufbXOIdztKBI
-      DB_CONFIG_SERVER_URL: jdbc:mysql://db-master:3360/config_server_db?useUnicode=true&characterEncoding=utf8
-      DB_CONFIG_SERVER_USER: config_user
-      DB_FINANCE_PASSWD: hOYx54UdmpnTnHT9tgVaavWRJGGHSD
-      DB_FINANCE_REPORT_PASSWD: hOYx54UdmpnTnHT9tgVaavWRJGGHSD
-      DB_FINANCE_REPORT_URL: jdbc:mysql://192.168.41.10:3370/finance_report_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
-      DB_FINANCE_REPORT_USER: t_finance_user
-      DB_FINANCE_TASK_PASSWD: hOYx54UdmpnTnHT9tgVaavWRJGGHSD
-      DB_FINANCE_TASK_URL: jdbc:mysql://192.168.41.10:3370/finance_task_db?useUnicode=true&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true
-      DB_FINANCE_TASK_USER: t_finance_user
-      DB_FINANCE_URL: "jdbc:mysql://192.168.41.10:3370/finance?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
-        true"
-      DB_FINANCE_USER: t_finance_user
-      DB_GOODSDB_PASSWD: dbpwdMask
-      DB_GOODSDB_URL: jdbc:mysql://db-master:3360/goods_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
-      DB_GOODSDB_USER: dbuserMask
-      DB_MEMBER_PASSWD: dbpwdMask1
-      DB_MEMBER_URL: jdbc:mysql://192.168.30.100:3363/member?useUnicode=true&characterEncoding=utf8
-      DB_MEMBER_USER: dbuserMask1
-      DB_ORDER_PASSWD: dbpwdMask
-      DB_ORDER_URL: "jdbc:mysql://db-master:3360/order_db?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
-        true"
-      DB_ORDER_USER: dbuserMask
-      DB_PURCHASEDB_PASSWD: dbpwdMask
-      DB_PURCHASEDB_URL: "jdbc:mysql://db-master:3360/purchase_db?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
-        true"
-      DB_PURCHASEDB_USER: dbuserMask
-      DB_STOCK_PASSWD: dbpwdMask
-      DB_STOCK_URL: "jdbc:mysql://db-master:3360/stock_db?useUnicode=true&failOverReadOnly=false&autoReconnect\uFF1D\\
-        true"
-      DB_STOCK_USER: dbuserMask
-      DB_SUPPLIERDB_PASSWD: dbpwdMask
-      DB_SUPPLIERDB_URL: jdbc:mysql://db-master:3360/supplier_db?useUnicode=true&zeroDateTimeBehavior=convertToNull
-      DB_SUPPLIERDB_USER: dbuserMask
-      E_JAVA_OPTS: ' -Dname=adminService -Xms1024M -Xmx1024M -Xss256K -XX:MetaspaceSize=256M
-        -XX:MaxMetaspaceSize=256M -Dio.netty.leakDetectionLevel=advanced'
       LANG: zh_CN.UTF-8
       TZ: CST-8
       cas_server_url: https://sso.today36524.com
@@ -448,5 +418,6 @@ services:
             `
 
         }
+
     }
 }

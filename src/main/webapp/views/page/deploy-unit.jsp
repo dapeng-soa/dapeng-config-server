@@ -42,6 +42,10 @@
 
                 </select>
             </span></span>
+
+            <span>测试： <span>
+                <button type="button" onclick="processEnvsChanged()">测试</button>
+            </span></span>
         </div>
         <table id="deploy-unit-table">
         </table>

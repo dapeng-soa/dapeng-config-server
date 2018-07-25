@@ -3,9 +3,7 @@ package com.github.dapeng.socket.client
 import java.util
 import java.util.concurrent.LinkedBlockingQueue
 
-import com.github.dapeng.dto.YamlService
-import com.github.dapeng.entity.deploy.TService
-import com.github.dapeng.socket.{AgentEvent, HostAgent}
+import com.github.dapeng.socket.AgentEvent
 import com.github.dapeng.socket.enums.EventType
 import com.github.dapeng.socket.listener.DeployServerOperations
 import com.google.gson.Gson

@@ -74,7 +74,6 @@ execSetChanged = function (obj) {
 // 视图类型变更
 execViewTypeChanged = function (obj) {
     var selected = Number($(obj).find("option:selected").val());
-    console.log(selected ===1);
     if (selected === 1) {
         $("#viewTypeLabel").html("服务：");
         $("#viewTypeSelect").html(
@@ -83,6 +82,8 @@ execViewTypeChanged = function (obj) {
         );
         // 初始化服务
         initServiceList();
+        // 切换至服务视图
+
     } else {
         $("#viewTypeLabel").html("主机：");
         $("#viewTypeSelect").html(
@@ -91,9 +92,14 @@ execViewTypeChanged = function (obj) {
         );
         // 初始化主机
         initHostList();
+        // 切换至主机视图
+
     }
 
 };
+
+
+
 
 // 服务视图服务选择
 execServiceChanged = function () {
