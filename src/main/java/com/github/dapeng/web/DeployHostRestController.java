@@ -101,8 +101,8 @@ public class DeployHostRestController {
      * @param id
      * @return
      */
-    @PostMapping("/deploy-service/del/{id}")
-    public ResponseEntity delSet(@PathVariable long id){
+    @PostMapping("/deploy-host/del/{id}")
+    public ResponseEntity delHost(@PathVariable long id){
         hostRepository.delete(id);
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
