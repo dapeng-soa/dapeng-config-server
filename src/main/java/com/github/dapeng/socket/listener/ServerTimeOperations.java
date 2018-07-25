@@ -17,7 +17,9 @@ public class ServerTimeOperations implements Emitter.Listener {
     @Override
     public void call(Object... objects) {
         try{
-            queue.put("getServerTime");
+            String serviceName = (String)objects[0];
+
+            queue.put("getServerTime " + serviceName);
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -49,10 +49,10 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
     @Override
     public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
         socketClient = SocketUtil.registerWebSocketClient("127.0.0.1", 9095, "127.0.0.1", "DeployUnitSocket");
-        List<String> ids = new ArrayList();
-        ids.add(socketClient.id());
-        AgentEvent agentEvent = new AgentEvent(ids, "deploy", "orderService", "helloWorld");
-        socketClient.emit("webEvent", agentEvent);
+//        List<String> ids = new ArrayList();
+//        ids.add(socketClient.id());
+//        AgentEvent agentEvent = new AgentEvent(ids, "deploy", "orderService", "helloWorld");
+//        socketClient.emit("webEvent", agentEvent);
 
     }
 

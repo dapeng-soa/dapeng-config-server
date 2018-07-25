@@ -90,16 +90,20 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
             serviceNames.add(serviceRepository.getOne(serviceId).getName());
         }
         // 发送服务名问询各个节点的【节点IP，(服务->服务时间)】
-        socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceNames);
+        System.out.println(" step into check real service................");
+        socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceNames.get(0));
 
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
-        socketClient.on(EventType.GET_SERVER_TIME().name(), objects -> {
-            Map<String, List<Map<String, Long>>> serverDeployTimes = (Map<String, List<Map<String, Long>>>) objects[0];
-
-        });
+//        socketClient.on(EventType.GET_SERVER_TIME().name(), objects -> {
+//            Map<String, List<Map<String, Long>>> serverDeployTimes = (Map<String, List<Map<String, Long>>>) objects[0];
+//
+//        });
         // 获取四个配置表最后的更新时间，用于对比是否需要更新
 
-
+        socketClient.on(EventType.GET_SERVER_TIME().name(), objects -> {
+            Map<String, Long> serverDeployTimes = (Map<String, Long>) objects[0];
+            System.out.println(" serverDeployTimes...............");
+        });
         // 过滤-
 
         // 根据视图类型返回对应的数据结构(test)
@@ -179,10 +183,9 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         YamlService yamlService = Composeutil.processService(set, host, service);
         YamlVo yamlVo = new YamlVo();
         yamlVo.setYamlService(yamlService);
-        yamlVo.setLastDeployTime(System.currentTimeMillis());
+        yamlVo.setLastDeployTime(System.currentTimeMillis()/1000);
 
-        socketClient.emit(EventType.GET_SERVER_TIME().name(), "");
-
+        //socketClient.emit(EventType.GET_SERVER_TIME().name(),yamlVo.getYamlService().getName());
 
         //TODO: 过滤
 
