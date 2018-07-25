@@ -260,7 +260,7 @@ module api {
                         <div class="form-group">
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
-                                <textarea disabled id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
                             </div>
                         </div>
                       
@@ -268,19 +268,19 @@ module api {
                         <div class="form-group">
                             <label class="col-sm-2 control-label">VOLUMES:</label>
                             <div class="col-sm-9">
-                                <textarea disabled id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">PORTS:</label>
                             <div class="col-sm-9">
-                                <textarea disabled id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">dockerExtras:</label>
                             <div class="col-sm-9">
-                                <textarea disabled id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
                             </div>
                         </div>
                         
@@ -349,17 +349,17 @@ module api {
         /**
          * 服务/主机视图
          */
-        public deployViewChange(viewType:string,data:any) {
+        public deployViewChange(viewType: string, data: any) {
             let dep = this;
             let view = "";
-            for (let em of data){
-                view +=`
+            for (let em of data) {
+                view += `
             <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
                     <div class="panel-heading"><p style="text-align: center">${em.serviceName}</p>
                     </div>
                     <div class="panel-body" style="overflow-y: auto;max-height: 400px">
-                         ${dep.serviceViewSubHost(em.deploySubHostVos)}
+                         ${dep.serviceViewSubHost(em.serviceId, em.deploySubHostVos)}
                     </div>
                 </div>
             </div>
@@ -368,24 +368,24 @@ module api {
             return view;
         }
 
-        private serviceViewSubHost(sub:any){
+        private serviceViewSubHost(sid: Number, sub: any) {
             let subView = "";
-            for(let em of sub){
-                subView +=`<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
+            for (let em of sub) {
+                subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-3 col-xs-12">
                                 <p >${em.hostName}</p>
                                 <p >${em.hostIp}</p>
-                                <p >需要更新：${em.needUpdate}</p>
+                                <p >需要更新：${em.needUpdate ? `<span style="color: #00AA00">是</span>` : `否`}</p>
                             </div>
                             <div class="col-sm-6 col-xs-12">
                                 <p>配置更新时间:${em.configUpdateBy}</p>
                                 <p>主机服务时间:${em.deployTime}</p>
-                                <p>服务状态:<spa style="color: #00AA00">${em.serviceStatus}</spa></p>
+                                <p>服务状态:${em.serviceStatus == 1 ? `<span style="color: #00AA00">运行中</span>` : "停止"}</p>
                             </div>
                             <div class="col-sm-3 col-xs-12">
-                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService()">升级</a></p>
-                                <p ><a href="#" style="color: #1E9FFF">停止</a></p>
-                                <p ><a href="#" style="color: #1E9FFF">重启</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.setId},${em.hostId},${sid})">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.setId},${em.hostId},${sid})">停止</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.setId},${em.hostId},${sid})">重启</a></p>
                             </div>
                         </div>
             `
@@ -399,58 +399,37 @@ module api {
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext() {
+        public viewDeployYamlContext(compose:any) {
             return `
-<div class="panel-header window-header">
+                <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">预览部署yaml</p>
+                        <p class="left-panel-title">预览部署yaml[${compose.name}]</p>
                     </div>
                 </div>
-            <pre style="margin-top: 81px">
-services:
-    sss:
-    container_name: adminService
-    environment:
-      LANG: zh_CN.UTF-8
-      TZ: CST-8
-      cas_server_url: https://sso.today36524.com
-      fluent_bit_enable: "true"
-      kafka_consumer_host: 192.168.10.129:9092,192.168.20.103:9092,192.168.20.114:9092
-      redis_host_ip: redis_host
-      redis_host_port: '6008'
-      serviceName: adminService
-      slow_service_check_enable: "true"
-      soa_container_ip: 192.168.10.130
-      soa_container_port: '9083'
-      soa_core_pool_size: '100'
-      soa_jmxrmi_enable: "false"
-      soa_monitor_enable: "true"
-      soa_service_timeout: '10000'
-      soa_transactional_enable: "false"
-      soa_zookeeper_host: 192.168.10.129:2181,192.168.20.103:2181,192.168.20.114:2181
-    extra_hosts:
-      db-master: 192.168.20.100
-      fluentd: 192.168.20.200
-      fluentdStandby: 192.168.10.132
-      redis_host: 192.168.20.125
-      soa_zookeeper: 192.168.10.129
-    image: docker.today36524.com.cn:5000/biz/admin_service:48d4b33
-    labels:
-      project.depends: mysql,zookeeper,idGenService
-      project.operation: sh buildAdmin.sh
-      project.owner: XUSHENG
-      project.source: http://pms.today36524.com.cn:8083/central-services/admin.git@@master
-    ports:
-    - 9083:9083/tcp
-    restart: on-failure:3
-    volumes:
-    - /data/logs/dapeng/admin-service:/dapeng-container/logs:rw
-    - /data/var/fluent/adminService/logs.db:/fluent-bit/db/logs.db:rw
-    - /home/today/tscompose/config/fluent-bit-dapeng.conf:/opt/fluent-bit/etc/fluent-bit.conf:rw
-</pre>
-<div >
+                
+  <div style="margin: 81px 0 60px 0">
+  <pre>
+        <p>services:</p>
+        <p style="padding-left: 2em">${compose.name}:</p>
+        <p style="padding-left: 4em">image: ${compose.image}</p>
+        <p style="padding-left: 4em">container_name: ${compose.name}</p>
+        <p style="padding-left: 4em">${compose.dockerExtras}</p>
+        <p style="padding-left: 4em">environment:</p>
+        <p style="padding-left: 6em">${compose.env}</p>
+        <p style="padding-left: 4em">extra_hosts:</p>
+        <p style="padding-left: 6em">${compose.extraHosts}</p>
+        <p style="padding-left: 4em">ports:</p>
+        <p style="padding-left: 6em">${compose.ports}</p>
+        <p style="padding-left: 4em">volumes:</p>
+        <p style="padding-left: 6em">${compose.volumes}</p>
+        <p style="padding-left: 4em">labels:</p>
+        <p style="padding-left: 6em">${compose.composeLabels}</p>
+        </pre>
+</div>
+<div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; 0" >
 <span class="input-group-btn panel-button-group text-center">
-                        <button type="button" class="btn btn-success" onclick="">升级</button>
+                        <button type="button" class="btn btn-success" onclick="execServiceUpdate()">确认升级</button>
+                        <button type="button" class="btn btn-danger" onclick="cancelServiceUpdate()">取消升级</button>
                         </span>
 </div>
             `

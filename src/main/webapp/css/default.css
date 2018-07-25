@@ -34,7 +34,11 @@ textarea {
 }
 
 pre {
-    padding: 0 !important;
+    padding: 2px !important;
+}
+pre p{
+    margin: -14px 0;
+    font-size: 14px;
 }
 
 i.fa {

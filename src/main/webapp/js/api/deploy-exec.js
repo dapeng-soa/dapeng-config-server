@@ -1,6 +1,8 @@
 $(document).ready(function () {
     initSetList();
-    checkService();
+    setTimeout(function () {
+        checkService();
+    },100);
 });
 var deploy = new api.Deploy();
 var util = new api.Api();
@@ -22,7 +24,7 @@ initSetList = function (id) {
                 if (id !== undefined && id !== "") {
                     seled = res.context[i].id === id ? "selected" : "";
                 }
-                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#setSelect").html(html).selectpicker('refresh');
         }
@@ -43,10 +45,9 @@ initServiceList = function (id) {
                 if (id !== undefined && id !== "") {
                     seled = res.context[i].id === id ? "selected" : "";
                 }
-                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#serviceSelect").html(html).selectpicker('refresh');
-            ;
         }
     }, "json");
 };
@@ -71,7 +72,8 @@ initHostList = function (id) {
 
 // 环境集改变
 execSetChanged = function (obj) {
-    console.log("execSetChanged");
+    var selected = Number($(obj).find("option:selected").val());
+    checkService();
 };
 // 视图类型变更
 execViewTypeChanged = function (obj) {
@@ -85,7 +87,7 @@ execViewTypeChanged = function (obj) {
         // 初始化服务
         initServiceList();
         // 切换至服务视图
-        deploy.deployViewChange();
+        checkService();
     } else {
         $("#viewTypeLabel").html("主机：");
         $("#viewTypeSelect").html(
@@ -95,7 +97,7 @@ execViewTypeChanged = function (obj) {
         // 初始化主机
         initHostList();
         // 切换至主机视图
-        deploy.deployViewChange();
+        checkService();
     }
 
 };
@@ -112,14 +114,26 @@ execHostChanged = function () {
 };
 
 // updateService
-updateService = function () {
-    // 导出弹窗内容模版
-    var context = deploy.viewDeployYamlContext();
-    initModelContext(context);
+updateService = function (setId,hostId,serviceId) {
+    // 获取yaml内容
+    var url = basePath +"/api/deploy-unit/process-envs";
+    var req = {
+      setId:setId,
+      hostId:hostId,
+      serviceId:serviceId
+    };
+    util.get(url,req,function (res) {
+        console.log(res);
+        if (res.code ===SUCCESS_CODE){
+            // 导出弹窗内容模版
+            var context = deploy.viewDeployYamlContext(res.context.yamlService);
+            initModelContext(context);
+        }
+    });
 };
 // checkService
 checkService = function () {
-    var url = basePath + "/api/deploy/checkRealService";
+    var url = basePath + "/api/deploy/checkRealService?setId="+$("#setSelect").find("option:selected").val();
     util.$get(url, function (res) {
         console.log(res);
         // 展示视图（默认服务视图）
@@ -129,19 +143,37 @@ checkService = function () {
 };
 
 // stopService
-stopService = function () {
+stopService = function (setId,hostId,serviceId) {
     var url = basePath + "/api/deploy/stopRealService";
     util.$get(url, function (res) {
-        console.log(res);
+        layer.msg(res.msg);
     })
 };
 
 // restartService
-restartService = function () {
+restartService = function (setId,hostId,serviceId) {
     var url = basePath + "/api/deploy/restartRealService";
     util.$get(url, function (res) {
-        console.log(res);
+        layer.msg(res.msg);
     })
+};
+
+/**
+ * 执行升级
+ */
+execServiceUpdate = function(){
+    var url = basePath + "/api/deploy/stopRealService";
+    util.$get(url, function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            closeModel();
+        }
+    });
+};
+
+cancelServiceUpdate  =function () {
+    layer.msg("取消升级");
+    closeModel();
 };
 
 
