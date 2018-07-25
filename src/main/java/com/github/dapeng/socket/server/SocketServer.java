@@ -117,7 +117,11 @@ public class SocketServer {
 
                 agentEventObj.getClientSessionIds().forEach(sessionId -> {
                     SocketIOClient client = server.getClient(UUID.fromString(sessionId));
-                    client.sendEvent(EventType.WEB_EVENT().name(), agentEvent);
+                    if (client != null) {
+                        client.sendEvent(EventType.WEB_EVENT().name(), agentEvent);
+                    } else {
+                        logger.error(" Failed to get socketClient......");
+                    }
                 });
             }
         });
@@ -129,7 +133,7 @@ public class SocketServer {
                                        String data, AckRequest ackRequest) {
                         logger.info(" received serverTime cmd.....");
                         serverDeployTime.clear();
-                        server.getRoomOperations("nodes").sendEvent(EventType.GET_SERVER_TIME().name(),"");
+                        server.getRoomOperations("nodes").sendEvent(EventType.GET_SERVER_TIME().name(),data);
                     }
                 }
         );

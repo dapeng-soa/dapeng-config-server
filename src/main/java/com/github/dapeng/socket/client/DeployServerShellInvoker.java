@@ -52,37 +52,48 @@ public class DeployServerShellInvoker {
             wr = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
 
 
-            if (isPs) {
-                String inline;
-                while ((inline = br.readLine()) != null) {
-                    if (inline.indexOf("Name") != -1 && inline.indexOf("Command") != -1 && inline.indexOf("State") != -1) {
-                        continue;
-                    }
-                    if (inline.indexOf("-------------------------------------------------------") != -1) {
-                        continue;
-                    }
-                    if (inline.indexOf("osType:LINUX") != -1) {
-                        continue;
-                    }
-
-                    socket.emit("nodeEvent", event + ":" + inline);
-                    System.out.println(inline);
-                }
-                br.close();
-            } else {
-                String inline;
-                while ((inline = br.readLine()) != null) {
-                    socket.emit("nodeEvent", event + ":" + inline);
-                    System.out.println(inline);
-                }
-                br.close();
-
-
-                br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                while ((inline = br.readLine()) != null) {
-                    System.out.println(inline);
-                }
+            String inline;
+            while ((inline = br.readLine()) != null) {
+                socket.emit("nodeEvent", event + ":" + inline);
+                System.out.println(inline);
             }
+            br.close();
+
+            br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((inline = br.readLine()) != null) {
+                System.out.println(inline);
+            }
+//            if (isPs) {
+//                String inline;
+//                while ((inline = br.readLine()) != null) {
+//                    if (inline.indexOf("Name") != -1 && inline.indexOf("Command") != -1 && inline.indexOf("State") != -1) {
+//                        continue;
+//                    }
+//                    if (inline.indexOf("-------------------------------------------------------") != -1) {
+//                        continue;
+//                    }
+//                    if (inline.indexOf("osType:LINUX") != -1) {
+//                        continue;
+//                    }
+//
+//                    socket.emit("nodeEvent", event + ":" + inline);
+//                    System.out.println(inline);
+//                }
+//                br.close();
+//            } else {
+//                String inline;
+//                while ((inline = br.readLine()) != null) {
+//                    socket.emit("nodeEvent", event + ":" + inline);
+//                    System.out.println(inline);
+//                }
+//                br.close();
+//
+//
+//                br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//                while ((inline = br.readLine()) != null) {
+//                    System.out.println(inline);
+//                }
+//            }
 
 
             if (process != null) {

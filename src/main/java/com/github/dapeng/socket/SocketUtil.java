@@ -37,6 +37,7 @@ public class SocketUtil {
             //独立线程处理命令
             new Thread(cmdExecutor).start();
 
+            socketClient.connect();
             return socketClient;
         } catch (URISyntaxException e) {
             logger.info(" failed to connected socketClient.......");
