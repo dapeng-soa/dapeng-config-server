@@ -53,14 +53,17 @@ object ClientMain {
         yamlDir.mkdir();
       }
 
+      val yamlFile = new File(yamlDir.getAbsolutePath, s"${vo.getYamlService.getName}.yml")
+      yamlFile.setLastModified(vo.getLastDeployTime)
+      val writer = new FileWriter(yamlFile)
       try {
-        val yamlFile = new File(yamlDir.getAbsolutePath, s"${vo.getYamlService.getName}.yml")
-        yamlFile.setLastModified(vo.getLastDeployTime)
-        val writer = new FileWriter(yamlFile)
         val content = new Yaml().dump(vo.getYamlService)
         writer.write(content)
+        writer.flush();
       } catch {
         case e: Exception => println(s" failed to write file.......${e.getMessage}")
+      } finally {
+        writer.close()
       }
 
       //exec cmd.....
