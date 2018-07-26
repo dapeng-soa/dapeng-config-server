@@ -104,7 +104,7 @@ public class Composeutil {
         StringBuilder sb = new StringBuilder();
         // k: v
         realEnvs.forEach((k, v) -> {
-            sb.append(k).append(": ").append(v).append("\r\n");
+            sb.append(k).append(": ").append(v).append("\n");
         });
         return sb.toString();
     }
