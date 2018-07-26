@@ -1,10 +1,9 @@
 package com.github.dapeng.socket.client
 
-import java.io.{File, FileWriter, StringWriter}
-import java.util
+import java.io.{File, FileWriter}
 import java.util.concurrent.LinkedBlockingQueue
 
-import com.github.dapeng.socket.AgentEvent
+import com.github.dapeng.socket.entity.DockerVo
 import com.github.dapeng.socket.enums.EventType
 import com.github.dapeng.socket.listener.{DeployServerOperations, ServerTimeOperations}
 import com.github.dapeng.socket.server.BuildServerShellInvoker
@@ -45,17 +44,17 @@ object ClientMain {
     }).on(EventType.DEPLOY.name, new Emitter.Listener {
       override def call(objects: AnyRef*): Unit = {
         val voString = objects(0).asInstanceOf[String];
-        val vo = new Gson().fromJson(voString, classOf[YamlVo])
+        val vo = new Gson().fromJson(voString, classOf[DockerVo])
         val yamlDir = new File(new File(classOf[BuildServerShellInvoker].getClassLoader.getResource("./").getPath()), "yamlDir");
         if (!yamlDir.exists()) {
           yamlDir.mkdir();
         }
 
-        val yamlFile = new File(yamlDir.getAbsolutePath, s"${vo.getYamlService.getName}.yml")
+        val yamlFile = new File(yamlDir.getAbsolutePath, s"${vo.getDockerYaml.getServices.keySet().iterator().next()}.yml")
         yamlFile.setLastModified(vo.getLastDeployTime)
         val writer = new FileWriter(yamlFile)
         try {
-          val content = new Yaml().dump(vo.getYamlService)
+          val content = new Yaml().dump(vo.getDockerYaml)
           writer.write(content)
           writer.flush();
         } catch {
@@ -65,7 +64,7 @@ object ClientMain {
         }
 
         //exec cmd.....
-        val cmd = s"${EventType.DEPLOY.name.toLowerCase()} -f ${vo.getYamlService.getName}.yml up -d"
+        val cmd = s"${EventType.DEPLOY.name.toLowerCase()} -f ${vo.getDockerYaml.getServices.keySet().iterator().next()}.yml up -d"
         queue.put(cmd)
       }
     })

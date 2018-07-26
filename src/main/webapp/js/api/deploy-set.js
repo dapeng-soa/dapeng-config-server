@@ -181,7 +181,7 @@ editedDeploySet = function (id) {
     var settings = {
         type: "post",
         url: url,
-        data: JSON.stringify(processApiKeyData()),
+        data: JSON.stringify(processDeploySetData()),
         dataType: "json",
         contentType: "application/json"
     };

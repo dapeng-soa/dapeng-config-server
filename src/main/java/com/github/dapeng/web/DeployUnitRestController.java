@@ -158,4 +158,42 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
     }
+
+    /**
+     * 修改
+     *
+     * @param id
+     * @param unitDto
+     * @return
+     */
+    @PostMapping(value = "/deploy-unit/edit/{id}")
+    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody UnitDto unitDto) {
+        try {
+            if (isEmpty(unitDto.getSetId())
+                    || isEmpty(unitDto.getHostId())
+                    || isEmpty(unitDto.getServiceId())
+                    || isEmpty(unitDto.getGitTag())
+                    || isEmpty(unitDto.getImageTag())) {
+                return ResponseEntity
+                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+            }
+            TDeployUnit unit = new TDeployUnit();
+            unit.setGitTag(unitDto.getGitTag());
+            unit.setImageTag(unitDto.getImageTag());
+            unit.setHostId(unitDto.getHostId());
+            unit.setServiceId(unitDto.getServiceId());
+            unit.setSetId(unitDto.getSetId());
+            unit.setEnv(unitDto.getEnv());
+            unit.setPorts(unitDto.getPorts());
+            unit.setVolumes(unitDto.getVolumes());
+            unit.setDockerExtras(unitDto.getDockerExtras());
+            unit.setUpdatedAt(DateUtil.now());
+            unitRepository.save(unit);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+        }
+    }
 }

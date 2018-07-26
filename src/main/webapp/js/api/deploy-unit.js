@@ -254,7 +254,7 @@ initSetList = function (id) {
                 if (id !== undefined && id !== "") {
                     seled = res.context[i].id === id ? "selected" : "";
                 }
-                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#setSelect").html(html);
             if (id === undefined || id === "") {
@@ -289,7 +289,7 @@ initHostList = function (id) {
                 if (id !== undefined && id !== "") {
                     seled = res.context[i].id === id ? "selected" : "";
                 }
-                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#hostSelect").html(html);
             setTimeout(function () {
@@ -314,7 +314,7 @@ initServiceList = function (id) {
                 if (id !== undefined && id !== "") {
                     seled = res.context[i].id === id ? "selected" : "";
                 }
-                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#serviceSelect").html(html);
         }

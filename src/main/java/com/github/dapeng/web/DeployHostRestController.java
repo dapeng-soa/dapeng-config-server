@@ -6,15 +6,19 @@ import com.github.dapeng.core.helper.DapengUtil;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.dto.HostDto;
 import com.github.dapeng.entity.deploy.THost;
+import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.deploy.HostRepository;
+import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.NullUtil;
+import com.github.dapeng.vo.HostVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.github.dapeng.util.NullUtil.isEmpty;
 
@@ -31,14 +35,33 @@ public class DeployHostRestController {
     @Autowired
     HostRepository hostRepository;
 
+    @Autowired
+    SetRepository setRepository;
+
     /**
      * @return
      */
     @GetMapping("/deploy-hosts")
     public ResponseEntity<?> deployHosts() {
         List<THost> hosts = hostRepository.findAll();
+        List<HostVo> hostVos = hosts.stream().map(x -> {
+            HostVo hostVo = new HostVo();
+            hostVo.setId(x.getId());
+            hostVo.setIp(IPUtils.transferIp(x.getIp()));
+            hostVo.setEnv(x.getEnv());
+            hostVo.setName(x.getName());
+            hostVo.setCreatedAt(x.getCreatedAt());
+            hostVo.setUpdatedAt(x.getUpdatedAt());
+            hostVo.setSetId(x.getSetId());
+            TSet tSet = setRepository.getOne(x.getSetId());
+            hostVo.setSetName(tSet.getName());
+            hostVo.setExtra(x.getExtra());
+            hostVo.setLabels(x.getLabels());
+            hostVo.setRemark(x.getRemark());
+            return hostVo;
+        }).collect(Collectors.toList());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, hosts));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, hostVos));
     }
 
     /**
@@ -61,9 +84,22 @@ public class DeployHostRestController {
      */
     @GetMapping("/deploy-host/{id}")
     public ResponseEntity<?> deployHostById(@PathVariable long id) {
-        THost host = hostRepository.findOne(id);
+        THost x = hostRepository.findOne(id);
+        HostVo hostVo = new HostVo();
+        hostVo.setId(x.getId());
+        hostVo.setIp(IPUtils.transferIp(x.getIp()));
+        hostVo.setEnv(x.getEnv());
+        hostVo.setName(x.getName());
+        hostVo.setCreatedAt(x.getCreatedAt());
+        hostVo.setUpdatedAt(x.getUpdatedAt());
+        hostVo.setSetId(x.getSetId());
+        TSet tSet = setRepository.getOne(x.getSetId());
+        hostVo.setSetName(tSet.getName());
+        hostVo.setExtra(x.getExtra());
+        hostVo.setLabels(x.getLabels());
+        hostVo.setRemark(x.getRemark());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, host));
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, hostVo));
     }
 
 
@@ -93,6 +129,38 @@ public class DeployHostRestController {
 
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
+    }
+
+    /**
+     * 修改
+     *
+     * @param id
+     * @param hostDto
+     * @return
+     */
+    @PostMapping(value = "/deploy-host/edit/{id}")
+    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody HostDto hostDto) {
+        try {
+            if (isEmpty(hostDto.getName()) || isEmpty(hostDto.getIp()) || isEmpty(hostDto.getSetId())) {
+                return ResponseEntity
+                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+            }
+            THost host = hostRepository.findOne(id);
+            host.setIp(IPUtils.transferIp(hostDto.getIp()));
+            host.setName(hostDto.getName());
+            host.setEnv(hostDto.getEnv());
+            host.setRemark(hostDto.getRemark());
+            host.setLabels(hostDto.getLabels());
+            host.setExtra(hostDto.getExtra());
+            host.setSetId(hostDto.getSetId());
+            host.setUpdatedAt(DateUtil.now());
+            hostRepository.save(host);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+        }
     }
 
 

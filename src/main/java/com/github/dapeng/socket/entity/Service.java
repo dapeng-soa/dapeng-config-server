@@ -12,7 +12,6 @@ public class Service {
     private String command;
     private List<String> volumes;
     private List<String> labels;
-
     public void setContainer_name(String container_name) {
         this.container_name = container_name;
     }

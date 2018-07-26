@@ -2,6 +2,7 @@ package com.github.dapeng.util;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -16,7 +17,7 @@ public class UnitUtil {
     private static final String REGEX = "\n|\r|\r\n";
 
     /**
-     * 将换行文本转换为集合
+     * 将换行文本转换为Map
      *
      * @return
      */
@@ -30,6 +31,18 @@ public class UnitUtil {
         });
         return envMap;
     }
+
+
+    /**
+     * 将换行文本转换为集合
+     *
+     * @return
+     */
+    public static List<String> ofList(String s) {
+        return Arrays.asList(s.split(REGEX));
+    }
+
+
 
     public static void main(String[] args) {
         String sss = "LANG: zh_CN.UTF-8\n" +

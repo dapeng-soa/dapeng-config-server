@@ -1,8 +1,8 @@
 $(document).ready(function () {
     initSetList();
     setTimeout(function () {
-        checkService();
-    },100);
+        checkService(1);
+    }, 200);
 });
 var deploy = new api.Deploy();
 var util = new api.Api();
@@ -24,7 +24,7 @@ initSetList = function (id) {
                 if (id !== undefined && id !== "") {
                     seled = res.context[i].id === id ? "selected" : "";
                 }
-                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#setSelect").html(html).selectpicker('refresh');
         }
@@ -45,7 +45,7 @@ initServiceList = function (id) {
                 if (id !== undefined && id !== "") {
                     seled = res.context[i].id === id ? "selected" : "";
                 }
-                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#serviceSelect").html(html).selectpicker('refresh');
         }
@@ -73,7 +73,8 @@ initHostList = function (id) {
 // 环境集改变
 execSetChanged = function (obj) {
     var selected = Number($(obj).find("option:selected").val());
-    checkService();
+    var viewType = Number($(obj).find("option:selected").val());
+    checkService(viewType);
 };
 // 视图类型变更
 execViewTypeChanged = function (obj) {
@@ -87,7 +88,7 @@ execViewTypeChanged = function (obj) {
         // 初始化服务
         initServiceList();
         // 切换至服务视图
-        checkService();
+        checkService(selected);
     } else {
         $("#viewTypeLabel").html("主机：");
         $("#viewTypeSelect").html(
@@ -97,7 +98,7 @@ execViewTypeChanged = function (obj) {
         // 初始化主机
         initHostList();
         // 切换至主机视图
-        checkService();
+        checkService(selected);
     }
 
 };
@@ -114,17 +115,15 @@ execHostChanged = function () {
 };
 
 // updateService
-updateService = function (setId,hostId,serviceId) {
+updateService = function (unitId) {
     // 获取yaml内容
-    var url = basePath +"/api/deploy-unit/process-envs";
+    var url = basePath + "/api/deploy-unit/process-envs";
     var req = {
-      setId:setId,
-      hostId:hostId,
-      serviceId:serviceId
+        unitId: unitId
     };
-    util.get(url,req,function (res) {
+    util.get(url, req, function (res) {
         console.log(res);
-        if (res.code ===SUCCESS_CODE){
+        if (res.code === SUCCESS_CODE) {
             // 导出弹窗内容模版
             var context = deploy.viewDeployYamlContext(res.context.yamlService);
             initModelContext(context);
@@ -132,18 +131,18 @@ updateService = function (setId,hostId,serviceId) {
     });
 };
 // checkService
-checkService = function () {
-    var url = basePath + "/api/deploy/checkRealService?setId="+$("#setSelect").find("option:selected").val();
+checkService = function (viewType) {
+    var url = basePath + "/api/deploy/checkRealService?setId=" + $("#setSelect").find("option:selected").val() +"&viewType="+viewType;
     util.$get(url, function (res) {
-        console.log(res);
+        console.log(res.context);
         // 展示视图（默认服务视图）
-        var context = deploy.deployViewChange("serviceView",res.context);
+        var context = deploy.deployViewChange(viewType, res.context);
         $("#deployMain").html(context);
     })
 };
 
 // stopService
-stopService = function (setId,hostId,serviceId) {
+stopService = function (unitId) {
     var url = basePath + "/api/deploy/stopRealService";
     util.$get(url, function (res) {
         layer.msg(res.msg);
@@ -151,7 +150,7 @@ stopService = function (setId,hostId,serviceId) {
 };
 
 // restartService
-restartService = function (setId,hostId,serviceId) {
+restartService = function (unitId) {
     var url = basePath + "/api/deploy/restartRealService";
     util.$get(url, function (res) {
         layer.msg(res.msg);
@@ -161,7 +160,7 @@ restartService = function (setId,hostId,serviceId) {
 /**
  * 执行升级
  */
-execServiceUpdate = function(){
+execServiceUpdate = function () {
     var url = basePath + "/api/deploy/stopRealService";
     util.$get(url, function (res) {
         layer.msg(res.msg);
@@ -171,7 +170,7 @@ execServiceUpdate = function(){
     });
 };
 
-cancelServiceUpdate  =function () {
+cancelServiceUpdate = function () {
     layer.msg("取消升级");
     closeModel();
 };

@@ -19,4 +19,6 @@ public interface HostRepository extends JpaRepository<THost,Long> {
      * @return
      */
     List<THost> findBySetId(long setId);
+
+    List<THost> findTop1ByIdOrderByUpdatedAtDesc(Long id);
 }
