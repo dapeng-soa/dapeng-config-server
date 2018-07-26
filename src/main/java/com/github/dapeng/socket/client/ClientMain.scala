@@ -43,7 +43,8 @@ object ClientMain {
         println(" disconnected ........")
       }
     }).on(EventType.DEPLOY.name, objects => {
-      val vo = objects(0).asInstanceOf[YamlVo];
+      val voString = objects(0).asInstanceOf[String];
+      val vo = new Gson().fromJson(voString, classOf[YamlVo])
 //      final File yamlDir = new File(new File(BuildServerShellInvoker.class.getClassLoader().getResource("./").getPath()), "yamlDir");
 //      if (!yamlDir.exists()) {
 //        yamlDir.mkdir();
