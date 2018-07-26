@@ -10,7 +10,7 @@ getServerTime(){
 }
 
 deploy() {
-    ``
+
 }
 
 case $1 in
