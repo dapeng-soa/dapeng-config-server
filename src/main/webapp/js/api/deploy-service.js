@@ -200,7 +200,7 @@ editedDeployService = function (id) {
     var settings = {
         type: "post",
         url: url,
-        data: JSON.stringify(processApiKeyData()),
+        data: JSON.stringify(processDeployServiceData()),
         dataType: "json",
         contentType: "application/json"
     };

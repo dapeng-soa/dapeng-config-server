@@ -32,6 +32,11 @@ public class DateUtil {
         return new Timestamp(nowMil);
     }
 
+    public static Timestamp time(long time) {
+        return new Timestamp(time);
+    }
+
+
     /**
      * 时间 格式化
      */

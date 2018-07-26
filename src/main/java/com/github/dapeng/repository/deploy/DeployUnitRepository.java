@@ -14,4 +14,6 @@ import java.util.List;
 public interface DeployUnitRepository extends JpaRepository<TDeployUnit,Long> {
 
     List<TDeployUnit> findAllBySetId(long setId);
+
+    List<TDeployUnit> findTop1ByIdOrderByUpdatedAtDesc(Long id);
 }

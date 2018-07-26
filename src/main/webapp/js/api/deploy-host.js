@@ -69,8 +69,7 @@ function InitDeployHosts() {
             sortable: true
         }, {
             field: 'extra',
-            title: '是否外部机器',
-            sortable: true,
+            title: '外部机器',
             formatter: extraFormatter
         },{
             field: 'remark',
@@ -103,8 +102,16 @@ function InitDeployHosts() {
     });
 }
 
-extraFormatter = function () {
-
+extraFormatter = function (value, row, index) {
+    console.log(value);
+    switch (value) {
+        case 0:
+            return '<span class="label label-success">是</span>';
+        case 1:
+            return '<span class="label label-danger">否</span>';
+        default:
+            return '<span class="label label-success">是</span>';
+    }
 };
 /**
  * @return {string}
@@ -207,7 +214,7 @@ editedDeployHost = function (id) {
     var settings = {
         type: "post",
         url: url,
-        data: JSON.stringify(processApiKeyData()),
+        data: JSON.stringify(processDeployHostData()),
         dataType: "json",
         contentType: "application/json"
     };
@@ -237,7 +244,7 @@ initSetList = function (id) {
                 if (id !== undefined && id !==""){
                     seled = res.context[i].id === id?"selected":"";
                 }
-                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
+                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#setSelect").html(html);
         }

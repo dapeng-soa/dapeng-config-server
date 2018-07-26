@@ -86,5 +86,39 @@ public class DeployServiceRestController {
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
     }
 
+    /**
+     * 修改
+     *
+     * @param id
+     * @param serviceDto
+     * @return
+     */
+    @PostMapping(value = "/deploy-service/edit/{id}")
+    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody ServiceDto serviceDto) {
+        try {
+            if (isEmpty(serviceDto.getName())||isEmpty(serviceDto.getImage())){
+                return ResponseEntity
+                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+            }
+            TService service = serviceRepository.findOne(id);
+            service.setName(serviceDto.getName());
+            service.setRemark(serviceDto.getRemark());
+            service.setImage(serviceDto.getImage());
+            service.setEnv(serviceDto.getEnv());
+            service.setComposeLabels(serviceDto.getEnv());
+            service.setVolumes(serviceDto.getVolumes());
+            service.setPorts(serviceDto.getPorts());
+            service.setDockerExtras(serviceDto.getDockerExtras());
+            service.setLabels(serviceDto.getLabels());
+            service.setUpdatedAt(DateUtil.now());
+            serviceRepository.save(service);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+        }
+    }
+
 
 }

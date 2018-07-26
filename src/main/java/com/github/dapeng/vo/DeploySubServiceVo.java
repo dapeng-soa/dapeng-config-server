@@ -8,15 +8,14 @@ import java.sql.Timestamp;
  * @author with struy.
  * Create by 2018/7/25 20:41
  * email :yq1724555319@gmail.com
- * 服务示例内host
+ * 主机实例下服务
  */
 
-public class DeploySubHostVo {
+public class DeploySubServiceVo {
     private long setId;
-    private long hostId;
+    private long serviceId;
     private long unitId;
-    private String hostName;
-    private String hostIp;
+    private String serviceName;
     private boolean needUpdate = true;
     private int serviceStatus = 0;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
@@ -32,28 +31,20 @@ public class DeploySubHostVo {
         this.setId = setId;
     }
 
-    public long getHostId() {
-        return hostId;
+    public long getServiceId() {
+        return serviceId;
     }
 
-    public void setHostId(long hostId) {
-        this.hostId = hostId;
+    public void setServiceId(long serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public String getHostName() {
-        return hostName;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
-    }
-
-    public String getHostIp() {
-        return hostIp;
-    }
-
-    public void setHostIp(String hostIp) {
-        this.hostIp = hostIp;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public boolean isNeedUpdate() {

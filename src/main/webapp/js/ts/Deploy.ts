@@ -8,8 +8,8 @@ module api {
         view: string = "view";
         edit: string = "edit";
         api = new api.Api();
-        serviceView: string = "serviceView";
-        hostView: string = "hostView";
+        serviceView: Number = 1;
+        hostView: Number = 2;
 
         /**
          * 环境集-导出添加/修改/详情模版
@@ -45,10 +45,16 @@ module api {
                         </div>
                     </div>
                     
+                    ${type == c.add ?`
                     <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveDeploySet()">保存</button>
                     <button type="button" class="btn btn-danger" onclick="clearDeploySetInput()">清空</button>
                     </span>
+                    `:type == c.edit?`
+                    <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedDeploySet(${data.id})">保存修改</button>
+                    </span>
+                    `:""}
                 </div>
 `;
         }
@@ -124,10 +130,16 @@ module api {
                                 <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
-                        <span class="input-group-btn panel-button-group text-center">
+                         ${type == c.add ?`
+                         <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="saveDeployService()">保存</button>
                         <button type="button" class="btn btn-danger" onclick="clearDeployServiceInput()">清空</button>
                         </span>
+                         `:type == c.edit?`
+                         <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedDeployService(${data.id})">保存修改</button>
+                    </span>
+                         `:""}
                 </div>
             
             `;
@@ -195,10 +207,17 @@ module api {
                                 <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
+                        ${type == c.add ?`
                         <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="saveDeployHost()">保存</button>
                         <button type="button" class="btn btn-danger" onclick="clearDeployHostInput()">清空</button>
                         </span>
+                        `:type ==c.edit?`
+                        <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedDeployHost(${data.id})">保存修改</button>
+                    </span>
+                        `:""}
+                       
                 </div>
             
             `;
@@ -283,11 +302,16 @@ module api {
                                 <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
                             </div>
                         </div>
-                        
+                        ${type == c.add ?`
                         <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="saveDeployUnit()">保存</button>
                         <button type="button" class="btn btn-danger" onclick="clearDeployUnitInput()">清空</button>
                         </span>
+                        `:type == c.edit?`
+                        <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedDeployUnit(${data.id})">保存修改</button>
+                    </span>
+                        `:""}
                 </div>
             
             `;
@@ -349,17 +373,17 @@ module api {
         /**
          * 服务/主机视图
          */
-        public deployViewChange(viewType: string, data: any) {
+        public deployViewChange(viewType: number, data: any) {
             let dep = this;
             let view = "";
             for (let em of data) {
                 view += `
             <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
-                    <div class="panel-heading"><p style="text-align: center">${em.serviceName}</p>
+                    <div class="panel-heading"><p style="text-align: center">${viewType==dep.serviceView?em.serviceName:em.hostName+':['+em.hostIp+']'}</p>
                     </div>
                     <div class="panel-body" style="overflow-y: auto;max-height: 400px">
-                         ${dep.serviceViewSubHost(em.serviceId, em.deploySubHostVos)}
+                         ${dep.serviceViewSubHost(viewType,viewType==dep.serviceView?em.deploySubHostVos:em.deploySubServiceVos)}
                     </div>
                 </div>
             </div>
@@ -368,13 +392,14 @@ module api {
             return view;
         }
 
-        private serviceViewSubHost(sid: Number, sub: any) {
+        private serviceViewSubHost(viewType: number,sub: any) {
+            let dep = this;
             let subView = "";
             for (let em of sub) {
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-3 col-xs-12">
-                                <p >${em.hostName}</p>
-                                <p >${em.hostIp}</p>
+                                <p >${viewType==dep.serviceView?em.hostName:em.serviceName}</p>
+                                ${viewType==dep.serviceView?`<p >${em.hostIp}</p>`:""}
                                 <p >需要更新：${em.needUpdate ? `<span style="color: #00AA00">是</span>` : `否`}</p>
                             </div>
                             <div class="col-sm-6 col-xs-12">
@@ -383,9 +408,9 @@ module api {
                                 <p>服务状态:${em.serviceStatus == 1 ? `<span style="color: #00AA00">运行中</span>` : "停止"}</p>
                             </div>
                             <div class="col-sm-3 col-xs-12">
-                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.setId},${em.hostId},${sid})">升级</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.setId},${em.hostId},${sid})">停止</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.setId},${em.hostId},${sid})">重启</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.unitId})">升级</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
                             </div>
                         </div>
             `
