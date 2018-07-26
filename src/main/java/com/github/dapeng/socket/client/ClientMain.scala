@@ -42,36 +42,39 @@ object ClientMain {
       override def call( args: AnyRef*) {
         println(" disconnected ........")
       }
-    }).on(EventType.DEPLOY.name, objects => {
-      val voString = objects(0).asInstanceOf[String];
-      val vo = new Gson().fromJson(voString, classOf[YamlVo])
-//      final File yamlDir = new File(new File(BuildServerShellInvoker.class.getClassLoader().getResource("./").getPath()), "yamlDir");
-//      if (!yamlDir.exists()) {
-//        yamlDir.mkdir();
-//      }
-      val yamlDir = new File(new File(classOf[BuildServerShellInvoker].getClassLoader.getResource("./").getPath()), "yamlDir");
-      if (!yamlDir.exists()) {
-        yamlDir.mkdir();
-      }
+    }).on(EventType.DEPLOY.name, new Emitter.Listener {
+      override def call(objects: AnyRef*): Unit = {
+        val voString = objects(0).asInstanceOf[String];
+        val vo = new Gson().fromJson(voString, classOf[YamlVo])
+        val yamlDir = new File(new File(classOf[BuildServerShellInvoker].getClassLoader.getResource("./").getPath()), "yamlDir");
+        if (!yamlDir.exists()) {
+          yamlDir.mkdir();
+        }
 
-      val yamlFile = new File(yamlDir.getAbsolutePath, s"${vo.getYamlService.getName}.yml")
-      yamlFile.setLastModified(vo.getLastDeployTime)
-      val writer = new FileWriter(yamlFile)
-      try {
-        val content = new Yaml().dump(vo.getYamlService)
-        writer.write(content)
-        writer.flush();
-      } catch {
-        case e: Exception => println(s" failed to write file.......${e.getMessage}")
-      } finally {
-        writer.close()
-      }
+        val yamlFile = new File(yamlDir.getAbsolutePath, s"${vo.getYamlService.getName}.yml")
+        yamlFile.setLastModified(vo.getLastDeployTime)
+        val writer = new FileWriter(yamlFile)
+        try {
+          val content = new Yaml().dump(vo.getYamlService)
+          writer.write(content)
+          writer.flush();
+        } catch {
+          case e: Exception => println(s" failed to write file.......${e.getMessage}")
+        } finally {
+          writer.close()
+        }
 
-      //exec cmd.....
-      val cmd = s"${EventType.DEPLOY.name.toLowerCase()} ${vo.getYamlService.getName}"
-      queue.put(cmd)
+        //exec cmd.....
+        val cmd = s"${EventType.DEPLOY.name.toLowerCase()} ${vo.getYamlService.getName}"
+        queue.put(cmd)
+      }
     })
 
     socketClient.connect()
+  }
+
+
+  def writeYmlFile(yamlVo: YamlVo) = {
+
   }
 }
