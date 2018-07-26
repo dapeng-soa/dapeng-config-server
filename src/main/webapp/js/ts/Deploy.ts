@@ -424,7 +424,7 @@ module api {
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext(compose:any) {
+        public viewDeployYamlContext(unitId:Number,compose:any) {
             return `
                 <div class="panel-header window-header">
                     <div class="input-group">
@@ -453,7 +453,7 @@ module api {
 </div>
 <div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; 0" >
 <span class="input-group-btn panel-button-group text-center">
-                        <button type="button" class="btn btn-success" onclick="execServiceUpdate()">确认升级</button>
+                        <button type="button" class="btn btn-success" onclick="execServiceUpdate(${unitId})">确认升级</button>
                         <button type="button" class="btn btn-danger" onclick="cancelServiceUpdate()">取消升级</button>
                         </span>
 </div>

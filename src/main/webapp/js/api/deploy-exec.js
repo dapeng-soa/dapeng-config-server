@@ -125,7 +125,7 @@ updateService = function (unitId) {
         console.log(res);
         if (res.code === SUCCESS_CODE) {
             // 导出弹窗内容模版
-            var context = deploy.viewDeployYamlContext(res.context.yamlService);
+            var context = deploy.viewDeployYamlContext(unitId,res.context.yamlService);
             initModelContext(context);
         }
     });
@@ -160,9 +160,12 @@ restartService = function (unitId) {
 /**
  * 执行升级
  */
-execServiceUpdate = function () {
-    var url = basePath + "/api/deploy/stopRealService";
-    util.$get(url, function (res) {
+execServiceUpdate = function (unitId) {
+    var url = basePath + "/api/deploy/updateRealService";
+    var req = {
+        unitId: unitId
+    };
+    util.get(url, req,function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();

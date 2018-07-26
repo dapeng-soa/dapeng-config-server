@@ -13,6 +13,8 @@ import io.socket.client.{IO, Socket}
 import io.socket.emitter.Emitter
 import org.yaml.snakeyaml.Yaml
 
+import scala.io.Source
+
 object ClientMain {
 
   def main(args: Array[String]): Unit = {
@@ -55,7 +57,13 @@ object ClientMain {
         val writer = new FileWriter(yamlFile)
         try {
           val content = new Yaml().dump(vo.getDockerYaml)
-          writer.write(content)
+          val finalContent = Source.fromString(content).getLines().filterNot(_.startsWith("!!")).filterNot(_.contains("null"))
+
+          finalContent.foreach(i => {
+            writer.write(i)
+            writer.write("\n")
+          })
+
           writer.flush();
         } catch {
           case e: Exception => println(s" failed to write file.......${e.getMessage}")
@@ -64,7 +72,7 @@ object ClientMain {
         }
 
         //exec cmd.....
-        val cmd = s"${EventType.DEPLOY.name.toLowerCase()} -f ${vo.getDockerYaml.getServices.keySet().iterator().next()}.yml up -d"
+        val cmd = s"${EventType.DEPLOY.name.toLowerCase()} -f ${yamlDir.getAbsolutePath}/${vo.getDockerYaml.getServices.keySet().iterator().next()}.yml up -d"
         queue.put(cmd)
       }
     })
