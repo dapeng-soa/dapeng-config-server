@@ -65,7 +65,7 @@ object ClientMain {
         }
 
         //exec cmd.....
-        val cmd = s"${EventType.DEPLOY.name.toLowerCase()} ${vo.getYamlService.getName}"
+        val cmd = s"${EventType.DEPLOY.name.toLowerCase()} -f ${vo.getYamlService.getName}.yml up -d"
         queue.put(cmd)
       }
     })
