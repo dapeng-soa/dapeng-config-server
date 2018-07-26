@@ -12,6 +12,7 @@ import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
+import com.github.dapeng.socket.AgentEvent;
 import com.github.dapeng.socket.SocketUtil;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
@@ -198,8 +199,6 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
         socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(yamlVo));
 
-
-        //TODO: 过滤
 
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG, yamlVo));
