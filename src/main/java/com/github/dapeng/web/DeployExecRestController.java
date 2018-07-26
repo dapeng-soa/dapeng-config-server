@@ -20,6 +20,7 @@ import com.github.dapeng.vo.DeployServiceVo;
 import com.github.dapeng.vo.DeploySubHostVo;
 import com.github.dapeng.vo.YamlService;
 import com.github.dapeng.vo.YamlVo;
+import com.google.gson.Gson;
 import io.socket.client.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,6 +148,9 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
      */
     @RequestMapping("/deploy/updateRealService")
     public ResponseEntity updateRealService() {
+
+
+
         // 发送升级指令+yaml数据
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
@@ -192,7 +196,8 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         yamlVo.setYamlService(yamlService);
         yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
 
-        //socketClient.emit(EventType.GET_SERVER_TIME().name(),yamlVo.getYamlService().getName());
+        socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(yamlVo));
+
 
         //TODO: 过滤
 

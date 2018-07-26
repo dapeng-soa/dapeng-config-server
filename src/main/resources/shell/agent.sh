@@ -9,7 +9,11 @@ getServerTime(){
     fi
 }
 
+deploy() {
+    ``
+}
+
 case $1 in
-   "getServerTime") eval $@ ;;
+   "getServerTime" | "deploy") eval $@ ;;
    *) echo "invalid command $1" ;;
 esac
