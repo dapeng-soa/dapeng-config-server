@@ -159,9 +159,7 @@ public class SocketServer {
             @Override
             public void onData(SocketIOClient client,
                                String data, AckRequest ackRequest) {
-                if (serverDeployTime.size() == nodesMap.size()) {
-                    server.getRoomOperations("nodes").sendEvent(EventType.DEPLOY().name(), data);
-                }
+                server.getRoomOperations("nodes").sendEvent(EventType.DEPLOY().name(), data);
             }
         });
 
