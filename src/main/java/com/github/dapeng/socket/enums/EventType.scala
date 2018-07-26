@@ -23,6 +23,7 @@ object EventType {
   val WEB_CMD = new EventType(6, "webCmd")
   val SERVER_TIME = new EventType(7, "serverTime")
   val GET_SERVER_TIME = new EventType(8, "getServerTime")
+  val DEPLOY = new EventType(9, "deploy")
   def unknown(id: Int) = new EventType(id, id + "")
 
   def valueOf(id: Int): EventType = id match {
@@ -34,6 +35,7 @@ object EventType {
     case 6 => WEB_CMD
     case 7 => SERVER_TIME
     case 8 => GET_SERVER_TIME
+    case 9 => DEPLOY
     case _ => unknown(id)
   }
 

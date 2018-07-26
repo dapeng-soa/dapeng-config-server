@@ -15,8 +15,8 @@ import static com.github.dapeng.socket.SystemParas.COMMAS;
  */
 public class DeployServerOperations implements Emitter.Listener{
     Socket socket;
-    BlockingQueue queue;
-    public DeployServerOperations(BlockingQueue queue , Socket socket){
+    BlockingQueue<String> queue;
+    public DeployServerOperations(BlockingQueue<String> queue , Socket socket){
         this.socket = socket;
         this.queue = queue;
     }

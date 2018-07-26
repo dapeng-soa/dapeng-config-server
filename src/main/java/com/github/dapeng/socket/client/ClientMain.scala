@@ -1,14 +1,18 @@
 package com.github.dapeng.socket.client
 
+import java.io.{File, FileWriter, StringWriter}
 import java.util
 import java.util.concurrent.LinkedBlockingQueue
 
 import com.github.dapeng.socket.AgentEvent
 import com.github.dapeng.socket.enums.EventType
 import com.github.dapeng.socket.listener.{DeployServerOperations, ServerTimeOperations}
+import com.github.dapeng.socket.server.BuildServerShellInvoker
+import com.github.dapeng.vo.YamlVo
 import com.google.gson.Gson
 import io.socket.client.{IO, Socket}
 import io.socket.emitter.Emitter
+import org.yaml.snakeyaml.Yaml
 
 object ClientMain {
 
@@ -19,7 +23,7 @@ object ClientMain {
 
     val socketClient: Socket = IO.socket("http://127.0.0.1:9095", opts)
 
-    val queue = new LinkedBlockingQueue()
+    val queue = new LinkedBlockingQueue[String]()
     val cmdExecutor = new CmdExecutor(queue, socketClient)
 
     new Thread(cmdExecutor).start()
@@ -38,9 +42,32 @@ object ClientMain {
       override def call( args: AnyRef*) {
         println(" disconnected ........")
       }
+    }).on(EventType.DEPLOY.name, objects => {
+      val vo = objects(0).asInstanceOf[YamlVo];
+//      final File yamlDir = new File(new File(BuildServerShellInvoker.class.getClassLoader().getResource("./").getPath()), "yamlDir");
+//      if (!yamlDir.exists()) {
+//        yamlDir.mkdir();
+//      }
+      val yamlDir = new File(new File(classOf[BuildServerShellInvoker].getClassLoader.getResource("./").getPath()), "yamlDir");
+      if (!yamlDir.exists()) {
+        yamlDir.mkdir();
+      }
+
+      try {
+        val yamlFile = new File(yamlDir.getAbsolutePath, s"${vo.getYamlService.getName}.yml")
+        yamlFile.setLastModified(vo.getLastDeployTime)
+        val writer = new FileWriter(yamlFile)
+        val content = new Yaml().dump(vo.getYamlService)
+        writer.write(content)
+      } catch {
+        case e: Exception => println(s" failed to write file.......${e.getMessage}")
+      }
+
+      //exec cmd.....
+      val cmd = s"${EventType.DEPLOY.name.toLowerCase()} ${vo.getYamlService.getName}"
+      queue.put(cmd)
     })
 
     socketClient.connect()
-    println(" ssssssss")
   }
 }
