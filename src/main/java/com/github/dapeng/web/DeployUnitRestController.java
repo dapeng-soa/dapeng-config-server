@@ -177,7 +177,7 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
                 return ResponseEntity
                         .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
             }
-            TDeployUnit unit = new TDeployUnit();
+            TDeployUnit unit = unitRepository.getOne(id);
             unit.setGitTag(unitDto.getGitTag());
             unit.setImageTag(unitDto.getImageTag());
             unit.setHostId(unitDto.getHostId());

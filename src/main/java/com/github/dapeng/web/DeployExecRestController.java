@@ -32,10 +32,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -222,8 +219,11 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         TSet set = setRepository.getOne(unit.getSetId());
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
-        YamlService yamlService = Composeutil.processService(set, host, service);
+        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
+        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service,unit);
+        yamlService.setExtraHosts(Composeutil.processExtraHosts(hosts));
         DockerVo dockerVo = new DockerVo();
+        // 时间应当查询一个最后更新时间发送
         dockerVo.setLastDeployTime(System.currentTimeMillis() / 1000);
         DockerYaml dockerYaml = new DockerYaml();
         dockerYaml.setVersion("2");
@@ -273,12 +273,35 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
      * @return
      */
     @GetMapping("/deploy-unit/process-envs")
-    public ResponseEntity<?> processService(@RequestParam long unitId) {
+    public ResponseEntity<?> processService(@RequestParam long setId,
+                                            @RequestParam long hostId,
+                                            @RequestParam long serviceId) {
+        TSet set = setRepository.getOne(setId);
+        THost host = hostRepository.getOne(hostId);
+        TService service = serviceRepository.getOne(serviceId);
+        YamlService yamlService = Composeutil.processService(set, host, service);
+        YamlVo yamlVo = new YamlVo();
+        yamlVo.setYamlService(yamlService);
+        yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
+
+        return ResponseEntity
+                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG, yamlVo));
+    }
+
+    /**
+     * 获取对应的yaml服务实体
+     *
+     * @return
+     */
+    @GetMapping("/deploy-unit/process-envs/{unitId}")
+    public ResponseEntity<?> processService(@PathVariable long unitId) {
         TDeployUnit unit = unitRepository.getOne(unitId);
         TSet set = setRepository.getOne(unit.getSetId());
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
-        YamlService yamlService = Composeutil.processService(set, host, service);
+        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
+        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service,unit);
+        yamlService.setExtraHosts(Composeutil.processExtraHosts(hosts));
         YamlVo yamlVo = new YamlVo();
         yamlVo.setYamlService(yamlService);
         yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
