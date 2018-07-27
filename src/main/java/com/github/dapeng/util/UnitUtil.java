@@ -24,8 +24,8 @@ public class UnitUtil {
     public static Map<String, String> ofEnv(String s) {
         Map<String, String> envMap = new HashMap<>(16);
         Arrays.asList(s.split(REGEX)).forEach(s1 -> {
-            if (!isEmpty(s1) && s1.contains(":")) {
-                String[] s2 = s1.split(":", 2);
+            if (!isEmpty(s1) && s1.contains(":")||s1.contains("=")) {
+                String[] s2 = s1.split("[:=]", 2);
                 envMap.put(s2[0].trim(), s2[1].trim());
             }
         });
