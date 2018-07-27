@@ -1,7 +1,5 @@
 package com.github.dapeng.vo;
 
-import javax.persistence.Entity;
-
 /**
  * @author with struy.
  * Create by 2018/6/22 16:09

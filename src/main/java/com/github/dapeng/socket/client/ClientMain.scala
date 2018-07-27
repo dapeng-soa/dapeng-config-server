@@ -11,7 +11,7 @@ import com.github.dapeng.vo.YamlVo
 import com.google.gson.Gson
 import io.socket.client.{IO, Socket}
 import io.socket.emitter.Emitter
-import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.{DumperOptions, Yaml}
 
 import scala.io.Source
 
@@ -56,7 +56,9 @@ object ClientMain {
         yamlFile.setLastModified(vo.getLastDeployTime)
         val writer = new FileWriter(yamlFile)
         try {
-          val content = new Yaml().dump(vo.getDockerYaml)
+          val dumperOptions = new DumperOptions
+          dumperOptions.setPrettyFlow(true)
+          val content = new Yaml(dumperOptions).dump(vo.getDockerYaml)
           val finalContent = Source.fromString(content).getLines().filterNot(_.startsWith("!!")).filterNot(_.contains("null"))
 
           finalContent.foreach(i => {

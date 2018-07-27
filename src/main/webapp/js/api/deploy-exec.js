@@ -117,24 +117,19 @@ execHostChanged = function () {
 // updateService
 updateService = function (unitId) {
     // 获取yaml内容
-    var url = basePath + "/api/deploy-unit/process-envs";
-    var req = {
-        unitId: unitId
-    };
-    util.get(url, req, function (res) {
-        console.log(res);
+    var url = basePath + "/api/deploy-unit/process-envs/" + unitId;
+    util.$get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
             // 导出弹窗内容模版
-            var context = deploy.viewDeployYamlContext(unitId,res.context.yamlService);
-            initModelContext(context);
+            var context = deploy.viewDeployYamlContext(unitId, res.context.yamlService);
+            initModelContext(context,function(){refresh()});
         }
     });
 };
 // checkService
 checkService = function (viewType) {
-    var url = basePath + "/api/deploy/checkRealService?setId=" + $("#setSelect").find("option:selected").val() +"&viewType="+viewType;
+    var url = basePath + "/api/deploy/checkRealService?setId=" + $("#setSelect").find("option:selected").val() + "&viewType=" + viewType;
     util.$get(url, function (res) {
-        console.log(res.context);
         // 展示视图（默认服务视图）
         var context = deploy.deployViewChange(viewType, res.context);
         $("#deployMain").html(context);
@@ -165,7 +160,7 @@ execServiceUpdate = function (unitId) {
     var req = {
         unitId: unitId
     };
-    util.get(url, req,function (res) {
+    util.get(url, req, function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();

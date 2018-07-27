@@ -10,7 +10,7 @@ getServerTime(){
 }
 
 deploy() {
-
+    docker-compose $1 $2 $3 $4
 }
 
 case $1 in

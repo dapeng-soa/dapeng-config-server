@@ -1,9 +1,6 @@
 package com.github.dapeng.util;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.github.dapeng.util.NullUtil.isEmpty;
 
@@ -23,7 +20,7 @@ public class UnitUtil {
      */
     public static Map<String, String> ofEnv(String s) {
         Map<String, String> envMap = new HashMap<>(16);
-        Arrays.asList(s.split(REGEX)).forEach(s1 -> {
+        ofList(s).forEach(s1 -> {
             if (!isEmpty(s1) && s1.contains(":")||s1.contains("=")) {
                 String[] s2 = s1.split("[:=]", 2);
                 envMap.put(s2[0].trim(), s2[1].trim());
@@ -39,6 +36,9 @@ public class UnitUtil {
      * @return
      */
     public static List<String> ofList(String s) {
+        if (isEmpty(s)){
+            return new ArrayList<>();
+        }
         return Arrays.asList(s.split(REGEX));
     }
 
