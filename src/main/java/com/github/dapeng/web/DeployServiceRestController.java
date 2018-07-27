@@ -61,7 +61,7 @@ public class DeployServiceRestController {
         service.setRemark(serviceDto.getRemark());
         service.setImage(serviceDto.getImage());
         service.setEnv(serviceDto.getEnv());
-        service.setComposeLabels(serviceDto.getEnv());
+        service.setComposeLabels(serviceDto.getComposeLabels());
         service.setVolumes(serviceDto.getVolumes());
         service.setPorts(serviceDto.getPorts());
         service.setDockerExtras(serviceDto.getDockerExtras());
@@ -105,7 +105,7 @@ public class DeployServiceRestController {
             service.setRemark(serviceDto.getRemark());
             service.setImage(serviceDto.getImage());
             service.setEnv(serviceDto.getEnv());
-            service.setComposeLabels(serviceDto.getEnv());
+            service.setComposeLabels(serviceDto.getComposeLabels());
             service.setVolumes(serviceDto.getVolumes());
             service.setPorts(serviceDto.getPorts());
             service.setDockerExtras(serviceDto.getDockerExtras());
