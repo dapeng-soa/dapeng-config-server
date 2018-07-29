@@ -1,8 +1,6 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
-import com.github.dapeng.core.helper.DapengUtil;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.dto.HostDto;
 import com.github.dapeng.entity.deploy.THost;
@@ -10,7 +8,7 @@ import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
-import com.github.dapeng.util.NullUtil;
+import com.github.dapeng.util.DeployCheck;
 import com.github.dapeng.vo.HostVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
@@ -61,7 +60,7 @@ public class DeployHostRestController {
             return hostVo;
         }).collect(Collectors.toList());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, hostVos));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hostVos));
     }
 
     /**
@@ -73,7 +72,7 @@ public class DeployHostRestController {
     public ResponseEntity<?> deployHostsBySetId(@PathVariable long setId) {
         List<THost> hosts = hostRepository.findBySetId(setId);
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, hosts));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hosts));
     }
 
 
@@ -99,7 +98,7 @@ public class DeployHostRestController {
         hostVo.setLabels(x.getLabels());
         hostVo.setRemark(x.getRemark());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, hostVo));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hostVo));
     }
 
 
@@ -111,24 +110,31 @@ public class DeployHostRestController {
      */
     @PostMapping("/deploy-host/add")
     public ResponseEntity<?> addHost(@RequestBody HostDto hostDto) {
-        if (isEmpty(hostDto.getName()) || isEmpty(hostDto.getIp()) || isEmpty(hostDto.getSetId())) {
-            return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
-        }
-        THost host = new THost();
-        host.setIp(IPUtils.transferIp(hostDto.getIp()));
-        host.setName(hostDto.getName());
-        host.setEnv(hostDto.getEnv());
-        host.setRemark(hostDto.getRemark());
-        host.setLabels(hostDto.getLabels());
-        host.setExtra(hostDto.getExtra());
-        host.setSetId(hostDto.getSetId());
-        host.setCreatedAt(DateUtil.now());
-        host.setUpdatedAt(DateUtil.now());
-        hostRepository.save(host);
+        try {
+            if (isEmpty(hostDto.getName()) || isEmpty(hostDto.getIp()) || isEmpty(hostDto.getSetId())) {
+                return ResponseEntity
+                        .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
+            }
+            DeployCheck.hasChinese(hostDto.getName(), "节点名");
+            DeployCheck.isboolIp(hostDto.getIp());
+            THost host = new THost();
+            host.setIp(IPUtils.transferIp(hostDto.getIp()));
+            host.setName(hostDto.getName());
+            host.setEnv(hostDto.getEnv());
+            host.setRemark(hostDto.getRemark());
+            host.setLabels(hostDto.getLabels());
+            host.setExtra(hostDto.getExtra());
+            host.setSetId(hostDto.getSetId());
+            host.setCreatedAt(DateUtil.now());
+            host.setUpdatedAt(DateUtil.now());
+            hostRepository.save(host);
 
-        return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
     }
 
     /**
@@ -143,8 +149,10 @@ public class DeployHostRestController {
         try {
             if (isEmpty(hostDto.getName()) || isEmpty(hostDto.getIp()) || isEmpty(hostDto.getSetId())) {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+                        .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
             }
+            DeployCheck.hasChinese(hostDto.getName(), "节点名");
+            DeployCheck.isboolIp(hostDto.getIp());
             THost host = hostRepository.findOne(id);
             host.setIp(IPUtils.transferIp(hostDto.getIp()));
             host.setName(hostDto.getName());
@@ -156,24 +164,25 @@ public class DeployHostRestController {
             host.setUpdatedAt(DateUtil.now());
             hostRepository.save(host);
             return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+                    .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 
 
     /**
      * 删除
+     *
      * @param id
      * @return
      */
     @PostMapping("/deploy-host/del/{id}")
-    public ResponseEntity delHost(@PathVariable long id){
+    public ResponseEntity delHost(@PathVariable long id) {
         hostRepository.delete(id);
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
+                .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
     }
 
 }

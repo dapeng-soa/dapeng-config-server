@@ -1,23 +1,16 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.UnitDto;
-import com.github.dapeng.socket.AgentEvent;
-import com.github.dapeng.socket.SocketUtil;
-import com.github.dapeng.util.Composeutil;
-import com.github.dapeng.vo.UnitVo;
 import com.github.dapeng.entity.deploy.TDeployUnit;
-import com.github.dapeng.entity.deploy.THost;
-import com.github.dapeng.entity.deploy.TService;
-import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
+import com.github.dapeng.socket.SocketUtil;
 import com.github.dapeng.util.DateUtil;
-import com.github.dapeng.vo.YamlService;
-import com.github.dapeng.vo.YamlVo;
+import com.github.dapeng.util.DeployCheck;
+import com.github.dapeng.vo.UnitVo;
 import io.socket.client.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
@@ -93,7 +86,7 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
             return vo;
         }).collect(Collectors.toList());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, unitVos));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, unitVos));
     }
 
     /**
@@ -105,7 +98,7 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
     public ResponseEntity<?> deployUnitById(@PathVariable long id) {
         TDeployUnit unit = unitRepository.findOne(id);
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, unit));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, unit));
     }
 
     /**
@@ -122,7 +115,7 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
                 .distinct()
                 .collect(Collectors.toList());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, gitTags));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, gitTags));
     }
 
     /**
@@ -139,24 +132,31 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
                 || isEmpty(unitDto.getGitTag())
                 || isEmpty(unitDto.getImageTag())) {
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+                    .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
         }
-        TDeployUnit unit = new TDeployUnit();
-        unit.setGitTag(unitDto.getGitTag());
-        unit.setImageTag(unitDto.getImageTag());
-        unit.setHostId(unitDto.getHostId());
-        unit.setServiceId(unitDto.getServiceId());
-        unit.setSetId(unitDto.getSetId());
-        unit.setEnv(unitDto.getEnv());
-        unit.setPorts(unitDto.getPorts());
-        unit.setVolumes(unitDto.getVolumes());
-        unit.setDockerExtras(unitDto.getDockerExtras());
-        unit.setCreatedAt(DateUtil.now());
-        unit.setUpdatedAt(DateUtil.now());
+        try {
+            DeployCheck.hasChinese(unitDto.getGitTag(), "发布tag");
+            DeployCheck.hasChinese(unitDto.getImageTag(), "镜像tag");
+            TDeployUnit unit = new TDeployUnit();
+            unit.setGitTag(unitDto.getGitTag());
+            unit.setImageTag(unitDto.getImageTag());
+            unit.setHostId(unitDto.getHostId());
+            unit.setServiceId(unitDto.getServiceId());
+            unit.setSetId(unitDto.getSetId());
+            unit.setEnv(unitDto.getEnv());
+            unit.setPorts(unitDto.getPorts());
+            unit.setVolumes(unitDto.getVolumes());
+            unit.setDockerExtras(unitDto.getDockerExtras());
+            unit.setCreatedAt(DateUtil.now());
+            unit.setUpdatedAt(DateUtil.now());
 
-        unitRepository.save(unit);
-        return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
+            unitRepository.save(unit);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
     }
 
     /**
@@ -175,8 +175,10 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
                     || isEmpty(unitDto.getGitTag())
                     || isEmpty(unitDto.getImageTag())) {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SAVE_ERROR_MSG));
+                        .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
             }
+            DeployCheck.hasChinese(unitDto.getGitTag(), "发布tag");
+            DeployCheck.hasChinese(unitDto.getImageTag(), "镜像tag");
             TDeployUnit unit = unitRepository.getOne(id);
             unit.setGitTag(unitDto.getGitTag());
             unit.setImageTag(unitDto.getImageTag());
@@ -190,10 +192,10 @@ public class DeployUnitRestController implements ApplicationListener<ContextRefr
             unit.setUpdatedAt(DateUtil.now());
             unitRepository.save(unit);
             return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+                    .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+                    .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
         }
     }
 }

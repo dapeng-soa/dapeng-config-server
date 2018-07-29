@@ -1,8 +1,6 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
-import com.github.dapeng.core.helper.DapengUtil;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.THost;
@@ -12,7 +10,6 @@ import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
-import com.github.dapeng.socket.AgentEvent;
 import com.github.dapeng.socket.SocketUtil;
 import com.github.dapeng.socket.entity.DockerVo;
 import com.github.dapeng.socket.entity.DockerYaml;
@@ -29,15 +26,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
@@ -146,7 +142,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
                 serviceVos.add(deployServiceVo);
             });
             return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, serviceVos));
+                    .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, serviceVos));
         } else {
             LOGGER.info("主机视图");
             // (hostId->unit)
@@ -185,7 +181,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
                 hostVos.add(deployHostVo);
             });
             return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, hostVos));
+                    .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hostVos));
         }
     }
 
@@ -220,7 +216,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service,unit);
+        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service, unit);
         yamlService.setExtraHosts(Composeutil.processExtraHosts(hosts));
         DockerVo dockerVo = new DockerVo();
         // 时间应当查询一个最后更新时间发送
@@ -235,6 +231,8 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         service1.setLabels(UnitUtil.ofList(yamlService.getComposeLabels()));
         service1.setPorts(UnitUtil.ofList(yamlService.getPorts()));
         service1.setVolumes(UnitUtil.ofList(yamlService.getVolumes()));
+        //
+        Composeutil.processDockerExtras(service1, yamlService.getDockerExtras());
         serviceMap.put(yamlService.getName(), service1);
         dockerYaml.setServices(serviceMap);
         dockerVo.setDockerYaml(dockerYaml);
@@ -243,7 +241,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(dockerVo));
 
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG, dockerVo));
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
     }
 
     /**
@@ -253,7 +251,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     public ResponseEntity stopRealService(@RequestParam long unitId) {
         // 发送停止指令
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
     }
 
     /**
@@ -264,7 +262,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
         // 发送重启指令
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
     }
 
     /**
@@ -285,7 +283,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
 
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG, yamlVo));
+                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, yamlVo));
     }
 
     /**
@@ -300,13 +298,13 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service,unit);
+        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service, unit);
         yamlService.setExtraHosts(Composeutil.processExtraHosts(hosts));
         YamlVo yamlVo = new YamlVo();
         yamlVo.setYamlService(yamlService);
         yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
 
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG, yamlVo));
+                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, yamlVo));
     }
 }

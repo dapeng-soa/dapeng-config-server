@@ -2,6 +2,7 @@ package com.github.dapeng.util;
 
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.entity.deploy.TDeployUnit;
+import com.github.dapeng.socket.entity.Service;
 import com.github.dapeng.vo.YamlService;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
@@ -9,6 +10,8 @@ import com.github.dapeng.entity.deploy.TSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -249,5 +252,28 @@ public class Composeutil {
             sb.deleteCharAt(sb.lastIndexOf("\n"));
         }
         return sb.toString();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static Service processDockerExtras(Service service,String dockerExtras) {
+        Class<? extends Service> clazz = service.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            String name = field.getName().toUpperCase();
+            UnitUtil.ofEnv(dockerExtras).forEach((k,v) ->{
+                if (k.toUpperCase().equals(name)){
+                    String method = "set"+name.substring(0,1).toUpperCase().concat(name.substring(1).toLowerCase());
+                    try {
+                        clazz.getMethod(method,String.class).invoke(service,v);
+                    } catch (Exception e) {
+                        LOGGER.error("not found method [{}]",method);
+                    }
+                }
+            });
+        }
+        return service;
     }
 }
