@@ -232,13 +232,13 @@ button[type="button"][name="toggle"]:before{
 
 #struct-model .struct-model-container {
     width: 70%;
-    height: 80%;
+    height: 90%;
     max-width: 1200px;
     background: #fff;
     position: relative;
     z-index: 1334;
     margin: 0 auto;
-    top: 47%;
+    top: 50%;
     padding: 10px;
     overflow-x: hidden;
     border-radius: 3px;

@@ -72,8 +72,7 @@ initHostList = function (id) {
 
 // 环境集改变
 execSetChanged = function (obj) {
-    var selected = Number($(obj).find("option:selected").val());
-    var viewType = Number($(obj).find("option:selected").val());
+    var viewType = Number($("#viewType").find("option:selected").val());
     checkService(viewType);
 };
 // 视图类型变更

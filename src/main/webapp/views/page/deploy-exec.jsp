@@ -34,7 +34,7 @@
             </div>
             <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%">视图：</label>
             <div class="col-sm-2">
-                <select data-live-search="true" class="selectpicker form-control" onchange="execViewTypeChanged(this)" >
+                <select id="viewType" data-live-search="true" class="selectpicker form-control" onchange="execViewTypeChanged(this)" >
                     <option value="1" selected>服务视图</option>
                     <option value="2">主机视图</option>
                 </select>

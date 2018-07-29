@@ -36,6 +36,14 @@ module api {
                         <label class="col-sm-2 control-label">ENV:</label>
                         <div class="col-sm-9">
                             <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
+                                  </pre>
+                                </div>
+                              </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -97,6 +105,14 @@ module api {
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         
@@ -104,24 +120,56 @@ module api {
                             <label class="col-sm-2 control-label">VOLUMES:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(挂载卷):如 /data/log:/data/log
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">PORTS:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(映射端口):如 8080:8080
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">composeLabels:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="composeLabels-area" class="form-control" rows="10">${type != c.add ? data.composeLabels : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+labels:如 project.owner=struy
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">dockerExtras:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+附加:如 restart: on-failure:3
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -191,7 +239,7 @@ module api {
                             <div class="col-sm-9">
                                <select ${type == c.view ? "disabled" : ""} id="extraSelect" class="col-sm-2 form-control">
                                   <option value="0" ${type != c.add ? (data.extra == 0 ? "selected" : "") : ""}>是</option>
-                                  <option value="1" ${type != c.add ? (data.extra == 1 ? "selected" : "") : ""}>否</option>
+                                  <option value="1" ${type != c.add ? (data.extra == 1 ? "selected" : "") : "selected"}>否</option>
                                 </select>
                             </div>
                         </div>
@@ -199,6 +247,14 @@ module api {
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -248,24 +304,51 @@ module api {
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属环境集:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view ? "disabled" : ""} id="setSelect" onchange="addUnitSetChanged(this)" class="col-sm-2 form-control">
+                               <select ${type == c.view || type == c.edit ? "disabled" : ""} id="setSelect" onchange="addUnitSetChanged(this)" class="col-sm-2 form-control">
           
                                 </select>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+当前环境集配置:
+
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属主机:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view ? "disabled" : ""} onchange="addUnitHostChanged(this)" id="hostSelect" class="col-sm-2 form-control">
+                               <select ${type == c.view || type == c.edit ? "disabled" : ""} onchange="addUnitHostChanged(this)" id="hostSelect" class="col-sm-2 form-control">
                                 </select>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+当前主机配置:
+
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属服务:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view ? "disabled" : ""} onchange="addUnitServiceChanged(this)" id="serviceSelect" class="col-sm-2 form-control">
+                               <select ${type == c.view || type == c.edit? "disabled" : ""} onchange="addUnitServiceChanged(this)" id="serviceSelect" class="col-sm-2 form-control">
                                 </select>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+当前服务配置:
+
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         
@@ -280,6 +363,14 @@ module api {
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                       
@@ -288,18 +379,42 @@ module api {
                             <label class="col-sm-2 control-label">VOLUMES:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(挂载卷):如 /data/log:/data/log
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">PORTS:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+ENV(映射端口):如 8080:8080
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">dockerExtras:</label>
                             <div class="col-sm-9">
                                 <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+附加:如 restart: on-failure:3
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         ${type == c.add ?`
@@ -434,21 +549,22 @@ module api {
                 
   <div style="margin: 81px 0 60px 0">
   <pre>
+        <p>version: '2'</p>
         <p>services:</p>
         <p style="padding-left: 2em">${compose.name}:</p>
-        <p style="padding-left: 4em">image: ${compose.image}</p>
         <p style="padding-left: 4em">container_name: ${compose.name}</p>
-        <p style="padding-left: 4em">${compose.dockerExtras}</p>
         <p style="padding-left: 4em">environment:</p>
         <p style="padding-left: 6em">${compose.env}</p>
-        <p style="padding-left: 4em">extra_hosts:</p>
-        <p style="padding-left: 6em">${compose.extraHosts}</p>
+        <p style="padding-left: 4em">image: ${compose.image}</p>
+        <p style="padding-left: 4em">${compose.dockerExtras}</p>
+        <p style="padding-left: 4em">labels:</p>
+        <p style="padding-left: 6em">${compose.composeLabels}</p>
         <p style="padding-left: 4em">ports:</p>
         <p style="padding-left: 6em">${compose.ports}</p>
         <p style="padding-left: 4em">volumes:</p>
         <p style="padding-left: 6em">${compose.volumes}</p>
-        <p style="padding-left: 4em">labels:</p>
-        <p style="padding-left: 6em">${compose.composeLabels}</p>
+        <p style="padding-left: 4em">extra_hosts:</p>
+        <p style="padding-left: 6em">${compose.extraHosts}</p>
         </pre>
 </div>
 <div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; 0" >
