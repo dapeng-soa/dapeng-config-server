@@ -2,12 +2,6 @@ package com.github.dapeng.socket.server;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
-
-import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -19,6 +13,13 @@ import com.github.dapeng.socket.enums.EventType;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author with struy.
@@ -167,7 +168,7 @@ public class SocketServer {
         server.start();
         System.out.println("websocket server started at " + port);
 
-        CmdExecutor ex = new CmdExecutor(queue, server);
+        ServiceCmdExecutor ex = new ServiceCmdExecutor(queue, server);
         System.out.println("CmdExecutor Thread started");
 
 

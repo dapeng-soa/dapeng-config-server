@@ -41,14 +41,17 @@
 <%--animate--%>
 <link href="${basePath}/plugins/animate/animate.min.css" rel="stylesheet">
 
-<%--selectpicker--%>
+<%--selectpicker 选择框--%>
 <link rel="stylesheet" href="${basePath}/plugins/selectpicker/css/bootstrap-select.css">
 <script src="${basePath}/plugins/selectpicker/js/bootstrap-select.js"></script>
 
-<%--toastr--%>
+<%--toastr 通知--%>
 <script src="${basePath}/plugins/toastr/js/toastr.min.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/toastr/css/toastr.css">
 
+<%--mergely diff--%>
+<script src="${basePath}/plugins/mergely/mergely.js"></script>
+<link rel="stylesheet" href="${basePath}/plugins/mergely/mergely.css">
 
 <script src="${basePath}/js/ts/Config.js"></script>
 <script src="${basePath}/js/ts/Deploy.js"></script>

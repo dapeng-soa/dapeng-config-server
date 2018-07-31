@@ -120,7 +120,7 @@ updateService = function (unitId) {
     util.$get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
             // 导出弹窗内容模版
-            var context = deploy.viewDeployYamlContext(unitId, res.context.yamlService);
+            var context = deploy.viewDeployYamlContext(unitId, res.context);
             initModelContext(context,function(){refresh()});
         }
     });

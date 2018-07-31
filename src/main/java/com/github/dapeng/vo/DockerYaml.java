@@ -1,10 +1,10 @@
-package com.github.dapeng.socket.entity;
+package com.github.dapeng.vo;
 
 import java.util.Map;
 
 public class DockerYaml {
     private String version;
-    private Map<String, Service> services;
+    private Map<String, DockerService> services;
 
     public void setVersion(String version) {
         this.version = version;
@@ -14,11 +14,11 @@ public class DockerYaml {
         return version;
     }
 
-    public Map<String, Service> getServices() {
+    public Map<String, DockerService> getServices() {
         return services;
     }
 
-    public void setServices(Map<String, Service> services) {
+    public void setServices(Map<String, DockerService> services) {
         this.services = services;
     }
 }

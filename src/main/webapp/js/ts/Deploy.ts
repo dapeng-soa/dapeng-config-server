@@ -539,33 +539,18 @@ ENV(映射端口):如 8080:8080
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext(unitId:Number,compose:any) {
+        public viewDeployYamlContext(unitId:Number,data:any) {
             return `
                 <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">预览部署yaml[${compose.name}]</p>
+                        <p class="left-panel-title">预览部署yaml-${data.serviceName}</p>
                     </div>
                 </div>
                 
   <div style="margin: 81px 0 60px 0">
   <pre>
-        <p>version: '2'</p>
-        <p>services:</p>
-        <p style="padding-left: 2em">${compose.name}:</p>
-        <p style="padding-left: 4em">container_name: ${compose.name}</p>
-        <p style="padding-left: 4em">environment:</p>
-        <p style="padding-left: 6em">${compose.env}</p>
-        <p style="padding-left: 4em">image: ${compose.image}</p>
-        <p style="padding-left: 4em">${compose.dockerExtras}</p>
-        <p style="padding-left: 4em">labels:</p>
-        <p style="padding-left: 6em">${compose.composeLabels}</p>
-        <p style="padding-left: 4em">ports:</p>
-        <p style="padding-left: 6em">${compose.ports}</p>
-        <p style="padding-left: 4em">volumes:</p>
-        <p style="padding-left: 6em">${compose.volumes}</p>
-        <p style="padding-left: 4em">extra_hosts:</p>
-        <p style="padding-left: 6em">${compose.extraHosts}</p>
-        </pre>
+  ${data.fileContent}
+  </pre>
 </div>
 <div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; 0" >
 <span class="input-group-btn panel-button-group text-center">

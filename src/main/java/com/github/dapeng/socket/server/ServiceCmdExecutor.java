@@ -7,10 +7,10 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by duwupeng on 16/10/18.
  */
-public class CmdExecutor implements Runnable{
+public class ServiceCmdExecutor implements Runnable{
     public BlockingQueue queue;
     SocketIOServer server;
-    public CmdExecutor(BlockingQueue queue, SocketIOServer server) {
+    public ServiceCmdExecutor(BlockingQueue queue, SocketIOServer server) {
         this.queue = queue;
         this.server=server;
     }
