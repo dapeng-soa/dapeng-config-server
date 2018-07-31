@@ -11,13 +11,9 @@ import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.SocketUtil;
-import com.github.dapeng.socket.entity.DockerVo;
-import com.github.dapeng.socket.entity.DockerYaml;
-import com.github.dapeng.socket.entity.Service;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
-import com.github.dapeng.util.UnitUtil;
 import com.github.dapeng.vo.*;
 import com.google.gson.Gson;
 import io.socket.client.Socket;
@@ -216,27 +212,15 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service, unit);
-        yamlService.setExtraHosts(Composeutil.processExtraHosts(hosts));
-        DockerVo dockerVo = new DockerVo();
-        // 时间应当查询一个最后更新时间发送
-        dockerVo.setLastDeployTime(System.currentTimeMillis() / 1000);
-        DockerYaml dockerYaml = new DockerYaml();
-        dockerYaml.setVersion("2");
-        Map<String, Service> serviceMap = new HashMap<>();
-        Service service1 = new Service();
-        service1.setContainer_name(yamlService.getName());
-        service1.setEnvironment(UnitUtil.ofEnv(yamlService.getEnv()));
-        service1.setImage(yamlService.getImage());
-        service1.setLabels(UnitUtil.ofList(yamlService.getComposeLabels()));
-        service1.setPorts(UnitUtil.ofList(yamlService.getPorts()));
-        service1.setVolumes(UnitUtil.ofList(yamlService.getVolumes()));
-        //
-        Composeutil.processDockerExtras(service1, yamlService.getDockerExtras());
-        serviceMap.put(yamlService.getName(), service1);
-        dockerYaml.setServices(serviceMap);
-        dockerVo.setDockerYaml(dockerYaml);
 
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit);
+        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
+        String composeContext = Composeutil.processComposeContext(dockerService1);
+
+        DeployVo dockerVo = new DeployVo();
+        dockerVo.setLastModifyTime(lastUpdateAt(unit));
+        dockerVo.setServiceName(service.getName());
+        dockerVo.setFileContent(composeContext);
         // 发送升级指令+yaml数据
         socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(dockerVo));
 
@@ -277,13 +261,17 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         TSet set = setRepository.getOne(setId);
         THost host = hostRepository.getOne(hostId);
         TService service = serviceRepository.getOne(serviceId);
-        YamlService yamlService = Composeutil.processService(set, host, service);
-        YamlVo yamlVo = new YamlVo();
-        yamlVo.setYamlService(yamlService);
-        yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
+        List<THost> hosts = hostRepository.findBySetId(setId);
+        DockerService dockerService1 = Composeutil.processService(set, host, service);
+        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
+        String composeContext = Composeutil.processComposeContext(dockerService1);
+
+        DeployVo dockerVo = new DeployVo();
+        dockerVo.setServiceName(service.getName());
+        dockerVo.setFileContent(composeContext);
 
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, yamlVo));
+                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, dockerVo));
     }
 
     /**
@@ -298,13 +286,16 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-        YamlService yamlService = Composeutil.processServiceOfUnit(set, host, service, unit);
-        yamlService.setExtraHosts(Composeutil.processExtraHosts(hosts));
-        YamlVo yamlVo = new YamlVo();
-        yamlVo.setYamlService(yamlService);
-        yamlVo.setLastDeployTime(System.currentTimeMillis() / 1000);
+
+        DockerService dockerService1 = Composeutil.processService(set, host, service);
+        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
+        String composeContext = Composeutil.processComposeContext(dockerService1);
+
+        DeployVo dockerVo = new DeployVo();
+        dockerVo.setServiceName(service.getName());
+        dockerVo.setFileContent(composeContext);
 
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, yamlVo));
+                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, dockerVo));
     }
 }

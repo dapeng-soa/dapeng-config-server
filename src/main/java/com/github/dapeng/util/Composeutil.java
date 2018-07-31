@@ -2,20 +2,21 @@ package com.github.dapeng.util;
 
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.entity.deploy.TDeployUnit;
-import com.github.dapeng.socket.entity.Service;
-import com.github.dapeng.vo.YamlService;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.entity.deploy.TSet;
+import com.github.dapeng.vo.DockerYaml;
+import com.github.dapeng.vo.DockerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.github.dapeng.util.NullUtil.isEmpty;
 
@@ -27,6 +28,7 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 
 public class Composeutil {
     private static Logger LOGGER = LoggerFactory.getLogger(Composeutil.class);
+    private static final String REGEX = "\n|\r|\r\n";
 
     /**
      * 获得yaml格式实体
@@ -47,34 +49,33 @@ public class Composeutil {
      *
      * @return YamlService
      */
-    public static YamlService processServiceOfUnit(TSet set, THost host, TService service, TDeployUnit unit) {
+    public static DockerService processServiceOfUnit(TSet set, THost host, TService service, TDeployUnit unit) {
 
-        YamlService yService = new YamlService();
+        DockerService dockerService1 = new DockerService();
 
         //==================service
-        yService.setName(service.getName());
+        dockerService1.setContainer_name(service.getName());
 
         //==================image /tag default=>latest
         String imageTag = isEmpty(unit.getImageTag()) ? "latest" : unit.getImageTag();
-        yService.setImage(service.getImage() + ":" + imageTag);
+        dockerService1.setImage(service.getImage() + ":" + imageTag);
 
         //==================environment
 
-        yService.setEnv(processEnv(set, host, service, unit));
+        dockerService1.setEnvironment(processEnv(set, host, service, unit));
 
         //==================volumes
-        yService.setVolumes(processVolume(unit.getVolumes(), service.getVolumes()));
+        dockerService1.setVolumes(processVolume(unit.getVolumes(), service.getVolumes()));
 
         //==================ports
-        yService.setPorts(processPorts(service, unit));
+        dockerService1.setPorts(processPorts(service, unit));
 
-        //==================dockerExtras
-        yService.setDockerExtras(processVolume(unit.getDockerExtras(), service.getDockerExtras()));
+        processDockerExtras(dockerService1, process2String(processVolume(unit.getDockerExtras(), service.getDockerExtras())));
 
         //==================composeLabels
-        yService.setComposeLabels(service.getComposeLabels());
+        dockerService1.setLabels(ofList(service.getComposeLabels()));
 
-        return yService;
+        return dockerService1;
     }
 
     /**
@@ -86,11 +87,11 @@ public class Composeutil {
      * @param service
      * @return
      */
-    public static String processEnv(TSet set, THost host, TService service, TDeployUnit unit) {
-        Map<String, String> setEnvs = UnitUtil.ofEnv(set.getEnv());
-        Map<String, String> hostEnvs = UnitUtil.ofEnv(host.getEnv());
-        Map<String, String> serviceEnvs = UnitUtil.ofEnv(service.getEnv());
-        Map<String, String> unitEnvs = UnitUtil.ofEnv(unit.getEnv());
+    public static Map<String, String> processEnv(TSet set, THost host, TService service, TDeployUnit unit) {
+        Map<String, String> setEnvs = ofEnv(set.getEnv());
+        Map<String, String> hostEnvs = ofEnv(host.getEnv());
+        Map<String, String> serviceEnvs = ofEnv(service.getEnv());
+        Map<String, String> unitEnvs = ofEnv(unit.getEnv());
 
         Map<String, String> realEnvs = mergeEnvs(mergeEnvs(mergeEnvs(unitEnvs, serviceEnvs), hostEnvs), setEnvs);
 
@@ -101,7 +102,7 @@ public class Composeutil {
             });
             sb.deleteCharAt(sb.lastIndexOf("\n"));
         }
-        return sb.toString();
+        return realEnvs;
     }
 
     /**
@@ -137,12 +138,18 @@ public class Composeutil {
      * @param attach
      * @return
      */
-    public static String processVolume(String priority, String attach) {
-        List<String> prioritys = UnitUtil.ofList(priority);
-        List<String> attachs = UnitUtil.ofList(attach);
+    public static List<String> processVolume(String priority, String attach) {
+        List<String> prioritys = ofList(priority);
+        List<String> attachs = ofList(attach);
         StringBuilder sb = new StringBuilder();
         // /data/logs:/data/logs
         List<String> list = mergeList(prioritys, attachs);
+        return list;
+    }
+
+
+    public static String process2String(List list) {
+        StringBuilder sb = new StringBuilder();
         if (list.size() > 0) {
             list.forEach(s -> {
                 sb.append(s).append("\n");
@@ -151,6 +158,7 @@ public class Composeutil {
         }
         return sb.toString();
     }
+
 
     /**
      * 端口只要绑定的宿主机端口不一致都可以
@@ -163,9 +171,9 @@ public class Composeutil {
      * @param unit
      * @return
      */
-    public static String processPorts(TService service, TDeployUnit unit) {
-        Map<String, String> servicePorts = UnitUtil.ofEnv(service.getPorts());
-        Map<String, String> unitPorts = UnitUtil.ofEnv(unit.getPorts());
+    public static List<String> processPorts(TService service, TDeployUnit unit) {
+        Map<String, String> servicePorts = ofEnv(service.getPorts());
+        Map<String, String> unitPorts = ofEnv(unit.getPorts());
         Map<String, String> rmPosts = new HashMap<>(16);
         Map<String, String> realPosts = new HashMap<>(16);
         unitPorts.forEach((k, v) -> servicePorts.forEach((k1, v1) -> {
@@ -179,16 +187,15 @@ public class Composeutil {
         realPosts.putAll(unitPorts);
         realPosts.putAll(servicePorts);
 
-        StringBuilder sb = new StringBuilder();
+        List<String> list = new ArrayList<>();
 
         // 9999:9999
         if (realPosts.size() > 0) {
             realPosts.forEach((k, v) -> {
-                sb.append(k).append(":").append(v).append("\n");
+                list.add(k + ":" + v);
             });
-            sb.deleteCharAt(sb.lastIndexOf("\n"));
         }
-        return sb.toString();
+        return list;
     }
 
 
@@ -206,32 +213,30 @@ public class Composeutil {
         return realList;
     }
 
-    public static YamlService processService(TSet set, THost host, TService service) {
-        YamlService yService = new YamlService();
+    public static DockerService processService(TSet set, THost host, TService service) {
+        DockerService dockerService1 = new DockerService();
 
         //==================service
-        yService.setName(service.getName());
+        dockerService1.setContainer_name(service.getName());
 
         //==================image /tag default=>latest
-        yService.setImage(service.getImage());
+        dockerService1.setImage(service.getImage());
 
         //==================environment
-
-        yService.setEnv(processEnv(set, host, service, new TDeployUnit()));
+        dockerService1.setEnvironment(processEnv(set, host, service, new TDeployUnit()));
 
         //==================volumes
-        yService.setVolumes(service.getVolumes());
+        dockerService1.setVolumes(ofList(service.getVolumes()));
 
         //==================ports
-        yService.setPorts(service.getPorts());
-
-        //==================dockerExtras
-        yService.setDockerExtras(service.getDockerExtras());
+        dockerService1.setPorts(ofList(service.getPorts()));
 
         //==================composeLabels
-        yService.setComposeLabels(service.getComposeLabels());
+        dockerService1.setLabels(ofList(service.getComposeLabels()));
 
-        return yService;
+        processDockerExtras(dockerService1, service.getDockerExtras());
+
+        return dockerService1;
     }
 
     /**
@@ -240,40 +245,114 @@ public class Composeutil {
      * @param hosts
      * @return
      */
-    public static String processExtraHosts(List<THost> hosts) {
-        StringBuilder sb = new StringBuilder();
-        if (!isEmpty(hosts)){
+    public static List<String> processExtraHosts(List<THost> hosts) {
+        List<String> list = new ArrayList<>();
+        if (!isEmpty(hosts)) {
             hosts.forEach(h -> {
-                sb.append(h.getName())
-                        .append(":")
-                        .append(IPUtils.transferIp(h.getIp()))
-                        .append("\n");
+                list.add(h.getName() + ":" + IPUtils.transferIp(h.getIp()));
             });
-            sb.deleteCharAt(sb.lastIndexOf("\n"));
         }
-        return sb.toString();
+        return list;
     }
 
     /**
-     *
      * @return
      */
-    public static Service processDockerExtras(Service service,String dockerExtras) {
-        Class<? extends Service> clazz = service.getClass();
+    public static DockerService processDockerExtras(DockerService dockerService, String dockerExtras) {
+        Class<? extends DockerService> clazz = dockerService.getClass();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             String name = field.getName().toUpperCase();
-            UnitUtil.ofEnv(dockerExtras).forEach((k,v) ->{
-                if (k.toUpperCase().equals(name)){
-                    String method = "set"+name.substring(0,1).toUpperCase().concat(name.substring(1).toLowerCase());
+            ofEnv(dockerExtras).forEach((k, v) -> {
+                if (k.toUpperCase().equals(name)) {
+                    String method = "set" + name.substring(0, 1).toUpperCase().concat(name.substring(1).toLowerCase());
                     try {
-                        clazz.getMethod(method,String.class).invoke(service,v);
+                        clazz.getMethod(method, String.class).invoke(dockerService, v);
                     } catch (Exception e) {
-                        LOGGER.error("not found method [{}]",method);
+                        LOGGER.error("not found method [{}]", method);
                     }
                 }
             });
         }
-        return service;
+        return dockerService;
+    }
+
+    /**
+     * 返回字符串的
+     *
+     * @param
+     * @return
+     */
+    public static String processComposeContext(DockerService dockerService) {
+        // 时间应当查询一个最后更新时间发送
+        DockerYaml dockerYaml = new DockerYaml();
+        dockerYaml.setVersion("2");
+        Map<String, DockerService> serviceMap = new HashMap<>(1);
+        serviceMap.put(dockerService.getContainer_name(), dockerService);
+        dockerYaml.setServices(serviceMap);
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setPrettyFlow(true);
+        String yaml = new Yaml(dumperOptions).dump(dockerYaml);
+        BufferedReader br = new BufferedReader(new StringReader(yaml));
+        StringBuilder sb = new StringBuilder();
+        String str;
+        try {
+            while ((str = br.readLine()) != null) {
+                if (!str.startsWith("!!") && !str.contains("null")) {
+                    sb.append(str).append("\n");
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            LOGGER.error("生成yaml失败", e);
+        }
+        return sb.toString();
+    }
+
+
+    /**
+     * 将换行文本转换为Map
+     *
+     * @return
+     */
+    public static Map<String, String> ofEnv(String s) {
+        Map<String, String> envMap = new HashMap<>(16);
+        ofList(s).forEach(s1 -> {
+            if (!isEmpty(s1) && s1.contains(":") || s1.contains("=")) {
+                String[] s2 = s1.split("[:=]", 2);
+                envMap.put(s2[0].trim(), s2[1].trim());
+            }
+        });
+        return envMap;
+    }
+
+
+    /**
+     * 将换行文本转换为集合
+     *
+     * @return
+     */
+    public static List<String> ofList(String s) {
+        if (isEmpty(s)) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(s.split(REGEX));
+    }
+
+    public static void main(String[] args) {
+        String sss = "LANG: zh_CN.UTF-8\n" +
+                "      TZ: CST-8\n" +
+                "      fluent_bit_enable: \"true\"\n" +
+                "      redis_host_ip: redis_host\n" +
+                "      redis_host_port: '6379'\n" +
+                "      serviceName: idGenService\n" +
+                "      slow_service_check_enable: \"true\"\n" +
+                "      soa_container_port: '9081'\n" +
+                "      soa_core_pool_size: '100'\n" +
+                "      soa_jmxrmi_enable: \"false\"\n" +
+                "      soa_monitor_enable: \"true\"";
+        ofEnv(sss).forEach((k, v) -> {
+            System.out.println(k + " ->" + v);
+        });
     }
 }

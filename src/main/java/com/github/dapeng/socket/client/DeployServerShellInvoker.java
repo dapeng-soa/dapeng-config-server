@@ -2,10 +2,12 @@ package com.github.dapeng.socket.client;
 
 import com.github.dapeng.socket.SystemParas;
 import com.github.dapeng.socket.enums.EventType;
-import com.github.dapeng.socket.server.BuildServerShellInvoker;
 import io.socket.client.Socket;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import static com.github.dapeng.socket.SystemParas.COMMAS;
 import static com.github.dapeng.socket.SystemParas.SHELLNAME;
@@ -61,38 +63,6 @@ public class DeployServerShellInvoker {
             while ((inline = br.readLine()) != null) {
                 System.out.println(inline);
             }
-//            if (isPs) {
-//                String inline;
-//                while ((inline = br.readLine()) != null) {
-//                    if (inline.indexOf("Name") != -1 && inline.indexOf("Command") != -1 && inline.indexOf("State") != -1) {
-//                        continue;
-//                    }
-//                    if (inline.indexOf("-------------------------------------------------------") != -1) {
-//                        continue;
-//                    }
-//                    if (inline.indexOf("osType:LINUX") != -1) {
-//                        continue;
-//                    }
-//
-//                    socket.emit("nodeEvent", event + ":" + inline);
-//                    System.out.println(inline);
-//                }
-//                br.close();
-//            } else {
-//                String inline;
-//                while ((inline = br.readLine()) != null) {
-//                    socket.emit("nodeEvent", event + ":" + inline);
-//                    System.out.println(inline);
-//                }
-//                br.close();
-//
-//
-//                br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-//                while ((inline = br.readLine()) != null) {
-//                    System.out.println(inline);
-//                }
-//            }
-
 
             if (process != null) {
                 process.waitFor();

@@ -1,9 +1,9 @@
-package com.github.dapeng.socket.entity;
+package com.github.dapeng.vo;
 
 import java.util.List;
 import java.util.Map;
 
-public class Service {
+public class DockerService {
     private String container_name;
     private String image;
     private String restart;
@@ -12,6 +12,7 @@ public class Service {
     private String command;
     private List<String> volumes;
     private List<String> labels;
+    private List<String> extra_hosts;
     public void setContainer_name(String container_name) {
         this.container_name = container_name;
     }
@@ -74,5 +75,13 @@ public class Service {
 
     public void setVolumes(List<String> volumes) {
         this.volumes = volumes;
+    }
+
+    public List<String> getExtra_hosts() {
+        return extra_hosts;
+    }
+
+    public void setExtra_hosts(List<String> extra_hosts) {
+        this.extra_hosts = extra_hosts;
     }
 }
