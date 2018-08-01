@@ -283,10 +283,10 @@ button[type="button"][name="toggle"]:before{
 
 #struct-model .struct-model-context {
     height: 100%;
+    width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 }
-
 
 .panel-header.window-header {
     position: fixed;
