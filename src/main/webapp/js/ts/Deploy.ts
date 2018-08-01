@@ -541,16 +541,18 @@ ENV(映射端口):如 8080:8080
          */
         public viewDeployYamlContext(unitId:Number,data:any) {
             return `
-                <div class="panel-header window-header">
-                    <div class="input-group">
-                        <p class="left-panel-title">预览部署yaml-${data.serviceName}</p>
-                    </div>
-                </div>
                 
-  <div style="margin: 81px 0 60px 0">
-  <pre>
-  ${data.fileContent}
-  </pre>
+                
+  <div>
+  
+  <div class="mergely-full-screen-8">
+		<div class="mergely-resizer">
+			<div id="mergely">
+			</div>
+		</div>
+	</div>
+  
+
 </div>
 <div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; 0" >
 <span class="input-group-btn panel-button-group text-center">

@@ -49,6 +49,12 @@
 <script src="${basePath}/plugins/toastr/js/toastr.min.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/toastr/css/toastr.css">
 
+<!-- Requires CodeMirror -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/search/searchcursor.min.js"></script>
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css" />
+
+
 <%--mergely diff--%>
 <script src="${basePath}/plugins/mergely/mergely.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/mergely/mergely.css">

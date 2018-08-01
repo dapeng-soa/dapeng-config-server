@@ -7,16 +7,12 @@ import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
-import com.github.dapeng.socket.SocketUtil;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
 import com.github.dapeng.vo.UnitVo;
-import io.socket.client.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -35,19 +31,7 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 @RestController
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
-public class DeployUnitRestController implements ApplicationListener<ContextRefreshedEvent> {
-
-    private Socket socketClient = null;
-
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
-        socketClient = SocketUtil.registerWebSocketClient("127.0.0.1", 9095, "127.0.0.1", "DeployUnitSocket");
-//        List<String> ids = new ArrayList();
-//        ids.add(socketClient.id());
-//        AgentEvent agentEvent = new AgentEvent(ids, "deploy", "orderService", "helloWorld");
-//        socketClient.emit("webEvent", agentEvent);
-
-    }
+public class DeployUnitRestController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(DeployUnitRestController.class);
 
