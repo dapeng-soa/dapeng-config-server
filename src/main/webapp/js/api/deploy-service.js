@@ -121,11 +121,11 @@ openAddDeployServiceModle = function () {
  * 保存
  */
 saveDeployService = function () {
-    var url = basePath + "/api/apikey/add";
+    var url = basePath + "/api/deploy-service/add";
     var settings = {
         type: "post",
         url: url,
-        data: JSON.stringify(processApiKeyData()),
+        data: JSON.stringify(processDeployServiceData()),
         dataType: "json",
         contentType: "application/json"
     };
@@ -153,21 +153,25 @@ clearDeployServiceInput = function () {
 };
 
 processDeployServiceData = function () {
-    var authApikey = $("#authApikey").val();
-    var authPassWord = $("#authPassWord").val();
-    var authBiz = $("#authBiz").val();
-    var authIps = $("#authIps").val();
-    var notes = $("#notes").val();
-    var timeout = $("#authTimeout").val();
-    var validated = $("#authValidated").find("option:selected").val();
+    var name = $("#name").val();
+    var image = $("#image").val();
+    var labels = $("#labels").val();
+    var env = $("#env-area").val();
+    var volumes = $("#volumes-area").val();
+    var ports = $("#ports-area").val();
+    var composeLabels = $("#composeLabels-area").val();
+    var dockerExtras = $("#dockerExtras-area").val();
+    var remark = $("#remark-area").val();
     return {
-        apiKey: authApikey,
-        password: authPassWord,
-        biz: authBiz,
-        ips: authIps,
-        notes: notes,
-        timeout: timeout,
-        validated: validated
+        name: name,
+        image: image,
+        labels: labels,
+        env: env,
+        volumes: volumes,
+        ports: ports,
+        composeLabels: composeLabels,
+        dockerExtras: dockerExtras,
+        remark: remark
     }
 };
 
@@ -177,10 +181,10 @@ processDeployServiceData = function () {
  * @param op
  */
 viewDeployServiceOrEditByID = function (id, op) {
-    var url = basePath + "/api/apikey/" + id;
+    var url = basePath + "/api/deploy-service/" + id;
     $.get(url, function (res) {
         // 导出弹窗内容模版
-        var context = config1.exportAddApiKeyContext(op, "", res.context);
+        var context = deploy.exportAddDeployServiceContext(op, "", res.context);
         // 初始化弹窗
         initModelContext(context, refresh);
     }, "json");
@@ -191,12 +195,12 @@ viewDeployServiceOrEditByID = function (id, op) {
  * @param id
  */
 editedDeployService = function (id) {
-    var url = basePath + "/api/apikey/edit/" + id;
+    var url = basePath + "/api/deploy-service/edit/" + id;
 
     var settings = {
         type: "post",
         url: url,
-        data: JSON.stringify(processApiKeyData()),
+        data: JSON.stringify(processDeployServiceData()),
         dataType: "json",
         contentType: "application/json"
     };

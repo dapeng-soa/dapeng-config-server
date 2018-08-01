@@ -6,7 +6,6 @@
     <jsp:include page="core/resource.jsp"/>
 </head>
 <body>
-<jsp:include page="core/header.jsp"/>
 <div class="bs-docs-content container"></div>
 <jsp:include page="core/footer.jsp"/>
 </body>

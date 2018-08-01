@@ -20,7 +20,7 @@ public class THost {
   @Column(name = "set_id")
   private long setId;
   @Column(name = "ip")
-  private long ip;
+  private int ip;
   @Column(name = "labels")
   private String labels;
   @Column(name = "extra")
@@ -63,15 +63,13 @@ public class THost {
     this.setId = setId;
   }
 
-
-  public long getIp() {
+  public int getIp() {
     return ip;
   }
 
-  public void setIp(long ip) {
+  public void setIp(int ip) {
     this.ip = ip;
   }
-
 
   public String getLabels() {
     return labels;

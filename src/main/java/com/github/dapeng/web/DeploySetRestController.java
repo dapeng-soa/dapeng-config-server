@@ -1,21 +1,21 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.SetDto;
+import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TSet;
+import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.List;
+
+import static com.github.dapeng.common.Commons.*;
+import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
  * @author with struy.
@@ -30,29 +30,43 @@ public class DeploySetRestController {
     @Autowired
     SetRepository setRepository;
 
+    @Autowired
+    HostRepository hostRepository;
+
     /**
-     * @return
+     * @return 环境集
      */
     @GetMapping("/deploy-sets")
     public ResponseEntity<?> deploySets() {
         List<TSet> sets = setRepository.findAll();
-        TSet set = new TSet();
-        set.setId(1);
-        set.setName("生产环境");
-        set.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        set.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        set.setEnv("soz_zookeeper=192.168.2.66:2181\n" +
-                "soa_core_pool_size=100\n" +
-                "soa_monitor_enable=false");
-        set.setRemark("测试一哈");
-        sets.add(set);
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, sets));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, sets));
     }
 
+    /**
+     * 根据Id获取当前环境集信息
+     *
+     * @return
+     */
+    @GetMapping("/deploy-set/{id}")
+    public ResponseEntity<?> deploySetById(@PathVariable long id) {
+        TSet set = setRepository.findOne(id);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, set));
+    }
 
+    /**
+     * 添加环境集
+     *
+     * @param setDto
+     * @return
+     */
     @PostMapping("/deploy-set/add")
-    public ResponseEntity<?> addSet(SetDto setDto) {
+    public ResponseEntity<?> addSet(@RequestBody SetDto setDto) {
+        if (isEmpty(setDto.getName())) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
+        }
         TSet set = new TSet();
         set.setName(setDto.getName());
         set.setRemark(setDto.getRemark());
@@ -62,7 +76,47 @@ public class DeploySetRestController {
         setRepository.save(set);
 
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
+                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
     }
 
+    @PostMapping("/deploy-set/del/{id}")
+    public ResponseEntity delSet(@PathVariable long id) {
+        List<THost> hosts = hostRepository.findBySetId(id);
+        if (isEmpty(hosts)) {
+            setRepository.delete(id);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+        } else {
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, "不能删除,此环境集下仍有绑定主机"));
+        }
+    }
+
+    /**
+     * 修改
+     *
+     * @param id
+     * @param setDto
+     * @return
+     */
+    @PostMapping(value = "/deploy-set/edit/{id}")
+    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody SetDto setDto) {
+        try {
+            if (isEmpty(setDto.getName())) {
+                return ResponseEntity
+                        .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
+            }
+            TSet set = setRepository.getOne(id);
+            set.setName(setDto.getName());
+            set.setRemark(setDto.getRemark());
+            set.setEnv(setDto.getEnv());
+            set.setUpdatedAt(DateUtil.now());
+            setRepository.save(set);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
+        }
+    }
 }
