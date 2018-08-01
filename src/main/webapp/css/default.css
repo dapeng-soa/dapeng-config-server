@@ -1,87 +1,45 @@
-.bs-docs-nav {
-    background-color: #303a40;
-    border-bottom: 1px solid #303a40;
-    margin-bottom: 0;
-}
-
-.bs-docs-nav .navbar-brand, .bs-docs-nav .navbar-nav > li > a {
-    color: white;
-    font-weight: bold;
-    font-size: 28px;
-}
-
-.bs-docs-nav .navbar-nav > .active > a, .bs-docs-nav .navbar-nav > .active > a:hover, .bs-docs-nav .navbar-nav > li > a:hover {
-    background-color: #127fb6;
-    color: white;
-}
-
-.bs-docs-nav .navbar-toggle .icon-bar {
-    background-color: white;
-}
-
-.bs-docs-nav .navbar-header .navbar-toggle {
-    border-color: #fff;
-}
-
-.bs-docs-nav .navbar-header .navbar-toggle:focus, .bs-docs-nav .navbar-header .navbar-toggle:hover {
-    background-color: #127fb6;
-    border-color: white;
-}
-
-.bs-docs-content {
-    margin-top: 51px;
-}
-
-.footer {
-    /*border-top: 1px solid #e5e5e5;*/
-    color: #777;
-    padding: 30px 0;
-}
-
-.footer a {
-    color: #777;
-}
-
-.footer-bottom {
-    font-size: 13px;
-}
-
-.m10 {
-    margin: 10px;
-}
-
-.mt5 {
-    margin-top: 5px;
-}
-
-.mb5 {
-    margin-bottom: 5px;
-}
-
-.font20 {
-    font-size: 20px
-}
-
-.font15 {
-    font-size: 15px
-}
-
-.bs-docs-content .breadcrumb {
-    margin: 5px 15px 10px;
-}
-
+/*=============================全局*/
 /* 自定义滚动条样式 */
 ::-webkit-scrollbar{width:6px;border-radius: 100%;}
 ::-webkit-scrollbar-track{background-color:#FFF;}
 ::-webkit-scrollbar-thumb{background-color:#f2f2f0;}
 ::-webkit-scrollbar-thumb:hover {background-color:#f2f2f0}
 ::-webkit-scrollbar-thumb:active {background-color:#f2f2f0}
-/*=============================全局*/
-
-pre {
-    padding: 0 !important;
+body{
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
+body.model-opened {
+    overflow: hidden !important;
+    position: absolute !important;
+}
+
+/*=============================动画*/
+* {
+    /*动画持续时间*/
+    animation-duration: .7s !important;
+    /*动画延迟时间*/
+    animation-delay: 0.1ms !important;
+    /*动画执行次数*/
+    animation-iteration-count: 1;
+}
+
+/*=============================只能调整垂直大小*/
+textarea {
+    resize: vertical !important;
+    min-height: 70px;
+    max-height: 500px;
+}
+
+pre {
+    padding: 2px !important;
+}
+pre p{
+    margin: -14px 0;
+    font-size: 14px;
+}
 
 i.fa {
     padding-right: 5px;
@@ -95,9 +53,19 @@ button[type="button"][name="toggle"]:before{
     content: "卡片视图";
 }
 
-/*==============================end*/
+/*============================底部*/
+.footer {
+    color: #777;
+    padding: 30px 0;
+}
 
+.footer a {
+    color: #777;
+}
 
+.footer-bottom {
+    font-size: 13px;
+}
 
 .sidebar-left {
     text-align: center;
@@ -175,6 +143,7 @@ button[type="button"][name="toggle"]:before{
     margin: 66px 15px 0 245px;
 }
 
+/*============================媒体查询适应侧边栏*/
 @media screen and (max-width: 1024px)  {
     .sidebar-left{
         left: -235px;
@@ -198,11 +167,7 @@ button[type="button"][name="toggle"]:before{
         border-radius: unset !important;
     }
 }
-body{
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+
 
 .container-right-header {
     height: 80px;
@@ -265,20 +230,15 @@ body{
     display: block !important;
 }
 
-body.model-opened {
-    overflow: hidden !important;
-    position: absolute !important;
-}
-
 #struct-model .struct-model-container {
     width: 70%;
-    height: 80%;
+    height: 90%;
     max-width: 1200px;
     background: #fff;
     position: relative;
     z-index: 1334;
     margin: 0 auto;
-    top: 47%;
+    top: 50%;
     padding: 10px;
     overflow-x: hidden;
     border-radius: 3px;
@@ -327,26 +287,6 @@ body.model-opened {
     overflow-y: auto;
 }
 
-/*
-动画
- */
-* {
-    animation-duration: .7s !important;
-    /*动画持续时间*/
-    animation-delay: 0.1ms !important;
-    /*动画延迟时间*/
-    animation-iteration-count: 1;
-    /*动画执行次数*/
-}
-
-/**
-只能调整垂直大小
- */
-textarea {
-    resize: vertical !important;
-    min-height: 70px;
-    max-height: 500px;
-}
 
 .panel-header.window-header {
     position: fixed;

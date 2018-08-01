@@ -21,10 +21,10 @@
                     <a href="${basePath}/config/service"><i class="fa fa-wrench" aria-hidden="true"></i>服务配置</a>
                 </dd>
                 <dd class="${sideName == 'config-whitelist' ? 'layui-this' : ''}">
-                    <a href="${basePath}/config/whitelist"><i class="fa fa-book" aria-hidden="true"></i>白名单管理</a>
+                    <a href="${basePath}/config/whitelist"><i class="fa fa-book" aria-hidden="true"></i>* 白名单 *</a>
                 </dd>
                 <dd class="${sideName == 'config-apikey' ? 'layui-this' : ''}">
-                    <a href="${basePath}/config/apikey"><i class="fa fa-unlock" aria-hidden="true"></i>ApiKey管理</a>
+                    <a href="${basePath}/config/apikey"><i class="fa fa-unlock" aria-hidden="true"></i>*ApiKey*</a>
                 </dd>
             </dl>
         </li>
@@ -41,7 +41,7 @@
                     <a href="${basePath}/deploy/service"><i class="fa fa-wifi" aria-hidden="true"></i>服务管理</a>
                 </dd>
                 <dd class="${sideName == 'deploy-unit' ? 'layui-this' : ''}">
-                    <a href="${basePath}/deploy/unit"><i class="fa fa-rocket" aria-hidden="true"></i> 部署单元</a>
+                    <a href="${basePath}/deploy/unit"><i class="fa fa-microchip" aria-hidden="true"></i> 部署单元</a>
                 </dd>
                 <dd class="${sideName == 'deploy-exec' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/exec"><i class="fa fa-rocket" aria-hidden="true"></i>上线部署</a>

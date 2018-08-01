@@ -24,7 +24,25 @@
                 </span>
             </div>
         </div>
+        <div id="toolbar">
+            <span>环境集： <span>
+                <select class="form-control " onchange="setChanged()" id="setSelect" style="display: inline-block;width: 120px">
 
+                </select>
+            </span></span>
+
+            <span>节点： <span>
+                <select class="form-control" id="hostSelect" style="display: inline-block;width: 120px">
+
+                </select>
+            </span></span>
+
+            <span>服务： <span>
+                <select class="form-control" id="serviceSelect" style="display: inline-block;width: 120px">
+
+                </select>
+            </span></span>
+        </div>
         <table id="deploy-unit-table">
         </table>
         <jsp:include page="../core/footer.jsp"/>
