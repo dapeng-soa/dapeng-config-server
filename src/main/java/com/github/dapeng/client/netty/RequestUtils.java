@@ -2,22 +2,16 @@ package com.github.dapeng.client.netty;
 
 import com.github.dapeng.core.InvocationContextImpl;
 import com.github.dapeng.core.helper.DapengUtil;
-/*import com.github.dapeng.echo.echo_args;
+import com.github.dapeng.echo.echo_args;
 import com.github.dapeng.echo.echo_argsSerializer;
 import com.github.dapeng.echo.echo_result;
-import com.github.dapeng.echo.echo_resultSerializer;*/
+import com.github.dapeng.echo.echo_resultSerializer;
 import com.github.dapeng.metadata.GetServiceMetadata_argsSerializer;
 import com.github.dapeng.metadata.GetServiceMetadata_resultSerializer;
 import com.github.dapeng.metadata.getServiceMetadata_args;
 import com.github.dapeng.metadata.getServiceMetadata_result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-/*import com.github.dapeng.echo.echo_args;
-import com.github.dapeng.echo.echo_argsSerializer;
-import com.github.dapeng.echo.echo_result;
-import com.github.dapeng.echo.echo_resultSerializer;*/
-
 /**
  * 调用远程服务的工具
  *
@@ -52,7 +46,7 @@ public class RequestUtils {
 
     //远程调用 echo 方法
    public static String getRomoteServiceEcho(String romoteIp, Integer remotePort, String serviceName, String version) {
-       /*  InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
+         InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
         SubPool subPool = new SubPool(romoteIp, remotePort);
         echo_result result = null;
         try {
@@ -62,11 +56,9 @@ public class RequestUtils {
                     new echo_resultSerializer(), TIME_OUT);
             return result.getSuccess();
         } catch (Exception e) {
-            //e.printStackTrace();
             logger.error("----- service[{}:{}:{}] get echo failed .. Cause : {}", serviceName, romoteIp, remotePort, e.getMessage());
             return "";
         }
-        */
-       return "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
+       //return "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
     }
 }
