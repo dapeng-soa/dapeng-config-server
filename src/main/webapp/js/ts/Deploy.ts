@@ -539,22 +539,11 @@ ENV(映射端口):如 8080:8080
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext(unitId:Number,data:any) {
+        public viewDeployYamlContext(unitId:Number) {
             return `
-                
-                
-  <div>
-  
-  <div class="mergely-full-screen-8">
-		<div class="mergely-resizer">
-			<div id="mergely">
-			</div>
-		</div>
-	</div>
-  
-
+ <div id="mergely" style="margin-bottom: 30px;">
 </div>
-<div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; 0" >
+<div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; z-index: 1400;" >
 <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="execServiceUpdate(${unitId})">确认升级</button>
                         <button type="button" class="btn btn-danger" onclick="cancelServiceUpdate()">取消升级</button>

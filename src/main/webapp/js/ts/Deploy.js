@@ -113,8 +113,8 @@ var api;
          * 预览yaml
          * @returns {string}
          */
-        Deploy.prototype.viewDeployYamlContext = function (unitId, data) {
-            return "\n                \n                \n  <div>\n  \n  <div class=\"mergely-full-screen-8\">\n\t\t<div class=\"mergely-resizer\">\n\t\t\t<div id=\"mergely\">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n  \n\n</div>\n<div style=\"position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; 0\" >\n<span class=\"input-group-btn panel-button-group text-center\">\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"execServiceUpdate(" + unitId + ")\">\u786E\u8BA4\u5347\u7EA7</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"cancelServiceUpdate()\">\u53D6\u6D88\u5347\u7EA7</button>\n                        </span>\n</div>\n            ";
+        Deploy.prototype.viewDeployYamlContext = function (unitId) {
+            return "\n <div id=\"mergely\" style=\"margin-bottom: 30px;\">\n</div>\n<div style=\"position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; z-index: 1400;\" >\n<span class=\"input-group-btn panel-button-group text-center\">\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"execServiceUpdate(" + unitId + ")\">\u786E\u8BA4\u5347\u7EA7</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"cancelServiceUpdate()\">\u53D6\u6D88\u5347\u7EA7</button>\n                        </span>\n</div>\n            ";
         };
         return Deploy;
     }());

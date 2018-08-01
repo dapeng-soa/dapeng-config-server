@@ -11,6 +11,7 @@ import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.SocketUtil;
+import com.github.dapeng.socket.entity.ServerTimeInfo;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
@@ -89,8 +90,9 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
         socketClient.on(EventType.SERVER_TIME().name(), objects -> {
+            Map<String, ServerTimeInfo> values = (Map<String,ServerTimeInfo>)objects[0];
             //Map<String, List<Map<String, Long>>> serverDeployTimes = (Map<String, List<Map<String, Long>>>) objects[0];
-            LOGGER.info(" serverDeployTimes...............{}", objects);
+            LOGGER.info(" serverDeployTimes...............{}", values);
         });
 
         // 过滤-

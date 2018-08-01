@@ -122,23 +122,22 @@ updateService = function (unitId) {
             // 导出弹窗内容模版
             var context = deploy.viewDeployYamlContext(unitId, res.context);
             initModelContext(context,function(){refresh()});
-            setTimeout(function () {
-                $('#mergely').mergely({
+
+            $('#mergely').mergely({
                     license: 'gpl',
                     autoresize: true,
                     sidebar: false,
                     cmsettings: {
-                        readOnly: false
+                        readOnly: true
                     },
                     lhs: function(setValue) {
                         setValue(res.context.fileContent);
                     },
                     rhs: function(setValue) {
-                        setValue(res.context.fileContent);
+                        setValue(res.context.fileContent+"\n测试");
                     }
                 });
-            },10);
-
+            $('#mergely').resize();
         }
     });
 };
