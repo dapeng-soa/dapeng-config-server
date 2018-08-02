@@ -54,7 +54,7 @@ public class DeployServerShellInvoker {
 
             String inline;
             while ((inline = br.readLine()) != null) {
-                socket.emit(EventType.SERVER_TIME().name(), inline);
+                //socket.emit(EventType.SERVER_TIME().name(), inline);
                 System.out.println(inline);
             }
             br.close();
