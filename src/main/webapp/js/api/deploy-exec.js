@@ -1,6 +1,7 @@
 $(document).ready(function () {
     initSetList();
     setTimeout(function () {
+        execViewTypeChanged(1);
         checkService(1);
     }, 200);
 });
@@ -38,6 +39,7 @@ initSetList = function (id) {
 initServiceList = function (id) {
     var curl = basePath + "/api/deploy-services";
     $.get(curl, function (res) {
+        console.log(res);
         if (res.code === SUCCESS_CODE) {
             var html = "";
             for (var i = 0; i < res.context.length; i++) {
@@ -77,11 +79,11 @@ execSetChanged = function (obj) {
 };
 // 视图类型变更
 execViewTypeChanged = function (obj) {
-    var selected = Number($(obj).find("option:selected").val());
+    var selected = obj===1?1:Number($(obj).find("option:selected").val());
     if (selected === 1) {
         $("#viewTypeLabel").html("服务：");
         $("#viewTypeSelect").html(
-            '<select id="serviceSelect" data-live-search="true" class="selectpicker form-control" onchange="execServiceChanged()" >\n' +
+            '<select id="serviceSelect" data-live-search="true" class="selectpicker form-control" onchange="execServiceChanged()" >' +
             '</select>'
         );
         // 初始化服务
@@ -91,7 +93,7 @@ execViewTypeChanged = function (obj) {
     } else {
         $("#viewTypeLabel").html("主机：");
         $("#viewTypeSelect").html(
-            '<select id="hostSelect" data-live-search="true" class="selectpicker form-control" onchange="execHostChanged()" >\n' +
+            '<select id="hostSelect" data-live-search="true" class="selectpicker form-control" onchange="execHostChanged()" >' +
             '</select>'
         );
         // 初始化主机
@@ -105,45 +107,37 @@ execViewTypeChanged = function (obj) {
 
 // 服务视图服务选择
 execServiceChanged = function () {
-    console.log("execServiceChanged");
+    var viewType = Number($("#viewType").find("option:selected").val());
+    checkService(viewType);
 };
 
 // 主机视图主机选择
 execHostChanged = function () {
-    console.log("execHostChanged");
+    var viewType = Number($("#viewType").find("option:selected").val());
+    checkService(viewType);
 };
 
-// updateService
-updateService = function (unitId) {
-    // 获取yaml内容
+// 升级前
+updateService = function (unitId, viewType) {
     var url = basePath + "/api/deploy-unit/process-envs/" + unitId;
     util.$get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
             // 导出弹窗内容模版
-            var context = deploy.viewDeployYamlContext(unitId, res.context);
-            initModelContext(context,function(){refresh()});
-
-            $('#mergely').mergely({
-                    license: 'gpl',
-                    autoresize: true,
-                    sidebar: false,
-                    cmsettings: {
-                        readOnly: true
-                    },
-                    lhs: function(setValue) {
-                        setValue(res.context.fileContent);
-                    },
-                    rhs: function(setValue) {
-                        setValue(res.context.fileContent+"\n测试");
-                    }
-                });
-            $('#mergely').resize();
+            var context = deploy.viewDeployYamlContext(unitId, viewType);
+            initModelContext(context, function () {
+                refresh()
+            });
+            diffTxt(res.context.fileContent,res.context.fileContent)
         }
     });
 };
 // checkService
 checkService = function (viewType) {
-    var url = basePath + "/api/deploy/checkRealService?setId=" + $("#setSelect").find("option:selected").val() + "&viewType=" + viewType;
+    var setId = $("#setSelect").find("option:selected").val();
+    var serviceId = $("#serviceSelect").find("option:selected").val();
+    var hostId = $("#hostSelect").find("option:selected").val();
+
+    var url = basePath + "/api/deploy/checkRealService?setId=" + setId + "&serviceId=" + (serviceId===undefined?0:serviceId) + "&hostId=" + (hostId===undefined?0:hostId) + "&viewType=" + viewType;
     util.$get(url, function (res) {
         // 展示视图（默认服务视图）
         var context = deploy.deployViewChange(viewType, res.context);

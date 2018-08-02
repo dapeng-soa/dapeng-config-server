@@ -359,7 +359,6 @@ processEnvsChanged = function () {
         hostId: hostId,
         serviceId: serviceId
     }, function (res) {
-        console.log(res.context);
         if (res.code === SUCCESS_CODE) {
             $("#env-area").val();
             $("#volumes-area").val();
