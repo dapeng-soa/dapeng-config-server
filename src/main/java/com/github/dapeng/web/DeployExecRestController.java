@@ -92,7 +92,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceNames);
 
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
-        socketClient.on(EventType.SERVER_TIME().name(), objects -> {
+        socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
             Map<String, ServerTimeInfo> values = (Map<String, ServerTimeInfo>) objects[0];
             //Map<String, List<Map<String, Long>>> serverDeployTimes = (Map<String, List<Map<String, Long>>>) objects[0];
             LOGGER.info(" serverDeployTimes...............{}", values);
