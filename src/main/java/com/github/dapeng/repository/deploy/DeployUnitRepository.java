@@ -15,5 +15,9 @@ public interface DeployUnitRepository extends JpaRepository<TDeployUnit,Long> {
 
     List<TDeployUnit> findAllBySetId(long setId);
 
+    List<TDeployUnit> findAllBySetIdAndServiceId(long setId,long serviceId);
+
+    List<TDeployUnit> findAllBySetIdAndHostId(long setId,long hostId);
+
     List<TDeployUnit> findTop1ByIdOrderByUpdatedAtDesc(Long id);
 }

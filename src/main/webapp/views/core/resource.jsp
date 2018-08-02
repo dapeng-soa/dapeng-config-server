@@ -50,9 +50,9 @@
 <link rel="stylesheet" href="${basePath}/plugins/toastr/css/toastr.css">
 
 <!-- Requires CodeMirror -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/search/searchcursor.min.js"></script>
-<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css" />
+<script type="text/javascript" src="${basePath}/plugins/codemirror/codemirror.min.js"></script>
+<script type="text/javascript" src="${basePath}/plugins/codemirror/searchcursor.min.js"></script>
+<link type="text/css" rel="stylesheet" href="${basePath}/plugins/codemirror/codemirror.min.css" />
 
 
 <%--mergely diff--%>
@@ -95,6 +95,25 @@
 
     window.toggleBlock = function (a) {
         $(a).next(".advance-format-content").toggle();
+    };
+
+    window.diffTxt = function (current,old) {
+        var mergely = $('#mergely');
+        mergely.mergely({
+            license: 'gpl',
+            autoresize: true,
+            sidebar: false,
+            cmsettings: {
+                readOnly: false
+            },
+            lhs: function (setValue) {
+                setValue(old);
+            },
+            rhs: function (setValue) {
+                setValue(current);
+            }
+        });
+        mergely.resize();
     };
     window.SUCCESS_CODE = 200;
     window.ERROR_CODE = 4004;

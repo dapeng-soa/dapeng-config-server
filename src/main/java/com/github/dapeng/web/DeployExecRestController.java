@@ -71,7 +71,8 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
      */
     @RequestMapping("/deploy/checkRealService")
     public ResponseEntity checkRealService(@RequestParam() Long setId,
-                                           @RequestParam(required = false) Long serviceId,
+                                           @RequestParam(defaultValue = "0") Long serviceId,
+                                           @RequestParam(defaultValue = "0") Long hostId,
                                            @RequestParam(defaultValue = "1") Integer viewType) {
 
         List<String> serviceNames = new ArrayList<>();
@@ -84,23 +85,28 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         } else {
             serviceNames.add(serviceRepository.getOne(serviceId).getName());
         }
+
+        // =====================================
         // 发送服务名问询各个节点的【节点IP，(服务->服务时间)】
         LOGGER.info(" step into check real service................");
-        socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceNames.get(0));
+        socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceNames);
 
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
         socketClient.on(EventType.SERVER_TIME().name(), objects -> {
-            Map<String, ServerTimeInfo> values = (Map<String,ServerTimeInfo>)objects[0];
+            Map<String, ServerTimeInfo> values = (Map<String, ServerTimeInfo>) objects[0];
             //Map<String, List<Map<String, Long>>> serverDeployTimes = (Map<String, List<Map<String, Long>>>) objects[0];
             LOGGER.info(" serverDeployTimes...............{}", values);
         });
+        // =====================================
+        // 根据主机-服务的时间对每个服务
 
-        // 过滤-
-
-        // 根据视图类型返回对应的数据结构(test)
+        // 根据视图类型返回对应的视图数据结构
         List<DeployServiceVo> serviceVos = new ArrayList<>();
         List<DeployHostVo> hostVos = new ArrayList<>();
-        List<TDeployUnit> units = unitRepository.findAllBySetId(setId);
+        List<TDeployUnit> units = !isEmpty(serviceId) ?
+                unitRepository.findAllBySetIdAndServiceId(setId,serviceId) :
+                !isEmpty(hostId) ? unitRepository.findAllBySetIdAndHostId(setId,hostId) :
+                        unitRepository.findAllBySetId(setId);
 
         if (viewType == 1) {
             // (serviceId->unit)

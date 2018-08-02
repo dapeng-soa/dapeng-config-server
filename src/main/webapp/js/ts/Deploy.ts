@@ -53,16 +53,16 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                         </div>
                     </div>
                     
-                    ${type == c.add ?`
+                    ${type == c.add ? `
                     <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveDeploySet()">保存</button>
                     <button type="button" class="btn btn-danger" onclick="clearDeploySetInput()">清空</button>
                     </span>
-                    `:type == c.edit?`
+                    ` : type == c.edit ? `
                     <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedDeploySet(${data.id})">保存修改</button>
                     </span>
-                    `:""}
+                    ` : ""}
                 </div>
 `;
         }
@@ -178,16 +178,16 @@ labels:如 project.owner=struy
                                 <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
-                         ${type == c.add ?`
+                         ${type == c.add ? `
                          <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="saveDeployService()">保存</button>
                         <button type="button" class="btn btn-danger" onclick="clearDeployServiceInput()">清空</button>
                         </span>
-                         `:type == c.edit?`
+                         ` : type == c.edit ? `
                          <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedDeployService(${data.id})">保存修改</button>
                     </span>
-                         `:""}
+                         ` : ""}
                 </div>
             
             `;
@@ -263,16 +263,16 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
-                        ${type == c.add ?`
+                        ${type == c.add ? `
                         <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="saveDeployHost()">保存</button>
                         <button type="button" class="btn btn-danger" onclick="clearDeployHostInput()">清空</button>
                         </span>
-                        `:type ==c.edit?`
+                        ` : type == c.edit ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedDeployHost(${data.id})">保存修改</button>
                     </span>
-                        `:""}
+                        ` : ""}
                        
                 </div>
             
@@ -310,7 +310,7 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
-                                  <pre>
+                                  <pre id="setEnvView">
 当前环境集配置:
 
                                   </pre>
@@ -326,7 +326,7 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
-                                  <pre>
+                                  <pre id="hostEnvView">
 当前主机配置:
 
                                   </pre>
@@ -338,12 +338,12 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属服务:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view || type == c.edit? "disabled" : ""} onchange="addUnitServiceChanged(this)" id="serviceSelect" class="col-sm-2 form-control">
+                               <select ${type == c.view || type == c.edit ? "disabled" : ""} onchange="addUnitServiceChanged(this)" id="serviceSelect" class="col-sm-2 form-control">
                                 </select>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
-                                  <pre>
+                                  <pre id="serviceEnvView">
 当前服务配置:
 
                                   </pre>
@@ -367,7 +367,8 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
+ENV(环境变量):
+书写格式:如appName=goodsService(建议) 或appName:goodsService
                                   </pre>
                                 </div>
                               </div>
@@ -417,16 +418,16 @@ ENV(映射端口):如 8080:8080
                               </div>
                             </div>
                         </div>
-                        ${type == c.add ?`
+                        ${type == c.add ? `
                         <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="saveDeployUnit()">保存</button>
                         <button type="button" class="btn btn-danger" onclick="clearDeployUnitInput()">清空</button>
                         </span>
-                        `:type == c.edit?`
+                        ` : type == c.edit ? `
                         <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="editedDeployUnit(${data.id})">保存修改</button>
                     </span>
-                        `:""}
+                        ` : ""}
                 </div>
             
             `;
@@ -495,10 +496,10 @@ ENV(映射端口):如 8080:8080
                 view += `
             <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
-                    <div class="panel-heading"><p style="text-align: center">${viewType==dep.serviceView?em.serviceName:em.hostName+':['+em.hostIp+']'}</p>
+                    <div class="panel-heading"><p style="text-align: center">${viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']'}</p>
                     </div>
                     <div class="panel-body" style="overflow-y: auto;max-height: 400px">
-                         ${dep.serviceViewSubHost(viewType,viewType==dep.serviceView?em.deploySubHostVos:em.deploySubServiceVos)}
+                         ${dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos)}
                     </div>
                 </div>
             </div>
@@ -507,25 +508,26 @@ ENV(映射端口):如 8080:8080
             return view;
         }
 
-        private serviceViewSubHost(viewType: number,sub: any) {
+        private serviceViewSubHost(viewType: number, sub: any) {
             let dep = this;
             let subView = "";
             for (let em of sub) {
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-3 col-xs-12">
-                                <p >${viewType==dep.serviceView?em.hostName:em.serviceName}</p>
-                                ${viewType==dep.serviceView?`<p >${em.hostIp}</p>`:""}
-                                <p >需要更新：${em.needUpdate ? `<span style="color: #00AA00">是</span>` : `否`}</p>
+                                <p >${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
+                                ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
                             </div>
                             <div class="col-sm-6 col-xs-12">
                                 <p>配置更新时间:${em.configUpdateBy}</p>
                                 <p>主机服务时间:${em.deployTime}</p>
                                 <p>服务状态:${em.serviceStatus == 1 ? `<span style="color: #00AA00">运行中</span>` : "停止"}</p>
-                            </div>
-                            <div class="col-sm-3 col-xs-12">
-                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.unitId})">升级</a></p>
+                                <p>需要更新：${em.needUpdate ? `<span style="color: #00AA00">是</span>` : `否`}</p>
+                                </div>
+                                <div class="col-sm-3 col-xs-12">
+                                    <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.unitId})">升级</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.unitId},'view')">预览</a></p>
                             </div>
                         </div>
             `
@@ -539,16 +541,22 @@ ENV(映射端口):如 8080:8080
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext(unitId:Number) {
+        public viewDeployYamlContext(unitId: Number, type?: string) {
+            let c = this;
             return `
- <div id="mergely" style="margin-bottom: 30px;">
-</div>
-<div style="position: fixed;bottom: 0;background-color: #fff;border-top: 1px solid #ccc;left: 10px;right: 10px;padding: 10px; z-index: 1400;" >
-<span class="input-group-btn panel-button-group text-center">
+                <div class="diff-tit" >
+                <span>2018-08-01(Read-Only)</span>
+                <span>Current(Read-Only)</span>
+                </div>
+                <div id="mergely" style="margin:20px 0;">
+                </div>
+                ${type == undefined || type != c.view ? `
+                <div class="fixed-footer-btn" >
+                <span class="input-group-btn panel-button-group text-center">
                         <button type="button" class="btn btn-success" onclick="execServiceUpdate(${unitId})">确认升级</button>
                         <button type="button" class="btn btn-danger" onclick="cancelServiceUpdate()">取消升级</button>
-                        </span>
-</div>
+                 </span>
+                </div>` : ""}
             `
 
         }
