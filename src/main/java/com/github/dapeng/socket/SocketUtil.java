@@ -2,7 +2,6 @@ package com.github.dapeng.socket;
 
 import com.github.dapeng.socket.client.CmdExecutor;
 import com.github.dapeng.socket.enums.EventType;
-import com.github.dapeng.socket.listener.DeployServerOperations;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import org.slf4j.Logger;
@@ -27,11 +26,7 @@ public class SocketUtil {
                 //Register nodeReg to server
                 //fixme should be web ip
                 socketClient.emit(EventType.WEB_REG().name(), hostName + ":" + clientIp);
-            }).on(EventType.WEB_CMD().name(), new DeployServerOperations(queue, socketClient)).on(
-                    Socket.EVENT_DISCONNECT, objects -> {
-                        System.out.println(" socketClient disconnected.........");
-                    }
-            );
+            });
 
             CmdExecutor cmdExecutor = new CmdExecutor(queue, socketClient);
             //独立线程处理命令

@@ -11,7 +11,6 @@ import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.SocketUtil;
-import com.github.dapeng.socket.entity.ServerTimeInfo;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
@@ -89,13 +88,16 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         // =====================================
         // 发送服务名问询各个节点的【节点IP，(服务->服务时间)】
         LOGGER.info(" step into check real service................");
-        socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceNames);
+        serviceNames.forEach(serviceName -> {
+            socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceName);
+        });
+
 
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
         socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
-            Map<String, ServerTimeInfo> values = (Map<String, ServerTimeInfo>) objects[0];
+
+            System.out.println(" webClient: " + objects);
             //Map<String, List<Map<String, Long>>> serverDeployTimes = (Map<String, List<Map<String, Long>>>) objects[0];
-            LOGGER.info(" serverDeployTimes...............{}", values);
         });
         // =====================================
         // 根据主机-服务的时间对每个服务
