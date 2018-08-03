@@ -2,7 +2,6 @@ $(document).ready(function () {
     initSetList();
     setTimeout(function () {
         execViewTypeChanged(1);
-        checkService(1);
     }, 200);
 });
 var deploy = new api.Deploy();
@@ -180,6 +179,10 @@ execServiceUpdate = function (unitId) {
 cancelServiceUpdate = function () {
     layer.msg("取消升级");
     closeModel();
+};
+
+downloadYaml = function () {
+    layer.msg("下载成功");
 };
 
 

@@ -13,6 +13,7 @@ import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.SocketUtil;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
+import com.github.dapeng.socket.entity.ServerTimeInfo;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
@@ -46,7 +47,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployExecRestController.class);
 
-    private Socket socketClient = null;
+    private static Socket socketClient = null;
 
     @Autowired
     SetRepository setRepository;
@@ -57,8 +58,11 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     @Autowired
     DeployUnitRepository unitRepository;
 
+    private static int counter = 0;
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
+        LOGGER.info("onApplicationEvent");
         socketClient = SocketUtil.registerWebSocketClient("127.0.0.1", 9095, "127.0.0.1", "DeployExecSocket");
     }
 
@@ -91,15 +95,18 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         // 发送服务名问询各个节点的【节点IP，(服务->服务时间)】
         LOGGER.info(" step into check real service................");
         serviceNames.forEach(serviceName -> {
+            counter++ ;
             socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceName);
+            System.out.println(" server emitCounter: " + counter);
         });
 
 
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
         socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
+            String result = (String)objects[0];
+            List<ServerTimeInfo> finalResult = new Gson().fromJson(result, ArrayList.class);
 
-            System.out.println(" webClient: " + objects);
-            //Map<String, List<Map<String, Long>>> serverDeployTimes = (Map<String, List<Map<String, Long>>>) objects[0];
+            System.out.println(" webClient: " + finalResult);
         });
         // =====================================
         // 根据主机-服务的时间对每个服务

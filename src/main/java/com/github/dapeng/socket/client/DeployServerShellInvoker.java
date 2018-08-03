@@ -1,7 +1,6 @@
 package com.github.dapeng.socket.client;
 
 import com.github.dapeng.socket.SystemParas;
-import com.github.dapeng.socket.enums.EventType;
 import io.socket.client.Socket;
 
 import java.io.BufferedReader;
