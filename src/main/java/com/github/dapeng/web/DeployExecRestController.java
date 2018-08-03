@@ -11,6 +11,8 @@ import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.SocketUtil;
+import com.github.dapeng.socket.entity.DeployRequest;
+import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
@@ -227,10 +229,12 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 
+        String ip = IPUtils.transferIp(host.getIp());
         DeployVo dockerVo = new DeployVo();
         dockerVo.setLastModifyTime(lastUpdateAt(unit));
         dockerVo.setServiceName(service.getName());
         dockerVo.setFileContent(composeContext);
+        dockerVo.setIp(ip);
         // 发送升级指令+yaml数据
         socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(dockerVo));
 
@@ -243,6 +247,9 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
      */
     @RequestMapping("/deploy/stopRealService")
     public ResponseEntity stopRealService(@RequestParam long unitId) {
+       DeployRequest request = toDeployRequest(unitId);
+
+        socketClient.emit(EventType.STOP().name(), new Gson().toJson(request));
         // 发送停止指令
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
@@ -254,6 +261,9 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     @RequestMapping("/deploy/restartRealService")
     public ResponseEntity restartRealService(@RequestParam long unitId) {
 
+        DeployRequest request = toDeployRequest(unitId);
+
+        socketClient.emit(EventType.RESTART().name(), new Gson().toJson(request));
         // 发送重启指令
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
@@ -307,5 +317,20 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, dockerVo));
+    }
+
+
+    private DeployRequest toDeployRequest(long unitId) {
+        TDeployUnit unit = unitRepository.getOne(unitId);
+        TSet set = setRepository.getOne(unit.getSetId());
+        THost host = hostRepository.getOne(unit.getHostId());
+        TService service = serviceRepository.getOne(unit.getServiceId());
+        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
+
+        DeployRequest request = new DeployRequest();
+        String ip = IPUtils.transferIp(host.getIp());
+        request.setIp(ip);
+        request.setServiceName(service.getName());
+        return request;
     }
 }
