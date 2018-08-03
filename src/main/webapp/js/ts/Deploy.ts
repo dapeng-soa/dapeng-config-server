@@ -545,18 +545,20 @@ ENV(映射端口):如 8080:8080
             let c = this;
             return `
                 <div class="diff-tit" >
-                <span>2018-08-01(Read-Only)</span>
-                <span>Current(Read-Only)</span>
+                <span>线上服务(Read-Only)</span>
+                <span>当前配置(Read-Only)</span>
                 </div>
                 <div id="mergely" style="margin:20px 0;">
                 </div>
-                ${type == undefined || type != c.view ? `
                 <div class="fixed-footer-btn" >
                 <span class="input-group-btn panel-button-group text-center">
+                ${type == undefined || type != c.view ? `
                         <button type="button" class="btn btn-success" onclick="execServiceUpdate(${unitId})">确认升级</button>
                         <button type="button" class="btn btn-danger" onclick="cancelServiceUpdate()">取消升级</button>
+                        `: ""}
+                <button type="button" class="btn btn-info" onclick="downloadYaml(${unitId})">下载配置</button>
                  </span>
-                </div>` : ""}
+                </div>
             `
 
         }
