@@ -78,7 +78,7 @@ execSetChanged = function (obj) {
 };
 // 视图类型变更
 execViewTypeChanged = function (obj) {
-    var selected = obj===1?1:Number($(obj).find("option:selected").val());
+    var selected = obj === 1 ? 1 : Number($(obj).find("option:selected").val());
     if (selected === 1) {
         $("#viewTypeLabel").html("服务：");
         $("#viewTypeSelect").html(
@@ -117,7 +117,7 @@ execHostChanged = function () {
 };
 
 // 升级前
-updateService = function (unitId, viewType) {
+serviceYamlPreview = function (unitId, viewType) {
     var url = basePath + "/api/deploy-unit/process-envs/" + unitId;
     util.$get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
@@ -126,7 +126,7 @@ updateService = function (unitId, viewType) {
             initModelContext(context, function () {
                 refresh()
             });
-            diffTxt(res.context.fileContent,res.context.fileContent)
+            diffTxt(res.context.fileContent, res.context.fileContent)
         }
     });
 };
@@ -136,7 +136,7 @@ checkService = function (viewType) {
     var serviceId = $("#serviceSelect").find("option:selected").val();
     var hostId = $("#hostSelect").find("option:selected").val();
 
-    var url = basePath + "/api/deploy/checkRealService?setId=" + setId + "&serviceId=" + (serviceId===undefined?0:serviceId) + "&hostId=" + (hostId===undefined?0:hostId) + "&viewType=" + viewType;
+    var url = basePath + "/api/deploy/checkRealService?setId=" + setId + "&serviceId=" + (serviceId === undefined ? 0 : serviceId) + "&hostId=" + (hostId === undefined ? 0 : hostId) + "&viewType=" + viewType;
     util.$get(url, function (res) {
         // 展示视图（默认服务视图）
         var context = deploy.deployViewChange(viewType, res.context);
@@ -147,7 +147,7 @@ checkService = function (viewType) {
 // stopService
 stopService = function (unitId) {
     var url = basePath + "/api/deploy/stopRealService";
-    util.$get(url, function (res) {
+    util.post(url, {unitId: unitId}, function (res) {
         layer.msg(res.msg);
     })
 };
@@ -155,7 +155,7 @@ stopService = function (unitId) {
 // restartService
 restartService = function (unitId) {
     var url = basePath + "/api/deploy/restartRealService";
-    util.$get(url, function (res) {
+    util.post(url, {unitId: unitId}, function (res) {
         layer.msg(res.msg);
     })
 };
