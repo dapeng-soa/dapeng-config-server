@@ -62,6 +62,7 @@
 <script src="${basePath}/js/ts/Config.js"></script>
 <script src="${basePath}/js/ts/Deploy.js"></script>
 <script src="${basePath}/js/ts/Api.js"></script>
+<script src="${basePath}/plugins/socketIo/socket.io.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
 
 <script>
