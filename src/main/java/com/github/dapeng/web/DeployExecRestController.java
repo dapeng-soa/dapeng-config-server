@@ -13,7 +13,6 @@ import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.SocketUtil;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
-import com.github.dapeng.socket.entity.ServerTimeInfo;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
@@ -61,7 +60,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     @Override
     public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
         LOGGER.info("onApplicationEvent");
-        socketClient = SocketUtil.registerWebSocketClient("192.168.4.148", 9095, "127.0.0.1", "DeployExecSocket");
+        socketClient = SocketUtil.registerWebSocketClient("127.0.0.1", 9095, "127.0.0.1", "DeployExecSocket");
     }
 
     /**
@@ -96,16 +95,15 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
             socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceName);
         });
 
-
+        // TODO 事件监听放到js
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
-        socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
+       /* socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
             String result = (String) objects[0];
             List<ServerTimeInfo> finalResult = new Gson().fromJson(result, ArrayList.class);
 
             System.out.println(" webClient get Services time result: " + finalResult);
-        });
+        });*/
         // =====================================
-        LOGGER.info("continue ----->");
         // 根据主机-服务的时间对每个服务
 
         // 根据视图类型返回对应的视图数据结构
@@ -243,11 +241,6 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         LOGGER.info("::send update service:{}",dockerVo);
         socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(dockerVo));
 
-        socketClient.on(EventType.NODE_EVENT().name(),objects -> {
-           LOGGER.info("====>{}",objects);
-        });
-
-
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
     }
@@ -296,13 +289,8 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
         DeployRequest request = toDeployRequest(unitId);
         // 检查当前服务在主机上的实际配置文件版本
-        LOGGER.info("send get real yaml file:{}",request);
-        socketClient.emit(EventType.GET_YAML_FILE().name(),request);
-
-        socketClient.on(EventType.GET_YAML_FILE_RESP().name(),objects -> {
-            LOGGER.info("Listener get result:{}",objects);
-
-        });
+        LOGGER.info("::send get real yaml file:{}",request);
+        socketClient.emit(EventType.GET_YAML_FILE().name(),new Gson().toJson(request));
 
         DockerService dockerService1 = Composeutil.processService(set, host, service);
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));

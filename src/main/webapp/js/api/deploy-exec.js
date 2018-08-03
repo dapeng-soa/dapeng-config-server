@@ -3,6 +3,28 @@ $(document).ready(function () {
     setTimeout(function () {
         execViewTypeChanged(1);
     }, 200);
+
+    var socket = io('http://127.0.0.1:9095');
+    socket.on('connect', function(){
+        console.info("注册节点");
+        socket.emit('webReg','web1:192.168.0.109');
+        if (socket.connected){
+            layer.msg("已与服务器建立通讯");
+        }
+    });
+    socket.on('nodeEvent', function(data){
+        console.log("nodeEvent:"+data);
+    });
+    socket.on('getServerTimeResp', function(data){
+        console.log("getServerTimeResp:"+data);
+    });
+
+    socket.on('getYamlFileResp', function(data){
+        console.log("getYamlFileResp:"+data);
+    });
+    socket.on('disconnect', function(){
+        console.log("disconnect");
+    });
 });
 var deploy = new api.Deploy();
 var util = new api.Api();
@@ -38,7 +60,6 @@ initSetList = function (id) {
 initServiceList = function (id) {
     var curl = basePath + "/api/deploy-services";
     $.get(curl, function (res) {
-        console.log(res);
         if (res.code === SUCCESS_CODE) {
             var html = "";
             for (var i = 0; i < res.context.length; i++) {
@@ -124,7 +145,7 @@ serviceYamlPreview = function (unitId, viewType) {
             // 导出弹窗内容模版
             var context = deploy.viewDeployYamlContext(unitId, viewType);
             initModelContext(context, function () {
-                refresh()
+                //refresh()
             });
             diffTxt(res.context.fileContent, res.context.fileContent)
         }
