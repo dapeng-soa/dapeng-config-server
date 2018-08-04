@@ -1,5 +1,6 @@
 package com.github.dapeng.web;
 
+import com.github.dapeng.client.netty.RequestUtils;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
 import com.github.dapeng.openapi.utils.ZkUtil;
@@ -10,6 +11,7 @@ import com.github.dapeng.vo.ServiceMonitorVo;
 import com.github.dapeng.vo.Subservices;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import org.apache.zookeeper.ZooKeeper;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
@@ -47,131 +49,148 @@ public class ServiceMonitorController {
 
     @ResponseBody
     @RequestMapping("/list")
-    public Object serviceMonitorList() throws ExecutionException {
-
-
-        List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
-        List<ServiceMonitorListVo> monitorList = getServiceMonitorList(baseServiceList);
-        List<JsonObject> jsonObjectList = new ArrayList<>();
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        CompletionService<String> completionService = new ExecutorCompletionService<String>(threadPool);
-        int k=0;
-        for(int i=0;i<monitorList.size();i++){
-            ServiceMonitorListVo smlv  = monitorList.get(i);
-            List<MonitorHosts> hosts = smlv.getHosts();
-            List<Subservices> subservices = smlv.getSubservices();
-            for(int j=0;j<hosts.size();j++){
-                k++;
-                MonitorHosts monitorHosts = hosts.get(j);
-                GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(),Integer.parseInt(monitorHosts.getPort()),subservices.get(i).getName(),subservices.get(i).getVersion());
-                completionService.submit(getServiceMonitorThread);
-            }
-        }
-        threadPool.shutdown();
-        for(int i=0;i<k;i++){
-            try {
-                String takeStr = completionService.take().get();
-                JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
-                jsonObjectList.add(asJsonObject);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public Object serviceMonitorList(){
+        String echoInfo = RequestUtils.getRomoteServiceEcho("192.168.4.102", 9095,"com.github.dapeng.hello.service.HelloService", "1.0.0");
+        System.out.println(echoInfo);
         Map<String,Map<String,Map>> resultMap = new HashMap<>();
-        for(int i=0;i<jsonObjectList.size();i++){
-            JsonObject object = jsonObjectList.get(i);
-            String serviceName = object.get("service").getAsString();
-            JsonObject serviceObject = object.get(serviceName).getAsJsonObject();
-            JsonObject taskInfoObject = serviceObject.get("taskInfo").getAsJsonObject();
-            JsonObject GcInfoObject = serviceObject.get("gcInfos").getAsJsonObject();
-            JsonObject flowsObject = serviceObject.get("flows").getAsJsonObject();
-            if(resultMap.containsKey(serviceName)){
-                Map tasksMap = (Map)resultMap.get("tasks");
-                Map GcMap = (Map)resultMap.get("gcInfos");
-                Map flowsMap = (Map)resultMap.get("flows");
-                tasksMap.put("waitingQueue",taskInfoObject.get("waitingQueue").getAsInt()+Integer.parseInt(tasksMap.get("waitingQueue").toString()));
-                tasksMap.put("total",taskInfoObject.get("total").getAsInt()+Integer.parseInt(tasksMap.get("total").toString()));
-                tasksMap.put("succeed",taskInfoObject.get("succeed").getAsInt()+Integer.parseInt(tasksMap.get("succeed").toString()));
+        /*List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
+        List<ServiceMonitorListVo> monitorList = getServiceMonitorList(baseServiceList);
+        Map<String,Map<String,Map>> resultMap = resultMap(monitorList);*/
+        return resultMap;
+    }
 
-                GcMap.put("minorGc",GcInfoObject.get("minorGc").getAsInt()+Integer.parseInt(GcMap.get("minorGc").toString()));
-                GcMap.put("majorGc",GcInfoObject.get("majorGc").getAsInt()+Integer.parseInt(GcMap.get("majorGc").toString()));
 
-                flowsMap.put("max",flowsObject.get("max").getAsInt()+Integer.parseInt(flowsMap.get("max").toString()));
-                flowsMap.put("min",flowsObject.get("min").getAsInt()+Integer.parseInt(flowsMap.get("min").toString()));
-                flowsMap.put("avg",flowsObject.get("avg").getAsInt()+Integer.parseInt(flowsMap.get("avg").toString()));
-            }else{
-                Map<String,Map> valueMap = new HashMap<>();
-                Map<String,Object> tasksMap = new HashMap();
-                Map<String,Object> GcMap = new HashMap();
-                Map<String,Object> flowsMap = new HashMap();
-                tasksMap.put("waitingQueue",taskInfoObject.get("waitingQueue").getAsInt());
-                tasksMap.put("total",taskInfoObject.get("total").getAsInt());
-                tasksMap.put("succeed",taskInfoObject.get("succeed").getAsInt());
-                GcMap.put("minorGc",GcInfoObject.get("minorGc").getAsInt());
-                GcMap.put("majorGc",GcInfoObject.get("majorGc"));
-                flowsMap.put("max",flowsObject.get("max").getAsInt());
-                flowsMap.put("min",flowsObject.get("min").getAsInt());
-                flowsMap.put("avg",flowsObject.get("avg").getAsInt());
-                valueMap.put("tasks",tasksMap);
-                valueMap.put("gcInfos",GcMap);
-                resultMap.put(serviceName,valueMap);
+    /**
+     * 节点信息汇总
+     * @param monitorList
+     * @return
+     */
+    public Map<String,Map<String,Map>> resultMap(List<ServiceMonitorListVo> monitorList){
+            Map<String,Map<String,Map>> resultMap = new HashMap<>();
+        try {
+            List<JsonObject> jsonObjectList = new ArrayList<>();
+            ExecutorService threadPool = Executors.newCachedThreadPool();
+            CompletionService<String> completionService = new ExecutorCompletionService<String>(threadPool);
+            int k=0;
+            for(int i=0;i<monitorList.size();i++){
+                ServiceMonitorListVo smlv  = monitorList.get(i);
+                List<MonitorHosts> hosts = smlv.getHosts();
+                List<Subservices> subservices = smlv.getSubservices();
+                for(int j=0;j<hosts.size();j++){
+                    k++;
+                    MonitorHosts monitorHosts = hosts.get(j);
+                    GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(),Integer.parseInt(monitorHosts.getPort()),subservices.get(i).getName(),subservices.get(i).getVersion());
+                    completionService.submit(getServiceMonitorThread);
+                }
             }
+            threadPool.shutdown();
+            for(int i=0;i<k;i++){
+                try {
+                    String takeStr = completionService.take().get();
+                    JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
+                    jsonObjectList.add(asJsonObject);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            for(int i=0;i<jsonObjectList.size();i++){
+                JsonObject object = jsonObjectList.get(i);
+                String serviceName = object.get("service").getAsString();
+                JsonObject serviceObject = object.get(serviceName).getAsJsonObject();
+                JsonObject taskInfoObject = serviceObject.get("taskInfo").getAsJsonObject();
+                JsonObject GcInfoObject = serviceObject.get("gcInfos").getAsJsonObject();
+                JsonObject flowsObject = serviceObject.get("flows").getAsJsonObject();
+                //相同节点数累加
+                if(resultMap.containsKey(serviceName)){
+                    Map tasksMap = resultMap.get("tasks");
+                    Map GcMap = resultMap.get("gcInfos");
+                    Map flowsMap = resultMap.get("flows");
+                    tasksMap.put("waitingQueue",taskInfoObject.get("waitingQueue").getAsInt()+Integer.parseInt(tasksMap.get("waitingQueue").toString()));
+                    tasksMap.put("total",taskInfoObject.get("total").getAsInt()+Integer.parseInt(tasksMap.get("total").toString()));
+                    tasksMap.put("succeed",taskInfoObject.get("succeed").getAsInt()+Integer.parseInt(tasksMap.get("succeed").toString()));
 
-            /**
-             * 统计服务节点数
+                    GcMap.put("minorGc",GcInfoObject.get("minorGc").getAsInt()+Integer.parseInt(GcMap.get("minorGc").toString()));
+                    GcMap.put("majorGc",GcInfoObject.get("majorGc").getAsInt()+Integer.parseInt(GcMap.get("majorGc").toString()));
 
-            for(int j=0;j<monitorList.size();j++){
-                ServiceMonitorListVo serviceMonitorListVo = monitorList.get(j);
-                if(serviceMonitorListVo.getService().equals(serviceName)){
-                    if(resultMap.containsKey(serviceName)){
-                        Map<String,Object> serviceMap= resultMap.get(serviceName);
-                        serviceMap.put("nodeCount",Integer.parseInt(serviceMap.get("nodeCount").toString()));
+                    flowsMap.put("max",flowsObject.get("max").getAsInt()+Integer.parseInt(flowsMap.get("max").toString()));
+                    flowsMap.put("min",flowsObject.get("min").getAsInt()+Integer.parseInt(flowsMap.get("min").toString()));
+                    flowsMap.put("avg",flowsObject.get("avg").getAsInt()+Integer.parseInt(flowsMap.get("avg").toString()));
+                }else{
+                    Map<String,Map> valueMap = new HashMap<>();
+                    Map<String,Object> tasksMap = new HashMap();
+                    Map<String,Object> GcMap = new HashMap();
+                    Map<String,Object> flowsMap = new HashMap();
+                    tasksMap.put("waitingQueue",taskInfoObject.get("waitingQueue").getAsInt());
+                    tasksMap.put("total",taskInfoObject.get("total").getAsInt());
+                    tasksMap.put("succeed",taskInfoObject.get("succeed").getAsInt());
+                    GcMap.put("minorGc",GcInfoObject.get("minorGc").getAsInt());
+                    GcMap.put("majorGc",GcInfoObject.get("majorGc"));
+                    flowsMap.put("max",flowsObject.get("max").getAsInt());
+                    flowsMap.put("min",flowsObject.get("min").getAsInt());
+                    flowsMap.put("avg",flowsObject.get("avg").getAsInt());
+                    valueMap.put("tasks",tasksMap);
+                    valueMap.put("gcInfos",GcMap);
+                    resultMap.put(serviceName,valueMap);
+                }
+
+                /**
+                 * 统计服务节点数
+
+                 for(int j=0;j<monitorList.size();j++){
+                 ServiceMonitorListVo serviceMonitorListVo = monitorList.get(j);
+                 if(serviceMonitorListVo.getService().equals(serviceName)){
+                 if(resultMap.containsKey(serviceName)){
+                 Map<String,Object> serviceMap= resultMap.get(serviceName);
+                 serviceMap.put("nodeCount",Integer.parseInt(serviceMap.get("nodeCount").toString()));
+                 }
+                 }
+                 }
+                 */
+
+            }
+            //服务节点数统计
+            for(Map.Entry<String,Map<String,Map>> map :resultMap.entrySet()){
+                String serviceName = map.getKey().toString();
+                Map<String,Map> resMap = map.getValue();
+                for(int i=0;i<monitorList.size();i++){
+                    ServiceMonitorListVo serviceMonitorListVo = monitorList.get(i);
+                    if(serviceMonitorListVo.getService().equals(serviceName)){
+                        Map nodesmap = resMap.get("node");
+                        nodesmap.put("nodeCount",Integer.parseInt(nodesmap.get("nodeCount").toString()+1));
+                    }else{
+                        Map nodesmap = new HashMap();
+                        nodesmap.put("nodeCount",1);
+                        resMap.put("node",nodesmap);
                     }
                 }
             }
+            /**
+             * {
+             "gcInfos": {
+             "gcInfos": "0/0"
+             },
+             "flows": {},
+             "service": "com.github.dapeng.hello.service.HelloService",
+             "tasks": {
+             "waitingQueue": 0,
+             "total": 48,
+             "succeed": 48
+             },
+             "errors": {},
+             "serviceInfo":{
+             "className":"value"
+             }
+             }
              */
-
-        }
-        for(Map.Entry<String,Map<String,Map>> map :resultMap.entrySet()){
-            String serviceName = map.getKey().toString();
-            Map<String,Map> resMap = map.getValue();
-            for(int i=0;i<monitorList.size();i++){
-                ServiceMonitorListVo serviceMonitorListVo = monitorList.get(i);
-                if(serviceMonitorListVo.getService().equals(serviceName)){
-                    Map nodesmap = resMap.get("node");
-                    nodesmap.put("nodeCount",Integer.parseInt(nodesmap.get("nodeCount").toString()+1));
-                }else{
-                    Map nodesmap = new HashMap();
-                    nodesmap.put("nodeCount",1);
-                    resMap.put("node",nodesmap);
-                }
-            }
-        }
-        /**
-         * {
-         "gcInfos": {
-         "gcInfos": "0/0"
-         },
-         "flows": {},
-         "service": "com.github.dapeng.hello.service.HelloService",
-         "tasks": {
-         "waitingQueue": 0,
-         "total": 48,
-         "succeed": 48
-         },
-         "errors": {},
-         "serviceInfo":{
-         "className":"value"
-         }
-         }
-         */
 
        /* String echoInfo =RequestUtils.getRomoteServiceEcho("192.168.4.102", 9095,"com.github.dapeng.hello.service.HelloService", "1.0.0");
         System.out.println(echoInfo);*/
+            return resultMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return resultMap;
-
     }
-
 
     /**
      * 获取节点信息
