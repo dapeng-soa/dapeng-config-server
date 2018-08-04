@@ -135,6 +135,12 @@ var api;
         Deploy.prototype.hostCnfigView = function (data) {
             return "\n<span style=\"color: #aa0e0e\">[" + data.name + "\u914D\u7F6E:]</span>\n\n<span style=\"color: #aa0e0e\">[ip]</span>\n" + data.ip + "\n<span style=\"color: #aa0e0e\">[env]</span>\n" + data.env + "\n<span style=\"color: #aa0e0e\">[remark]</span>\n" + data.remark + "\n<span style=\"color: #aa0e0e\">[\u662F\u5426\u5916\u90E8\u673A\u5668]</span>\n" + (data.extra == 1 ? '否' : '是') + "\n            ";
         };
+        //
+        Deploy.prototype.consoleView = function (row) {
+            var rowStr = "\n            <p><span style=\"color:#00bb00\">[" + new Date().toLocaleTimeString() + "]#</span> " + row + "</p>\n            ";
+            var ob = $("#consoleView");
+            ob.append(rowStr);
+        };
         return Deploy;
     }());
     api.Deploy = Deploy;

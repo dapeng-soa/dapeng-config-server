@@ -54,7 +54,6 @@
 <script type="text/javascript" src="${basePath}/plugins/codemirror/searchcursor.min.js"></script>
 <link type="text/css" rel="stylesheet" href="${basePath}/plugins/codemirror/codemirror.min.css" />
 
-
 <%--mergely diff--%>
 <script src="${basePath}/plugins/mergely/mergely.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/mergely/mergely.css">
@@ -64,58 +63,7 @@
 <script src="${basePath}/js/ts/Api.js"></script>
 <script src="${basePath}/plugins/socketIo/socket.io.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
-
+<script src="${basePath}/plugins/init.js"></script>
 <script>
-
     window.basePath = "${basePath}";
-
-    layui.use('element', function(){
-        var element = layui.element;
-
-        //一些事件监听
-        element.on('nav(filter)', function(elem){
-            console.log(elem); //得到当前点击的DOM对象
-        });
-
-        element.on('collapse(filter)', function(data){
-            console.log(data.show); //得到当前面板的展开状态，true或者false
-            console.log(data.title); //得到当前点击面板的标题区域DOM对象
-            console.log(data.content); //得到当前点击面板的内容区域DOM对象
-        });
-    });
-
-    window.layer = {};
-
-    layui.use('layer', function(){
-        window.layui = layui.layer;
-    });
-
-    window.refresh = function(){
-        window.location.reload();
-    };
-
-    window.toggleBlock = function (a) {
-        $(a).next(".advance-format-content").toggle();
-    };
-
-    window.diffTxt = function (current,old) {
-        var mergely = $('#mergely');
-        mergely.mergely({
-            license: 'gpl',
-            autoresize: true,
-            sidebar: false,
-            cmsettings: {
-                readOnly: false
-            },
-            lhs: function (setValue) {
-                setValue(old);
-            },
-            rhs: function (setValue) {
-                setValue(current);
-            }
-        });
-        mergely.resize();
-    };
-    window.SUCCESS_CODE = 200;
-    window.ERROR_CODE = 4004;
 </script>

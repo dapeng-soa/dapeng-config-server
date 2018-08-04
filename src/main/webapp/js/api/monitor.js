@@ -2,8 +2,6 @@
  * @author huyj
  * @Created  2018/6/9 19:04
  */
-document.write("<script language=javascript src='./js/api/base-common.js'></script>");
-
 $(document).ready(function () {
     loadNodeList();
     setInterval('$($table).bootstrapTable("refresh")', 1000 * 60 * 5);
@@ -20,8 +18,8 @@ function InitMonitorTable() {
         url: queryUrl,                      //请求后台的URL（*）
         method: 'GET',                      //请求方式（*）
         responseHandler: function (res) {     //格式化返回数据
-            if (res.code === '4004') {
-                showMessage("Error", res.msg, "加载失败");
+            if (res.code === ERROR_CODE) {
+                showMessage(ERROR, res.msg, "加载失败");
                 return {data: []};
             }
             return {data: res.context};

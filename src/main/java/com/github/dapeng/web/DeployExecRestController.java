@@ -10,26 +10,19 @@ import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
-import com.github.dapeng.socket.SocketUtil;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
-import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.vo.*;
-import com.google.gson.Gson;
-import io.socket.client.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -42,11 +35,10 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 @RestController
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
-public class DeployExecRestController implements ApplicationListener<ContextRefreshedEvent> {
+public class DeployExecRestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployExecRestController.class);
 
-    private static Socket socketClient = null;
 
     @Autowired
     SetRepository setRepository;
@@ -56,12 +48,6 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     ServiceRepository serviceRepository;
     @Autowired
     DeployUnitRepository unitRepository;
-
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
-        LOGGER.info("onApplicationEvent");
-        socketClient = SocketUtil.registerWebSocketClient("127.0.0.1", 9095, "127.0.0.1", "DeployExecSocket");
-    }
 
     /**
      * 向agent发送问询指令
@@ -76,34 +62,6 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
                                            @RequestParam(defaultValue = "0") Long serviceId,
                                            @RequestParam(defaultValue = "0") Long hostId,
                                            @RequestParam(defaultValue = "1") Integer viewType) {
-
-        List<String> serviceNames = new ArrayList<>();
-        if (isEmpty(serviceId)) {
-            List<TService> services = serviceRepository.findAll();
-            serviceNames = services
-                    .stream()
-                    .map(TService::getName)
-                    .collect(Collectors.toList());
-        } else {
-            serviceNames.add(serviceRepository.getOne(serviceId).getName());
-        }
-
-        // =====================================
-        // 发送服务名问询各个节点的【节点IP，(服务->服务时间)】
-        LOGGER.info(" step into check real service................");
-        serviceNames.forEach(serviceName -> {
-            socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceName);
-        });
-
-        // TODO 事件监听放到js
-        // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
-       /* socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
-            String result = (String) objects[0];
-            List<ServerTimeInfo> finalResult = new Gson().fromJson(result, ArrayList.class);
-
-            System.out.println(" webClient get Services time result: " + finalResult);
-        });*/
-        // =====================================
         // 根据主机-服务的时间对每个服务
 
         // 根据视图类型返回对应的视图数据结构
@@ -145,7 +103,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
                     subHostVo.setServiceStatus(1);
                     subHostVo.setNeedUpdate(true);
                     subHostVo.setConfigUpdateBy(DateUtil.time(lastUpdateAt(u)));
-                    subHostVo.setDeployTime(DateUtil.now());
+                    subHostVo.setDeployTime(DateUtil.time(0)); // 线上的服务更新时间
                     subHostVos.add(subHostVo);
                 });
                 deployServiceVo.setDeploySubHostVos(subHostVos);
@@ -183,7 +141,7 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
                     subServiceVo.setServiceId(u.getServiceId());
                     subServiceVo.setNeedUpdate(true);
                     subServiceVo.setConfigUpdateBy(DateUtil.time(lastUpdateAt(u)));
-                    subServiceVo.setDeployTime(DateUtil.now());
+                    subServiceVo.setDeployTime(DateUtil.time(0));
                     subServiceVo.setServiceStatus(1);
                     subServiceVos.add(subServiceVo);
                 });
@@ -208,8 +166,8 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         List<THost> hosts = hostRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getHostId());
         List<TService> serviceList = serviceRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getServiceId());
         Long setUpdateAt = !isEmpty(setList) ? setList.get(0).getUpdatedAt().getTime() : 0;
-        Long hostUpdateAt = !isEmpty(hosts) ? hosts.get(0).getCreatedAt().getTime() : 0;
-        Long serviceUpdateAt = !isEmpty(serviceList) ? serviceList.get(0).getCreatedAt().getTime() : 0;
+        Long hostUpdateAt = !isEmpty(hosts) ? hosts.get(0).getUpdatedAt().getTime() : 0;
+        Long serviceUpdateAt = !isEmpty(serviceList) ? serviceList.get(0).getUpdatedAt().getTime() : 0;
         Long unitUpdatAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
         Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, unitUpdatAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
@@ -237,9 +195,6 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         dockerVo.setServiceName(service.getName());
         dockerVo.setFileContent(composeContext);
         dockerVo.setIp(ip);
-        // 发送升级指令+yaml数据
-        LOGGER.info("::send update service:{}",dockerVo);
-        socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(dockerVo));
 
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
@@ -252,10 +207,8 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     public ResponseEntity stopRealService(@RequestParam long unitId) {
         DeployRequest request = toDeployRequest(unitId);
         LOGGER.info("::send stop service:{}", request);
-        socketClient.emit(EventType.STOP().name(), new Gson().toJson(request));
-        // 发送停止指令
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, request));
     }
 
     /**
@@ -263,14 +216,9 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
      */
     @RequestMapping("/deploy/restartRealService")
     public ResponseEntity restartRealService(@RequestParam long unitId) {
-
         DeployRequest request = toDeployRequest(unitId);
-        LOGGER.info("::send restart service:{}", request);
-        socketClient.emit(EventType.RESTART().name(), new Gson().toJson(request));
-
-        // 发送重启指令
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, request));
     }
 
 
@@ -280,19 +228,14 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
      * @return
      */
     @GetMapping("/deploy-unit/process-envs/{unitId}")
-    public ResponseEntity<?> processService(@PathVariable long unitId) {
+    public ResponseEntity<?> processService(@PathVariable Long unitId) {
         TDeployUnit unit = unitRepository.getOne(unitId);
         TSet set = setRepository.getOne(unit.getSetId());
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
 
-        DeployRequest request = toDeployRequest(unitId);
-        // 检查当前服务在主机上的实际配置文件版本
-        LOGGER.info("::send get real yaml file:{}",request);
-        socketClient.emit(EventType.GET_YAML_FILE().name(),new Gson().toJson(request));
-
-        DockerService dockerService1 = Composeutil.processService(set, host, service);
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service,unit);
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 
@@ -301,7 +244,19 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         dockerVo.setFileContent(composeContext);
 
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, dockerVo));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, dockerVo));
+    }
+
+    /**
+     * 事件请求通用结构体
+     *
+     * @param unitId
+     * @return
+     */
+    @GetMapping("/deploy-unit/event_rep/{unitId}")
+    public ResponseEntity eventRep(@PathVariable Long unitId) {
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, toDeployRequest(unitId)));
     }
 
 

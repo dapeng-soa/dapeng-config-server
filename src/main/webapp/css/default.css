@@ -414,3 +414,47 @@ button[type="button"][name="toggle"]:before {
     text-align: center;
     float: left;
 }
+
+
+/**
+
+ */
+#consoleView{
+    width: 400px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: -400px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0 5px;
+    color: #FFFF;
+    line-height: 150%;
+    overflow-x: unset;
+    z-index: 10000;
+}
+#consoleView.opened {
+    right: 0;
+    overflow-y: auto;
+}
+
+#consoleView.closed {
+   right: -400px;
+    top: 5px;
+}
+#consoleView>p:first-of-type{
+    font-weight: 700;
+    background: #333;
+    position: absolute;
+    right: 0;
+    left: -20px;
+    cursor: pointer;
+    padding-left: 25px;
+    border-radius: 4px 0 0 4px;
+}
+#consoleView>p:first-of-type:before{
+    content: "<<";
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+}
