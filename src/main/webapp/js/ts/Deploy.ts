@@ -40,7 +40,13 @@ module api {
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
+ENV(环境变量):
+作用:提供应用所需的环境变量
+书写格式:
+appName=goodsService(建议) 
+appName:goodsService
+备注:
+尽量将公共环境变量配置在此处
                                   </pre>
                                 </div>
                               </div>
@@ -92,6 +98,16 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                             <label class="col-sm-2 control-label">服务镜像:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="image" class="col-sm-2 form-control" value="${type != c.add ? data.image : ""}">
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+服务启动的镜像名
+千万注意,不要填写镜像TAG,镜像TAG应当是在部署单元中新增部署时填写
+写法示例:
+dapengsoa/redis-wzx(正确)
+dapengsoa/redis-wzx:3.2.3.1(错误,无需填写镜像TAG)
+                                  </pre>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -109,7 +125,13 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
+ENV(环境变量):
+作用:提供应用所需的环境变量
+书写格式:
+appName=goodsService(建议) 
+appName:goodsService
+备注:
+服务的环境变量最好是只针对当前服务所需要的配置即可，公共配置可配置到环境集
                                   </pre>
                                 </div>
                               </div>
@@ -124,7 +146,13 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(挂载卷):如 /data/log:/data/log
+VOLUMES(挂载卷):
+作用:应用容器与宿主机的目录映射
+书写格式:
+宿主机目录:容器目录
+/data/log:/data/log
+备注:
+服务的卷挂载最好是只针对当前服务所需要的配置即可，公共配置可配置到环境集
                                   </pre>
                                 </div>
                               </div>
@@ -138,7 +166,14 @@ ENV(挂载卷):如 /data/log:/data/log
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(映射端口):如 8080:8080
+PORTS(映射端口):
+作用:应用容器与宿主机的端口映射
+书写格式:
+宿主机端口:容器端口
+8080:8080
+9999:9999
+备注:
+尽量在服务中明确端口的映射
                                   </pre>
                                 </div>
                               </div>
@@ -152,7 +187,10 @@ ENV(映射端口):如 8080:8080
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-labels:如 project.owner=struy
+docker-compsoe的labels配置:
+书写格式:
+project.owner=struy
+
                                   </pre>
                                 </div>
                               </div>
@@ -166,7 +204,9 @@ labels:如 project.owner=struy
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-附加:如 restart: on-failure:3
+附加的docker-compose配置,在service下级,与environment同级:
+书写格式(暂不支持多行配置):
+restart: on-failure:3
                                   </pre>
                                 </div>
                               </div>
@@ -212,6 +252,18 @@ labels:如 project.owner=struy
                             <label class="col-sm-2 control-label">节点名称:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control" value="${type != c.add ? data.name : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+节点名只能使用英文,尽量语意清晰。
+当服务运行时,所有的节点ip都会写入容器hosts
+如:
+host1 192.168.0.666
+                                 </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -224,6 +276,15 @@ labels:如 project.owner=struy
                             <label class="col-sm-2 control-label">标签:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control" value="${type != c.add ? data.labels : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+可用于筛选的标签
+                                 </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -232,6 +293,15 @@ labels:如 project.owner=struy
                                <select ${type == c.view ? "disabled" : ""} id="setSelect" class="col-sm-2 form-control">
                                  
                                 </select>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+如果选择了某个环境集，则当前添加主机隶属于所选环境集
+                                 </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -241,6 +311,16 @@ labels:如 project.owner=struy
                                   <option value="0" ${type != c.add ? (data.extra == 0 ? "selected" : "") : ""}>是</option>
                                   <option value="1" ${type != c.add ? (data.extra == 1 ? "selected" : "") : "selected"}>否</option>
                                 </select>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+内部机器用于部署业务服务
+外部机器用于部署类似数据库,中间件等外部服务
+                                 </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -251,8 +331,14 @@ labels:如 project.owner=struy
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
-                                  </pre>
+ENV(环境变量):
+作用:提供应用所需的环境变量
+书写格式:
+appName=goodsService(建议) 
+appName:goodsService
+备注:
+1.节点环境变量应当尽量不填写，除非长期的在某个节点存在特有配置
+                                 </pre>
                                 </div>
                               </div>
                             </div>
@@ -311,7 +397,6 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre id="setEnvView">
-当前环境集配置:
 
                                   </pre>
                                 </div>
@@ -327,7 +412,6 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre id="hostEnvView">
-当前主机配置:
 
                                   </pre>
                                 </div>
@@ -344,7 +428,6 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre id="serviceEnvView">
-当前服务配置:
 
                                   </pre>
                                 </div>
@@ -356,6 +439,14 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                             <label class="col-sm-2 control-label">镜像TAG:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="imageTag" class="col-sm-2 form-control" value="${type != c.add ? data.imageTag : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+本次部署的服务镜像tag,无需填写镜像名
+                                  </pre>
+                                </div>
+                              </div>
                             </div>
                         </div>
                        
@@ -368,7 +459,12 @@ ENV(环境变量):如appName=goodsService(建议) 或appName:goodsService
                                 <div class="advance-format-content">
                                   <pre>
 ENV(环境变量):
-书写格式:如appName=goodsService(建议) 或appName:goodsService
+作用:提供应用所需的环境变量
+书写格式:
+appName=goodsService(建议) 
+appName:goodsService
+备注:
+部署单元的env变量应当只有在少数情况下需要添加,如某台节点需要特殊的配置
                                   </pre>
                                 </div>
                               </div>
@@ -384,7 +480,13 @@ ENV(环境变量):
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(挂载卷):如 /data/log:/data/log
+VOLUMES(挂载卷):
+作用:应用容器与宿主机的目录映射
+书写格式:
+宿主机目录:容器内目录
+/data/log:/data/log
+备注:
+部署单元的VOLUMES只有在极少数情况下需要添加,如某台节点需要特殊的配置
                                   </pre>
                                 </div>
                               </div>
@@ -398,7 +500,13 @@ ENV(挂载卷):如 /data/log:/data/log
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-ENV(映射端口):如 8080:8080
+PORTS(映射端口):
+作用:应用容器与宿主机的端口映射
+书写格式:
+宿主机端口:容器端口
+8080:8080
+备注:
+部署单元的PORTS只有在极少数情况下需要添加,如某台节点需要特殊的配置
                                   </pre>
                                 </div>
                               </div>
@@ -412,7 +520,11 @@ ENV(映射端口):如 8080:8080
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
-附加:如 restart: on-failure:3
+附加的docker-compose配置,在service下级,与env同级:
+书写格式(暂不支持多行配置):
+restart: on-failure:3
+备注:
+建议不要在此处添加此项配置
                                   </pre>
                                 </div>
                               </div>
@@ -524,10 +636,10 @@ ENV(映射端口):如 8080:8080
                                 <p>需要更新：${em.needUpdate ? `<span style="color: #00AA00">是</span>` : `否`}</p>
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
-                                    <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.unitId})">升级</a></p>
+                                    <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview(${em.unitId})">升级</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="updateService(${em.unitId},'view')">预览</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview(${em.unitId},'view')">预览</a></p>
                             </div>
                         </div>
             `
@@ -563,5 +675,62 @@ ENV(映射端口):如 8080:8080
 
         }
 
+        /*
+        服务配置预览
+         */
+        public serviceCnfigView(data:any) {
+            return `
+<span style="color: #aa0e0e">[${data.name}配置:]</span>
+
+<span style="color: #aa0e0e">[env]</span>
+${data.env}
+<span style="color: #aa0e0e">[image]</span>
+${data.image}
+<span style="color: #aa0e0e">[ports]</span>
+${data.ports}
+<span style="color: #aa0e0e">[volumes]</span>
+${data.volumes}
+<span style="color: #aa0e0e">[dockerExtras]</span>
+${data.dockerExtras}
+<span style="color: #aa0e0e">[composeLabels]</span>
+${data.composeLabels}
+<span style="color: #aa0e0e">[labels]</span>
+${data.labels}
+<span style="color: #aa0e0e">[remark]</span>
+${data.remark}
+            `
+        }
+
+        /*
+       环境集配置预览
+        */
+        public setCnfigView(data:any) {
+            return `
+<span style="color: #aa0e0e">[${data.name}配置:]</span>
+
+<span style="color: #aa0e0e">[env]</span>
+${data.env}
+<span style="color: #aa0e0e">[remark]</span>
+${data.remark}
+            `
+        }
+
+        /*
+主机配置预览
+*/
+        public hostCnfigView(data:any) {
+            return `
+<span style="color: #aa0e0e">[${data.name}配置:]</span>
+
+<span style="color: #aa0e0e">[ip]</span>
+${data.ip}
+<span style="color: #aa0e0e">[env]</span>
+${data.env}
+<span style="color: #aa0e0e">[remark]</span>
+${data.remark}
+<span style="color: #aa0e0e">[是否外部机器]</span>
+${data.extra==1?'否':'是'}
+            `
+        }
     }
 }
