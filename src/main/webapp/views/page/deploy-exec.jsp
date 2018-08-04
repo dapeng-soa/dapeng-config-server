@@ -12,6 +12,9 @@
     <script src="${basePath}/js/api/deploy-exec.js"></script>
 </head>
 <body>
+<div id="consoleView" class="closed">
+    <p title="控制台" onclick="toggleConloseView(this)">[console >>]</p>
+</div>
 <jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">

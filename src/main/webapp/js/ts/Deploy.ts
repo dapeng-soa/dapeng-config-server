@@ -667,7 +667,7 @@ restart: on-failure:3
                 ${type == undefined || type != c.view ? `
                         <button type="button" class="btn btn-success" onclick="execServiceUpdate(${unitId})">确认升级</button>
                         <button type="button" class="btn btn-danger" onclick="cancelServiceUpdate()">取消升级</button>
-                        `: ""}
+                        ` : ""}
                 <button type="button" class="btn btn-info" onclick="downloadYaml(${unitId})">下载配置</button>
                  </span>
                 </div>
@@ -678,7 +678,7 @@ restart: on-failure:3
         /*
         服务配置预览
          */
-        public serviceCnfigView(data:any) {
+        public serviceCnfigView(data: any) {
             return `
 <span style="color: #aa0e0e">[${data.name}配置:]</span>
 
@@ -704,7 +704,7 @@ ${data.remark}
         /*
        环境集配置预览
         */
-        public setCnfigView(data:any) {
+        public setCnfigView(data: any) {
             return `
 <span style="color: #aa0e0e">[${data.name}配置:]</span>
 
@@ -718,7 +718,7 @@ ${data.remark}
         /*
 主机配置预览
 */
-        public hostCnfigView(data:any) {
+        public hostCnfigView(data: any) {
             return `
 <span style="color: #aa0e0e">[${data.name}配置:]</span>
 
@@ -729,8 +729,17 @@ ${data.env}
 <span style="color: #aa0e0e">[remark]</span>
 ${data.remark}
 <span style="color: #aa0e0e">[是否外部机器]</span>
-${data.extra==1?'否':'是'}
+${data.extra == 1 ? '否' : '是'}
             `
+        }
+
+        //
+        public consoleView(row: string) {
+            let rowStr = `
+            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> ${row}</p>
+            `;
+            let ob = $("#consoleView");
+            ob.append(rowStr);
         }
     }
 }
