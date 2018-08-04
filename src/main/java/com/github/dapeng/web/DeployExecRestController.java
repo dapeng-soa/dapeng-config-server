@@ -11,7 +11,8 @@ import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.SocketUtil;
-import com.github.dapeng.socket.entity.ServerTimeInfo;
+import com.github.dapeng.socket.entity.DeployRequest;
+import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.socket.enums.EventType;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
@@ -56,8 +57,6 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     @Autowired
     DeployUnitRepository unitRepository;
 
-    private static int counter = 0;
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent applicationEvent) {
         LOGGER.info("onApplicationEvent");
@@ -93,19 +92,17 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         // 发送服务名问询各个节点的【节点IP，(服务->服务时间)】
         LOGGER.info(" step into check real service................");
         serviceNames.forEach(serviceName -> {
-            counter++ ;
             socketClient.emit(EventType.GET_SERVER_TIME().name(), serviceName);
-            System.out.println(" server emitCounter: " + counter);
         });
 
-
+        // TODO 事件监听放到js
         // 问询后的返回 Map<HostIP, List<(serviceName, serverTime)>>()
-        socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
-            String result = (String)objects[0];
+       /* socketClient.on(EventType.GET_SERVER_TIME_RESP().name(), objects -> {
+            String result = (String) objects[0];
             List<ServerTimeInfo> finalResult = new Gson().fromJson(result, ArrayList.class);
 
-            System.out.println(" webClient: " + finalResult);
-        });
+            System.out.println(" webClient get Services time result: " + finalResult);
+        });*/
         // =====================================
         // 根据主机-服务的时间对每个服务
 
@@ -113,8 +110,8 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         List<DeployServiceVo> serviceVos = new ArrayList<>();
         List<DeployHostVo> hostVos = new ArrayList<>();
         List<TDeployUnit> units = !isEmpty(serviceId) ?
-                unitRepository.findAllBySetIdAndServiceId(setId,serviceId) :
-                !isEmpty(hostId) ? unitRepository.findAllBySetIdAndHostId(setId,hostId) :
+                unitRepository.findAllBySetIdAndServiceId(setId, serviceId) :
+                !isEmpty(hostId) ? unitRepository.findAllBySetIdAndHostId(setId, hostId) :
                         unitRepository.findAllBySetId(setId);
 
         if (viewType == 1) {
@@ -234,11 +231,14 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 
+        String ip = IPUtils.transferIp(host.getIp());
         DeployVo dockerVo = new DeployVo();
         dockerVo.setLastModifyTime(lastUpdateAt(unit));
         dockerVo.setServiceName(service.getName());
         dockerVo.setFileContent(composeContext);
+        dockerVo.setIp(ip);
         // 发送升级指令+yaml数据
+        LOGGER.info("::send update service:{}",dockerVo);
         socketClient.emit(EventType.DEPLOY().name(), new Gson().toJson(dockerVo));
 
         return ResponseEntity
@@ -250,6 +250,9 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
      */
     @RequestMapping("/deploy/stopRealService")
     public ResponseEntity stopRealService(@RequestParam long unitId) {
+        DeployRequest request = toDeployRequest(unitId);
+        LOGGER.info("::send stop service:{}", request);
+        socketClient.emit(EventType.STOP().name(), new Gson().toJson(request));
         // 发送停止指令
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
@@ -261,35 +264,15 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
     @RequestMapping("/deploy/restartRealService")
     public ResponseEntity restartRealService(@RequestParam long unitId) {
 
+        DeployRequest request = toDeployRequest(unitId);
+        LOGGER.info("::send restart service:{}", request);
+        socketClient.emit(EventType.RESTART().name(), new Gson().toJson(request));
+
         // 发送重启指令
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
     }
 
-    /**
-     * 获取对应的yaml服务实体
-     *
-     * @return
-     */
-    @GetMapping("/deploy-unit/process-envs")
-    public ResponseEntity<?> processService(@RequestParam long setId,
-                                            @RequestParam long hostId,
-                                            @RequestParam long serviceId) {
-        TSet set = setRepository.getOne(setId);
-        THost host = hostRepository.getOne(hostId);
-        TService service = serviceRepository.getOne(serviceId);
-        List<THost> hosts = hostRepository.findBySetId(setId);
-        DockerService dockerService1 = Composeutil.processService(set, host, service);
-        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        String composeContext = Composeutil.processComposeContext(dockerService1);
-
-        DeployVo dockerVo = new DeployVo();
-        dockerVo.setServiceName(service.getName());
-        dockerVo.setFileContent(composeContext);
-
-        return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, dockerVo));
-    }
 
     /**
      * 获取对应的yaml服务实体
@@ -304,6 +287,11 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
 
+        DeployRequest request = toDeployRequest(unitId);
+        // 检查当前服务在主机上的实际配置文件版本
+        LOGGER.info("::send get real yaml file:{}",request);
+        socketClient.emit(EventType.GET_YAML_FILE().name(),new Gson().toJson(request));
+
         DockerService dockerService1 = Composeutil.processService(set, host, service);
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
@@ -314,5 +302,18 @@ public class DeployExecRestController implements ApplicationListener<ContextRefr
 
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG, dockerVo));
+    }
+
+
+    private DeployRequest toDeployRequest(long unitId) {
+        TDeployUnit unit = unitRepository.getOne(unitId);
+        THost host = hostRepository.getOne(unit.getHostId());
+        TService service = serviceRepository.getOne(unit.getServiceId());
+
+        DeployRequest request = new DeployRequest();
+        String ip = IPUtils.transferIp(host.getIp());
+        request.setIp(ip);
+        request.setServiceName(service.getName());
+        return request;
     }
 }
