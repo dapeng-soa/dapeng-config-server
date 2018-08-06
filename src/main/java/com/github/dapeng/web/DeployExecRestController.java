@@ -13,7 +13,6 @@ import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.util.Composeutil;
-import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,8 +101,8 @@ public class DeployExecRestController {
                     subHostVo.setHostName(tHost.getName());
                     subHostVo.setServiceStatus(1);
                     subHostVo.setNeedUpdate(true);
-                    subHostVo.setConfigUpdateBy(DateUtil.time(lastUpdateAt(u)));
-                    subHostVo.setDeployTime(DateUtil.time(0)); // 线上的服务更新时间
+                    subHostVo.setConfigUpdateBy(lastUpdateAt(u));
+                    subHostVo.setDeployTime(0L);
                     subHostVos.add(subHostVo);
                 });
                 deployServiceVo.setDeploySubHostVos(subHostVos);
@@ -140,8 +139,8 @@ public class DeployExecRestController {
                     subServiceVo.setUnitId(u.getId());
                     subServiceVo.setServiceId(u.getServiceId());
                     subServiceVo.setNeedUpdate(true);
-                    subServiceVo.setConfigUpdateBy(DateUtil.time(lastUpdateAt(u)));
-                    subServiceVo.setDeployTime(DateUtil.time(0));
+                    subServiceVo.setConfigUpdateBy(lastUpdateAt(u));
+                    subServiceVo.setDeployTime(0L);
                     subServiceVo.setServiceStatus(1);
                     subServiceVos.add(subServiceVo);
                 });
