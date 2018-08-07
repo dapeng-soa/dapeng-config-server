@@ -1,0 +1,90 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 1000,
+  "data": [{
+    "serviceGroup": "商品",
+    "serviceName": "com.today.GoodService2",
+    "nodeCount": 2,
+    "healthStatus": "健康",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "商品",
+    "serviceName": "com.today.GoodService1",
+    "nodeCount": 1,
+    "healthStatus": "警告",
+    "busyStatus": "繁忙",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "商品",
+    "serviceName": "com.today.GoodService3",
+    "nodeCount": 1,
+    "healthStatus": "异常",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "订单",
+    "serviceName": "com.today.OrderService",
+    "nodeCount": 2,
+    "healthStatus": "警告",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "订单",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "异常",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "供应商",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "健康",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "供应商",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "健康",
+    "busyStatus": "繁忙",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "供应商",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "警告",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "采购",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "异常",
+    "busyStatus": "繁忙",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "会员",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "警告",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "会员",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "异常",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  },{
+    "serviceGroup": "商品",
+    "serviceName": "com.today.GoodService",
+    "nodeCount": 2,
+    "healthStatus": "健康",
+    "busyStatus": "空闲",
+    "updateTime": "2018-08-01 12:12:25"
+  }]
+}
