@@ -1,9 +1,5 @@
 package com.github.dapeng.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.sql.Timestamp;
-
 /**
  * @author with struy.
  * Create by 2018/7/25 20:41
@@ -18,10 +14,8 @@ public class DeploySubServiceVo {
     private String serviceName;
     private boolean needUpdate = true;
     private int serviceStatus = 0;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
-    private Timestamp deployTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
-    private Timestamp configUpdateBy;
+    private Long deployTime;
+    private Long configUpdateBy;
 
     public long getSetId() {
         return setId;
@@ -63,19 +57,19 @@ public class DeploySubServiceVo {
         this.serviceStatus = serviceStatus;
     }
 
-    public Timestamp getDeployTime() {
+    public Long getDeployTime() {
         return deployTime;
     }
 
-    public void setDeployTime(Timestamp deployTime) {
+    public void setDeployTime(Long deployTime) {
         this.deployTime = deployTime;
     }
 
-    public Timestamp getConfigUpdateBy() {
+    public Long getConfigUpdateBy() {
         return configUpdateBy;
     }
 
-    public void setConfigUpdateBy(Timestamp configUpdateBy) {
+    public void setConfigUpdateBy(Long configUpdateBy) {
         this.configUpdateBy = configUpdateBy;
     }
 

@@ -2,7 +2,6 @@
 window.SUCCESS_CODE = 200;
 window.ERROR_CODE = 4004;
 // socket 连接地址
-window.SOCKET_URL = "http://127.0.0.1:9095";
 window.SOCKET_REG_INFO = "web1:192.168.0.109";
 // socket 系统事件消息类型
 window.SOC_CONNECT = "connect";
@@ -128,3 +127,29 @@ window.showMessage = function (type, mesage, title) {
 window.clearMessage = function () {
     toastr.clear();
 };
+
+$.fn.extend({
+    animateCss: function(animationName, callback) {
+        var animationEnd = (function(el) {
+            var animations = {
+                animation: 'animationend',
+                OAnimation: 'oAnimationEnd',
+                MozAnimation: 'mozAnimationEnd',
+                WebkitAnimation: 'webkitAnimationEnd'
+            };
+
+            for (var t in animations) {
+                if (el.style[t] !== undefined) {
+                    return animations[t];
+                }
+            }
+        })(document.createElement('div'));
+
+        this.addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+
+            if (typeof callback === 'function') callback();
+        });
+        return this;
+    }
+});
