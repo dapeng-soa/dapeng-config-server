@@ -62,13 +62,13 @@ public class Composeutil {
 
         //==================environment
 
-        dockerService1.setEnvironment(processEnv(set, host, service, unit));
+        dockerService1.setEnvironment(processEnv(service, set, host, unit));
 
         //==================volumes
         dockerService1.setVolumes(processVolume(unit.getVolumes(), service.getVolumes()));
 
         //==================ports
-        dockerService1.setPorts(processPorts(service, unit));
+        dockerService1.setPorts(processPorts(unit, service));
 
         processDockerExtras(dockerService1, process2String(processVolume(unit.getDockerExtras(), service.getDockerExtras())));
 
@@ -80,20 +80,20 @@ public class Composeutil {
 
     /**
      * 按照优先级排除相同的环境变量
-     * // 优先级为t_set<t_host<t_service<t_unit
+     * // 优先级为t_service<t_set<t_host<t_unit
      *
      * @param set
      * @param host
      * @param service
      * @return
      */
-    public static Map<String, String> processEnv(TSet set, THost host, TService service, TDeployUnit unit) {
+    private static Map<String, String> processEnv(TService service, TSet set, THost host, TDeployUnit unit) {
         Map<String, String> setEnvs = ofEnv(set.getEnv());
         Map<String, String> hostEnvs = ofEnv(host.getEnv());
         Map<String, String> serviceEnvs = ofEnv(service.getEnv());
         Map<String, String> unitEnvs = ofEnv(unit.getEnv());
 
-        Map<String, String> realEnvs = mergeEnvs(mergeEnvs(mergeEnvs(unitEnvs, serviceEnvs), hostEnvs), setEnvs);
+        Map<String, String> realEnvs = mergeEnvs(mergeEnvs(mergeEnvs(unitEnvs, hostEnvs), setEnvs), serviceEnvs);
 
         StringBuilder sb = new StringBuilder();
         if (realEnvs.size() > 0) {
@@ -111,7 +111,7 @@ public class Composeutil {
      * @return 去除低优先级的返回并集
      * env的key不重复即可
      */
-    public static Map<String, String> mergeEnvs(Map<String, String> priority, Map<String, String> attach) {
+    private static Map<String, String> mergeEnvs(Map<String, String> priority, Map<String, String> attach) {
         Map<String, String> rmEnvs = new HashMap<>(16);
         Map<String, String> realEnvs = new HashMap<>(16);
         priority.forEach((k, v) -> attach.forEach((k1, v1) -> {
@@ -138,7 +138,7 @@ public class Composeutil {
      * @param attach
      * @return
      */
-    public static List<String> processVolume(String priority, String attach) {
+    private static List<String> processVolume(String priority, String attach) {
         List<String> prioritys = ofList(priority);
         List<String> attachs = ofList(attach);
         StringBuilder sb = new StringBuilder();
@@ -148,7 +148,7 @@ public class Composeutil {
     }
 
 
-    public static String process2String(List list) {
+    private static String process2String(List list) {
         StringBuilder sb = new StringBuilder();
         if (list.size() > 0) {
             list.forEach(s -> {
@@ -171,7 +171,7 @@ public class Composeutil {
      * @param unit
      * @return
      */
-    public static List<String> processPorts(TService service, TDeployUnit unit) {
+    private static List<String> processPorts(TDeployUnit unit, TService service) {
         Map<String, String> servicePorts = ofEnv(service.getPorts());
         Map<String, String> unitPorts = ofEnv(unit.getPorts());
         Map<String, String> rmPosts = new HashMap<>(16);
@@ -199,7 +199,7 @@ public class Composeutil {
     }
 
 
-    public static List<String> mergeList(List<String> priority, List<String> attach) {
+    private static List<String> mergeList(List<String> priority, List<String> attach) {
         List<String> rmList = new ArrayList<>();
         List<String> realList = new ArrayList<>();
         priority.forEach(x -> attach.forEach(y -> {
@@ -213,6 +213,14 @@ public class Composeutil {
         return realList;
     }
 
+    /***
+     *
+     * @param set
+     * @param host
+     * @param service
+     * @return
+     */
+    @Deprecated
     public static DockerService processService(TSet set, THost host, TService service) {
         DockerService dockerService1 = new DockerService();
 
@@ -223,7 +231,7 @@ public class Composeutil {
         dockerService1.setImage(service.getImage());
 
         //==================environment
-        dockerService1.setEnvironment(processEnv(set, host, service, new TDeployUnit()));
+        dockerService1.setEnvironment(processEnv(service, set, host, new TDeployUnit()));
 
         //==================volumes
         dockerService1.setVolumes(ofList(service.getVolumes()));
@@ -258,7 +266,7 @@ public class Composeutil {
     /**
      * @return
      */
-    public static DockerService processDockerExtras(DockerService dockerService, String dockerExtras) {
+    private static DockerService processDockerExtras(DockerService dockerService, String dockerExtras) {
         Class<? extends DockerService> clazz = dockerService.getClass();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
@@ -315,7 +323,7 @@ public class Composeutil {
      *
      * @return
      */
-    public static Map<String, String> ofEnv(String s) {
+    private static Map<String, String> ofEnv(String s) {
         Map<String, String> envMap = new HashMap<>(16);
         ofList(s).forEach(s1 -> {
             if (!isEmpty(s1) && s1.contains(":") || s1.contains("=")) {
@@ -332,27 +340,10 @@ public class Composeutil {
      *
      * @return
      */
-    public static List<String> ofList(String s) {
+    private static List<String> ofList(String s) {
         if (isEmpty(s)) {
             return new ArrayList<>();
         }
         return Arrays.asList(s.split(REGEX));
-    }
-
-    public static void main(String[] args) {
-        String sss = "LANG: zh_CN.UTF-8\n" +
-                "      TZ: CST-8\n" +
-                "      fluent_bit_enable: \"true\"\n" +
-                "      redis_host_ip: redis_host\n" +
-                "      redis_host_port: '6379'\n" +
-                "      serviceName: idGenService\n" +
-                "      slow_service_check_enable: \"true\"\n" +
-                "      soa_container_port: '9081'\n" +
-                "      soa_core_pool_size: '100'\n" +
-                "      soa_jmxrmi_enable: \"false\"\n" +
-                "      soa_monitor_enable: \"true\"";
-        ofEnv(sss).forEach((k, v) -> {
-            System.out.println(k + " ->" + v);
-        });
     }
 }
