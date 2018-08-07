@@ -61,7 +61,6 @@ public class DeployExecRestController {
                                            @RequestParam(defaultValue = "0") Long serviceId,
                                            @RequestParam(defaultValue = "0") Long hostId,
                                            @RequestParam(defaultValue = "1") Integer viewType) {
-        // 根据主机-服务的时间对每个服务
 
         // 根据视图类型返回对应的视图数据结构
         List<DeployServiceVo> serviceVos = new ArrayList<>();
@@ -101,7 +100,7 @@ public class DeployExecRestController {
                     subHostVo.setHostName(tHost.getName());
                     subHostVo.setServiceStatus(1);
                     subHostVo.setNeedUpdate(true);
-                    subHostVo.setConfigUpdateBy(lastUpdateAt(u));
+                    subHostVo.setConfigUpdateBy(lastUpdateAt(u) / 1000);
                     subHostVo.setDeployTime(0L);
                     subHostVos.add(subHostVo);
                 });
@@ -139,7 +138,7 @@ public class DeployExecRestController {
                     subServiceVo.setUnitId(u.getId());
                     subServiceVo.setServiceId(u.getServiceId());
                     subServiceVo.setNeedUpdate(true);
-                    subServiceVo.setConfigUpdateBy(lastUpdateAt(u));
+                    subServiceVo.setConfigUpdateBy(lastUpdateAt(u) / 1000);
                     subServiceVo.setDeployTime(0L);
                     subServiceVo.setServiceStatus(1);
                     subServiceVos.add(subServiceVo);
@@ -177,7 +176,7 @@ public class DeployExecRestController {
      * 升级
      */
     @RequestMapping("/deploy/updateRealService")
-    public ResponseEntity updateRealService(@RequestParam long unitId) {
+    public ResponseEntity updateRealService(@RequestParam Long unitId) {
         TDeployUnit unit = unitRepository.getOne(unitId);
         TSet set = setRepository.getOne(unit.getSetId());
         THost host = hostRepository.getOne(unit.getHostId());
@@ -203,7 +202,7 @@ public class DeployExecRestController {
      * 停止
      */
     @RequestMapping("/deploy/stopRealService")
-    public ResponseEntity stopRealService(@RequestParam long unitId) {
+    public ResponseEntity stopRealService(@RequestParam Long unitId) {
         DeployRequest request = toDeployRequest(unitId);
         LOGGER.info("::send stop service:{}", request);
         return ResponseEntity
@@ -214,7 +213,7 @@ public class DeployExecRestController {
      * 重启
      */
     @RequestMapping("/deploy/restartRealService")
-    public ResponseEntity restartRealService(@RequestParam long unitId) {
+    public ResponseEntity restartRealService(@RequestParam Long unitId) {
         DeployRequest request = toDeployRequest(unitId);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, request));
@@ -234,7 +233,7 @@ public class DeployExecRestController {
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
 
-        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service,unit);
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit);
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 

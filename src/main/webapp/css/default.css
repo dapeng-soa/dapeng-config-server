@@ -208,7 +208,7 @@ button[type="button"][name="toggle"]:before {
     margin-top: 15px;
     /*box-shadow: 0 0 1em #ccc;*/
     padding: 15px;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
 }
 
 .panel-header {
@@ -459,4 +459,11 @@ button[type="button"][name="toggle"]:before {
     position: absolute;
     left: 2px;
     bottom: 2px;
+}
+
+.icon-spin{
+    display: inline-block;
+    -webkit-animation: fa-spin 2s infinite linear !important;
+    animation: fa-spin 2s infinite linear !important;
+    padding-right: 0 !important;
 }

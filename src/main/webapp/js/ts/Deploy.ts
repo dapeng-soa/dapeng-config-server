@@ -626,14 +626,14 @@ restart: on-failure:3
             for (let em of sub) {
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-3 col-xs-12">
-                                <p >${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
+                                <p style="font-size: 20px">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
                                 ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
                             </div>
                             <div class="col-sm-6 col-xs-12">
-                                <p>配置更新时间:${em.configUpdateBy}</p>
-                                <p>主机服务时间:${em.deployTime}</p>
-                                <p>服务状态:${em.serviceStatus == 1 ? `<span style="color: #00AA00">运行中</span>` : "停止"}</p>
-                                <p>需要更新：${em.needUpdate ? `<span style="color: #00AA00">是</span>` : `否`}</p>
+                                <p>配置更新时间：${em.configUpdateBy}</p>
+                                <p>主机服务时间：${em.deployTime}</p>
+                                <p>服务状态：${em.serviceStatus == 1 ? `<span style="color: #00AA00"><i class="fa fa-cog icon-spin" aria-hidden="true"></i>运行</span>` : `<span style="color:#ff4d4d">停止</span>`}</p>
+                                <p>需要更新：${em.needUpdate ? `<span style="color: #ff4d4d">是</span>` : `<span style="color: #00AA00">否</span>`}</p>
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
                                     <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview(${em.unitId})">升级</a></p>
@@ -657,8 +657,8 @@ restart: on-failure:3
             let c = this;
             return `
                 <div class="diff-tit" >
-                <span>线上服务(Read-Only)</span>
-                <span>当前配置(Read-Only)</span>
+                <span>线上服务(只读)</span>
+                <span>当前配置(只读)</span>
                 </div>
                 <div id="mergely" style="margin:20px 0;">
                 </div>

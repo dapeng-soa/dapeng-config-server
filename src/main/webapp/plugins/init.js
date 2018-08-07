@@ -68,7 +68,7 @@ window.diffTxt = function (current, old) {
         autoresize: true,
         sidebar: false,
         cmsettings: {
-            readOnly: false
+            readOnly: true
         },
         lhs: function (setValue) {
             setValue(old);
@@ -126,6 +126,14 @@ window.showMessage = function (type, mesage, title) {
 
 window.clearMessage = function () {
     toastr.clear();
+};
+
+/**
+ * @return {string}
+ */
+window.unix2Time = function (unix) {
+    var unixTimestamp = new Date(unix * 1000);
+    return unixTimestamp.toLocaleString();
 };
 
 $.fn.extend({
