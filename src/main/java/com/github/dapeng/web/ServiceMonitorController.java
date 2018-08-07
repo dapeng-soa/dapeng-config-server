@@ -5,7 +5,7 @@ import com.github.dapeng.core.helper.SoaSystemEnvProperties;
 import com.github.dapeng.openapi.utils.ZkUtil;
 import com.github.dapeng.util.GetServiceMonitorThread;
 import com.github.dapeng.vo.MonitorHosts;
-import com.github.dapeng.vo.ServiceMonitorListVo;
+import com.github.dapeng.vo.ServiceGroupVo;
 import com.github.dapeng.vo.ServiceMonitorVo;
 import com.github.dapeng.vo.Subservices;
 import com.google.common.base.Joiner;
@@ -57,7 +57,7 @@ public class ServiceMonitorController {
     @RequestMapping("/list")
     public Object serviceMonitorList() {
         List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
-        List<ServiceMonitorListVo> monitorList = getServiceMonitorList(baseServiceList);
+        List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         Map<String, Object> resultMap = resultMap(monitorList);
         return resultMap;
     }
@@ -69,7 +69,7 @@ public class ServiceMonitorController {
      * @param monitorList
      * @return
      */
-    public Map<String, Object> resultMap(List<ServiceMonitorListVo> monitorList) {
+    public Map<String, Object> resultMap(List<ServiceGroupVo> monitorList) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             List<JsonObject> jsonObjectList = new ArrayList<>();
@@ -77,7 +77,7 @@ public class ServiceMonitorController {
             CompletionService<String> completionService = new ExecutorCompletionService<String>(threadPool);
             int k = 0;
             for (int i = 0; i < monitorList.size(); i++) {
-                ServiceMonitorListVo smlv = monitorList.get(i);
+                ServiceGroupVo smlv = monitorList.get(i);
                 List<MonitorHosts> hosts = smlv.getHosts();
                 List<Subservices> subservices = smlv.getSubservices();
                 for (int j = 0; j < hosts.size(); j++) {
@@ -155,7 +155,7 @@ public class ServiceMonitorController {
                 String serviceName = map.getKey().toString();
                 Map<String, Object> resMap = (Map) map.getValue();
                 for (int i = 0; i < monitorList.size(); i++) {
-                    ServiceMonitorListVo serviceMonitorListVo = monitorList.get(i);
+                    ServiceGroupVo serviceMonitorListVo = monitorList.get(i);
                     if (serviceMonitorListVo.getService().equals(serviceName)) {
                         Map nodesmap = (Map) resMap.get("node");
                         nodesmap.put("nodeCount", Integer.parseInt(nodesmap.get("nodeCount").toString() + 1));
@@ -221,12 +221,12 @@ public class ServiceMonitorController {
      * @param baseServiceList
      * @return
      */
-    private List<ServiceMonitorListVo> getServiceMonitorList(List<ServiceMonitorVo> baseServiceList) {
-        List<ServiceMonitorListVo> dataList = new ArrayList<>();
+    private List<ServiceGroupVo> getServiceMonitorList(List<ServiceMonitorVo> baseServiceList) {
+        List<ServiceGroupVo> dataList = new ArrayList<>();
         try {
             List<String> zkNodeList = cacheZkNodeList();
             for (int i = 0; i < baseServiceList.size(); i++) {
-                ServiceMonitorListVo smvo = new ServiceMonitorListVo();
+                ServiceGroupVo smvo = new ServiceGroupVo();
                 ServiceMonitorVo smv = baseServiceList.get(i);
                 String[] ipArrs = smv.getIpList().split(",");
                 List<MonitorHosts> hostsList = new ArrayList();
