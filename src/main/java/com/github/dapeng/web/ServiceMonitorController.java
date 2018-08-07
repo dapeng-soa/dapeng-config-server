@@ -271,7 +271,7 @@ public class ServiceMonitorController {
     private List<String> cacheZkNodeList() {
         List<String> zkNodeList = new ArrayList<>();
         String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "192.168.4.102:2181");
-        ZooKeeper zkByHost;
+        ZooKeeper zkByHost=null;
         try {
             zkByHost = ZkUtil.createZkByHost(zkHost);
             List<String> nodeData = ZkUtil.getNodeChildren(zkByHost, PATH, false);
@@ -282,9 +282,12 @@ public class ServiceMonitorController {
                     zkNodeList.add(Joiner.on(":").join(currentNode, serviceList.get(j)));
                 }
             }
+            ZkUtil.closeZk(zkByHost);
             return zkNodeList;
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            ZkUtil.closeZk(zkByHost);
         }
         return zkNodeList;
     }
