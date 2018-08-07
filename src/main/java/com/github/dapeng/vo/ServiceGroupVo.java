@@ -7,7 +7,7 @@ import java.util.List;
  * @Date: 2018/8/1 20:51
  */
 
-public class ServiceMonitorListVo {
+public class ServiceGroupVo {
 
     private String service;
 
