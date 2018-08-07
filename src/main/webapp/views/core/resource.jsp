@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     request.setAttribute("basePath", request.getContextPath());
+    request.setAttribute("socketUrl", System.getenv("deploy_socket_url"));
 %>
 <title>大鹏配置中心</title>
 <meta charset="utf-8"/>
@@ -50,10 +51,9 @@
 <link rel="stylesheet" href="${basePath}/plugins/toastr/css/toastr.css">
 
 <!-- Requires CodeMirror -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/search/searchcursor.min.js"></script>
-<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css" />
-
+<script type="text/javascript" src="${basePath}/plugins/codemirror/codemirror.min.js"></script>
+<script type="text/javascript" src="${basePath}/plugins/codemirror/searchcursor.min.js"></script>
+<link type="text/css" rel="stylesheet" href="${basePath}/plugins/codemirror/codemirror.min.css" />
 
 <%--mergely diff--%>
 <script src="${basePath}/plugins/mergely/mergely.js"></script>
@@ -62,40 +62,10 @@
 <script src="${basePath}/js/ts/Config.js"></script>
 <script src="${basePath}/js/ts/Deploy.js"></script>
 <script src="${basePath}/js/ts/Api.js"></script>
+<script src="${basePath}/plugins/socketIo/socket.io.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
-
+<script src="${basePath}/plugins/init.js"></script>
 <script>
-
     window.basePath = "${basePath}";
-
-    layui.use('element', function(){
-        var element = layui.element;
-
-        //一些事件监听
-        element.on('nav(filter)', function(elem){
-            console.log(elem); //得到当前点击的DOM对象
-        });
-
-        element.on('collapse(filter)', function(data){
-            console.log(data.show); //得到当前面板的展开状态，true或者false
-            console.log(data.title); //得到当前点击面板的标题区域DOM对象
-            console.log(data.content); //得到当前点击面板的内容区域DOM对象
-        });
-    });
-
-    window.layer = {};
-
-    layui.use('layer', function(){
-        window.layui = layui.layer;
-    });
-
-    window.refresh = function(){
-        window.location.reload();
-    };
-
-    window.toggleBlock = function (a) {
-        $(a).next(".advance-format-content").toggle();
-    };
-    window.SUCCESS_CODE = 200;
-    window.ERROR_CODE = 4004;
+    window.socketUrl = "${socketUrl}"
 </script>

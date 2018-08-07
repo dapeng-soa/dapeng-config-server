@@ -12,6 +12,9 @@
     <script src="${basePath}/js/api/deploy-exec.js"></script>
 </head>
 <body>
+<div id="consoleView" class="closed">
+    <p title="控制台" onclick="toggleConloseView(this)">[console >>]</p>
+</div>
 <jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
@@ -41,10 +44,7 @@
             </div>
             <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%" id="viewTypeLabel">服务：</label>
             <div class="col-sm-2" id="viewTypeSelect">
-                <select data-live-search="true" class="selectpicker form-control" onchange="execServiceChanged()" >
-                    <option>goodsService</option>
-                    <option>categoryService</option>
-                </select>
+
             </div>
         </div>
 

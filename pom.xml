@@ -48,6 +48,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.36</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.dapeng</groupId>
+            <artifactId>agent_server-api_2.12</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
@@ -91,23 +97,6 @@
                     <artifactId>okhttp</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.corundumstudio.socketio</groupId>
-            <artifactId>netty-socketio</artifactId>
-            <version>1.7.12</version>
-        </dependency>
-        <dependency>
-            <groupId>io.socket</groupId>
-            <artifactId>socket.io-client</artifactId>
-            <version>0.8.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.wangzaixiang</groupId>
-            <artifactId>scala-sql_2.12</artifactId>
-            <version>2.0.6</version>
         </dependency>
 
         <dependency>
