@@ -114,7 +114,6 @@ function InitDeployUnits() {
  * @return {string}
  */
 deployUnitActionFormatter = function (value, row, index) {
-    console.log(row.setId);
     return deploy.exportDeployUnitActionContext(value, row);
 };
 
@@ -260,6 +259,7 @@ initSetList = function (id) {
             if (id === undefined || id === "") {
                 initHostList()
             }
+            addUnitSetChanged();
         }
     }, "json");
 };
@@ -292,9 +292,7 @@ initHostList = function (id) {
                 html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#hostSelect").html(html);
-            setTimeout(function () {
-                processEnvsChanged();
-            },100);
+            addUnitHostChanged();
         }
     }, "json");
 };
@@ -317,6 +315,7 @@ initServiceList = function (id) {
                 html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
             }
             $("#serviceSelect").html(html);
+            addUnitServiceChanged();
         }
     }, "json");
 };
@@ -327,46 +326,38 @@ initServiceList = function (id) {
  * @param obj
  */
 addUnitSetChanged = function (obj) {
-    var setId = $(obj).find("option:selected").val();
+    var setId = $("#setSelect").find("option:selected").val();
     initHostList(setId);
-    processEnvsChanged();
+    var url = basePath + "/api/deploy-set/" + setId;
+    $.get(url,function (res) {
+        if(res.code === SUCCESS_CODE){
+            $("#setEnvView").html(deploy.setCnfigView(res.context));
+        }
+    },"json");
 };
 /**
  * host 变化，重新获取变量信息
  */
-addUnitHostChanged = function () {
-    processEnvsChanged();
+addUnitHostChanged = function (obj) {
+    var hostId = $("#hostSelect").find("option:selected").val();
+    var url = basePath + "/api/deploy-host/" + hostId;
+    $.get(url,function (res) {
+        if(res.code === SUCCESS_CODE){
+            $("#hostEnvView").html(deploy.hostCnfigView(res.context));
+        }
+    },"json");
 };
 
 /**
  * 服务变化，重新获取变量信息
  */
-addUnitServiceChanged = function () {
-    processEnvsChanged();
-};
-
-/**
- * 处理env等变量等数据合并
- */
-processEnvsChanged = function () {
-    var setId = $("#setSelect").find("option:selected").val();
-    var hostId = $("#hostSelect").find("option:selected").val();
+addUnitServiceChanged = function (obj) {
     var serviceId = $("#serviceSelect").find("option:selected").val();
-
-    var url = basePath + "/api/deploy-unit/process-envs";
-    $.get(url, {
-        setId: setId,
-        hostId: hostId,
-        serviceId: serviceId
-    }, function (res) {
-        console.log(res.context);
-        if (res.code === SUCCESS_CODE) {
-            $("#env-area").val();
-            $("#volumes-area").val();
-            $("#ports-area").val();
-            $("#dockerExtras-area").val();
+    var url = basePath + "/api/deploy-service/" + serviceId;
+    $.get(url,function (res) {
+        if(res.code === SUCCESS_CODE){
+            $("#serviceEnvView").html(deploy.serviceCnfigView(res.context));
         }
     },"json");
 };
-
 

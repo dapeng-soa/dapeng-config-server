@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div class="sidebar-left" style="overflow-y: auto">
+<div class="sidebar-left opened" style="overflow-y: auto">
     <div class="sidebar-top-box">
         <div class="sidebar-cover">
             <span>
@@ -57,18 +57,32 @@
 </div>
 <script>
     function toggleSidebar() {
-        var sc = $(".sidebar-left,.container-right");
-        var isclosed = sc.hasClass("closed");
+        var sc = $(".sidebar-left");
         var isopened = sc.hasClass("opened");
-        if (isclosed){
-            sc.removeClass("closed");
-            sc.addClass("opened");
-        }
-        if (isopened){
-            sc.removeClass("opened");
-            sc.addClass("closed");
+        var isclosed = sc.hasClass("closed");
+        if (!isopened){
+            openSidebar();
+        }else if (isopened && isclosed){
+            closeSidebar();
         }else {
-            sc.addClass("opened");
+            closeSidebar();
         }
+    }
+
+    function openSidebar() {
+        var sc = $(".sidebar-left");
+        var cn = $(".container-right");
+        sc.removeClass("closed");
+        sc.animateCss("fadeInLeft").addClass("opened");
+        cn.removeClass("closed");
+        cn.addClass("opened");
+    }
+    function closeSidebar() {
+        var sc = $(".sidebar-left");
+        var cn = $(".container-right");
+        sc.removeClass("opened");
+        sc.addClass("closed");
+        cn.removeClass("opened");
+        cn.addClass("closed");
     }
 </script>
