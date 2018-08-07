@@ -125,6 +125,13 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.17</version>
         </dependency>
+
+        <!-- FreeMarker支持 -->
+       <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>-->
+
     </dependencies>
 
     <build>

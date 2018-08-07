@@ -7,9 +7,18 @@
     <!--参数配置-->
     <context:property-placeholder location="classpath:config_server.properties"/>
     <!--视图配置-->
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean id="jspviewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="1"/>
         <property name="prefix" value="/views/"/>
         <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="htmlviewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="com.github.dapeng.frame.view.HtmlResourceView"/>
+        <property name="order" value="0"/>
+        <property name="prefix" value="/views/"/>
+        <property name="suffix" value=".html"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
     </bean>
 
     <!-- 默认数据源，配置中心数据源 -->
@@ -70,4 +79,5 @@
 
     <!--配置支持基于注解事务配置  -->
     <tx:annotation-driven/>
+
 </beans>
