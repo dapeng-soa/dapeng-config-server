@@ -188,10 +188,12 @@ execHostChanged = function () {
 
 /**
  * 升级前预览yaml
+ * @param deployTime
+ * @param updateTime
  * @param unitId
  * @param viewType
  */
-serviceYamlPreview = function (unitId, viewType) {
+serviceYamlPreview = function (deployTime,updateTime,unitId, viewType) {
     closeConloseView();
 
     var event_url = basePath + "/api/deploy-unit/event_rep/" + unitId;
@@ -204,7 +206,7 @@ serviceYamlPreview = function (unitId, viewType) {
             util.$get(url, function (res2) {
                 if (res2.code === SUCCESS_CODE) {
                     // 导出弹窗内容模版
-                    var context = deploy.viewDeployYamlContext(unitId, viewType);
+                    var context = deploy.viewDeployYamlContext(deployTime,updateTime,unitId, viewType);
                     initModelContext(context, function () {
                         //refresh()
                     });

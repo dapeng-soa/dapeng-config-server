@@ -632,14 +632,14 @@ restart: on-failure:3
                             <div class="col-sm-6 col-xs-12">
                                 <p>配置更新时间：${em.configUpdateBy}</p>
                                 <p>主机服务时间：${em.deployTime}</p>
-                                <p>服务状态：${em.serviceStatus == 1 ? `<span style="color: #00AA00"><i class="fa fa-cog icon-spin" aria-hidden="true"></i>运行</span>` : `<span style="color:#ff4d4d">停止</span>`}</p>
+                                <p>服务状态：${em.serviceStatus == 1 ? `<span style="color: #00AA00"><i class="fa fa-cog icon-spin" aria-hidden="true"></i>运行</span>` : `<span style="color:#ff4d4d"><i class="fa fa-pause-circle" aria-hidden="true"></i>停止</span>`}</p>
                                 <p>需要更新：${em.needUpdate ? `<span style="color: #ff4d4d">是</span>` : `<span style="color: #00AA00">否</span>`}</p>
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
-                                    <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview(${em.unitId})">升级</a></p>
+                                    <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${em.deployTime}','${em.configUpdateBy}',${em.unitId})">升级</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview(${em.unitId},'view')">预览</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${em.deployTime}','${em.configUpdateBy}',${em.unitId},'view')">预览</a></p>
                             </div>
                         </div>
             `
@@ -653,12 +653,12 @@ restart: on-failure:3
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext(unitId: Number, type?: string) {
+        public viewDeployYamlContext(deployTime: any, updateTime: any, unitId: Number, type?: string) {
             let c = this;
             return `
                 <div class="diff-tit" >
-                <span>线上服务(只读)</span>
-                <span>当前配置(只读)</span>
+                <span>线上服务(只读)[${deployTime}]</span>
+                <span>当前配置(只读)[${updateTime}]</span>
                 </div>
                 <div id="mergely" style="margin:20px 0;">
                 </div>

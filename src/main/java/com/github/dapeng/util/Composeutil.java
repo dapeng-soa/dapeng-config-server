@@ -102,7 +102,7 @@ public class Composeutil {
             });
             sb.deleteCharAt(sb.lastIndexOf("\n"));
         }
-        return realEnvs;
+        return MapSortUtil.sortMapByKey(realEnvs);
     }
 
     /**
