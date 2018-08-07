@@ -8,6 +8,7 @@ import com.github.dapeng.vo.MonitorHosts;
 import com.github.dapeng.vo.ServiceMonitorListVo;
 import com.github.dapeng.vo.ServiceMonitorVo;
 import com.github.dapeng.vo.Subservices;
+import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -45,15 +48,14 @@ public class ServiceMonitorController {
 
     private static final String SOA_ZOOKEEPER_HOST = "soa_zookeeper_host";
 
+    private static final String PATH ="/soa/runtime/services";
+
     @Resource
     private EntityManager entityManager;
 
     @ResponseBody
     @RequestMapping("/list")
     public Object serviceMonitorList() {
-       /* String echoInfo = RequestUtils.getRomoteServiceEcho("192.168.4.102", 9095,"com.github.dapeng.hello.service.HelloService", "1.0.0");
-        System.out.println(echoInfo);
-        Map<String,Map<String,Map>> resultMap = new HashMap<>();*/
         List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
         List<ServiceMonitorListVo> monitorList = getServiceMonitorList(baseServiceList);
         Map<String, Object> resultMap = resultMap(monitorList);
@@ -146,21 +148,7 @@ public class ServiceMonitorController {
                 String tmpJson = gson.toJson(serviceObject);
                 Map<String, Object> serviceMap = gson.fromJson(tmpJson, Map.class);
                 tmpMap.put("nodeInfo", serviceMap);
-
-                /**
-                 * 统计服务节点数
-
-                 for(int j=0;j<monitorList.size();j++){
-                 ServiceMonitorListVo serviceMonitorListVo = monitorList.get(j);
-                 if(serviceMonitorListVo.getService().equals(serviceName)){
-                 if(resultMap.containsKey(serviceName)){
-                 Map<String,Object> serviceMap= resultMap.get(serviceName);
-                 serviceMap.put("nodeCount",Integer.parseInt(serviceMap.get("nodeCount").toString()));
-                 }
-                 }
-                 }
-                 */
-
+                tmpMap.put("lastUpdate", LocalDateTime.now().format(DateTimeFormatter.ISO_TIME));
             }
             //服务节点数统计
             for (Map.Entry<String, Object> map : resultMap.entrySet()) {
@@ -196,9 +184,6 @@ public class ServiceMonitorController {
              }
              }
              */
-
-       /* String echoInfo =RequestUtils.getRomoteServiceEcho("192.168.4.102", 9095,"com.github.dapeng.hello.service.HelloService", "1.0.0");
-        System.out.println(echoInfo);*/
             return resultMap;
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,17 +222,12 @@ public class ServiceMonitorController {
      * @return
      */
     private List<ServiceMonitorListVo> getServiceMonitorList(List<ServiceMonitorVo> baseServiceList) {
-        String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "192.168.4.102:2181");
-
         List<ServiceMonitorListVo> dataList = new ArrayList<>();
-        ZooKeeper zkByHost;
         try {
-            zkByHost = ZkUtil.createZkByHost(zkHost);
-            List<String> nodeChildren = ZkUtil.getNodeChildren(zkByHost, "/soa/runtime/services/com.github.dapeng.hello.service.HelloService", false);
-            List<String> nodeData = ZkUtil.getNodeChildren(zkByHost, "/soa/runtime/services", false);
+            List<String> zkNodeList = cacheZkNodeList();
             for (int i = 0; i < baseServiceList.size(); i++) {
                 ServiceMonitorListVo smvo = new ServiceMonitorListVo();
-                ServiceMonitorVo smv = (ServiceMonitorVo) baseServiceList.get(i);
+                ServiceMonitorVo smv = baseServiceList.get(i);
                 String[] ipArrs = smv.getIpList().split(",");
                 List<MonitorHosts> hostsList = new ArrayList();
                 List<Subservices> ssv = new ArrayList<>();
@@ -263,26 +243,14 @@ public class ServiceMonitorController {
                     hosts.setIp(realIp);
                     hosts.setPort(port);
                     hostsList.add(hosts);
-                    for (int j = 0; j < nodeData.size(); j++) {
-                        Subservices subservices = new Subservices();
-                        //String currentNode = ZkUtil.getNodeData(zkByHost, "/soa/runtime/services"+nodeData.get(j));
-                        String currentNode = nodeData.get(j);
-                        List<String> serviceList = ZkUtil.getNodeChildren(zkByHost, "/soa/runtime/services/" + currentNode, false);
-                        if (currentNode.equals("com.github.dapeng.hello.service.HelloService")) {
-                            System.out.println("==========================" + serviceList.size() + "=========================");
+                    zkNodeList.stream().forEach(x -> {
+                        if (x.indexOf(Joiner.on(":").join(realIp, hosts.getPort())) != -1) {
+                            Subservices subservices = new Subservices();
+                            subservices.setName(x.split(":")[0]);
+                            subservices.setVersion(x.split(":")[3]);
+                            ssv.add(subservices);
                         }
-                        if (serviceList != null && serviceList.size() > 0) {
-                            for (String str : serviceList) {
-                                String[] splitService = str.split(":");
-                                if (splitService[0].equals(realIp) && splitService[1].equals(port)) {
-                                    subservices.setName(currentNode);
-                                    subservices.setVersion(splitService[2]);
-                                    ssv.add(subservices);
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    });
                 }
                 smvo.setHosts(hostsList);
                 smvo.setService(smv.getServiceName());
@@ -294,4 +262,31 @@ public class ServiceMonitorController {
         }
         return dataList;
     }
+
+
+    /**
+     * @return
+     * 获取zk节点信息
+     */
+    private List<String> cacheZkNodeList() {
+        List<String> zkNodeList = new ArrayList<>();
+        String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "192.168.4.102:2181");
+        ZooKeeper zkByHost;
+        try {
+            zkByHost = ZkUtil.createZkByHost(zkHost);
+            List<String> nodeData = ZkUtil.getNodeChildren(zkByHost, PATH, false);
+            for (int i = 0; i < nodeData.size(); i++) {
+                String currentNode = nodeData.get(i);
+                List<String> serviceList = ZkUtil.getNodeChildren(zkByHost, PATH + "/"+currentNode, false);
+                for (int j = 0; j < serviceList.size(); j++) {
+                    zkNodeList.add(Joiner.on(":").join(currentNode, serviceList.get(j)));
+                }
+            }
+            return zkNodeList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return zkNodeList;
+    }
+
 }
