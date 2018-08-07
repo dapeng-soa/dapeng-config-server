@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     request.setAttribute("basePath", request.getContextPath());
+    request.setAttribute("socketUrl", System.getenv("deploy_socket_url"));
 %>
 <title>大鹏配置中心</title>
 <meta charset="utf-8"/>
@@ -66,4 +67,5 @@
 <script src="${basePath}/plugins/init.js"></script>
 <script>
     window.basePath = "${basePath}";
+    window.socketUrl = "${socketUrl}"
 </script>
