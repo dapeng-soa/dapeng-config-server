@@ -421,6 +421,7 @@ button[type="button"][name="toggle"]:before {
  */
 #consoleView{
     width: 400px;
+    min-width: 300px !important;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -436,13 +437,16 @@ button[type="button"][name="toggle"]:before {
 #consoleView.opened {
     right: 0;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
     word-break: break-all;
 }
-
-#consoleView.closed {
-   right: -400px;
-    top: 5px;
+#consoleView>#line{
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    background: #333;
+    right: 396px;
+    cursor: w-resize;
 }
 #consoleView>p:first-of-type{
     font-weight: 700;

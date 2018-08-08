@@ -15,7 +15,7 @@ $(document).ready(function () {
     socket.on(NODE_EVENT, function (data) {
         deploy.consoleView(data);
         setTimeout(function () {
-            closeConloseView();
+            //closeConloseView();
         }, 10000);
     });
     socket.on(GET_SERVER_TIME_RESP, function (data) {
@@ -43,6 +43,7 @@ $(document).ready(function () {
         showMessage(ERROR, "与服务器建立连接失败", "连接超时");
     });
 });
+
 var deploy = new api.Deploy();
 var util = new api.Api();
 /**
@@ -72,15 +73,15 @@ toggleConloseView = function () {
 };
 openConloseView = function () {
     var ob = $("#consoleView");
-    ob.removeClass("closed");
     ob.animateCss("fadeInRight").addClass("opened");
+    ob.css({top:"0",right:0+"px"})
 };
 
 closeConloseView = function () {
     var ob = $("#consoleView");
     if (ob.hasClass("opened")) {
         ob.removeClass("opened");
-        ob.addClass("closed");
+        ob.css({top:"5px",right:-(ob.width()+Number(ob.css("padding-left").replace("px",""))+Number(ob.css("padding-right").replace("px","")))+"px"})
     }
 };
 
@@ -193,7 +194,7 @@ execHostChanged = function () {
  * @param unitId
  * @param viewType
  */
-serviceYamlPreview = function (deployTime,updateTime,unitId, viewType) {
+serviceYamlPreview = function (deployTime, updateTime, unitId, viewType) {
     closeConloseView();
 
     var event_url = basePath + "/api/deploy-unit/event_rep/" + unitId;
@@ -206,7 +207,7 @@ serviceYamlPreview = function (deployTime,updateTime,unitId, viewType) {
             util.$get(url, function (res2) {
                 if (res2.code === SUCCESS_CODE) {
                     // 导出弹窗内容模版
-                    var context = deploy.viewDeployYamlContext(deployTime,updateTime,unitId, viewType);
+                    var context = deploy.viewDeployYamlContext(deployTime, updateTime, unitId, viewType);
                     initModelContext(context, function () {
                         //refresh()
                     });
@@ -336,6 +337,32 @@ cancelServiceUpdate = function () {
  */
 downloadYaml = function () {
     layer.msg("下载成功");
+};
+
+slideLine = function (e) {
+    var body = document.body, oconsoleView = document.getElementById("consoleView"),
+        oLine = document.getElementById("line");
+    var disX = (e || event).clientX;
+    oLine.width = oLine.offsetWidth;
+    document.onmousemove = function (e) {
+        var iT = oLine.width + ((e || event).clientX - disX);
+        var e = e || window.event, tarnameb = e.target || e.srcElement;
+        var maxT = body.clientWidth - oLine.offsetWidth;
+        var base = (maxT - disX);
+        if (iT > maxT) {
+            iT = maxT
+        }
+        oLine.style.right = (base - oLine.width - iT) < (300 - oLine.width) ? 300 - oLine.width : (base - oLine.width - iT) + "px";
+        oconsoleView.style.width = base - iT + "px";
+        return false
+    };
+    document.onmouseup = function () {
+        document.onmousemove = null;
+        document.onmouseup = null;
+        oLine.releaseCapture && oLine.releaseCapture()
+    };
+    oLine.setCapture && oLine.setCapture();
+    return false
 };
 
 

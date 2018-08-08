@@ -14,6 +14,7 @@
 <body>
 <div id="consoleView" class="closed">
     <p title="控制台" onclick="toggleConloseView(this)">[console >>]</p>
+    <div id="line" onmousedown="slideLine(event)"></div>
 </div>
 <jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
