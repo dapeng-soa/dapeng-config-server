@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -48,7 +46,7 @@ public class ServiceMonitorController {
 
     private static final String SOA_ZOOKEEPER_HOST = "soa_zookeeper_host";
 
-    private static final String PATH ="/soa/runtime/services";
+    private static final String PATH = "/soa/runtime/services";
 
     @Resource
     private EntityManager entityManager;
@@ -58,8 +56,8 @@ public class ServiceMonitorController {
     public Object serviceMonitorList() {
         List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
-        Map<String, Object> resultMap = resultMap(monitorList);
-        return resultMap;
+        List<Map<String, Object>> resultList = resultList(monitorList);
+        return resultList;
     }
 
 
@@ -69,12 +67,15 @@ public class ServiceMonitorController {
      * @param monitorList
      * @return
      */
-    public Map<String, Object> resultMap(List<ServiceGroupVo> monitorList) {
+    public List<Map<String, Object>> resultList(List<ServiceGroupVo> monitorList) {
+        List<Map<String, Object>> resList = new ArrayList<>();
         Map<String, Object> resultMap = new HashMap<>();
+        Map<String, String> serviceIpMap = new HashMap<>();
+        Map<String, String> ipNameMap = new HashMap<>();
         try {
             List<JsonObject> jsonObjectList = new ArrayList<>();
             ExecutorService threadPool = Executors.newCachedThreadPool();
-            CompletionService<String> completionService = new ExecutorCompletionService<String>(threadPool);
+            CompletionService<String> completionService = new ExecutorCompletionService<>(threadPool);
             int k = 0;
             for (int i = 0; i < monitorList.size(); i++) {
                 ServiceGroupVo smlv = monitorList.get(i);
@@ -83,6 +84,10 @@ public class ServiceMonitorController {
                 for (int j = 0; j < hosts.size(); j++) {
                     k++;
                     MonitorHosts monitorHosts = hosts.get(j);
+                    ipNameMap.put(Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()), smlv.getService());
+                    subservices.stream().forEach(x -> {
+                        serviceIpMap.put(x.getName(), Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()));
+                    });
                     GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(i).getName(), subservices.get(i).getVersion());
                     completionService.submit(getServiceMonitorThread);
                 }
@@ -148,12 +153,13 @@ public class ServiceMonitorController {
                 String tmpJson = gson.toJson(serviceObject);
                 Map<String, Object> serviceMap = gson.fromJson(tmpJson, Map.class);
                 tmpMap.put("nodeInfo", serviceMap);
-                tmpMap.put("lastUpdate", LocalDateTime.now().format(DateTimeFormatter.ISO_TIME));
+                tmpMap.put("lastUpdate", System.currentTimeMillis());
             }
             //服务节点数统计
             for (Map.Entry<String, Object> map : resultMap.entrySet()) {
                 String serviceName = map.getKey().toString();
                 Map<String, Object> resMap = (Map) map.getValue();
+                resMap.put("name", ipNameMap.get(serviceIpMap.get(serviceName)));
                 for (int i = 0; i < monitorList.size(); i++) {
                     ServiceGroupVo serviceMonitorListVo = monitorList.get(i);
                     if (serviceMonitorListVo.getService().equals(serviceName)) {
@@ -165,6 +171,7 @@ public class ServiceMonitorController {
                         resMap.put("node", nodesmap);
                     }
                 }
+                resList.add(resMap);
             }
             /**
              * {
@@ -184,11 +191,12 @@ public class ServiceMonitorController {
              }
              }
              */
-            return resultMap;
+
+            return resList;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resultMap;
+        return resList;
     }
 
     private int getJsonObjectByKey(JsonObject object, String key) {
@@ -265,19 +273,18 @@ public class ServiceMonitorController {
 
 
     /**
-     * @return
-     * 获取zk节点信息
+     * @return 获取zk节点信息
      */
     private List<String> cacheZkNodeList() {
         List<String> zkNodeList = new ArrayList<>();
         String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "192.168.4.102:2181");
-        ZooKeeper zkByHost=null;
+        ZooKeeper zkByHost = null;
         try {
             zkByHost = ZkUtil.createZkByHost(zkHost);
             List<String> nodeData = ZkUtil.getNodeChildren(zkByHost, PATH, false);
             for (int i = 0; i < nodeData.size(); i++) {
                 String currentNode = nodeData.get(i);
-                List<String> serviceList = ZkUtil.getNodeChildren(zkByHost, PATH + "/"+currentNode, false);
+                List<String> serviceList = ZkUtil.getNodeChildren(zkByHost, PATH + "/" + currentNode, false);
                 for (int j = 0; j < serviceList.size(); j++) {
                     zkNodeList.add(Joiner.on(":").join(currentNode, serviceList.get(j)));
                 }
@@ -286,7 +293,7 @@ public class ServiceMonitorController {
             return zkNodeList;
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             ZkUtil.closeZk(zkByHost);
         }
         return zkNodeList;
