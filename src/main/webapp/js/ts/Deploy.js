@@ -1,5 +1,6 @@
 /// <reference path="../../plugins/ts-lib/jquerytemplate.d.ts"/>
 /// <reference path="../../plugins/ts-lib/jquery.d.ts"/>
+/// <reference path="./Mapper.ts"/>
 /*部署模块ts模版代码*/
 var api;
 (function (api) {
@@ -96,18 +97,68 @@ var api;
             var view = "";
             for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
                 var em = data_1[_i];
-                view += "\n            <div class=\"col-sm-6 col-xs-12\">\n                <div class=\"panel panel-default panel-box\">\n                    <div class=\"panel-heading\"><p style=\"text-align: center\">" + (viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']') + "</p>\n                    </div>\n                    <div class=\"panel-body\" style=\"overflow-y: auto;max-height: 400px\">\n                         " + dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos) + "\n                    </div>\n                </div>\n            </div>\n            ";
+                view += "\n            <div class=\"col-sm-6 col-xs-12\">\n                <div class=\"panel panel-default panel-box\">\n                    <div class=\"panel-heading\"><p style=\"text-align: center\">" + (viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']') + "</p>\n                    </div>\n                    <div class=\"panel-body\" style=\"overflow-y: auto;max-height: 400px\">\n                         " + dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos, em) + "\n                    </div>\n                </div>\n            </div>\n            ";
             }
             return view;
         };
-        Deploy.prototype.serviceViewSubHost = function (viewType, sub) {
+        Deploy.prototype.serviceViewSubHost = function (viewType, sub, obj) {
             var dep = this;
             var subView = "";
             for (var _i = 0, sub_1 = sub; _i < sub_1.length; _i++) {
                 var em = sub_1[_i];
-                subView += "<div class=\"row\" style=\"border-bottom: 1px solid gainsboro;padding: 10px 0;\">\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p style=\"font-size: 20px\">" + (viewType == dep.serviceView ? em.hostName : em.serviceName) + "</p>\n                                " + (viewType == dep.serviceView ? "<p >" + em.hostIp + "</p>" : "") + "\n                            </div>\n                            <div class=\"col-sm-6 col-xs-12\">\n                                <p>\u914D\u7F6E\u66F4\u65B0\u65F6\u95F4\uFF1A" + em.configUpdateBy + "</p>\n                                <p>\u4E3B\u673A\u670D\u52A1\u65F6\u95F4\uFF1A" + em.deployTime + "</p>\n                                <p>\u670D\u52A1\u72B6\u6001\uFF1A" + (em.serviceStatus == 1 ? "<span style=\"color: #00AA00\"><i class=\"fa fa-cog icon-spin\" aria-hidden=\"true\"></i>\u8FD0\u884C</span>" : "<span style=\"color:#ff4d4d\"><i class=\"fa fa-pause-circle\" aria-hidden=\"true\"></i>\u505C\u6B62</span>") + "</p>\n                                <p>\u9700\u8981\u66F4\u65B0\uFF1A" + (em.needUpdate ? "<span style=\"color: #ff4d4d\">\u662F</span>" : "<span style=\"color: #00AA00\">\u5426</span>") + "</p>\n                                </div>\n                                <div class=\"col-sm-3 col-xs-12\">\n                                    <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"serviceYamlPreview('" + em.deployTime + "','" + em.configUpdateBy + "'," + em.unitId + ")\">\u5347\u7EA7</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"stopService(" + em.unitId + ")\">\u505C\u6B62</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"restartService(" + em.unitId + ")\">\u91CD\u542F</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"serviceYamlPreview('" + em.deployTime + "','" + em.configUpdateBy + "'," + em.unitId + ",'view')\">\u9884\u89C8</a></p>\n                            </div>\n                        </div>\n            ";
+                var IdPrefix = viewType == dep.serviceView ? em.hostIp + obj.serviceName : obj.hostIp + em.serviceName;
+                subView += "<div class=\"row\" style=\"border-bottom: 1px solid gainsboro;padding: 10px 0;\">\n                            <div class=\"col-sm-3 col-xs-12\">\n                                <p style=\"font-size: 20px\">" + (viewType == dep.serviceView ? em.hostName : em.serviceName) + "</p>\n                                " + (viewType == dep.serviceView ? "<p >" + em.hostIp + "</p>" : "") + "\n                            </div>\n                            <div class=\"col-sm-6 col-xs-12\">\n                                <p>\u914D\u7F6E\u66F4\u65B0\u65F6\u95F4\uFF1A<span id=\"" + IdPrefix + "-configUpdateTime\" data-real-configUpdateBy=\"" + em.configUpdateBy + "\">" + dep.unix2Time(em.configUpdateBy) + "</span></p>\n                                <p>\u4E3B\u673A\u670D\u52A1\u65F6\u95F4\uFF1A<span id=\"" + IdPrefix + "-deployTime\">" + em.deployTime + "</span></p>\n                                <p>\u670D\u52A1\u72B6\u6001\uFF1A<span id=\"" + IdPrefix + "-serviceStatus\">" + dep.realStatus(em.serviceStatus) + "</span></p>\n                                <p>\u9700\u8981\u66F4\u65B0\uFF1A<span id=\"" + IdPrefix + "-needUpdate\">" + dep.updateStatus(em.needUpdate) + "</span></p>\n                                </div>\n                                <div class=\"col-sm-3 col-xs-12\">\n                                    <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"serviceYamlPreview('" + (IdPrefix + "-deployTime") + "','" + (IdPrefix + "-configUpdateTime") + "'," + em.unitId + ")\">\u5347\u7EA7</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"stopService(" + em.unitId + ")\">\u505C\u6B62</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"restartService(" + em.unitId + ")\">\u91CD\u542F</a></p>\n                                <p ><a href=\"#\" style=\"color: #1E9FFF\" onclick=\"serviceYamlPreview('" + (IdPrefix + "-deployTime") + "','" + (IdPrefix + "-configUpdateTime") + "'," + em.unitId + ",'view')\">\u9884\u89C8</a></p>\n                            </div>\n                        </div>\n            ";
             }
             return subView;
+        };
+        /**
+         * 根据事件返回处理
+         * @param realInfo
+         */
+        Deploy.prototype.processServiceStatus = function (realInfo) {
+            var t = this;
+            // 构造domID
+            var configUpdateId = t.el(realInfo.ip + realInfo.serviceName + "-configUpdateTime");
+            var deployTimeId = t.el(realInfo.ip + realInfo.serviceName + "-deployTime");
+            var serviceStatusId = t.el(realInfo.ip + realInfo.serviceName + "-serviceStatus");
+            var needUpdateId = t.el(realInfo.ip + realInfo.serviceName + "-needUpdate");
+            if (configUpdateId != null && deployTimeId != null && serviceStatusId != null && needUpdateId != null) {
+                var realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);
+                var updateStatus = realInfo.time < realConfigupdateby;
+                deployTimeId.innerHTML = t.unix2Time(realInfo.time);
+                serviceStatusId.innerHTML = t.realStatus(realInfo.status ? 1 : 2);
+                needUpdateId.innerHTML = t.updateStatus(updateStatus);
+            }
+        };
+        /**
+         * 服务状态
+         * @param {Number} status
+         * @returns {string}
+         */
+        Deploy.prototype.realStatus = function (status) {
+            switch (status) {
+                case 1:
+                    return "<span style=\"color: #00AA00\"><i class=\"fa fa-cog icon-spin\" aria-hidden=\"true\"></i>\u8FD0\u884C</span>";
+                case 2:
+                    return "<span style=\"color:#ff4d4d\"><i class=\"fa fa-pause-circle\" aria-hidden=\"true\"></i>\u505C\u6B62</span>";
+                default:
+                    return "<span style=\"color:#ffd248\"><i class=\"fa fa-pause-circle\" aria-hidden=\"true\"></i>\u672A\u77E5</span>";
+            }
+        };
+        /**
+         * 更新状态
+         * @param {boolean} b
+         */
+        Deploy.prototype.updateStatus = function (b) {
+            if (b) {
+                return "<span style=\"color: #ff4d4d\">\u662F</span>";
+            }
+            else {
+                return "<span style=\"color: #00AA00\">\u5426</span>";
+            }
+        };
+        Deploy.prototype.el = function (ementId) {
+            return document.getElementById(ementId);
         };
         /**
          * 预览yaml
@@ -115,7 +166,10 @@ var api;
          */
         Deploy.prototype.viewDeployYamlContext = function (deployTime, updateTime, unitId, type) {
             var c = this;
-            return "\n                <div class=\"diff-tit\" >\n                <span>\u7EBF\u4E0A\u670D\u52A1(\u53EA\u8BFB)[" + deployTime + "]</span>\n                <span>\u5F53\u524D\u914D\u7F6E(\u53EA\u8BFB)[" + updateTime + "]</span>\n                </div>\n                <div id=\"mergely\" style=\"margin:20px 0;\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                <span class=\"input-group-btn panel-button-group text-center\">\n                " + (type == undefined || type != c.view ? "\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"execServiceUpdate(" + unitId + ")\">\u786E\u8BA4\u5347\u7EA7</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"cancelServiceUpdate()\">\u53D6\u6D88\u5347\u7EA7</button>\n                        " : "") + "\n                <button type=\"button\" class=\"btn btn-info\" onclick=\"downloadYaml(" + unitId + ")\">\u4E0B\u8F7D\u914D\u7F6E</button>\n                 </span>\n                </div>\n            ";
+            var realDeployTime = c.el("" + deployTime).innerHTML;
+            var realUpdateTime = c.el("" + updateTime).innerHTML;
+            Å;
+            return "\n                <div class=\"diff-tit\" >\n                <span>\u7EBF\u4E0A\u670D\u52A1(\u53EA\u8BFB)[" + realDeployTime + "]</span>\n                <span>\u5F53\u524D\u914D\u7F6E(\u53EA\u8BFB)[" + realUpdateTime + "]</span>\n                </div>\n                <div id=\"mergely\" style=\"margin:20px 0;\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                <span class=\"input-group-btn panel-button-group text-center\">\n                " + (type == undefined || type != c.view ? "\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"execServiceUpdate(" + unitId + ")\">\u786E\u8BA4\u5347\u7EA7</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"cancelServiceUpdate()\">\u53D6\u6D88\u5347\u7EA7</button>\n                        " : "") + "\n                <button type=\"button\" class=\"btn btn-info\" onclick=\"downloadYaml(" + unitId + ")\">\u4E0B\u8F7D\u914D\u7F6E</button>\n                 </span>\n                </div>\n            ";
         };
         /*
         服务配置预览
@@ -140,6 +194,11 @@ var api;
             var rowStr = "\n            <p><span style=\"color:#00bb00\">[" + new Date().toLocaleTimeString() + "]#</span> " + row + "</p>\n            ";
             var ob = $("#consoleView");
             ob.append(rowStr);
+            document.getElementById("consoleView").scrollTop = document.getElementById("consoleView").scrollHeight;
+        };
+        Deploy.prototype.unix2Time = function (unix) {
+            var unixTimestamp = new Date(unix * 1000);
+            return unixTimestamp.toLocaleString();
         };
         return Deploy;
     }());

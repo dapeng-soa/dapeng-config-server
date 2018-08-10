@@ -98,7 +98,7 @@ public class DeployExecRestController {
                     THost tHost = hostRepository.getOne(u.getHostId());
                     subHostVo.setHostIp(IPUtils.transferIp(tHost.getIp()));
                     subHostVo.setHostName(tHost.getName());
-                    subHostVo.setServiceStatus(1);
+                    subHostVo.setServiceStatus(3);
                     subHostVo.setNeedUpdate(true);
                     subHostVo.setConfigUpdateBy(lastUpdateAt(u) / 1000);
                     subHostVo.setDeployTime(0L);
@@ -140,7 +140,7 @@ public class DeployExecRestController {
                     subServiceVo.setNeedUpdate(true);
                     subServiceVo.setConfigUpdateBy(lastUpdateAt(u) / 1000);
                     subServiceVo.setDeployTime(0L);
-                    subServiceVo.setServiceStatus(1);
+                    subServiceVo.setServiceStatus(3);
                     subServiceVos.add(subServiceVo);
                 });
                 deployHostVo.setDeploySubServiceVos(subServiceVos);
