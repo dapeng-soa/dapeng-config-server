@@ -168,7 +168,6 @@ var api;
             var c = this;
             var realDeployTime = c.el("" + deployTime).innerHTML;
             var realUpdateTime = c.el("" + updateTime).innerHTML;
-            Å;
             return "\n                <div class=\"diff-tit\" >\n                <span>\u7EBF\u4E0A\u670D\u52A1(\u53EA\u8BFB)[" + realDeployTime + "]</span>\n                <span>\u5F53\u524D\u914D\u7F6E(\u53EA\u8BFB)[" + realUpdateTime + "]</span>\n                </div>\n                <div id=\"mergely\" style=\"margin:20px 0;\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                <span class=\"input-group-btn panel-button-group text-center\">\n                " + (type == undefined || type != c.view ? "\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"execServiceUpdate(" + unitId + ")\">\u786E\u8BA4\u5347\u7EA7</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"cancelServiceUpdate()\">\u53D6\u6D88\u5347\u7EA7</button>\n                        " : "") + "\n                <button type=\"button\" class=\"btn btn-info\" onclick=\"downloadYaml(" + unitId + ")\">\u4E0B\u8F7D\u914D\u7F6E</button>\n                 </span>\n                </div>\n            ";
         };
         /*
