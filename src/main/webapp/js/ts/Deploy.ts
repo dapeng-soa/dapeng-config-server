@@ -1,7 +1,9 @@
 /// <reference path="../../plugins/ts-lib/jquerytemplate.d.ts"/>
 /// <reference path="../../plugins/ts-lib/jquery.d.ts"/>
+/// <reference path="./Mapper.ts"/>
 /*部署模块ts模版代码*/
 module api {
+
     export class Deploy {
 
         add: string = "add";
@@ -611,7 +613,7 @@ restart: on-failure:3
                     <div class="panel-heading"><p style="text-align: center">${viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']'}</p>
                     </div>
                     <div class="panel-body" style="overflow-y: auto;max-height: 400px">
-                         ${dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos)}
+                         ${dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos, em)}
                     </div>
                 </div>
             </div>
@@ -620,26 +622,27 @@ restart: on-failure:3
             return view;
         }
 
-        private serviceViewSubHost(viewType: number, sub: any) {
+        private serviceViewSubHost(viewType: number, sub: any, obj) {
             let dep = this;
             let subView = "";
             for (let em of sub) {
+                let IdPrefix = viewType == dep.serviceView ? em.hostIp + obj.serviceName : obj.hostIp + em.serviceName;
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-3 col-xs-12">
                                 <p style="font-size: 20px">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
                                 ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
                             </div>
                             <div class="col-sm-6 col-xs-12">
-                                <p>配置更新时间：${em.configUpdateBy}</p>
-                                <p>主机服务时间：${em.deployTime}</p>
-                                <p>服务状态：${em.serviceStatus == 1 ? `<span style="color: #00AA00"><i class="fa fa-cog icon-spin" aria-hidden="true"></i>运行</span>` : `<span style="color:#ff4d4d"><i class="fa fa-pause-circle" aria-hidden="true"></i>停止</span>`}</p>
-                                <p>需要更新：${em.needUpdate ? `<span style="color: #ff4d4d">是</span>` : `<span style="color: #00AA00">否</span>`}</p>
+                                <p>配置更新时间：<span id="${IdPrefix}-configUpdateTime" data-real-configUpdateBy="${em.configUpdateBy}">${dep.unix2Time(em.configUpdateBy)}</span></p>
+                                <p>主机服务时间：<span id="${IdPrefix}-deployTime">${em.deployTime}</span></p>
+                                <p>服务状态：<span id="${IdPrefix}-serviceStatus">${dep.realStatus(em.serviceStatus)}</span></p>
+                                <p>需要更新：<span id="${IdPrefix}-needUpdate">${dep.updateStatus(em.needUpdate)}</span></p>
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
-                                    <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${em.deployTime}','${em.configUpdateBy}',${em.unitId})">升级</a></p>
+                                    <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId})">升级</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
                                 <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${em.deployTime}','${em.configUpdateBy}',${em.unitId},'view')">预览</a></p>
+                                <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId},'view')">预览</a></p>
                             </div>
                         </div>
             `
@@ -648,17 +651,72 @@ restart: on-failure:3
             return subView
         }
 
+        /**
+         * 根据事件返回处理
+         * @param realInfo
+         */
+        public processServiceStatus(realInfo: ServiceInfoRepose) {
+            let t = this;
+            // 构造domID
+            let configUpdateId = t.el(`${realInfo.ip + realInfo.serviceName}-configUpdateTime`);
+            let deployTimeId = t.el(`${realInfo.ip + realInfo.serviceName}-deployTime`);
+            let serviceStatusId = t.el(`${realInfo.ip + realInfo.serviceName}-serviceStatus`);
+            let needUpdateId = t.el(`${realInfo.ip + realInfo.serviceName}-needUpdate`);
+
+            if (configUpdateId != null && deployTimeId != null && serviceStatusId != null && needUpdateId != null) {
+                let realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);
+                let updateStatus = realInfo.time < realConfigupdateby;
+                deployTimeId.innerHTML = t.unix2Time(realInfo.time);
+                serviceStatusId.innerHTML = t.realStatus(realInfo.status ? 1 : 2);
+                needUpdateId.innerHTML = t.updateStatus(updateStatus);
+            }
+        }
+
+        /**
+         * 服务状态
+         * @param {Number} status
+         * @returns {string}
+         */
+        private realStatus(status: Number) {
+            switch (status) {
+                case 1:
+                    return `<span style="color: #00AA00"><i class="fa fa-cog icon-spin" aria-hidden="true"></i>运行</span>`;
+                case 2:
+                    return `<span style="color:#ff4d4d"><i class="fa fa-pause-circle" aria-hidden="true"></i>停止</span>`;
+                default:
+                    return `<span style="color:#ffd248"><i class="fa fa-pause-circle" aria-hidden="true"></i>未知</span>`;
+            }
+        }
+
+        /**
+         * 更新状态
+         * @param {boolean} b
+         */
+        private updateStatus(b: boolean) {
+            if (b) {
+                return `<span style="color: #ff4d4d">是</span>`;
+            } else {
+                return `<span style="color: #00AA00">否</span>`;
+            }
+        }
+
+        private el(ementId: string): HTMLElement | null {
+            return document.getElementById(ementId);
+        }
+
 
         /**
          * 预览yaml
          * @returns {string}
          */
-        public viewDeployYamlContext(deployTime: any, updateTime: any, unitId: Number, type?: string) {
+        public viewDeployYamlContext(deployTime: string, updateTime: string, unitId: Number, type?: string) {
             let c = this;
+            let realDeployTime = c.el(`${deployTime}`).innerHTML;
+            let realUpdateTime = c.el(`${updateTime}`).innerHTML;Å
             return `
                 <div class="diff-tit" >
-                <span>线上服务(只读)[${deployTime}]</span>
-                <span>当前配置(只读)[${updateTime}]</span>
+                <span>线上服务(只读)[${realDeployTime}]</span>
+                <span>当前配置(只读)[${realUpdateTime}]</span>
                 </div>
                 <div id="mergely" style="margin:20px 0;">
                 </div>
@@ -740,6 +798,12 @@ ${data.extra == 1 ? '否' : '是'}
             `;
             let ob = $("#consoleView");
             ob.append(rowStr);
+            document.getElementById("consoleView").scrollTop = document.getElementById("consoleView").scrollHeight
+        }
+
+        public unix2Time(unix: any) {
+            let unixTimestamp = new Date(unix * 1000);
+            return unixTimestamp.toLocaleString();
         }
     }
 }
