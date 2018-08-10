@@ -5,4 +5,4 @@ RUN rm -rf /usr/local/tomcat/webapps && mkdir -p /usr/local/tomcat/webapps && ch
 
 COPY  ./apps/ROOT.war /usr/local/tomcat/webapps/
 
-CMD sh /opt/fluent-bit/fluent-bit.sh && catalina.sh run
+CMD sh catalina.sh run
