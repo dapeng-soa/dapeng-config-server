@@ -712,7 +712,7 @@ restart: on-failure:3
         public viewDeployYamlContext(deployTime: string, updateTime: string, unitId: Number, type?: string) {
             let c = this;
             let realDeployTime = c.el(`${deployTime}`).innerHTML;
-            let realUpdateTime = c.el(`${updateTime}`).innerHTML;Å
+            let realUpdateTime = c.el(`${updateTime}`).innerHTML;
             return `
                 <div class="diff-tit" >
                 <span>线上服务(只读)[${realDeployTime}]</span>
