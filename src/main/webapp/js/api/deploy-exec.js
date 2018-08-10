@@ -3,7 +3,7 @@ var yaml = "";
 var serviceNum = 0; // 当前的服务数量
 var realService = []; //缓存服务时间事件问询的数据
 $(document).ready(function () {
-    openConloseView();
+    //openConloseView();
     socket = io(socketUrl);
     socket.on(SOC_CONNECT, function () {
         if (socket.connected) {
