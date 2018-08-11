@@ -335,8 +335,17 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
         public exportApiKeyTableActionContext(id: string, row: any) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="修改"  onclick="viewApiKeyOrEditByID(${id},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="下发此key"  onclick="openSendApiKey(${id})"><span class="glyphicon glyphicon-send"></span></a>
             <a href="javascript:void(0)" title="禁用"  onclick="delApiKey(${id})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`
+        }
+
+        public exportApiKeySend(){
+            return `<div class="form-group" style="margin-top: 20px">
+                        <div class="col-sm-12">
+                            <input type="email"  id="sendKeyEmail" class="form-control" />
+                        </div>
+                    </div>`
         }
 
         //导出添加/修改/集群信息

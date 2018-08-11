@@ -41,7 +41,10 @@ var api;
         };
         //ApiKey表格操作模版
         Config.prototype.exportApiKeyTableActionContext = function (id, row) {
-            return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewApiKeyOrEditByID(" + id + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u7981\u7528\"  onclick=\"delApiKey(" + id + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
+            return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewApiKeyOrEditByID(" + id + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4E0B\u53D1\u6B64key\"  onclick=\"openSendApiKey(" + id + ")\"><span class=\"glyphicon glyphicon-send\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u7981\u7528\"  onclick=\"delApiKey(" + id + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
+        };
+        Config.prototype.exportApiKeySend = function () {
+            return "<div class=\"form-group\" style=\"margin-top: 20px\">\n                        <div class=\"col-sm-12\">\n                            <input type=\"email\"  id=\"sendKeyEmail\" class=\"form-control\" />\n                        </div>\n                    </div>";
         };
         //导出添加/修改/集群信息
         Config.prototype.exportAddClusterContext = function (type, biz, data) {

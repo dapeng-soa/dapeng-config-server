@@ -72,7 +72,35 @@ ApiActionFormatter = function (value, row, index) {
 genKey = function () {
     $.get(basePath + "/api/apikey/genkey", function (res) {
         result(res) ? $("#authApikey").val(result(res)) : {};
-    },"json")
+    }, "json")
+};
+
+openSendApiKey = function (id) {
+    bodyAbs();
+    layer.open({
+        type: 1,
+        title: '下发ApiKey至',
+        area: ['300px', 'auto'],
+        content: config1.exportApiKeySend(),
+        btn: ['下发', '取消'],
+        yes: function (index, layero) {
+            var mail = $("#sendKeyEmail").val();
+            if ( mail!==undefined && mail !== ""){
+                var url = basePath + "/api/apikey/send/" + id;
+                $.post(url, {email: mail}, function (res) {
+                    layer.msg(res.msg);
+                    layer.close(index);
+                },"json")
+            }else {
+                layer.msg("请填写邮箱！");
+            }
+        }, btn2: function (index, layero) {
+            layer.msg("操作取消");
+        }, cancel: function () {
+            layer.msg("操作取消");
+        }
+    });
+    rmBodyAbs();
 };
 
 /**
