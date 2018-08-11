@@ -244,6 +244,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                         <label class="col-sm-2 control-label">ApiKey:</label>
                         <div class="col-sm-9">
                             <input type="text" ${type != c.add ? "disabled" : ""} id="authApikey" class="col-sm-2 form-control" value="${type != c.add ? data.apiKey : ""}"/>
+                            ${type === c.add ? `<a href="#" style="position: absolute;top: 30%;right: 20px;" onclick="genKey(this)" title="生成apikey"><i class="fa fa-key" aria-hidden="true"></i></a>`:``}
                         </div>
                     </div>
                     <div class="form-group">

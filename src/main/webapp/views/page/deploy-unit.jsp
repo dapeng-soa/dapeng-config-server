@@ -24,9 +24,10 @@
                 </span>
             </div>
         </div>
-        <div id="toolbar">
+        <div id="deploy-unit-tableToolbar">
             <span>环境集： <span>
-                <select class="form-control " onchange="setChanged()" id="setSelect" style="display: inline-block;width: 120px">
+                <select class="form-control " onchange="setChanged()" id="setSelect"
+                        style="display: inline-block;width: 120px">
 
                 </select>
             </span></span>

@@ -177,20 +177,17 @@ public class ConfigRestController {
      * @return
      */
     @GetMapping(value = "/configs")
-    public ResponseEntity<?> getConfig(@RequestParam int page,
-                                       @RequestParam int rows,
+    public ResponseEntity<?> getConfig(@RequestParam int offset,
+                                       @RequestParam int limit,
                                        @RequestParam(required = false) String sort,
-                                       @RequestParam(required = false) String sortOrder,
-                                       @RequestParam(required = false) String keyword) {
-        if (page <= 0) return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.PAGENO_ERROR_MSG));
-
+                                       @RequestParam(required = false) String order,
+                                       @RequestParam(required = false) String search) {
         PageRequest pageRequest = new PageRequest
-                (page - 1, rows,
-                        new Sort("desc".toUpperCase().equals(sortOrder.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
+                (offset, limit,
+                        new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
                                 null == sort ? "updatedAt" : sort));
 
-        Page<ConfigInfo> infos = repository.findAllByStatusIsNotAndServiceNameLike(ConfigStatus.FAILURE.key(), '%' + keyword + '%', pageRequest);
+        Page<ConfigInfo> infos = repository.findAllByStatusIsNotAndServiceNameLike(ConfigStatus.FAILURE.key(), '%' + search + '%', pageRequest);
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, infos));
     }

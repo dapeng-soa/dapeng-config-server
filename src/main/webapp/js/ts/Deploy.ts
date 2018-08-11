@@ -791,10 +791,15 @@ ${data.extra == 1 ? '否' : '是'}
             `
         }
 
-        //
-        public consoleView(row: string) {
+        /**
+         * 控制台打印
+         * @param {string} row
+         * @param {string} lv
+         */
+        public consoleView(row: string,lv?:string) {
+            let c = this;
             let rowStr = `
-            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> ${row}</p>
+            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> <span style="${lv===window.ERROR?`color:ff4d4d`:``}">${row}</span></p>
             `;
             let ob = $("#consoleView");
             ob.append(rowStr);
