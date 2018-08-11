@@ -1,9 +1,7 @@
 var socket = {};
 var yaml = "";
 var serviceNum = 0; // 当前的服务数量
-var realService = []; //缓存服务时间事件问询的数据
 $(document).ready(function () {
-    //openConloseView();
     socket = io(socketUrl);
     socket.on(SOC_CONNECT, function () {
         if (socket.connected) {
@@ -58,7 +56,9 @@ $(document).ready(function () {
      * 错误返回
      */
     socket.on(ERROR_EVENT, function (data) {
-        deploy.consoleView(data);
+        layer.msg(data);
+        openConloseView();
+        deploy.consoleView(data,ERROR);
     });
 
     socket.on(SOC_CDISCONNECT, function () {
@@ -110,18 +110,24 @@ toggleConloseView = function () {
 };
 openConloseView = function () {
     var ob = $("#consoleView");
+    var line = $("#line");
+    if (ob.hasClass("opened")) {return}
     ob.animateCss("fadeInRight").addClass("opened");
-    ob.css({top: "0", right: 0 + "px"})
+    ob.css({top: "0", right: 0 + "px"});
+    line.css({position: "fixed"});
+
 };
 
 closeConloseView = function () {
     var ob = $("#consoleView");
+    var line = $("#line");
     if (ob.hasClass("opened")) {
         ob.removeClass("opened");
         ob.css({
             top: "5px",
-            right: -(ob.width() + Number(ob.css("padding-left").replace("px", "")) + Number(ob.css("padding-right").replace("px", ""))) + "px"
-        })
+            right: -(ob.width() + Number(ob.css("padding-left").replace("px", "")) + Number(ob.css("padding-right").replace("px", ""))) + "px",
+        });
+        line.css({position: "absolute"});
     }
 };
 
@@ -290,7 +296,7 @@ stopService = function (unitId) {
     var url = basePath + "/api/deploy/stopRealService";
     util.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            bodyAbs();
+            //bodyAbs();
             layer.confirm('停止服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
                 btn: ['停止', '取消']
             }, function () {
@@ -312,7 +318,7 @@ restartService = function (unitId) {
     var url = basePath + "/api/deploy/restartRealService";
     util.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            bodyAbs();
+            //bodyAbs();
             layer.confirm('重启服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
                 btn: ['重启', '取消']
             }, function () {
