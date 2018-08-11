@@ -473,3 +473,7 @@ table {
     animation: fa-spin 2s infinite linear !important;
     padding-right: 0 !important;
 }
+
+.layui-nav-child a{
+    text-indent:1em;
+}
