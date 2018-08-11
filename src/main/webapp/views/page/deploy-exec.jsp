@@ -24,7 +24,10 @@
             <div class="input-group">
                 <p class="left-panel-title">发布部署</p>
                 <span class="input-group-btn panel-button-group">
-
+                    <button type="button" class="btn btn-default" onclick="">操作说明</button>
+                    <button type="button" class="btn btn-info" onclick="">Agent列表</button>
+                    <button type="button" class="btn btn-primary" onclick="">新增部署</button>
+                    <button type="button" class="btn btn-success" onclick="">升级日志</button>
                 </span>
             </div>
         </div>

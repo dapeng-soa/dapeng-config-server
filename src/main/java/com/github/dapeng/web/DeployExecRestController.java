@@ -13,6 +13,8 @@ import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.util.Composeutil;
+import com.github.dapeng.util.DownloadUtil;
+import com.github.dapeng.util.Tools;
 import com.github.dapeng.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import static com.github.dapeng.common.Commons.*;
@@ -244,6 +247,38 @@ public class DeployExecRestController {
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, dockerVo));
     }
+
+    /**
+     * 下载yaml
+     *
+     * @param unitId
+     * @param response
+     * @return
+     */
+    @GetMapping("/deploy-unit/download-yml/{unitId}")
+    public ResponseEntity downloadYml(@PathVariable Long unitId, HttpServletResponse response) {
+        TDeployUnit unit = unitRepository.getOne(unitId);
+        TSet set = setRepository.getOne(unit.getSetId());
+        THost host = hostRepository.getOne(unit.getHostId());
+        TService service = serviceRepository.getOne(unit.getServiceId());
+        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
+
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit);
+        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
+        String composeContext = Composeutil.processComposeContext(dockerService1);
+        String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + service.getName() + ".yml";
+        // 将内容写入文件
+        Tools.writeStringToFile(path, composeContext);
+        // 下载
+        try {
+            DownloadUtil.downLoad(path, response, false);
+        } catch (Exception e) {
+            LOGGER.error("下载出错了");
+        }
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+    }
+
 
     /**
      * 事件请求通用结构体

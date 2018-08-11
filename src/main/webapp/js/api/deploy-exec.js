@@ -357,7 +357,8 @@ cancelServiceUpdate = function () {
 /**
  * 下载yaml
  */
-downloadYaml = function () {
+downloadYaml = function (unitId) {
+    window.open(basePath + "/api/deploy-unit/download-yml/"+unitId);
     layer.msg("下载成功");
 };
 
