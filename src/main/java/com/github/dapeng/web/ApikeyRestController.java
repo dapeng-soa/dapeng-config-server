@@ -1,12 +1,13 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
+import com.github.dapeng.common.Resp;
 import com.github.dapeng.datasource.DataSource;
 import com.github.dapeng.dto.ApiKeyInfoDto;
 import com.github.dapeng.entity.ApiKeyInfo;
 import com.github.dapeng.repository.ApiKeyInfoRepository;
 import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.MailSend;
 import com.github.dapeng.util.NullUtil;
 import com.github.dapeng.util.PasswordUtil;
 import org.slf4j.Logger;
@@ -136,5 +137,26 @@ public class ApikeyRestController {
         String key = PasswordUtil.createPassword(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         return ResponseEntity
                 .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG, key));
+    }
+
+    /**
+     * 下发apikey
+     *
+     * @param id
+     * @param email
+     * @return
+     */
+    @PostMapping("/apikey/send/{id}")
+    @DataSource(EXTRA_DATASOURCE)
+    public ResponseEntity sendKey(@PathVariable Long id, @RequestParam String email) {
+        try {
+            ApiKeyInfo info = repository.getOne(id);
+            MailSend.sendApiKeyMail(info, email);
+            return ResponseEntity
+                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG));
+        }catch (Exception e){
+            return ResponseEntity
+                    .ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+        }
     }
 }
