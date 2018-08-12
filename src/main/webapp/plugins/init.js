@@ -69,9 +69,9 @@ window.toggleBlock = function (a) {
 };
 
 window.result = function (res) {
-    if (res.code === SUCCESS_CODE){
+    if (res.code === SUCCESS_CODE) {
         return res.context;
-    }else {
+    } else {
         layer.msg(res.msg);
         return false;
     }
@@ -190,17 +190,16 @@ window.indexFormatter = function (value, row, index) {
         this.url = url;
         this.method = "get";
         this.paginationType = "server";         //默认分页方式是服务器分页,可选项"client"
-        this.toolbarId = bstableId+"Toolbar";
+        this.toolbarId = bstableId + "Toolbar";
         this.columns = columns;
         this.height = 665;                      //默认表格高度665
         this.data = {};
-        this.params = {}; // 向后台传递的自定义参数
         this.onLoadSuccess = function () {
         };
         this.onLoadError = function () {
-            layer.msg("数据加载失败");
         };
-        this.onDblClickRow = function (row) {};
+        this.onDblClickRow = function (row) {
+        };
         // 可格式化处理返回参数
         this.responseHandler = function (res) {
             return {
@@ -208,6 +207,8 @@ window.indexFormatter = function (value, row, index) {
                 rows: res.context
             };
         };
+        this.params = function (ps) {
+        }; //向后台传递的自定义参数
 
     };
 
@@ -247,9 +248,7 @@ window.indexFormatter = function (value, row, index) {
                     cardView: ($(window).width() < 1024),                    //是否显示详细视图
                     detailView: false,                  //是否显示父子表
                     queryParamsType: 'limit',   //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
-                    queryParams: function (param) {
-                        return $.extend(this.params, param);
-                    }, // 向后台传递的自定义参数
+                    queryParams: this.params, // 向后台传递的自定义参数
                     columns: this.columns,      //列数组
                     onLoadSuccess: this.onLoadSuccess, //载入成功
                     onLoadError: this.onLoadError, //载入失败
@@ -312,7 +311,6 @@ window.indexFormatter = function (value, row, index) {
          * To supply query params specific to this request, set {query: {foo: 'bar'}}
          */
         refresh: function (parms) {
-            console.log(parms);
             if (typeof parms != "undefined") {
                 this.btInstance.bootstrapTable('refresh', parms);
             } else {
@@ -322,4 +320,69 @@ window.indexFormatter = function (value, row, index) {
     };
 
     window.BSTable = BSTable;
+}());
+
+/**
+ * select 异步加载
+ */
+(function () {
+    /**
+     *
+     * @param url 获取select的地址
+     * @param selectId  DOM Id
+     * @param v_column value 列
+     * @param n_column name 列
+     * @constructor
+     */
+    var BzSelect = function (url, selectId, v_column, n_column) {
+        this.url = url; // 数据请求地址
+        this.method = "get"; // 请求方法
+        this.selectId = selectId; // selectId
+        this.v_column = v_column; // val列
+        this.n_column = n_column; // 内容列
+        this.i_selected = 0; // 默认选中的index,第几个
+        this.v_selected = undefined; // 默认选中的value
+        this.defaultOption = true; // 默认的option
+        this.refresh = false;
+        this.before = function () {
+        }; // 初始化之前
+        this.after = function () {
+        }; // 初始化后
+    };
+
+    BzSelect.prototype = {
+        init: function () {
+            var ts = this;
+            if (typeof ts.before === 'function') ts.before();
+            var settings = {type: ts.method, url: ts.url, dataType: "json"};
+            var el = $("#" + ts.selectId);
+            $.ajax(settings).done(function (res) {
+                if (res.code === SUCCESS_CODE) {
+                    var contexts = res.context;
+                    var html = ts.defaultOption ? "<option value='0'>请选择</option>" : "";
+                    $.each(contexts, function (i, em) {
+                        var seled = "";
+                        if (ts.v_selected !== undefined && ts.v_selected !== "") {
+                            seled = em[ts.v_column] === ts.v_selected ? "selected" : "";
+                        }
+                        html += '<option ' + seled + ' value="' + em[ts.v_column] + '">' + em[ts.n_column] + '</option>';
+                    });
+                    $("#" + ts.selectId).html(html);
+                    ts.refresh ? $("#" + ts.selectId).selectpicker('refresh') : {};
+                    if (typeof ts.after === 'function') ts.after();
+                }
+            });
+        },
+        value: function () {
+            var ts = this;
+            return $("#" + ts.selectId).find("option:selected").val();
+        },
+        name: function () {
+            var ts = this;
+            return $("#" + ts.selectId).find("option:selected").label;
+        }
+    };
+
+    window.BzSelect = BzSelect;
+
 }());

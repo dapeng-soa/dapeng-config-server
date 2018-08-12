@@ -13,10 +13,16 @@ import com.github.dapeng.vo.UnitVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,8 +54,45 @@ public class DeployUnitRestController {
      * @return 部署单元
      */
     @GetMapping("/deploy-units")
-    public ResponseEntity<?> deployUnits() {
-        List<TDeployUnit> units = unitRepository.findAll();
+    public ResponseEntity<?> deployUnits(@RequestParam(required = false, defaultValue = "0") int offset,
+                                         @RequestParam(required = false, defaultValue = "100000") int limit,
+                                         @RequestParam(required = false) String sort,
+                                         @RequestParam(required = false, defaultValue = "desc") String order,
+                                         @RequestParam(required = false) String search,
+                                         @RequestParam(required = false, defaultValue = "0") Long setId,
+                                         @RequestParam(required = false, defaultValue = "0") Long hostId,
+                                         @RequestParam(required = false, defaultValue = "0") Long serviceId,
+                                         @RequestParam(required = false) String gitTag) {
+        PageRequest pageRequest = new PageRequest
+                (offset, limit,
+                        new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
+                                null == sort ? "updatedAt" : sort));
+
+
+        Page<TDeployUnit> page = unitRepository.findAll((root, query, cb) -> {
+            Path<Long> setId1 = root.get("setId");
+            Path<Long> hostId1 = root.get("hostId");
+            Path<Long> serviceId1 = root.get("serviceId");
+            Path<String> gitTag1 = root.get("gitTag");
+            Path<String> imageTag = root.get("imageTag");
+            List<Predicate> ps = new ArrayList<>();
+            ps.add(cb.or(cb.like(gitTag1, "%" + search + "%"), cb.like(imageTag, "%" + search + "%")));
+            //这里可以设置任意条查询条件
+            if (!isEmpty(setId)) {
+                ps.add(cb.equal(setId1, setId));
+            }
+            if (!isEmpty(hostId)) {
+                ps.add(cb.equal(hostId1, hostId));
+            }
+            if (!isEmpty(serviceId)) {
+                ps.add(cb.equal(serviceId1, serviceId));
+            }
+            query.where(ps.toArray(new Predicate[ps.size()]));
+            //这种方式使用JPA的API设置了查询条件，所以不需要再返回查询条件Predicate给Spring Data Jpa，故最后return null;即可。
+            return null;
+        }, pageRequest);
+
+        List<TDeployUnit> units = page.getContent();
         List<UnitVo> unitVos = units.stream().map(u -> {
             UnitVo vo = new UnitVo();
             vo.setId(u.getId());

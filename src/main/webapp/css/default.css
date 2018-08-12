@@ -1,7 +1,7 @@
 /*=============================全局*/
 /* 自定义滚动条样式 */
 ::-webkit-scrollbar {
-    width: 0;
+    width: 4px;
     border-radius: 100%;
 }
 

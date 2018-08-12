@@ -25,21 +25,23 @@
             </div>
         </div>
         <div id="deploy-unit-tableToolbar">
-            <span>环境集： <span>
-                <select class="form-control " onchange="setChanged()" id="setSelect"
-                        style="display: inline-block;width: 120px">
+            <span>环境集： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitSetChanged()"
+                        id="setSelectView">
 
                 </select>
             </span></span>
 
-            <span>节点： <span>
-                <select class="form-control" id="hostSelect" style="display: inline-block;width: 120px">
+            <span>节点： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitHostChanged()"
+                        id="hostSelectView">
 
                 </select>
             </span></span>
 
-            <span>服务： <span>
-                <select class="form-control" id="serviceSelect" style="display: inline-block;width: 120px">
+            <span>服务： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitServiceChanged()"
+                        id="serviceSelectView">
 
                 </select>
             </span></span>
