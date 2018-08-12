@@ -392,7 +392,7 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属环境集:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view || type == c.edit ? "disabled" : ""} id="setSelect" onchange="addUnitSetChanged(this)" class="col-sm-2 form-control">
+                               <select ${type == c.view || type == c.edit ? "disabled" : ""} id="setSelect" onchange="addUnitSetChanged(this)" class="col-sm-2 form-control ">
           
                                 </select>
                                 <div class="advance-format-item">

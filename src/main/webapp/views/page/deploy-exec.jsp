@@ -33,21 +33,19 @@
         </div>
 
         <div class="row" style="margin-top: 20px">
-            <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%">环境：</label>
-            <div class="col-sm-2">
+            <span>环境： <span style="display: inline-block;width: 120px">
                 <select id="setSelect" data-live-search="true" onchange="execSetChanged(this)" class="selectpicker form-control">
 
                 </select>
-            </div>
-            <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%">视图：</label>
-            <div class="col-sm-2">
+            </span></span>
+            <span>视图： <span style="display: inline-block;width: 120px">
                 <select id="viewType" data-live-search="true" class="selectpicker form-control" onchange="execViewTypeChanged(this)" >
                     <option value="1" selected>服务视图</option>
                     <option value="2">主机视图</option>
                 </select>
-            </div>
-            <label class="col-sm-1 col-xs-12 control-label" style="line-height: 250%" id="viewTypeLabel">服务：</label>
-            <div class="col-sm-2" id="viewTypeSelect">
+            </span></span>
+            <span style="line-height: 250%" id="viewTypeLabel">服务：</span>
+            <div id="viewTypeSelect" style="display: inline-block;width: 120px">
 
             </div>
         </div>

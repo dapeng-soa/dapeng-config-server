@@ -1,22 +1,25 @@
 $(document).ready(function () {
-    initSetList();
-    initServiceList();
-    setTimeout(function () {
-        InitDeployUnits();
-    }, 100);
+    initDeployUnits();
+    initViewSetSelect();
+    initViewServiceSelect();
 });
 var deploy = new api.Deploy();
-var sets = {};
-var hosts = {};
-var services = {};
+var bsTable = {};
 
-function InitDeployUnits() {
+function initDeployUnits() {
     var queryUrl = basePath + '/api/deploy-units';
     var table = new BSTable("deploy-unit-table", queryUrl, setColumns());
     table.onDblClickRow = function (row) {
         viewDeployUnitOrEditByID(row.id, VIEW)
     };
+    table.params = function (ps) {
+        ps.setId = $("#setSelectView").find("option:selected").val();
+        ps.hostId = $("#hostSelectView").find("option:selected").val();;
+        ps.serviceId = $("#serviceSelectView").find("option:selected").val();;
+        return ps;
+    };
     table.init();
+    bsTable = table;
 }
 
 setColumns = function () {
@@ -29,24 +32,21 @@ setColumns = function () {
         formatter: indexFormatter
 
     }, {
-        field: 'setName',
-        title: 'set',
-        sortable: true
-    }, {
-        field: 'hostName',
-        title: 'host'
-    }, {
-        field: 'serviceName',
-        title: 'service',
-        sortable: true
-    }, {
         field: 'gitTag',
         title: '发布tag',
         sortable: true
     }, {
+        field: 'serviceName',
+        title: 'service'
+    }, {
         field: 'imageTag',
-        title: '镜像tag',
-        sortable: true
+        title: '镜像tag'
+    }, {
+        field: 'setName',
+        title: 'set'
+    }, {
+        field: 'hostName',
+        title: 'host'
     }, {
         field: 'createdAt',
         title: '添加时间',
@@ -185,34 +185,85 @@ delDeployUnit = function () {
     layer.msg("暂无权限")
 };
 
+var initViewSetSelect = function () {
+    var curl = basePath + "/api/deploy-sets";
+    var s1 = new BzSelect(curl, "setSelectView", "id", "name");
+    s1.after = function () {
+        initViewHostSelect();
+        viewUnitSetChanged();
+    };
+    s1.init();
+};
+
+var initViewHostSelect = function () {
+    var setSelected = $("#setSelectView").find("option:selected").val();
+    var curl = basePath + "/api/deploy-hosts/" + setSelected;
+    var ss = new BzSelect(curl, "hostSelectView", "id", "name");
+    ss.refresh = true;
+    ss.init();
+};
+
+var initViewServiceSelect = function () {
+    var curl = basePath + "/api/deploy-services";
+    var ss = new BzSelect(curl, "serviceSelectView", "id", "name");
+    ss.init();
+};
+
+var viewUnitSetChanged = function () {
+    initViewHostSelect();
+    bsTable.refresh();
+};
+var viewUnitHostChanged = function () {
+    bsTable.refresh();
+};
+var viewUnitServiceChanged = function () {
+    bsTable.refresh();
+};
+
 
 /**
  * 初始化set
  * @constructor
  */
+
 initSetList = function (id) {
     var curl = basePath + "/api/deploy-sets";
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            sets = res.context;
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (i === 0) {
-                    seled = "selected"
-                }
-                if (id !== undefined && id !== "") {
-                    seled = res.context[i].id === id ? "selected" : "";
-                }
-                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#setSelect").html(html);
-            if (id === undefined || id === "") {
-                initHostList()
-            }
-            addUnitSetChanged();
+    var ss = new BzSelect(curl, "setSelect", "id", "name");
+    ss.v_selected = id;
+    ss.after = function () {
+        if (id === undefined || id === "") {
+            initHostList()
         }
-    }, "json");
+        addUnitSetChanged();
+    };
+    ss.init();
+};
+
+/**
+ * 初始化host/根据选择的set
+ * @constructor
+ */
+initHostList = function () {
+    var setSelected = $("#setSelect").find("option:selected").val();
+    var curl = basePath + "/api/deploy-hosts/" + setSelected;
+    var ss = new BzSelect(curl, "hostSelect", "id", "name");
+    ss.after = function () {
+        addUnitHostChanged();
+    };
+    ss.init();
+};
+
+/**
+ * 初始化服务
+ * @constructor
+ */
+initServiceList = function () {
+    var curl = basePath + "/api/deploy-services";
+    var ss = new BzSelect(curl, "serviceSelect", "id", "name");
+    ss.after = function () {
+        addUnitServiceChanged();
+    };
+    ss.init();
 };
 
 /**
@@ -220,55 +271,9 @@ initSetList = function (id) {
  * @param obj
  */
 setChanged = function (obj) {
+    console.log(obj);
     var setId = $(obj).find("option:selected").val();
     initHostList(setId);
-};
-
-/**
- * 初始化host/根据选择的set
- * @constructor
- */
-initHostList = function (id) {
-    var setSelected = $("#setSelect").find("option:selected").val();
-    var curl = basePath + "/api/deploy-hosts/" + setSelected;
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            hosts = res.context;
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (id !== undefined && id !== "") {
-                    seled = res.context[i].id === id ? "selected" : "";
-                }
-                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#hostSelect").html(html);
-            addUnitHostChanged();
-        }
-    }, "json");
-};
-
-/**
- * 初始化服务
- * @constructor
- */
-initServiceList = function (id) {
-    var curl = basePath + "/api/deploy-services";
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            services = res.context;
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (id !== undefined && id !== "") {
-                    seled = res.context[i].id === id ? "selected" : "";
-                }
-                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#serviceSelect").html(html);
-            addUnitServiceChanged();
-        }
-    }, "json");
 };
 
 
@@ -278,25 +283,33 @@ initServiceList = function (id) {
  */
 addUnitSetChanged = function (obj) {
     var setId = $("#setSelect").find("option:selected").val();
-    initHostList(setId);
-    var url = basePath + "/api/deploy-set/" + setId;
-    $.get(url, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            $("#setEnvView").html(deploy.setCnfigView(res.context));
-        }
-    }, "json");
+    if (setId !== '0') {
+        initHostList(setId);
+        var url = basePath + "/api/deploy-set/" + setId;
+        $.get(url, function (res) {
+            if (res.code === SUCCESS_CODE) {
+                $("#setEnvView").html(deploy.setCnfigView(res.context));
+            }
+        }, "json");
+    } else {
+        $("#setEnvView").html("无");
+    }
 };
 /**
  * host 变化，重新获取变量信息
  */
-addUnitHostChanged = function (obj) {
+addUnitHostChanged = function () {
     var hostId = $("#hostSelect").find("option:selected").val();
-    var url = basePath + "/api/deploy-host/" + hostId;
-    $.get(url, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            $("#hostEnvView").html(deploy.hostCnfigView(res.context));
-        }
-    }, "json");
+    if (hostId !== '0') {
+        var url = basePath + "/api/deploy-host/" + hostId;
+        $.get(url, function (res) {
+            if (res.code === SUCCESS_CODE) {
+                $("#hostEnvView").html(deploy.hostCnfigView(res.context));
+            }
+        }, "json");
+    } else {
+        $("#hostEnvView").html("无");
+    }
 };
 
 /**
@@ -304,11 +317,15 @@ addUnitHostChanged = function (obj) {
  */
 addUnitServiceChanged = function (obj) {
     var serviceId = $("#serviceSelect").find("option:selected").val();
-    var url = basePath + "/api/deploy-service/" + serviceId;
-    $.get(url, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            $("#serviceEnvView").html(deploy.serviceCnfigView(res.context));
-        }
-    }, "json");
+    if (serviceId !== '0') {
+        var url = basePath + "/api/deploy-service/" + serviceId;
+        $.get(url, function (res) {
+            if (res.code === SUCCESS_CODE) {
+                $("#serviceEnvView").html(deploy.serviceCnfigView(res.context));
+            }
+        }, "json");
+    } else {
+        $("#serviceEnvView").html("无");
+    }
 };
 
