@@ -1,6 +1,7 @@
 $(document).ready(function () {
     initDeployUnits();
     initViewSetSelect();
+    initViewHostSelect();
     initViewServiceSelect();
 });
 var deploy = new api.Deploy();
@@ -189,15 +190,14 @@ var initViewSetSelect = function () {
     var curl = basePath + "/api/deploy-sets";
     var s1 = new BzSelect(curl, "setSelectView", "id", "name");
     s1.after = function () {
-        initViewHostSelect();
         viewUnitSetChanged();
     };
+    s1.refresh = true;
     s1.init();
 };
 
 var initViewHostSelect = function () {
-    var setSelected = $("#setSelectView").find("option:selected").val();
-    var curl = basePath + "/api/deploy-hosts/" + setSelected;
+    var curl = basePath + "/api/deploy-hosts/";
     var ss = new BzSelect(curl, "hostSelectView", "id", "name");
     ss.refresh = true;
     ss.init();
@@ -206,11 +206,12 @@ var initViewHostSelect = function () {
 var initViewServiceSelect = function () {
     var curl = basePath + "/api/deploy-services";
     var ss = new BzSelect(curl, "serviceSelectView", "id", "name");
+    ss.refresh = true;
     ss.init();
 };
 
 var viewUnitSetChanged = function () {
-    initViewHostSelect();
+    //initViewHostSelect();
     bsTable.refresh();
 };
 var viewUnitHostChanged = function () {

@@ -58,7 +58,7 @@ public class DeployUnitRestController {
                                          @RequestParam(required = false, defaultValue = "100000") int limit,
                                          @RequestParam(required = false) String sort,
                                          @RequestParam(required = false, defaultValue = "desc") String order,
-                                         @RequestParam(required = false) String search,
+                                         @RequestParam(required = false, defaultValue = "") String search,
                                          @RequestParam(required = false, defaultValue = "0") Long setId,
                                          @RequestParam(required = false, defaultValue = "0") Long hostId,
                                          @RequestParam(required = false, defaultValue = "0") Long serviceId,
