@@ -90,6 +90,7 @@ emitGetInfoEvent = function () {
                 util.$get(event_url, function (res2) {
                     if (res.code === SUCCESS_CODE) {
                         eventReps.push(res2.context);
+                        console.log(serviceNum === eventReps.length);
                         if (serviceNum === eventReps.length) {
                             socket.emit(GET_SERVER_INFO, JSON.stringify(eventReps));
                         }
@@ -138,23 +139,12 @@ closeConloseView = function () {
  */
 initSetList = function (id) {
     var curl = basePath + "/api/deploy-sets";
-    util.$get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (i === 0) {
-                    seled = "selected"
-                }
-                if (id !== undefined && id !== "") {
-                    seled = res.context[i].id === id ? "selected" : "";
-                }
-                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#setSelect").html(html).selectpicker('refresh');
-            execViewTypeChanged(1);
-        }
-    });
+    var ss = new BzSelect(curl, "setSelect", "id", "name");
+    ss.refresh = true;
+    ss.after = function () {
+        execViewTypeChanged(1);
+    };
+    ss.init();
 };
 
 /**
@@ -222,7 +212,7 @@ execViewTypeChanged = function (obj) {
  * 环境集改变
  */
 execSetChanged = function () {
-    execViewTypeChanged();
+    execViewTypeChanged()
 };
 // 服务视图服务选择
 execServiceChanged = function () {

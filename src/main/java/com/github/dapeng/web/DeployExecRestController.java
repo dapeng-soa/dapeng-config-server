@@ -60,7 +60,7 @@ public class DeployExecRestController {
      * @return
      */
     @RequestMapping("/deploy/checkRealService")
-    public ResponseEntity checkRealService(@RequestParam() Long setId,
+    public ResponseEntity checkRealService(@RequestParam(defaultValue = "0") Long setId,
                                            @RequestParam(defaultValue = "0") Long serviceId,
                                            @RequestParam(defaultValue = "0") Long hostId,
                                            @RequestParam(defaultValue = "1") Integer viewType) {
@@ -68,7 +68,7 @@ public class DeployExecRestController {
         // 根据视图类型返回对应的视图数据结构
         List<DeployServiceVo> serviceVos = new ArrayList<>();
         List<DeployHostVo> hostVos = new ArrayList<>();
-        List<TDeployUnit> units = !isEmpty(serviceId) ?
+        List<TDeployUnit> units = isEmpty(setId) ? unitRepository.findAll() : !isEmpty(serviceId) ?
                 unitRepository.findAllBySetIdAndServiceId(setId, serviceId) :
                 !isEmpty(hostId) ? unitRepository.findAllBySetIdAndHostId(setId, hostId) :
                         unitRepository.findAllBySetId(setId);

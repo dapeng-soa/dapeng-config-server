@@ -1,6 +1,7 @@
 /// <reference path="../../plugins/ts-lib/jquerytemplate.d.ts"/>
 /// <reference path="../../plugins/ts-lib/jquery.d.ts"/>
 /// <reference path="./Mapper.ts"/>
+/// <reference path="../../plugins/init.js"/>
 /*部署模块ts模版代码*/
 module api {
 
@@ -808,7 +809,7 @@ ${data.extra == 1 ? '否' : '是'}
 
         public unix2Time(unix: any) {
             let unixTimestamp = new Date(unix * 1000);
-            return unixTimestamp.toLocaleString();
+            return unixTimestamp.pattern("yyyy-MM-dd hh:mm:ss");
         }
     }
 }

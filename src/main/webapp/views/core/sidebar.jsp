@@ -31,20 +31,23 @@
         <li class="layui-nav-item layui-nav-itemed">
             <a href="javascript:void(0);"><i class="fa fa-paper-plane" aria-hidden="true"></i>发布部署</a>
             <dl class="layui-nav-child">
+                <dd class="${sideName == 'deploy-service' ? 'layui-this' : ''}">
+                    <a href="${basePath}/deploy/service"><i class="fa fa-wifi" aria-hidden="true"></i>服务管理</a>
+                </dd>
                 <dd class="${sideName == 'deploy-set' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/set"><i class="fa fa-archive" aria-hidden="true"></i>环境管理</a>
                 </dd>
                 <dd class="${sideName == 'deploy-host' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/host"><i class="fa fa-linux" aria-hidden="true"></i>节点管理</a>
                 </dd>
-                <dd class="${sideName == 'deploy-service' ? 'layui-this' : ''}">
-                    <a href="${basePath}/deploy/service"><i class="fa fa-wifi" aria-hidden="true"></i>服务管理</a>
-                </dd>
                 <dd class="${sideName == 'deploy-unit' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/unit"><i class="fa fa-microchip" aria-hidden="true"></i> 部署单元</a>
                 </dd>
                 <dd class="${sideName == 'deploy-exec' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/exec"><i class="fa fa-rocket" aria-hidden="true"></i>上线部署</a>
+                </dd>
+                <dd class="${sideName == 'deploy-log' ? 'layui-this' : ''}">
+                    <a href="${basePath}/deploy/log"><i class="fa fa-history" aria-hidden="true"></i></i>升级日志</a>
                 </dd>
             </dl>
         </li>
