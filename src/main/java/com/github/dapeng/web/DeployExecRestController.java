@@ -2,17 +2,12 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.core.helper.IPUtils;
-import com.github.dapeng.entity.deploy.TDeployUnit;
-import com.github.dapeng.entity.deploy.THost;
-import com.github.dapeng.entity.deploy.TService;
-import com.github.dapeng.entity.deploy.TSet;
-import com.github.dapeng.repository.deploy.DeployUnitRepository;
-import com.github.dapeng.repository.deploy.HostRepository;
-import com.github.dapeng.repository.deploy.ServiceRepository;
-import com.github.dapeng.repository.deploy.SetRepository;
+import com.github.dapeng.entity.deploy.*;
+import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.util.Composeutil;
+import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DownloadUtil;
 import com.github.dapeng.util.Tools;
 import com.github.dapeng.vo.*;
@@ -50,6 +45,8 @@ public class DeployExecRestController {
     ServiceRepository serviceRepository;
     @Autowired
     DeployUnitRepository unitRepository;
+    @Autowired
+    DeployOpJournalRepository journalRepository;
 
     /**
      * 向agent发送问询指令
@@ -169,8 +166,8 @@ public class DeployExecRestController {
         Long setUpdateAt = !isEmpty(setList) ? setList.get(0).getUpdatedAt().getTime() : 0;
         Long hostUpdateAt = !isEmpty(hosts) ? hosts.get(0).getUpdatedAt().getTime() : 0;
         Long serviceUpdateAt = !isEmpty(serviceList) ? serviceList.get(0).getUpdatedAt().getTime() : 0;
-        Long unitUpdatAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
-        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, unitUpdatAt};
+        Long unitUpdateAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
+        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, unitUpdateAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
     }
 
@@ -196,7 +193,7 @@ public class DeployExecRestController {
         dockerVo.setServiceName(service.getName());
         dockerVo.setFileContent(composeContext);
         dockerVo.setIp(ip);
-
+        journalRepository.saveAndFlush(toOperationJournal(unit, 1, composeContext));
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
     }
@@ -207,7 +204,9 @@ public class DeployExecRestController {
     @RequestMapping("/deploy/stopRealService")
     public ResponseEntity stopRealService(@RequestParam Long unitId) {
         DeployRequest request = toDeployRequest(unitId);
-        LOGGER.info("::send stop service:{}", request);
+        TDeployUnit unit = unitRepository.getOne(unitId);
+        // 写流水，停止没有yml
+        journalRepository.saveAndFlush(toOperationJournal(unit, 3, ""));
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, request));
     }
@@ -218,8 +217,69 @@ public class DeployExecRestController {
     @RequestMapping("/deploy/restartRealService")
     public ResponseEntity restartRealService(@RequestParam Long unitId) {
         DeployRequest request = toDeployRequest(unitId);
+        // 写流水，重启没有yml
+        TDeployUnit unit = unitRepository.getOne(unitId);
+
+        journalRepository.saveAndFlush(toOperationJournal(unit, 2, ""));
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, request));
+    }
+
+    /**
+     * 回滚
+     *
+     * @param jid
+     * @return
+     */
+    @RequestMapping("/deploy/rollbackRealService")
+    public ResponseEntity rollbackRealService(@RequestParam Long jid) {
+        TOperationJournal journal = journalRepository.getOne(jid);
+        THost host = hostRepository.getOne(journal.getHostId());
+        TService service = serviceRepository.getOne(journal.getServiceId());
+        String ip = IPUtils.transferIp(host.getIp());
+        DeployVo dockerVo = new DeployVo();
+        // 回滚的时候,最后更新时间是？
+        dockerVo.setLastModifyTime(journal.getCreatedAt().getTime());
+        dockerVo.setServiceName(service.getName());
+        dockerVo.setFileContent(journal.getYml());
+        dockerVo.setIp(ip);
+
+        TOperationJournal newJournal = new TOperationJournal();
+        newJournal.setOpFlag(4);
+        newJournal.setCreatedAt(DateUtil.now());
+        newJournal.setCreatedBy("admin");
+        newJournal.setDiff("");
+        newJournal.setYml(journal.getYml());
+        newJournal.setServiceId(journal.getServiceId());
+        newJournal.setHostId(journal.getHostId());
+        newJournal.setSetId(journal.getSetId());
+        newJournal.setImageTag(journal.getImageTag());
+        newJournal.setGitTag(journal.getGitTag());
+
+        journalRepository.saveAndFlush(newJournal);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
+    }
+
+    /**
+     * @param unit
+     * @return
+     */
+    private TOperationJournal toOperationJournal(TDeployUnit unit, int opFlag, String yml) {
+        // 写流水
+        TOperationJournal journal = new TOperationJournal();
+        journal.setGitTag(unit.getGitTag());
+        journal.setImageTag(unit.getImageTag());
+        journal.setSetId(unit.getSetId());
+        journal.setHostId(unit.getHostId());
+        journal.setServiceId(unit.getServiceId());
+        journal.setYml(yml);
+        journal.setCreatedAt(DateUtil.now());
+        journal.setCreatedBy("admin");
+        // 升级
+        journal.setOpFlag(opFlag);
+        journal.setDiff("");
+        return journal;
     }
 
 

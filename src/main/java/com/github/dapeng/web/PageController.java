@@ -179,11 +179,11 @@ public class PageController {
      *
      * @return
      */
-    @GetMapping(value = "/deploy/log")
+    @GetMapping(value = "/deploy/journal")
     public String deployLog(Model model) {
-        model.addAttribute("tagName", "deploy-log");
-        model.addAttribute("sideName", "deploy-log");
-        return "page/deploy-log";
+        model.addAttribute("tagName", "deploy-journal");
+        model.addAttribute("sideName", "deploy-journal");
+        return "page/deploy-journal";
     }
 
 }

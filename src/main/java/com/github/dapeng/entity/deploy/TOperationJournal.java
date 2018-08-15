@@ -34,7 +34,7 @@ public class TOperationJournal {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
   @Column(name = "created_at")
   private java.sql.Timestamp createdAt;
-  @Column(name = "updated_by")
+  @Column(name = "created_by")
   private String createdBy;
 
 

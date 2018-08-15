@@ -91,6 +91,48 @@ var api;
             return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u8BE6\u60C5\"  onclick=\"viewDeployUnitOrEditByID(" + value + ",'view')\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewDeployUnitOrEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5220\u9664\"  onclick=\"delDeployUnit(" + value + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
         };
         /**
+         * 流水操作状态
+         * @param value
+         * @param row
+         * @returns {string}
+         */
+        Deploy.prototype.exportDeployJournalFlagContext = function (value, row) {
+            //1:升级(update);2:重启(restart);3:停止(stop);4:回滚(rollback)
+            //0:danger,1:default,2:primary,3:success
+            switch (value) {
+                case 1:
+                    return '<span class="label label-success">升级</span>';
+                case 2:
+                    return '<span class="label label-info">重启</span>';
+                case 3:
+                    return '<span class="label label-danger">停止</span>';
+                case 4:
+                    return '<span class="label label-primary">回滚</span>';
+                default:
+                    return '<span class="label label-warning">未知</span>';
+            }
+        };
+        /**
+         * 查看yml
+         * @param value
+         * @param row
+         * @returns {string}
+         */
+        Deploy.prototype.exportDeployJournalYmlContext = function (value, row) {
+            return "<span class=\"link-button-table\">\n " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"yml\"  onclick=\"viewDeployJournalYml(" + row.id + ")\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>" : "-") + "\n</span>\n";
+        };
+        /**
+         * 流水操作
+         * @param value
+         * @param row
+         */
+        Deploy.prototype.exportDeployJournalActionContext = function (value, row) {
+            return "<span class=\"link-button-table\">\n            " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"\u56DE\u6EDA\"  onclick=\"rollbackDeploy(" + value + ")\"><span class=\"glyphicon glyphicon-repeat\"></span></a>" : "-") + "\n            </span>";
+        };
+        Deploy.prototype.exportViewDeployJournalContext = function (data) {
+            return "\n<div class=\"panel-header window-header\" >\n                    <div class=\"input-group\">\n                        <p class=\"left-panel-title\">" + data.gitTag + ":" + data.serviceName + ":" + data.imageTag + "</p>\n                    </div>\n                </div>\n<pre style=\"margin-top: 60px\">\n" + data.yml + "\n                    </pre>";
+        };
+        /**
          * 服务/主机视图
          */
         Deploy.prototype.deployViewChange = function (viewType, data) {

@@ -10,6 +10,12 @@ function InitDeployHosts() {
     table.onDblClickRow = function (row) {
         viewDeployHostOrEditByID(row.id, VIEW)
     };
+    table.responseHandler= function(res){
+        return {
+            total: res.context == null ? 0 : res.context.totalElements,
+            rows: res.context.content
+        };
+    };
     table.init();
 }
 

@@ -9,7 +9,7 @@ import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
-import com.github.dapeng.vo.UnitVo;
+import com.github.dapeng.vo.DeployUnitVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,29 +91,29 @@ public class DeployUnitRestController {
             //这种方式使用JPA的API设置了查询条件，所以不需要再返回查询条件Predicate给Spring Data Jpa，故最后return null;即可。
             return null;
         }, pageRequest);
-
-        List<TDeployUnit> units = page.getContent();
-        List<UnitVo> unitVos = units.stream().map(u -> {
-            UnitVo vo = new UnitVo();
-            vo.setId(u.getId());
-            vo.setSetId(u.getSetId());
-            vo.setSetName(setRepository.getOne(u.getSetId()).getName());
-            vo.setHostId(u.getHostId());
-            vo.setHostName(hostRepository.getOne(u.getHostId()).getName());
-            vo.setServiceId(u.getServiceId());
-            vo.setServiceName(serviceRepository.getOne(u.getServiceId()).getName());
-            vo.setCreatedAt(u.getCreatedAt());
-            vo.setDockerExtras(u.getDockerExtras());
-            vo.setEnv(u.getEnv());
-            vo.setGitTag(u.getGitTag());
-            vo.setImageTag(u.getImageTag());
-            vo.setPorts(u.getPorts());
-            vo.setUpdatedAt(u.getUpdatedAt());
-            vo.setVolumes(u.getVolumes());
-            return vo;
-        }).collect(Collectors.toList());
+        Page<DeployUnitVo> voPage = page.map(u -> toVo(u));
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, unitVos));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, voPage));
+    }
+
+    private DeployUnitVo toVo(TDeployUnit u) {
+        DeployUnitVo vo = new DeployUnitVo();
+        vo.setId(u.getId());
+        vo.setSetId(u.getSetId());
+        vo.setSetName(setRepository.getOne(u.getSetId()).getName());
+        vo.setHostId(u.getHostId());
+        vo.setHostName(hostRepository.getOne(u.getHostId()).getName());
+        vo.setServiceId(u.getServiceId());
+        vo.setServiceName(serviceRepository.getOne(u.getServiceId()).getName());
+        vo.setCreatedAt(u.getCreatedAt());
+        vo.setDockerExtras(u.getDockerExtras());
+        vo.setEnv(u.getEnv());
+        vo.setGitTag(u.getGitTag());
+        vo.setImageTag(u.getImageTag());
+        vo.setPorts(u.getPorts());
+        vo.setUpdatedAt(u.getUpdatedAt());
+        vo.setVolumes(u.getVolumes());
+        return vo;
     }
 
     /**
