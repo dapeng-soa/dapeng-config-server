@@ -19,6 +19,12 @@ function initDeployUnits() {
         ps.serviceId = $("#serviceSelectView").find("option:selected").val();;
         return ps;
     };
+    table.responseHandler= function(res){
+        return {
+            total: res.context == null ? 0 : res.context.totalElements,
+            rows: res.context.content
+        };
+    };
     table.init();
     bsTable = table;
 }
@@ -199,6 +205,9 @@ var initViewSetSelect = function () {
 var initViewHostSelect = function () {
     var curl = basePath + "/api/deploy-hosts/";
     var ss = new BzSelect(curl, "hostSelectView", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
     ss.refresh = true;
     ss.init();
 };

@@ -46,8 +46,8 @@
                 <dd class="${sideName == 'deploy-exec' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/exec"><i class="fa fa-rocket" aria-hidden="true"></i>上线部署</a>
                 </dd>
-                <dd class="${sideName == 'deploy-log' ? 'layui-this' : ''}">
-                    <a href="${basePath}/deploy/log"><i class="fa fa-history" aria-hidden="true"></i></i>升级日志</a>
+                <dd class="${sideName == 'deploy-journal' ? 'layui-this' : ''}">
+                    <a href="${basePath}/deploy/journal"><i class="fa fa-history" aria-hidden="true"></i></i>部署记录</a>
                 </dd>
             </dl>
         </li>

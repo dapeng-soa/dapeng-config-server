@@ -602,6 +602,65 @@ restart: on-failure:3
         }
 
         /**
+         * 流水操作状态
+         * @param value
+         * @param row
+         * @returns {string}
+         */
+        public exportDeployJournalFlagContext(value, row) {
+            //1:升级(update);2:重启(restart);3:停止(stop);4:回滚(rollback)
+            //0:danger,1:default,2:primary,3:success
+            switch (value) {
+                case 1:
+                    return '<span class="label label-success">升级</span>';
+                case 2:
+                    return '<span class="label label-info">重启</span>';
+                case 3:
+                    return '<span class="label label-danger">停止</span>';
+                case 4:
+                    return '<span class="label label-primary">回滚</span>';
+                default:
+                    return '<span class="label label-warning">未知</span>';
+            }
+        }
+
+        /**
+         * 查看yml
+         * @param value
+         * @param row
+         * @returns {string}
+         */
+        public exportDeployJournalYmlContext(value, row) {
+            return `<span class="link-button-table">
+ ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="yml"  onclick="viewDeployJournalYml(${row.id})"><span class="glyphicon glyphicon-eye-open"></span></a>` : `-`}
+</span>
+`
+        }
+
+        /**
+         * 流水操作
+         * @param value
+         * @param row
+         */
+        public exportDeployJournalActionContext(value, row) {
+            return `<span class="link-button-table">
+            ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="回滚"  onclick="rollbackDeploy(${value})"><span class="glyphicon glyphicon-repeat"></span></a>` : `-`}
+            </span>`;
+        }
+
+        public exportViewDeployJournalContext(data: any) {
+            return `
+<div class="panel-header window-header" >
+                    <div class="input-group">
+                        <p class="left-panel-title">${data.gitTag}:${data.serviceName}:${data.imageTag}</p>
+                    </div>
+                </div>
+<pre style="margin-top: 60px">
+${data.yml}
+                    </pre>`;
+        }
+
+        /**
          * 服务/主机视图
          */
         public deployViewChange(viewType: number, data: any) {
@@ -797,10 +856,10 @@ ${data.extra == 1 ? '否' : '是'}
          * @param {string} row
          * @param {string} lv
          */
-        public consoleView(row: string,lv?:string) {
+        public consoleView(row: string, lv?: string) {
             let c = this;
             let rowStr = `
-            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> <span style="${lv===window.ERROR?`color:ff4d4d`:``}">${row}</span></p>
+            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> <span style="${lv === window.ERROR ? `color:ff4d4d` : ``}">${row}</span></p>
             `;
             let ob = $("#consoleView");
             ob.append(rowStr);

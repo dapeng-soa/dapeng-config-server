@@ -241,7 +241,6 @@ window.indexFormatter = function (value, row, index) {
                     minimumCountColumns: 2,     //最少允许的列数
                     clickToSelect: true,        //是否启用点击选中行
                     searchOnEnterKey: true,     //设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
-                    pagination: true,           //是否显示分页条
                     height: this.height,
                     uniqueId: "id",                     //每一行的唯一标识，一般为主键列
                     showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
@@ -344,6 +343,9 @@ window.indexFormatter = function (value, row, index) {
         this.v_selected = undefined; // 默认选中的value
         this.defaultOption = true; // 默认的option
         this.refresh = false;
+        this.responseHandler = function (res) {
+            return res.context;
+        }; //
         this.before = function () {
         }; // 初始化之前
         this.after = function () {
@@ -358,7 +360,7 @@ window.indexFormatter = function (value, row, index) {
             var el = $("#" + ts.selectId);
             $.ajax(settings).done(function (res) {
                 if (res.code === SUCCESS_CODE) {
-                    var contexts = res.context;
+                    var contexts = ts.responseHandler(res);
                     var html = ts.defaultOption ? "<option value='0'>请选择</option>" : "";
                     $.each(contexts, function (i, em) {
                         var seled = "";
@@ -387,8 +389,24 @@ window.indexFormatter = function (value, row, index) {
 
 }());
 
+(function () {
+    var BzConslose = function () {
+        this.cid = "ConsoleView";// 默认id
+        this.drag = true; // 可拖动
+    };
+    BzConslose.prototype = {
+        init: function () {
+        },
+        refreshConsole: function () {
 
-Date.prototype.pattern=function(fmt) {
+        }
+
+    }
+
+}());
+
+
+Date.prototype.pattern = function (fmt) {
     var o;
     o = {
         "M+": this.getMonth() + 1, //月份
@@ -401,23 +419,23 @@ Date.prototype.pattern=function(fmt) {
         "S": this.getMilliseconds() //毫秒
     };
     var week = {
-        "0" : "/u65e5",
-        "1" : "/u4e00",
-        "2" : "/u4e8c",
-        "3" : "/u4e09",
-        "4" : "/u56db",
-        "5" : "/u4e94",
-        "6" : "/u516d"
+        "0": "/u65e5",
+        "1": "/u4e00",
+        "2": "/u4e8c",
+        "3": "/u4e09",
+        "4": "/u56db",
+        "5": "/u4e94",
+        "6": "/u516d"
     };
-    if(/(y+)/.test(fmt)){
-        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+    if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     }
-    if(/(E+)/.test(fmt)){
-        fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "/u661f/u671f" : "/u5468") : "")+week[this.getDay()+""]);
+    if (/(E+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
     }
-    for(var k in o){
-        if(new RegExp("("+ k +")").test(fmt)){
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+    for (var k in o) {
+        if (new RegExp("(" + k + ")").test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
         }
     }
     return fmt;

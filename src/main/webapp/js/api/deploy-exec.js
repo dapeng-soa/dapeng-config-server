@@ -1,6 +1,8 @@
 var socket = {};
 var yaml = "";
 var serviceNum = 0; // 当前的服务数量
+var deploy = new api.Deploy();
+var util = new api.Api();
 $(document).ready(function () {
     socket = io(socketUrl);
     socket.on(SOC_CONNECT, function () {
@@ -73,9 +75,6 @@ $(document).ready(function () {
         showMessage(ERROR, "与服务器建立连接失败", "连接超时");
     });
 });
-
-var deploy = new api.Deploy();
-var util = new api.Api();
 /**
  * 同步每个agent上服务时间和服务状态
  */
@@ -83,14 +82,13 @@ emitGetInfoEvent = function () {
     var url = basePath + "/api/deploy-units";
     $.get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
-            serviceNum = res.context.length;
+            serviceNum = res.context.content.length;
             var eventReps = [];
-            $.each(res.context, function (idx, ement) {
+            $.each(res.context.content, function (idx, ement) {
                 var event_url = basePath + "/api/deploy-unit/event_rep/" + ement.id;
                 util.$get(event_url, function (res2) {
                     if (res.code === SUCCESS_CODE) {
                         eventReps.push(res2.context);
-                        console.log(serviceNum === eventReps.length);
                         if (serviceNum === eventReps.length) {
                             socket.emit(GET_SERVER_INFO, JSON.stringify(eventReps));
                         }
@@ -99,37 +97,6 @@ emitGetInfoEvent = function () {
             });
         }
     }, "json");
-};
-
-toggleConloseView = function () {
-    var ob = $("#consoleView");
-    if (!ob.hasClass("opened")) {
-        openConloseView();
-    } else {
-        closeConloseView();
-    }
-};
-openConloseView = function () {
-    var ob = $("#consoleView");
-    var line = $("#line");
-    if (ob.hasClass("opened")) {return}
-    ob.animateCss("fadeInRight").addClass("opened");
-    ob.css({top: "0", right: 0 + "px"});
-    line.css({position: "fixed"});
-
-};
-
-closeConloseView = function () {
-    var ob = $("#consoleView");
-    var line = $("#line");
-    if (ob.hasClass("opened")) {
-        ob.removeClass("opened");
-        ob.css({
-            top: "5px",
-            right: -(ob.width() + Number(ob.css("padding-left").replace("px", "")) + Number(ob.css("padding-right").replace("px", ""))) + "px",
-        });
-        line.css({position: "absolute"});
-    }
 };
 
 

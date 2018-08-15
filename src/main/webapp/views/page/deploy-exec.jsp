@@ -12,10 +12,7 @@
     <script src="${basePath}/js/api/deploy-exec.js"></script>
 </head>
 <body>
-<div id="consoleView" class="closed">
-    <p title="控制台" onclick="toggleConloseView(this)">[console >>]</p>
-    <div id="line" onmousedown="slideLine(event)"></div>
-</div>
+<jsp:include page="../core/console.jsp"/>
 <jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
@@ -26,8 +23,6 @@
                 <span class="input-group-btn panel-button-group">
                     <button type="button" class="btn btn-default" onclick="">操作说明</button>
                     <button type="button" class="btn btn-info" onclick="">Agent列表</button>
-                    <button type="button" class="btn btn-primary" onclick="">新增部署</button>
-                    <button type="button" class="btn btn-success" onclick="">升级日志</button>
                 </span>
             </div>
         </div>

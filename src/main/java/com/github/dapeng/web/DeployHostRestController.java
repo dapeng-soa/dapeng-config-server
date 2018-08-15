@@ -11,12 +11,17 @@ import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
 import com.github.dapeng.vo.HostVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -41,26 +46,43 @@ public class DeployHostRestController {
      * @return
      */
     @GetMapping("/deploy-hosts")
-    public ResponseEntity<?> deployHosts() {
-        List<THost> hosts = hostRepository.findAll();
-        List<HostVo> hostVos = hosts.stream().map(x -> {
-            HostVo hostVo = new HostVo();
-            hostVo.setId(x.getId());
-            hostVo.setIp(IPUtils.transferIp(x.getIp()));
-            hostVo.setEnv(x.getEnv());
-            hostVo.setName(x.getName());
-            hostVo.setCreatedAt(x.getCreatedAt());
-            hostVo.setUpdatedAt(x.getUpdatedAt());
-            hostVo.setSetId(x.getSetId());
-            TSet tSet = setRepository.getOne(x.getSetId());
-            hostVo.setSetName(tSet.getName());
-            hostVo.setExtra(x.getExtra());
-            hostVo.setLabels(x.getLabels());
-            hostVo.setRemark(x.getRemark());
-            return hostVo;
-        }).collect(Collectors.toList());
+    public ResponseEntity<?> deployHosts(@RequestParam(required = false, defaultValue = "0") int offset,
+                                         @RequestParam(required = false, defaultValue = "100000") int limit,
+                                         @RequestParam(required = false) String sort,
+                                         @RequestParam(required = false, defaultValue = "desc") String order,
+                                         @RequestParam(required = false, defaultValue = "") String search) {
+        PageRequest pageRequest = new PageRequest
+                (offset, limit,
+                        new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
+                                null == sort ? "updatedAt" : sort));
+        Page<THost> page = hostRepository.findAll((root, query, cb) -> {
+            Path<String> name = root.get("name");
+            Path<String> remark = root.get("remark");
+            List<Predicate> ps = new ArrayList<>();
+            ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%")));
+            query.where(ps.toArray(new Predicate[ps.size()]));
+            return null;
+        }, pageRequest);
+        Page<HostVo> voPage = page.map(x -> toVo(x));
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hostVos));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, voPage));
+    }
+
+    private HostVo toVo(THost x) {
+        HostVo hostVo = new HostVo();
+        hostVo.setId(x.getId());
+        hostVo.setIp(IPUtils.transferIp(x.getIp()));
+        hostVo.setEnv(x.getEnv());
+        hostVo.setName(x.getName());
+        hostVo.setCreatedAt(x.getCreatedAt());
+        hostVo.setUpdatedAt(x.getUpdatedAt());
+        hostVo.setSetId(x.getSetId());
+        TSet tSet = setRepository.getOne(x.getSetId());
+        hostVo.setSetName(tSet.getName());
+        hostVo.setExtra(x.getExtra());
+        hostVo.setLabels(x.getLabels());
+        hostVo.setRemark(x.getRemark());
+        return hostVo;
     }
 
     /**
