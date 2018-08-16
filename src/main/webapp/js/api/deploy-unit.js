@@ -215,6 +215,9 @@ var initViewHostSelect = function () {
 var initViewServiceSelect = function () {
     var curl = basePath + "/api/deploy-services";
     var ss = new BzSelect(curl, "serviceSelectView", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
     ss.refresh = true;
     ss.init();
 };
@@ -260,6 +263,9 @@ initHostList = function () {
     ss.after = function () {
         addUnitHostChanged();
     };
+    ss.responseHandler = function (res) {
+        return res.context
+    };
     ss.init();
 };
 
@@ -272,6 +278,9 @@ initServiceList = function () {
     var ss = new BzSelect(curl, "serviceSelect", "id", "name");
     ss.after = function () {
         addUnitServiceChanged();
+    };
+    ss.responseHandler = function (res) {
+        return res.context.content
     };
     ss.init();
 };

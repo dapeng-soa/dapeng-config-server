@@ -40,6 +40,31 @@
             line.css({position: "absolute"});
         }
     };
+    slideLine = function (e) {
+        var body = document.body, oconsoleView = document.getElementById("consoleView"),
+            oLine = document.getElementById("line");
+        var disX = (e || event).clientX;
+        oLine.width = oLine.offsetWidth;
+        document.onmousemove = function (e) {
+            var iT = oLine.width + ((e || event).clientX - disX);
+            var e = e || window.event, tarnameb = e.target || e.srcElement;
+            var maxT = body.clientWidth - oLine.offsetWidth;
+            var base = (maxT - disX);
+            if (iT > maxT) {
+                iT = maxT
+            }
+            oLine.style.right = (base - oLine.width - iT) < (300 - oLine.width) ? 300 - oLine.width : (base - oLine.width - iT) + "px";
+            oconsoleView.style.width = base - iT + "px";
+            return false
+        };
+        document.onmouseup = function () {
+            document.onmousemove = null;
+            document.onmouseup = null;
+            oLine.releaseCapture && oLine.releaseCapture()
+        };
+        oLine.setCapture && oLine.setCapture();
+        return false
+    };
 </script>
 <div id="consoleView" class="closed">
     <p title="控制台" onclick="toggleConloseView(this)">[console >>]</p>

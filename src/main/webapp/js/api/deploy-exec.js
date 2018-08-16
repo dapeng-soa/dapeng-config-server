@@ -60,7 +60,7 @@ $(document).ready(function () {
     socket.on(ERROR_EVENT, function (data) {
         layer.msg(data);
         openConloseView();
-        deploy.consoleView(data,ERROR);
+        deploy.consoleView(data, ERROR);
     });
 
     socket.on(SOC_CDISCONNECT, function () {
@@ -120,29 +120,23 @@ initSetList = function (id) {
  */
 initServiceList = function () {
     var curl = basePath + "/api/deploy-services";
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var html = "<option selected value='0'>请选择</option>";
-            for (var i = 0; i < res.context.length; i++) {
-                html += '<option  value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#serviceSelect").html(html).selectpicker('refresh');
-        }
-    }, "json");
+    var ss = new BzSelect(curl, "serviceSelect", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.refresh = true;
+    ss.init();
 };
 
 initHostList = function () {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var html = "<option selected value='0'>请选择</option>";
-            for (var i = 0; i < res.context.length; i++) {
-                html += '<option  value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#hostSelect").html(html).selectpicker('refresh');
-        }
-    }, "json");
+    var ss = new BzSelect(curl, "hostSelect", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context
+    };
+    ss.refresh = true;
+    ss.init();
 };
 
 /**
@@ -315,34 +309,8 @@ cancelServiceUpdate = function () {
  * 下载yaml
  */
 downloadYaml = function (unitId) {
-    window.open(basePath + "/api/deploy-unit/download-yml/"+unitId);
+    window.open(basePath + "/api/deploy-unit/download-yml/" + unitId);
     layer.msg("下载成功");
-};
-
-slideLine = function (e) {
-    var body = document.body, oconsoleView = document.getElementById("consoleView"),
-        oLine = document.getElementById("line");
-    var disX = (e || event).clientX;
-    oLine.width = oLine.offsetWidth;
-    document.onmousemove = function (e) {
-        var iT = oLine.width + ((e || event).clientX - disX);
-        var e = e || window.event, tarnameb = e.target || e.srcElement;
-        var maxT = body.clientWidth - oLine.offsetWidth;
-        var base = (maxT - disX);
-        if (iT > maxT) {
-            iT = maxT
-        }
-        oLine.style.right = (base - oLine.width - iT) < (300 - oLine.width) ? 300 - oLine.width : (base - oLine.width - iT) + "px";
-        oconsoleView.style.width = base - iT + "px";
-        return false
-    };
-    document.onmouseup = function () {
-        document.onmousemove = null;
-        document.onmouseup = null;
-        oLine.releaseCapture && oLine.releaseCapture()
-    };
-    oLine.setCapture && oLine.setCapture();
-    return false
 };
 
 
