@@ -10,6 +10,12 @@ function InitDeployServices() {
     table.onDblClickRow = function (row) {
         viewDeployServiceOrEditByID(row.id, VIEW)
     };
+    table.responseHandler= function(res){
+        return {
+            total: res.context == null ? 0 : res.context.totalElements,
+            rows: res.context.content
+        };
+    };
     table.init();
 }
 
