@@ -31,7 +31,7 @@ $(document).ready(function () {
     socket.on(ERROR_EVENT, function (data) {
         layer.msg(data);
         openConloseView();
-        deploy.consoleView(data,ERROR);
+        deploy.consoleView(data, ERROR);
     });
 
     socket.on(SOC_CDISCONNECT, function () {
@@ -57,7 +57,7 @@ function initDeployJournals() {
         ps.opType = $("#opTypeView").find("option:selected").val();
         return ps;
     };
-    table.responseHandler= function(res){
+    table.responseHandler = function (res) {
         return {
             total: res.context == null ? 0 : res.context.totalElements,
             rows: res.context.content
@@ -166,22 +166,22 @@ viewDeployJournalYml = function (id) {
  * 回滚
  * @param jid
  */
-rollbackDeploy = function (jid) {
+rollbackDeploy = function (jid, host, service) {
     var url = basePath + "/api/deploy/rollbackRealService";
     bodyAbs();
-    util.post(url, {jid: jid}, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            layer.confirm('回滚服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
-                btn: ['确认', '取消']
-            }, function () {
+    layer.confirm('回滚服务[' + host + ':' + service + ']?', {
+        btn: ['确认', '取消']
+    }, function () {
+        util.post(url, {jid: jid}, function (res) {
+            if (res.code === SUCCESS_CODE) {
                 socket.emit(DEPLOY, JSON.stringify(res.context));
                 layer.msg("操作已发送");
                 rmBodyAbs();
-            }, function () {
-                layer.msg("操作取消");
-            });
-        }
-    })
+            }
+        })
+    }, function () {
+        layer.msg("操作取消");
+    });
 };
 
 
@@ -194,6 +194,9 @@ var initViewSetSelect = function () {
     var s1 = new BzSelect(curl, "setSelectView", "id", "name");
     s1.after = function () {
         viewUnitSetChanged();
+    };
+    s1.responseHandler = function (res) {
+        return res.context.content
     };
     s1.refresh = true;
     s1.init();
@@ -218,7 +221,6 @@ var initViewServiceSelect = function () {
     };
     ss.init();
 };
-
 
 
 var viewUnitSetChanged = function () {

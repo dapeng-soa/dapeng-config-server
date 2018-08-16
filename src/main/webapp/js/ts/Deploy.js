@@ -127,7 +127,7 @@ var api;
          * @param row
          */
         Deploy.prototype.exportDeployJournalActionContext = function (value, row) {
-            return "<span class=\"link-button-table\">\n            " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"\u56DE\u6EDA\"  onclick=\"rollbackDeploy(" + value + ")\"><span class=\"glyphicon glyphicon-repeat\"></span></a>" : "-") + "\n            </span>";
+            return "<span class=\"link-button-table\">\n            " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"\u56DE\u6EDA\"  onclick=\"rollbackDeploy(" + value + ",'" + row.hostName + "','" + row.serviceName + "')\"><span class=\"glyphicon glyphicon-repeat\"></span></a>" : "-") + "\n            </span>";
         };
         Deploy.prototype.exportViewDeployJournalContext = function (data) {
             return "\n<div class=\"panel-header window-header\" >\n                    <div class=\"input-group\">\n                        <p class=\"left-panel-title\">" + data.gitTag + ":" + data.serviceName + ":" + data.imageTag + "</p>\n                    </div>\n                </div>\n<pre style=\"margin-top: 60px\">\n" + data.yml + "\n                    </pre>";

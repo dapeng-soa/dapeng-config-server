@@ -104,12 +104,15 @@ emitGetInfoEvent = function () {
  * 初始化set
  * @constructor
  */
-initSetList = function (id) {
+initSetList = function () {
     var curl = basePath + "/api/deploy-sets";
     var ss = new BzSelect(curl, "setSelect", "id", "name");
     ss.refresh = true;
     ss.after = function () {
         execViewTypeChanged(1);
+    };
+    ss.responseHandler = function (res) {
+        return res.context.content
     };
     ss.init();
 };
@@ -131,8 +134,14 @@ initServiceList = function () {
 initHostList = function () {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
+    if (Number(setSelected) === 0) {
+        curl = basePath + "/api/deploy-hosts"
+    }
     var ss = new BzSelect(curl, "hostSelect", "id", "name");
     ss.responseHandler = function (res) {
+        if (Number(setSelected) === 0) {
+            return res.context.content
+        }
         return res.context
     };
     ss.refresh = true;
