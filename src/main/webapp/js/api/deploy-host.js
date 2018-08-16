@@ -192,19 +192,18 @@ delDeployHost = function () {
  */
 initSetList = function (id) {
     var curl = basePath + "/api/deploy-sets";
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (id !== undefined && id !==""){
-                    seled = res.context[i].id === id?"selected":"";
-                }
-                html += '<option '+seled+' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#setSelect").html(html);
+    var ss = new BzSelect(curl, "setSelect", "id", "name");
+    ss.v_selected = id;
+    ss.after = function () {
+        if (id === undefined || id === "") {
+            initHostList()
         }
-    }, "json");
+        addUnitSetChanged();
+    };
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.init();
 };
 
 

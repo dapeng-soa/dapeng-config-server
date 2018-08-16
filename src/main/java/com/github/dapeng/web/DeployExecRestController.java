@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -65,10 +67,24 @@ public class DeployExecRestController {
         // 根据视图类型返回对应的视图数据结构
         List<DeployServiceVo> serviceVos = new ArrayList<>();
         List<DeployHostVo> hostVos = new ArrayList<>();
-        List<TDeployUnit> units = isEmpty(setId) ? unitRepository.findAll() : !isEmpty(serviceId) ?
-                unitRepository.findAllBySetIdAndServiceId(setId, serviceId) :
-                !isEmpty(hostId) ? unitRepository.findAllBySetIdAndHostId(setId, hostId) :
-                        unitRepository.findAllBySetId(setId);
+
+        List<TDeployUnit> units = unitRepository.findAll((root, query, cb) -> {
+            Path<Long> setId1 = root.get("setId");
+            Path<Long> hostId1 = root.get("hostId");
+            Path<Long> serviceId1 = root.get("serviceId");
+            List<Predicate> ps = new ArrayList<>();
+            if (!isEmpty(setId)) {
+                ps.add(cb.equal(setId1, setId));
+            }
+            if (!isEmpty(hostId)) {
+                ps.add(cb.equal(hostId1, hostId));
+            }
+            if (!isEmpty(serviceId)) {
+                ps.add(cb.equal(serviceId1, serviceId));
+            }
+            query.where(ps.toArray(new Predicate[ps.size()]));
+            return null;
+        });
 
         if (viewType == 1) {
             // (serviceId->unit)

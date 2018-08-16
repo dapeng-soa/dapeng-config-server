@@ -198,6 +198,9 @@ var initViewSetSelect = function () {
     s1.after = function () {
         viewUnitSetChanged();
     };
+    s1.responseHandler = function (res) {
+        return res.context.content
+    };
     s1.refresh = true;
     s1.init();
 };
@@ -249,6 +252,9 @@ initSetList = function (id) {
         }
         addUnitSetChanged();
     };
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
     ss.init();
 };
 
@@ -256,10 +262,11 @@ initSetList = function (id) {
  * 初始化host/根据选择的set
  * @constructor
  */
-initHostList = function () {
+initHostList = function (id) {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
     var ss = new BzSelect(curl, "hostSelect", "id", "name");
+    ss.v_selected = id;
     ss.after = function () {
         addUnitHostChanged();
     };
@@ -273,9 +280,10 @@ initHostList = function () {
  * 初始化服务
  * @constructor
  */
-initServiceList = function () {
+initServiceList = function (id) {
     var curl = basePath + "/api/deploy-services";
     var ss = new BzSelect(curl, "serviceSelect", "id", "name");
+    ss.v_selected = id;
     ss.after = function () {
         addUnitServiceChanged();
     };
