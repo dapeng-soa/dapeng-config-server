@@ -52,7 +52,7 @@ public class DeployHostRestController {
                                          @RequestParam(required = false, defaultValue = "desc") String order,
                                          @RequestParam(required = false, defaultValue = "") String search) {
         PageRequest pageRequest = new PageRequest
-                (offset, limit,
+                (offset / limit, limit,
                         new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
                                 null == sort ? "updatedAt" : sort));
         Page<THost> page = hostRepository.findAll((root, query, cb) -> {

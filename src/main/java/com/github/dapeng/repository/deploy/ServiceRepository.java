@@ -2,6 +2,7 @@ package com.github.dapeng.repository.deploy;
 
 import com.github.dapeng.entity.deploy.TService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
@@ -11,6 +12,6 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public interface ServiceRepository extends JpaRepository<TService, Long> {
+public interface ServiceRepository extends JpaRepository<TService, Long>,JpaSpecificationExecutor<TService> {
     List<TService> findTop1ByIdOrderByUpdatedAtDesc(Long id);
 }
