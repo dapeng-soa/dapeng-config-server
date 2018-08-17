@@ -2,6 +2,7 @@ package com.github.dapeng.repository.deploy;
 
 import com.github.dapeng.entity.deploy.THost;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public interface HostRepository extends JpaRepository<THost,Long> {
+public interface HostRepository extends JpaRepository<THost,Long>,JpaSpecificationExecutor<THost> {
 
     /**
      * 通过setId查找节点

@@ -1,17 +1,11 @@
 package com.github.dapeng.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * @author struy
  */
-public class UnitVo {
+public class DeployUnitVo {
 
   private long id;
   private long setId;
