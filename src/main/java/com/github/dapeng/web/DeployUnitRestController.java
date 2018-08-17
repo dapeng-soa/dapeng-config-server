@@ -9,14 +9,20 @@ import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
-import com.github.dapeng.vo.UnitVo;
+import com.github.dapeng.vo.DeployUnitVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,29 +54,66 @@ public class DeployUnitRestController {
      * @return 部署单元
      */
     @GetMapping("/deploy-units")
-    public ResponseEntity<?> deployUnits() {
-        List<TDeployUnit> units = unitRepository.findAll();
-        List<UnitVo> unitVos = units.stream().map(u -> {
-            UnitVo vo = new UnitVo();
-            vo.setId(u.getId());
-            vo.setSetId(u.getSetId());
-            vo.setSetName(setRepository.getOne(u.getSetId()).getName());
-            vo.setHostId(u.getHostId());
-            vo.setHostName(hostRepository.getOne(u.getHostId()).getName());
-            vo.setServiceId(u.getServiceId());
-            vo.setServiceName(serviceRepository.getOne(u.getServiceId()).getName());
-            vo.setCreatedAt(u.getCreatedAt());
-            vo.setDockerExtras(u.getDockerExtras());
-            vo.setEnv(u.getEnv());
-            vo.setGitTag(u.getGitTag());
-            vo.setImageTag(u.getImageTag());
-            vo.setPorts(u.getPorts());
-            vo.setUpdatedAt(u.getUpdatedAt());
-            vo.setVolumes(u.getVolumes());
-            return vo;
-        }).collect(Collectors.toList());
+    public ResponseEntity<?> deployUnits(@RequestParam(required = false, defaultValue = "0") int offset,
+                                         @RequestParam(required = false, defaultValue = "100000") int limit,
+                                         @RequestParam(required = false) String sort,
+                                         @RequestParam(required = false, defaultValue = "desc") String order,
+                                         @RequestParam(required = false, defaultValue = "") String search,
+                                         @RequestParam(required = false, defaultValue = "0") Long setId,
+                                         @RequestParam(required = false, defaultValue = "0") Long hostId,
+                                         @RequestParam(required = false, defaultValue = "0") Long serviceId,
+                                         @RequestParam(required = false) String gitTag) {
+        PageRequest pageRequest = new PageRequest
+                (offset, limit,
+                        new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
+                                null == sort ? "updatedAt" : sort));
+
+
+        Page<TDeployUnit> page = unitRepository.findAll((root, query, cb) -> {
+            Path<Long> setId1 = root.get("setId");
+            Path<Long> hostId1 = root.get("hostId");
+            Path<Long> serviceId1 = root.get("serviceId");
+            Path<String> gitTag1 = root.get("gitTag");
+            Path<String> imageTag = root.get("imageTag");
+            List<Predicate> ps = new ArrayList<>();
+            ps.add(cb.or(cb.like(gitTag1, "%" + search + "%"), cb.like(imageTag, "%" + search + "%")));
+            //这里可以设置任意条查询条件
+            if (!isEmpty(setId)) {
+                ps.add(cb.equal(setId1, setId));
+            }
+            if (!isEmpty(hostId)) {
+                ps.add(cb.equal(hostId1, hostId));
+            }
+            if (!isEmpty(serviceId)) {
+                ps.add(cb.equal(serviceId1, serviceId));
+            }
+            query.where(ps.toArray(new Predicate[ps.size()]));
+            //这种方式使用JPA的API设置了查询条件，所以不需要再返回查询条件Predicate给Spring Data Jpa，故最后return null;即可。
+            return null;
+        }, pageRequest);
+        Page<DeployUnitVo> voPage = page.map(u -> toVo(u));
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, unitVos));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, voPage));
+    }
+
+    private DeployUnitVo toVo(TDeployUnit u) {
+        DeployUnitVo vo = new DeployUnitVo();
+        vo.setId(u.getId());
+        vo.setSetId(u.getSetId());
+        vo.setSetName(setRepository.getOne(u.getSetId()).getName());
+        vo.setHostId(u.getHostId());
+        vo.setHostName(hostRepository.getOne(u.getHostId()).getName());
+        vo.setServiceId(u.getServiceId());
+        vo.setServiceName(serviceRepository.getOne(u.getServiceId()).getName());
+        vo.setCreatedAt(u.getCreatedAt());
+        vo.setDockerExtras(u.getDockerExtras());
+        vo.setEnv(u.getEnv());
+        vo.setGitTag(u.getGitTag());
+        vo.setImageTag(u.getImageTag());
+        vo.setPorts(u.getPorts());
+        vo.setUpdatedAt(u.getUpdatedAt());
+        vo.setVolumes(u.getVolumes());
+        return vo;
     }
 
     /**

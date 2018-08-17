@@ -7,10 +7,16 @@ import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.dapeng.common.Commons.*;
@@ -33,10 +39,28 @@ public class DeployServiceRestController {
      * @return
      */
     @GetMapping("/deploy-services")
-    public ResponseEntity<?> deployServices() {
-        List<TService> services = serviceRepository.findAll();
+    public ResponseEntity<?> deployServices(@RequestParam(required = false, defaultValue = "0") int offset,
+                                            @RequestParam(required = false, defaultValue = "100000") int limit,
+                                            @RequestParam(required = false) String sort,
+                                            @RequestParam(required = false, defaultValue = "desc") String order,
+                                            @RequestParam(required = false, defaultValue = "") String search) {
+
+        PageRequest pageRequest = new PageRequest
+                (offset / limit, limit,
+                        new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
+                                null == sort ? "updatedAt" : sort));
+        Page<TService> page = serviceRepository.findAll((root, query, cb) -> {
+            Path<String> name = root.get("name");
+            Path<String> image = root.get("image");
+            Path<String> remark = root.get("remark");
+            Path<String> labels = root.get("labels");
+            List<Predicate> ps = new ArrayList<>();
+            ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%"), cb.like(image, "%" + search + "%"), cb.like(labels, "%" + search + "%")));
+            query.where(ps.toArray(new Predicate[ps.size()]));
+            return null;
+        }, pageRequest);
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, services));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, page));
     }
 
     /**

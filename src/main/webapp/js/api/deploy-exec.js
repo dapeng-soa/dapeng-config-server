@@ -1,34 +1,68 @@
 var socket = {};
 var yaml = "";
+var serviceNum = 0; // 当前的服务数量
+var deploy = new api.Deploy();
+var util = new api.Api();
 $(document).ready(function () {
-    initSetList();
-    setTimeout(function () {
-        execViewTypeChanged(1);
-    }, 200);
     socket = io(socketUrl);
     socket.on(SOC_CONNECT, function () {
         if (socket.connected) {
+            /**
+             * 注册
+             */
             socket.emit(WEB_REG, SOCKET_REG_INFO);
             showMessage(SUCCESS, "已建立与服务器的连接", "连接成功");
-            emitGetTimeEvent(socket);
         }
     });
+    initSetList();
     socket.on(NODE_EVENT, function (data) {
-        openConloseView();
         deploy.consoleView(data);
-        setTimeout(function () {
-            closeConloseView();
-        }, 5000);
     });
-    socket.on(GET_SERVER_TIME_RESP, function (data) {
-        deploy.consoleView(data);
-
-        checkService(data);
+    /**
+     * 获取服务更新时间返回
+     */
+    socket.on(GET_SERVER_INFO_RESP, function (data) {
+        // 将匹配页面元素的状态变化
+        deploy.processServiceStatus(JSON.parse(data));
     });
 
+    /**
+     * 获取yaml配置返回
+     */
     socket.on(GET_YAML_FILE_RESP, function (data) {
         yaml += data + "\n";
     });
+
+    /**
+     * 升级返回
+     */
+    socket.on(DEPLOY_RESP, function (data) {
+        deploy.consoleView(data);
+    });
+
+    /**
+     * 停止返回
+     */
+    socket.on(STOP_RESP, function (data) {
+        deploy.consoleView(data);
+    });
+
+    /**
+     * 重启返回
+     */
+    socket.on(RESTART_RESP, function (data) {
+        deploy.consoleView(data);
+    });
+
+    /**
+     * 错误返回
+     */
+    socket.on(ERROR_EVENT, function (data) {
+        layer.msg(data);
+        openConloseView();
+        deploy.consoleView(data, ERROR);
+    });
+
     socket.on(SOC_CDISCONNECT, function () {
         showMessage(ERROR, "已断开与服务器的连接", "断开连接");
     });
@@ -41,43 +75,28 @@ $(document).ready(function () {
         showMessage(ERROR, "与服务器建立连接失败", "连接超时");
     });
 });
-var deploy = new api.Deploy();
-var util = new api.Api();
 /**
- * 同步每个agent上服务时间
- * @param soc
+ * 同步每个agent上服务时间和服务状态
  */
-emitGetTimeEvent = function (soc) {
-    var url = basePath + "/api/deploy-services";
+emitGetInfoEvent = function () {
+    var url = basePath + "/api/deploy-units";
     $.get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
-            $.each(res.context, function (idx, ement) {
-                soc.emit(GET_SERVER_TIME, ement.name);
-            })
+            serviceNum = res.context.content.length;
+            var eventReps = [];
+            $.each(res.context.content, function (idx, ement) {
+                var event_url = basePath + "/api/deploy-unit/event_rep/" + ement.id;
+                util.$get(event_url, function (res2) {
+                    if (res.code === SUCCESS_CODE) {
+                        eventReps.push(res2.context);
+                        if (serviceNum === eventReps.length) {
+                            socket.emit(GET_SERVER_INFO, JSON.stringify(eventReps));
+                        }
+                    }
+                });
+            });
         }
     }, "json");
-};
-
-toggleConloseView = function () {
-    var ob = $("#consoleView");
-    if (!ob.hasClass("opened")) {
-        openConloseView();
-    } else {
-        closeConloseView();
-    }
-};
-openConloseView = function () {
-    var ob = $("#consoleView");
-    ob.removeClass("closed");
-    ob.animateCss("fadeInRight").addClass("opened");
-};
-
-closeConloseView = function () {
-    var ob = $("#consoleView");
-    if (ob.hasClass("opened")) {
-        ob.removeClass("opened");
-        ob.animateCss("fadeOutRight").addClass("closed");
-    }
 };
 
 
@@ -85,72 +104,58 @@ closeConloseView = function () {
  * 初始化set
  * @constructor
  */
-initSetList = function (id) {
+initSetList = function () {
     var curl = basePath + "/api/deploy-sets";
-    util.$get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (i === 0) {
-                    seled = "selected"
-                }
-                if (id !== undefined && id !== "") {
-                    seled = res.context[i].id === id ? "selected" : "";
-                }
-                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#setSelect").html(html).selectpicker('refresh');
-        }
-    });
+    var ss = new BzSelect(curl, "setSelect", "id", "name");
+    ss.refresh = true;
+    ss.after = function () {
+        execViewTypeChanged(1);
+    };
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.init();
 };
 
 /**
  * 初始化服务
  * @constructor
  */
-initServiceList = function (id) {
+initServiceList = function () {
     var curl = basePath + "/api/deploy-services";
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (id !== undefined && id !== "") {
-                    seled = res.context[i].id === id ? "selected" : "";
-                }
-                html += '<option ' + seled + ' value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#serviceSelect").html(html).selectpicker('refresh');
-        }
-    }, "json");
+    var ss = new BzSelect(curl, "serviceSelect", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.refresh = true;
+    ss.init();
 };
 
-initHostList = function (id) {
+initHostList = function () {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
-    $.get(curl, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var html = "";
-            for (var i = 0; i < res.context.length; i++) {
-                var seled = "";
-                if (id !== undefined && id !== "") {
-                    seled = res.context[i].id === id ? "selected" : "";
-                }
-                html += '<option seled value="' + res.context[i].id + '">' + res.context[i].name + '</option>';
-            }
-            $("#hostSelect").html(html).selectpicker('refresh');
+    if (Number(setSelected) === 0) {
+        curl = basePath + "/api/deploy-hosts"
+    }
+    var ss = new BzSelect(curl, "hostSelect", "id", "name");
+    ss.responseHandler = function (res) {
+        if (Number(setSelected) === 0) {
+            return res.context.content
         }
-    }, "json");
+        return res.context
+    };
+    ss.refresh = true;
+    ss.init();
 };
 
-// 环境集改变
-execSetChanged = function () {
-    checkService();
-};
-// 视图类型变更
+/**
+ * 视图类型变更
+ * @param obj
+ */
 execViewTypeChanged = function (obj) {
-    var selected = obj === 1 ? 1 : Number($(obj).find("option:selected").val());
+    // 发送获取各个节点的服务信息(时间信息)的事件
+    emitGetInfoEvent();
+    var selected = obj === 1 ? 1 : Number($("#viewType").find("option:selected").val());
     if (selected === 1) {
         $("#viewTypeLabel").html("服务：");
         $("#viewTypeSelect").html(
@@ -159,7 +164,6 @@ execViewTypeChanged = function (obj) {
         );
         // 初始化服务
         initServiceList();
-        // 切换至服务视图
         checkService();
     } else {
         $("#viewTypeLabel").html("主机：");
@@ -169,25 +173,37 @@ execViewTypeChanged = function (obj) {
         );
         // 初始化主机
         initHostList();
-        // 切换至主机视图
         checkService();
     }
 
 };
 
-
+/**
+ * 环境集改变
+ */
+execSetChanged = function () {
+    execViewTypeChanged()
+};
 // 服务视图服务选择
 execServiceChanged = function () {
     checkService();
+    emitGetInfoEvent();
 };
 
 // 主机视图主机选择
 execHostChanged = function () {
     checkService();
+    emitGetInfoEvent();
 };
 
-// 升级前
-serviceYamlPreview = function (unitId, viewType) {
+/**
+ * 升级前预览yaml
+ * @param deployTime
+ * @param updateTime
+ * @param unitId
+ * @param viewType
+ */
+serviceYamlPreview = function (deployTime, updateTime, unitId, viewType) {
     closeConloseView();
 
     var event_url = basePath + "/api/deploy-unit/event_rep/" + unitId;
@@ -200,7 +216,7 @@ serviceYamlPreview = function (unitId, viewType) {
             util.$get(url, function (res2) {
                 if (res2.code === SUCCESS_CODE) {
                     // 导出弹窗内容模版
-                    var context = deploy.viewDeployYamlContext(unitId, viewType);
+                    var context = deploy.viewDeployYamlContext(deployTime, updateTime, unitId, viewType);
                     initModelContext(context, function () {
                         //refresh()
                     });
@@ -214,12 +230,11 @@ serviceYamlPreview = function (unitId, viewType) {
 };
 
 
-// checkService
-checkService = function (realTime) {
-    var serviceTimes = {};
-    if (realTime !== undefined && realTime !== "") {
-        serviceTimes = JSON.parse(realTime)
-    }
+/**
+ * 比较节点服务配置文件时间与数据库配置更新时间,校验是否需要更新
+ * @param realTime
+ */
+checkService = function () {
     var viewType = Number($("#viewType").find("option:selected").val());
     var setId = $("#setSelect").find("option:selected").val();
     var serviceId = $("#serviceSelect").find("option:selected").val();
@@ -227,54 +242,51 @@ checkService = function (realTime) {
 
     var url = basePath + "/api/deploy/checkRealService?setId=" + setId + "&serviceId=" + (serviceId === undefined ? 0 : serviceId) + "&hostId=" + (hostId === undefined ? 0 : hostId) + "&viewType=" + viewType;
     util.$get(url, function (res) {
-        // 对比
-        console.log(res.context);
-        console.log(serviceTimes);
-        if (viewType === 1) {
-            if (serviceTimes !== {}) {
-                $.each(serviceTimes, function (i, em) {
-                    console.log("===>"+em.ip + "---" + em.serviceName);
-                    $.each(res.context, function (i2, em2) {
-                        if (em2.serviceName === em.serviceName) {
-                            $.each(em2.deploySubHostVos, function (i3, em3) {
-                                console.log("unitId " +em3.unitId+ "---" + em3.hostIp);
-                                if (em3.hostIp === em.ip) {
-                                    var log = "compare service:"+em2.serviceName+"==ip:"+em3.hostIp+"==unitId:"+em3.unitId+"==configUpdateBy:"+em3.configUpdateBy+"==realDeployTime:"+em.time;
-                                    console.log(log);
-                                    deploy.consoleView(log);
-                                    em3.deployTime = em.time;
-                                    em3.needUpdate = em3.deployTime < em3.configUpdateBy
-                                }
-                            })
-                        }
-                    })
-                })
-            }
-        } else {
-
-        }
         // 展示视图（默认服务视图）
         var context = deploy.deployViewChange(viewType, res.context);
         $("#deployMain").html(context);
     })
 };
-
-// stopService
+/**
+ * 停止服务
+ * stopService
+ * @param unitId
+ */
 stopService = function (unitId) {
     var url = basePath + "/api/deploy/stopRealService";
     util.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            socket.emit(STOP, JSON.stringify(res.context));
+            //bodyAbs();
+            layer.confirm('停止服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
+                btn: ['停止', '取消']
+            }, function () {
+                socket.emit(STOP, JSON.stringify(res.context));
+                layer.msg("操作已发送");
+            }, function () {
+                layer.msg("操作取消");
+            });
         }
-    })
+    });
 };
 
-// restartService
+/**
+ * 重启服务
+ * restartService
+ * @param unitId
+ */
 restartService = function (unitId) {
     var url = basePath + "/api/deploy/restartRealService";
     util.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            socket.emit(RESTART, JSON.stringify(res.context));
+            //bodyAbs();
+            layer.confirm('重启服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
+                btn: ['重启', '取消']
+            }, function () {
+                socket.emit(RESTART, JSON.stringify(res.context));
+                layer.msg("操作已发送");
+            }, function () {
+                layer.msg("操作取消");
+            });
         }
     })
 };
@@ -288,20 +300,25 @@ execServiceUpdate = function (unitId) {
         unitId: unitId
     };
     util.get(url, req, function (res) {
-        layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
             socket.emit(DEPLOY, JSON.stringify(res.context));
             closeModel();
         }
     });
 };
-
+/**
+ * 取消升级
+ */
 cancelServiceUpdate = function () {
     layer.msg("取消升级");
     closeModel();
 };
 
-downloadYaml = function () {
+/**
+ * 下载yaml
+ */
+downloadYaml = function (unitId) {
+    window.open(basePath + "/api/deploy-unit/download-yml/" + unitId);
     layer.msg("下载成功");
 };
 
