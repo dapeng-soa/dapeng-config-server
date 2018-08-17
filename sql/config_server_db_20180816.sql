@@ -134,12 +134,12 @@ CREATE TABLE `t_operation_journal` (
   `host_id` int(11) NOT NULL DEFAULT 0 COMMENT '节点id',
   `service_id` int(11) NOT NULL DEFAULT 0 COMMENT '服务id',
   `git_tag` varchar(45) NOT NULL DEFAULT '' COMMENT '部署的tag号',
-  `image_tag` varchar(45) DEFAULT NULL COMMENT '镜像tag',
-  `yml` text DEFAULT NULL COMMENT '本次部署的yaml文件',
-  `diff` varchar(4096) DEFAULT NULL COMMENT 'yml diff',
-  `op_flag` smallint(2) NOT NULL COMMENT '操作列表,1:升级(update);2:重启(restart);3:停止(stop);4:降级(rollback)',
+  `image_tag` varchar(45) DEFAULT '' COMMENT '镜像tag',
+  `yml` text  COMMENT '本次部署的yaml文件',
+  `diff` varchar(4096) DEFAULT '' COMMENT 'yml diff',
+  `op_flag` smallint(2) NOT NULL DEFAULT 0 COMMENT '操作列表,1:升级(update);2:重启(restart);3:停止(stop);4:降级(rollback)',
   `created_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT '添加时间',
-  `created_by` varchar(45) NOT NULL COMMENT '操作人',
+  `created_by` varchar(45) NOT NULL DEFAULT 'admin' COMMENT '操作人',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='部署流水表';
 

@@ -244,6 +244,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                         <label class="col-sm-2 control-label">ApiKey:</label>
                         <div class="col-sm-9">
                             <input type="text" ${type != c.add ? "disabled" : ""} id="authApikey" class="col-sm-2 form-control" value="${type != c.add ? data.apiKey : ""}"/>
+                            ${type === c.add ? `<a href="#" style="position: absolute;top: 30%;right: 20px;" onclick="genKey(this)" title="生成apikey"><i class="fa fa-key" aria-hidden="true"></i></a>`:``}
                         </div>
                     </div>
                     <div class="form-group">
@@ -334,8 +335,17 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
         public exportApiKeyTableActionContext(id: string, row: any) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="修改"  onclick="viewApiKeyOrEditByID(${id},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="下发此key"  onclick="openSendApiKey(${id})"><span class="glyphicon glyphicon-send"></span></a>
             <a href="javascript:void(0)" title="禁用"  onclick="delApiKey(${id})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`
+        }
+
+        public exportApiKeySend(){
+            return `<div class="form-group" style="margin-top: 20px">
+                        <div class="col-sm-12">
+                            <input type="email"  id="sendKeyEmail" class="form-control" />
+                        </div>
+                    </div>`
         }
 
         //导出添加/修改/集群信息
