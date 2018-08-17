@@ -8,10 +8,16 @@ import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.dapeng.common.Commons.*;
@@ -37,10 +43,25 @@ public class DeploySetRestController {
      * @return 环境集
      */
     @GetMapping("/deploy-sets")
-    public ResponseEntity<?> deploySets() {
-        List<TSet> sets = setRepository.findAll();
+    public ResponseEntity<?> deploySets(@RequestParam(required = false, defaultValue = "0") int offset,
+                                        @RequestParam(required = false, defaultValue = "100000") int limit,
+                                        @RequestParam(required = false) String sort,
+                                        @RequestParam(required = false, defaultValue = "desc") String order,
+                                        @RequestParam(required = false, defaultValue = "") String search) {
+        PageRequest pageRequest = new PageRequest
+                (offset / limit, limit,
+                        new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
+                                null == sort ? "updatedAt" : sort));
+        Page<TSet> page = setRepository.findAll((root, query, cb) -> {
+            Path<String> name = root.get("name");
+            Path<String> remark = root.get("remark");
+            List<Predicate> ps = new ArrayList<>();
+            ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%")));
+            query.where(ps.toArray(new Predicate[ps.size()]));
+            return null;
+        }, pageRequest);
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, sets));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, page));
     }
 
     /**

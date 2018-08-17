@@ -3,7 +3,6 @@ package com.github.dapeng.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author with struy.
@@ -164,7 +163,7 @@ public class PageController {
     }
 
     /**
-     * 执行发布管理
+     * 执行发布
      *
      * @return
      */
@@ -173,6 +172,18 @@ public class PageController {
         model.addAttribute("tagName", "deploy-exec");
         model.addAttribute("sideName", "deploy-exec");
         return "page/deploy-exec";
+    }
+
+    /**
+     * 发布升级日志
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy/journal")
+    public String deployLog(Model model) {
+        model.addAttribute("tagName", "deploy-journal");
+        model.addAttribute("sideName", "deploy-journal");
+        return "page/deploy-journal";
     }
 
 }
