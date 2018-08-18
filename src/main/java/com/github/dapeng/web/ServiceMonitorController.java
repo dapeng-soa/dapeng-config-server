@@ -4,6 +4,7 @@ import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
 import com.github.dapeng.openapi.utils.ZkUtil;
 import com.github.dapeng.util.GetServiceMonitorThread;
+import com.github.dapeng.util.InfluxDBUtil;
 import com.github.dapeng.vo.MonitorHosts;
 import com.github.dapeng.vo.ServiceGroupVo;
 import com.github.dapeng.vo.ServiceMonitorVo;
@@ -32,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @Author: zhup
@@ -61,6 +63,31 @@ public class ServiceMonitorController {
     }
 
 
+    @ResponseBody
+    @RequestMapping("/influx")
+    public Object countInfoFromInflux() {
+        try {
+            InfluxDBUtil influxDBUtil = new InfluxDBUtil("admin", "admin", "http://10.10.10.37:8086", "dapengState");
+            /***
+             * 请求数前10名
+             */
+            String queryStr = "select sum(total_calls) from dapeng_service_process where time>now()-1m group by service_name limit 100";
+            List<HashMap<String, Object>> methodMaps = influxDBUtil.query(queryStr);
+            List<HashMap<String, Object>> collect = methodMaps.stream().sorted((x, y) -> {
+                String xValue = x.get("sum").toString();
+                String yValue = y.get("sum").toString();
+                return Integer.parseInt(xValue.substring(0, xValue.indexOf("."))) - Integer.parseInt(yValue.substring(0, yValue.indexOf(".")));
+            }).collect(Collectors.toList());
+            Collections.reverse(collect);
+
+
+            System.out.println(collect.subList(0, 10).size());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     /**
      * 节点信息汇总
      *
@@ -88,7 +115,7 @@ public class ServiceMonitorController {
                     subservices.stream().forEach(x -> {
                         serviceIpMap.put(x.getName(), Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()));
                     });
-                    GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(i).getName(), subservices.get(i).getVersion());
+                    GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
                     completionService.submit(getServiceMonitorThread);
                 }
             }
