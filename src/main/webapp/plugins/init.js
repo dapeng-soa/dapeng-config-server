@@ -208,6 +208,7 @@ window.indexFormatter = function (value, row, index) {
             };
         };
         this.params = function (ps) {
+            return ps;
         }; //向后台传递的自定义参数
 
     };
