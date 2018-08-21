@@ -163,7 +163,7 @@ public class MonitorController {
         }
 
         //  "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
-        String containerInfo = RequestUtils.getRomoteServiceEcho(instanceArr[0], Integer.parseInt(instanceArr[1]), serviceName, instanceArr[2]);
+        String containerInfo = RequestUtils.getRemoteServiceEcho(instanceArr[0], Integer.parseInt(instanceArr[1]), serviceName, instanceArr[2]);
         if (StringUtils.isNotBlank(containerInfo)) {
             runStatus = true;
             Pattern pattern = Pattern.compile("terminated\\[(.+?)\\] .* poolSize\\[(.+?)\\] .* totalTasks\\[(.+?)\\]");
