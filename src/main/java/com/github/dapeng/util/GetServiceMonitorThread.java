@@ -3,7 +3,6 @@ package com.github.dapeng.util;
 import com.github.dapeng.client.netty.RequestUtils;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author: zhup
@@ -58,7 +57,7 @@ public class GetServiceMonitorThread implements Callable<String> {
 
     @Override
     public String call() throws Exception {
-        String romoteServiceEcho = RequestUtils.getRomoteServiceEcho(romoteIp, remotePort, serviceName, version);
+        String romoteServiceEcho = RequestUtils.getRemoteServiceEcho(romoteIp, remotePort, serviceName, version);
         return romoteServiceEcho;
     }
 }
