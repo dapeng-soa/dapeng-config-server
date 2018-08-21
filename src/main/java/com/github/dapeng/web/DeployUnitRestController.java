@@ -64,7 +64,7 @@ public class DeployUnitRestController {
                                          @RequestParam(required = false, defaultValue = "0") Long serviceId,
                                          @RequestParam(required = false) String gitTag) {
         PageRequest pageRequest = new PageRequest
-                (offset, limit,
+                (offset / limit, limit,
                         new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
                                 null == sort ? "updatedAt" : sort));
 
