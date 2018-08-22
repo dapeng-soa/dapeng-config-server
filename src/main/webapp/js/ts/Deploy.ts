@@ -691,6 +691,7 @@ ${data.yml}
                             <div class="col-sm-3 col-xs-12">
                                 <p style="font-size: 20px">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
                                 ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
+                                <p>当前tag：<span id="${IdPrefix}-ImageTag">none</span></p>
                             </div>
                             <div class="col-sm-6 col-xs-12">
                                 <p>配置更新时间：<span id="${IdPrefix}-configUpdateTime" data-real-configUpdateBy="${em.configUpdateBy}">${dep.unix2Time(em.configUpdateBy)}</span></p>
@@ -722,6 +723,7 @@ ${data.yml}
             let deployTimeId = t.el(`${realInfo.ip + realInfo.serviceName}-deployTime`);
             let serviceStatusId = t.el(`${realInfo.ip + realInfo.serviceName}-serviceStatus`);
             let needUpdateId = t.el(`${realInfo.ip + realInfo.serviceName}-needUpdate`);
+            let imageTag = t.el(`${realInfo.ip + realInfo.serviceName}-ImageTag`);
 
             if (configUpdateId != null && deployTimeId != null && serviceStatusId != null && needUpdateId != null) {
                 let realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);
@@ -729,6 +731,7 @@ ${data.yml}
                 deployTimeId.innerHTML = t.unix2Time(realInfo.time);
                 serviceStatusId.innerHTML = t.realStatus(realInfo.status ? 1 : 2);
                 needUpdateId.innerHTML = t.updateStatus(updateStatus);
+                imageTag.innerHTML = realInfo.tag
             }
         }
 
