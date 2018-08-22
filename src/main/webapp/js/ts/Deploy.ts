@@ -691,7 +691,7 @@ ${data.yml}
                             <div class="col-sm-3 col-xs-12">
                                 <p style="font-size: 20px">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
                                 ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
-                                <p>当前tag：<span id="${IdPrefix}-ImageTag">none</span></p>
+                                <p>Tag：<span id="${IdPrefix}-ImageTag">none</span></p>
                             </div>
                             <div class="col-sm-6 col-xs-12">
                                 <p>配置更新时间：<span id="${IdPrefix}-configUpdateTime" data-real-configUpdateBy="${em.configUpdateBy}">${dep.unix2Time(em.configUpdateBy)}</span></p>
