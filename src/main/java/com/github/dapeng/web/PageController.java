@@ -28,6 +28,16 @@ public class PageController {
      *
      * @return
      */
+    @GetMapping(value = "/error")
+    public String error() {
+        return "redirect:login";
+    }
+
+    /**
+     * 登录
+     *
+     * @return
+     */
     @GetMapping(value = "/login")
     public String login() {
         return "security_login";
