@@ -10,6 +10,8 @@ import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
 import com.github.dapeng.vo.HostVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +37,8 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
 public class DeployHostRestController {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(DeployHostRestController.class);
 
     @Autowired
     HostRepository hostRepository;
@@ -150,10 +154,11 @@ public class DeployHostRestController {
             host.setCreatedAt(DateUtil.now());
             host.setUpdatedAt(DateUtil.now());
             hostRepository.save(host);
-
+            LOGGER.info("add deploy-host name [{}]", hostDto.getName());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
         } catch (Exception e) {
+            LOGGER.error("add deploy-host error [{}]", hostDto.getName(), e);
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
@@ -185,9 +190,11 @@ public class DeployHostRestController {
             host.setSetId(hostDto.getSetId());
             host.setUpdatedAt(DateUtil.now());
             hostRepository.save(host);
+            LOGGER.info("update deploy-host name [{}]", hostDto.getName());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
+            LOGGER.error("update deploy-host error [{}]", hostDto.getName(), e);
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
