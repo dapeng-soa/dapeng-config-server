@@ -120,7 +120,6 @@ CREATE TABLE `t_host` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新时间',
   `remark` varchar(255) DEFAULT 'NULL' COMMENT '备注',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_host_ip` (`ip`) USING BTREE,
   UNIQUE KEY `uniq_host_name` (`name`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='节点信息表';
 
