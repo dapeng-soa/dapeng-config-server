@@ -6,6 +6,8 @@ import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +33,8 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
 public class DeployServiceRestController {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(DeployServiceRestController.class);
 
     @Autowired
     ServiceRepository serviceRepository;
@@ -97,11 +101,12 @@ public class DeployServiceRestController {
             service.setCreatedAt(DateUtil.now());
             service.setUpdatedAt(DateUtil.now());
             serviceRepository.save(service);
-
+            LOGGER.info("add deploy-service name [{}]", serviceDto.getName());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
 
         } catch (Exception e) {
+            LOGGER.error("add deploy-service error [{}]", serviceDto.getName(), e);
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
@@ -148,9 +153,11 @@ public class DeployServiceRestController {
             service.setLabels(serviceDto.getLabels());
             service.setUpdatedAt(DateUtil.now());
             serviceRepository.save(service);
+            LOGGER.info("update deploy-service name [{}]", serviceDto.getName());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
+            LOGGER.error("update deploy-service error [{}]", serviceDto.getName(), e);
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
