@@ -91,12 +91,6 @@
             <groupId>org.influxdb</groupId>
             <artifactId>influxdb-java</artifactId>
             <version>${influxdb.version}</version>
-           <!-- <exclusions>
-                <exclusion>
-                    <groupId>com.squareup.okhttp3</groupId>
-                    <artifactId>okhttp</artifactId>
-                </exclusion>
-            </exclusions>-->
         </dependency>
 
         <dependency>
@@ -112,6 +106,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring-test.verison}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
         </dependency>
 
         <dependency>
@@ -132,12 +131,6 @@
             <artifactId>commons-email</artifactId>
             <version>1.5</version>
         </dependency>
-
-        <!-- FreeMarker支持 -->
-       <!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
-        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
         <dependency>
