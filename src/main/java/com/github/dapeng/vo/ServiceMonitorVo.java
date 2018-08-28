@@ -50,4 +50,13 @@ public class ServiceMonitorVo {
 
     private String env;
 
+    @Override
+    public String toString() {
+        return "ServiceMonitorVo{" +
+                "serviceId=" + serviceId +
+                ", ipList='" + ipList + '\'' +
+                ", serviceName='" + serviceName + '\'' +
+                ", env='" + env + '\'' +
+                '}';
+    }
 }
