@@ -10,6 +10,7 @@ import com.github.dapeng.vo.ServiceGroupVo;
 import com.github.dapeng.vo.ServiceMonitorVo;
 import com.github.dapeng.vo.Subservices;
 import com.google.common.base.Joiner;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,10 +28,7 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.*;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,6 +47,13 @@ public class ServiceMonitorController {
     private static final String SOA_ZOOKEEPER_HOST = "soa_zookeeper_host";
 
     private static final String PATH = "/soa/runtime/services";
+    private Pattern pattern = Pattern.compile("soa_container_port=(\\d.*)");
+
+    ThreadPoolExecutor poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(SoaSystemEnvProperties.SOA_CORE_POOL_SIZE,
+            new ThreadFactoryBuilder()
+                    .setDaemon(true)
+                    .setNameFormat("dapeng-monitor-pool-%d")
+                    .build());
 
     @Resource
     private EntityManager entityManager;
@@ -57,6 +62,9 @@ public class ServiceMonitorController {
     @RequestMapping("/list")
     public Object serviceMonitorList() {
         List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
+        for(ServiceMonitorVo vo:baseServiceList){
+            LOGGER.info(vo.toString());
+        }
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         List<Map<String, Object>> resultList = resultList(monitorList);
         return resultList;
@@ -95,14 +103,14 @@ public class ServiceMonitorController {
      * @return
      */
     public List<Map<String, Object>> resultList(List<ServiceGroupVo> monitorList) {
-        List<Map<String, Object>> resList = new ArrayList<>();
-        Map<String, Object> resultMap = new HashMap<>();
-        Map<String, String> serviceIpMap = new HashMap<>();
-        Map<String, String> ipNameMap = new HashMap<>();
+        List<Map<String, Object>> resList = new ArrayList<>(64);
+        Map<String, Object> resultMap = new HashMap<>(32);
+        Map<String, String> serviceIpMap = new HashMap<>(32);
+        Map<String, String> ipNameMap = new HashMap<>(16);
         try {
-            List<JsonObject> jsonObjectList = new ArrayList<>();
-            ExecutorService threadPool = Executors.newCachedThreadPool();
-            CompletionService<String> completionService = new ExecutorCompletionService<>(threadPool);
+            List<JsonObject> jsonObjectList = new ArrayList<>(16);
+            //ExecutorService threadPool = Executors.newCachedThreadPool();
+            CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
             int k = 0;
             for (int i = 0; i < monitorList.size(); i++) {
                 ServiceGroupVo smlv = monitorList.get(i);
@@ -119,13 +127,13 @@ public class ServiceMonitorController {
                     completionService.submit(getServiceMonitorThread);
                 }
             }
-            threadPool.shutdown();
             for (int i = 0; i < k; i++) {
                 try {
                     String takeStr = completionService.take().get();
                     JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
                     jsonObjectList.add(asJsonObject);
                 } catch (InterruptedException e) {
+                    LOGGER.error("获取服务echo信息出现异常");
                     e.printStackTrace();
                 }
             }
@@ -158,10 +166,10 @@ public class ServiceMonitorController {
                     flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + Integer.parseInt(flowsMap.get("min").toString()));
                     flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + Integer.parseInt(flowsMap.get("avg").toString()));
                 } else {
-                    Map<String, Map> valueMap = new HashMap<>();
-                    Map<String, Object> tasksMap = new HashMap();
-                    Map<String, Object> GcMap = new HashMap();
-                    Map<String, Object> flowsMap = new HashMap();
+                    Map<String, Map> valueMap = new HashMap<>(16);
+                    Map<String, Object> tasksMap = new HashMap(16);
+                    Map<String, Object> GcMap = new HashMap(16);
+                    Map<String, Object> flowsMap = new HashMap(16);
                     tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue"));
                     tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total"));
                     tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed"));
@@ -221,6 +229,7 @@ public class ServiceMonitorController {
 
             return resList;
         } catch (Exception e) {
+            LOGGER.error("拼装健康度信息出现异常");
             e.printStackTrace();
         }
         return resList;
@@ -266,10 +275,9 @@ public class ServiceMonitorController {
                 String[] ipArrs = smv.getIpList().split(",");
                 List<MonitorHosts> hostsList = new ArrayList();
                 List<Subservices> ssv = new ArrayList<>();
-                Pattern pattern = Pattern.compile("soa_container_port=(\\d.*)");
                 Matcher m = pattern.matcher(smv.getEnv());
                 String port = null;
-                while (m.find()) {
+                if (m.find()) {
                     port = m.group(1);
                 }
                 for (String ip : ipArrs) {
@@ -293,6 +301,7 @@ public class ServiceMonitorController {
                 dataList.add(smvo);
             }
         } catch (Exception e1) {
+            LOGGER.error("拼装服务信息出现异常");
             e1.printStackTrace();
         }
         return dataList;
@@ -303,8 +312,8 @@ public class ServiceMonitorController {
      * @return 获取zk节点信息
      */
     private List<String> cacheZkNodeList() {
-        List<String> zkNodeList = new ArrayList<>();
-        String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "192.168.4.102:2181");
+        List<String> zkNodeList = new ArrayList<>(64);
+        String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "127.0.0.1:2181");
         ZooKeeper zkByHost = null;
         try {
             zkByHost = ZkUtil.createZkByHost(zkHost);
@@ -319,6 +328,7 @@ public class ServiceMonitorController {
             ZkUtil.closeZk(zkByHost);
             return zkNodeList;
         } catch (Exception e) {
+            LOGGER.error("获取zk连接信息出现异常");
             e.printStackTrace();
         } finally {
             ZkUtil.closeZk(zkByHost);
