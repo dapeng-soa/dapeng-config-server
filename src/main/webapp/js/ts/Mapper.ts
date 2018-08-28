@@ -7,5 +7,6 @@ module api {
         socketId: string;
         status: boolean;
         time: Number;
+        tag: string;
     }
 }

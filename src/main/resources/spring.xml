@@ -22,22 +22,28 @@
     </bean>
 
     <!-- 默认数据源，配置中心数据源 -->
-    <bean id="mainDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <!-- 基本属性 url、user、password -->
-        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+    <bean id="mainDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${DB_CONFIG_SERVER_URL}"/>
         <property name="username" value="${DB_CONFIG_SERVER_USER}"/>
         <property name="password" value="${DB_CONFIG_SERVER_PASSWD}"/>
+        <property name="maxActive" value="255"/>
+        <property name="maxIdle" value="2"/>
+        <property name="maxWait" value="120000"/>
     </bean>
 
+
     <!-- 其他数据源 -->
-    <bean id="extraDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <!-- 基本属性 url、user、password -->
-        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+    <bean id="extraDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${DB_ADMIN_URL}"/>
         <property name="username" value="${DB_ADMIN_USER}"/>
         <property name="password" value="${DB_ADMIN_PASSWD}"/>
+        <property name="maxActive" value="255"/>
+        <property name="maxIdle" value="2"/>
+        <property name="maxWait" value="120000"/>
     </bean>
+
 
     <!--配置 EntityManagerFactory -->
     <bean id="entityManagerFactory"

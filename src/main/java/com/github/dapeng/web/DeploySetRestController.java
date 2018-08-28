@@ -7,6 +7,8 @@ import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +34,8 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 @RequestMapping("/api")
 @Transactional(rollbackFor = Throwable.class)
 public class DeploySetRestController {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(DeploySetRestController.class);
 
     @Autowired
     SetRepository setRepository;
@@ -88,16 +92,22 @@ public class DeploySetRestController {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
         }
-        TSet set = new TSet();
-        set.setName(setDto.getName());
-        set.setRemark(setDto.getRemark());
-        set.setEnv(setDto.getEnv());
-        set.setUpdatedAt(DateUtil.now());
-        set.setCreatedAt(DateUtil.now());
-        setRepository.save(set);
-
-        return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
+        try {
+            TSet set = new TSet();
+            set.setName(setDto.getName());
+            set.setRemark(setDto.getRemark());
+            set.setEnv(setDto.getEnv());
+            set.setUpdatedAt(DateUtil.now());
+            set.setCreatedAt(DateUtil.now());
+            setRepository.save(set);
+            LOGGER.info("add deploy-set name [{}]", setDto.getName());
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
+        } catch (Exception e) {
+            LOGGER.error("add deploy-set error [{}]", setDto.getName(), e);
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
     }
 
     @PostMapping("/deploy-set/del/{id}")
@@ -133,11 +143,13 @@ public class DeploySetRestController {
             set.setEnv(setDto.getEnv());
             set.setUpdatedAt(DateUtil.now());
             setRepository.save(set);
+            LOGGER.info("update deploy-set name [{}]", setDto.getName());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
+            LOGGER.error("update deploy-set error [{}]", setDto.getName(), e);
             return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 }

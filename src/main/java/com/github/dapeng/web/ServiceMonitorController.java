@@ -116,10 +116,15 @@ public class ServiceMonitorController {
                 ServiceGroupVo smlv = monitorList.get(i);
                 List<MonitorHosts> hosts = smlv.getHosts();
                 List<Subservices> subservices = smlv.getSubservices();
+                if (subservices == null || subservices.isEmpty()) {
+                    continue;
+                }
+
                 for (int j = 0; j < hosts.size(); j++) {
                     k++;
                     MonitorHosts monitorHosts = hosts.get(j);
                     ipNameMap.put(Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()), smlv.getService());
+
                     subservices.stream().forEach(x -> {
                         serviceIpMap.put(x.getName(), Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()));
                     });
