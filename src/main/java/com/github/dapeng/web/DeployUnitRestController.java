@@ -176,11 +176,12 @@ public class DeployUnitRestController {
             unit.setDockerExtras(unitDto.getDockerExtras());
             unit.setCreatedAt(DateUtil.now());
             unit.setUpdatedAt(DateUtil.now());
-
             unitRepository.save(unit);
+            LOGGER.info("add deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
         } catch (Exception e) {
+            LOGGER.error("add deploy-unit error hostId [{}] serviceId [{}]", unitDto.getHostId(), unitDto.getServiceId(), e);
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
@@ -217,10 +218,12 @@ public class DeployUnitRestController {
             unit.setVolumes(unitDto.getVolumes());
             unit.setDockerExtras(unitDto.getDockerExtras());
             unit.setUpdatedAt(DateUtil.now());
+            LOGGER.info("update deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
             unitRepository.save(unit);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
+            LOGGER.error("update deploy-unit error hostId [{}] serviceId [{}]", unitDto.getHostId(), unitDto.getServiceId(), e);
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
         }
