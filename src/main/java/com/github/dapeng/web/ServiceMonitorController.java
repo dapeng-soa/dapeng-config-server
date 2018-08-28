@@ -43,11 +43,10 @@ import java.util.stream.Collectors;
 public class ServiceMonitorController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceMonitorController.class);
-
     private static final String SOA_ZOOKEEPER_HOST = "soa_zookeeper_host";
-
     private static final String PATH = "/soa/runtime/services";
     private Pattern pattern = Pattern.compile("soa_container_port=(\\d.*)");
+    private Gson gson = new Gson();
 
     ThreadPoolExecutor poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(SoaSystemEnvProperties.SOA_CORE_POOL_SIZE,
             new ThreadFactoryBuilder()
@@ -62,7 +61,7 @@ public class ServiceMonitorController {
     @RequestMapping("/list")
     public Object serviceMonitorList() {
         List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
-        for(ServiceMonitorVo vo:baseServiceList){
+        for (ServiceMonitorVo vo : baseServiceList) {
             LOGGER.info(vo.toString());
         }
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
@@ -117,6 +116,10 @@ public class ServiceMonitorController {
                 List<MonitorHosts> hosts = smlv.getHosts();
                 List<Subservices> subservices = smlv.getSubservices();
                 if (subservices == null || subservices.isEmpty()) {
+                    JsonObject nodeObject = new JsonObject();
+                    nodeObject.addProperty("name", smlv.getService());
+                    nodeObject.addProperty("child", false);
+                    jsonObjectList.add(nodeObject);
                     continue;
                 }
 
@@ -150,66 +153,80 @@ public class ServiceMonitorController {
                 // "serviceInfo":{"com.github.dapeng.hello.scala.service.HelloService":"Green|test"},
                 // "tasks":{"waitingQueue":0,"total":10,"succeed":10},
                 // "errors":{}}
-                String serviceName = object.get("service").getAsString();
-                JsonObject serviceObject = object.get("serviceInfo").getAsJsonObject();
-                JsonObject taskInfoObject = object.get("tasks").getAsJsonObject();
-                JsonObject GcInfoObject = object.get("gcInfos").getAsJsonObject();
-                JsonObject flowsObject = object.get("flows").getAsJsonObject();
-                //相同节点数累加
-                if (resultMap.containsKey(serviceName)) {
-                    Map tasksMap = (Map) resultMap.get("tasks");
-                    Map GcMap = (Map) resultMap.get("gcInfos");
-                    Map flowsMap = (Map) resultMap.get("flows");
-                    tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
-                    tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
-                    tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
+                String serviceName = null;
+                if (object.has("child")) {
+                    serviceName = object.get("name").getAsString();
+                    Map<String, Map> valueMap = new HashMap<>(16);
+                    valueMap.put("serviceInfo", gson.fromJson(gson.toJson(object), Map.class));
+                    resultMap.put(serviceName, valueMap);
+                } else {
+                    serviceName = object.get("service").getAsString();
+                    JsonObject serviceObject = object.get("serviceInfo").getAsJsonObject();
+                    JsonObject taskInfoObject = object.get("tasks").getAsJsonObject();
+                    JsonObject GcInfoObject = object.get("gcInfos").getAsJsonObject();
+                    JsonObject flowsObject = object.get("flows").getAsJsonObject();
+                    //相同节点数累加
+                    if (resultMap.containsKey(serviceName)) {
+                        Map tasksMap = (Map) resultMap.get("tasks");
+                        Map GcMap = (Map) resultMap.get("gcInfos");
+                        Map flowsMap = (Map) resultMap.get("flows");
+                        tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
+                        tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
+                        tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
 
                     /*GcMap.put("minorGc", getJsonObjectByKey(GcInfoObject, "minorGc") + Integer.parseInt(GcMap.get("minorGc").toString()));
                     GcMap.put("majorGc", getJsonObjectByKey(GcInfoObject, "majorGc") + Integer.parseInt(GcMap.get("majorGc").toString()));*/
 
-                    flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + Integer.parseInt(flowsMap.get("max").toString()));
-                    flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + Integer.parseInt(flowsMap.get("min").toString()));
-                    flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + Integer.parseInt(flowsMap.get("avg").toString()));
-                } else {
-                    Map<String, Map> valueMap = new HashMap<>(16);
-                    Map<String, Object> tasksMap = new HashMap(16);
-                    Map<String, Object> GcMap = new HashMap(16);
-                    Map<String, Object> flowsMap = new HashMap(16);
-                    tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue"));
-                    tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total"));
-                    tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed"));
+                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + Integer.parseInt(flowsMap.get("max").toString()));
+                        flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + Integer.parseInt(flowsMap.get("min").toString()));
+                        flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + Integer.parseInt(flowsMap.get("avg").toString()));
+                    } else {
+                        Map<String, Map> valueMap = new HashMap<>(16);
+                        Map<String, Object> tasksMap = new HashMap(16);
+                        Map<String, Object> GcMap = new HashMap(16);
+                        Map<String, Object> flowsMap = new HashMap(16);
+                        tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue"));
+                        tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total"));
+                        tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed"));
 
                    /* GcMap.put("minorGc", getJsonObjectByKey(GcInfoObject, "minorGc"));
                     GcMap.put("majorGc", getJsonObjectByKey(GcInfoObject, "majorGc"));*/
-                    flowsMap.put("max", getJsonObjectByKey(flowsObject, "max"));
-                    flowsMap.put("min", getJsonObjectByKey(flowsObject, "min"));
-                    flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg"));
-                    valueMap.put("tasks", tasksMap);
-                    valueMap.put("gcInfos", GcMap);
-                    resultMap.put(serviceName, valueMap);
+                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max"));
+                        flowsMap.put("min", getJsonObjectByKey(flowsObject, "min"));
+                        flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg"));
+                        valueMap.put("tasks", tasksMap);
+                        valueMap.put("gcInfos", GcMap);
+                        resultMap.put(serviceName, valueMap);
+                        Map<String, Object> tmpMap = (Map) resultMap.get(serviceName);
+                        String tmpJson = gson.toJson(serviceObject);
+                        Map<String, Object> serviceMap = gson.fromJson(tmpJson, Map.class);
+                        tmpMap.put("nodeInfo", serviceMap);
+                        tmpMap.put("lastUpdate", System.currentTimeMillis());
+                    }
                 }
-                Map<String, Object> tmpMap = (Map) resultMap.get(serviceName);
-                Gson gson = new Gson();
-                String tmpJson = gson.toJson(serviceObject);
-                Map<String, Object> serviceMap = gson.fromJson(tmpJson, Map.class);
-                tmpMap.put("nodeInfo", serviceMap);
-                tmpMap.put("lastUpdate", System.currentTimeMillis());
             }
             //服务节点数统计
             for (Map.Entry<String, Object> map : resultMap.entrySet()) {
                 String serviceName = map.getKey().toString();
                 Map<String, Object> resMap = (Map) map.getValue();
-                resMap.put("name", ipNameMap.get(serviceIpMap.get(serviceName)));
-                for (int i = 0; i < monitorList.size(); i++) {
-                    ServiceGroupVo serviceMonitorListVo = monitorList.get(i);
-                    if (serviceMonitorListVo.getService().equals(serviceName)) {
-                        Map nodesmap = (Map) resMap.get("node");
-                        nodesmap.put("nodeCount", Integer.parseInt(nodesmap.get("nodeCount").toString() + 1));
-                    } else {
-                        Map nodesmap = new HashMap();
-                        nodesmap.put("nodeCount", 1);
-                        resMap.put("node", nodesmap);
+                if (ipNameMap.get(serviceIpMap.get(serviceName)) != null) {
+                    resMap.put("name", ipNameMap.get(serviceIpMap.get(serviceName)));
+                    for (int i = 0; i < monitorList.size(); i++) {
+                        ServiceGroupVo serviceMonitorListVo = monitorList.get(i);
+                        if (serviceMonitorListVo.getService().equals(serviceName)) {
+                            Map nodesmap = (Map) resMap.get("node");
+                            nodesmap.put("nodeCount", Integer.parseInt(nodesmap.get("nodeCount").toString() + 1));
+                        } else {
+                            Map nodesmap = new HashMap();
+                            nodesmap.put("nodeCount", 1);
+                            resMap.put("node", nodesmap);
+                        }
                     }
+                } else {
+                    resMap.put("name", serviceName);
+                    Map nodesmap = new HashMap();
+                    nodesmap.put("nodeCount", 0);
+                    resMap.put("node", nodesmap);
                 }
                 resList.add(resMap);
             }
@@ -318,7 +335,7 @@ public class ServiceMonitorController {
      */
     private List<String> cacheZkNodeList() {
         List<String> zkNodeList = new ArrayList<>(64);
-        String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "127.0.0.1:2181");
+        String zkHost = SoaSystemEnvProperties.get(SOA_ZOOKEEPER_HOST, "192.168.4.102:2181");
         ZooKeeper zkByHost = null;
         try {
             zkByHost = ZkUtil.createZkByHost(zkHost);
