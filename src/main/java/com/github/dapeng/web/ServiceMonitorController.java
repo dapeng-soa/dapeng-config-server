@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 import org.apache.zookeeper.ZooKeeper;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
+import org.hibernate.transform.TupleSubsetResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.logging.XMLFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,7 +68,16 @@ public class ServiceMonitorController {
         }
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         List<Map<String, Object>> resultList = resultList(monitorList);
-        return resultList;
+        return resultList.stream().sorted((x,y)->{
+            HashMap xnode = (HashMap)x.get("node");
+            HashMap ynode = (HashMap)y.get("node");
+            if(Integer.parseInt(xnode.get("nodeCount").toString())==Integer.parseInt(ynode.get("nodeCount").toString())){
+                HashMap xtask = (HashMap)x.get("tasks");
+                HashMap ytask = (HashMap)y.get("tasks");
+                return Integer.parseInt(xtask.get("waitingQueue").toString())-Integer.parseInt(ytask.get("waitingQueue").toString());
+            }
+            return Integer.parseInt(xnode.get("nodeCount").toString())-Integer.parseInt(ynode.get("nodeCount").toString()) ;
+        }).collect(Collectors.toList());
     }
 
 
