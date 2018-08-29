@@ -79,9 +79,9 @@ module api {
 2.具体服务的配置在/soa/config/services/{serviceName}上
 
 格式：
-可选策略：Random/RoundRobin/LeastActive/ConsistentHash
-全局：loadbalance/LeastActive
-服务：loadbalance/LeastActive,createSupplier:Random,modifySupplier:RoundRobin;
+可选策略：random/roundRobin/leastActive/consistentHash(还未实现)
+全局：loadBalance/leastActive
+服务：loadBalance/leastActive,createSupplier:random,modifySupplier:roundRobin
                                   </pre>
                                 </div>
                             </div>
