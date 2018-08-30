@@ -160,6 +160,7 @@ public class ServiceMonitorController {
                     resultMap.put(serviceName, valueMap);
                 } else {
                     serviceName = object.get("service").getAsString();
+                    LOGGER.info("---------serviceName-------------"+serviceName);
                     LOGGER.info("---------serviceObject-------------"+object.toString());
                     LOGGER.info("---------resultMap-----------------"+resultMap.toString());
                     JsonObject serviceObject = object.get("serviceInfo").getAsJsonObject();
@@ -169,8 +170,9 @@ public class ServiceMonitorController {
                     //相同节点数累加
                     if (resultMap.containsKey(serviceName)) {
                         Map tasksMap = (Map) resultMap.get("tasks");
-                        Map GcMap = (Map) resultMap.get("gcInfos");
+                        LOGGER.info("---------tasksMap-------------"+tasksMap.size());
                         Map flowsMap = (Map) resultMap.get("flows");
+                        Map GcMap = (Map) resultMap.get("gcInfos");
                         LOGGER.info("---------------tasksMap-----------------"+tasksMap.toString());
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
