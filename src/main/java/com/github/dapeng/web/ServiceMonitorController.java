@@ -61,9 +61,6 @@ public class ServiceMonitorController {
     @RequestMapping("/list")
     public Object serviceMonitorList() {
         List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
-        for (ServiceMonitorVo vo : baseServiceList) {
-            LOGGER.info(vo.toString());
-        }
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         List<Map<String, Object>> resultList = resultList(monitorList);
         return resultList.stream().sorted((x,y)->{
@@ -160,9 +157,6 @@ public class ServiceMonitorController {
                     resultMap.put(serviceName, valueMap);
                 } else {
                     serviceName = object.get("service").getAsString();
-                    LOGGER.info("---------serviceName-------------"+serviceName);
-                    LOGGER.info("---------serviceObject-------------"+object.toString());
-                    LOGGER.info("---------resultMap-----------------"+resultMap.toString());
                     JsonObject serviceObject = object.get("serviceInfo").getAsJsonObject();
                     JsonObject taskInfoObject = object.get("tasks").getAsJsonObject();
                     JsonObject GcInfoObject = object.get("gcInfos").getAsJsonObject();
@@ -171,10 +165,8 @@ public class ServiceMonitorController {
                     if (resultMap.containsKey(serviceName)) {
                         Map instanceMap = (Map)resultMap.get(serviceName);
                         Map tasksMap = (Map) instanceMap.get("tasks");
-                        LOGGER.info("---------tasksMap-------------"+tasksMap.size());
                         Map flowsMap = (Map) instanceMap.get("flows");
                         Map GcMap = (Map) instanceMap.get("gcInfos");
-                        LOGGER.info("---------------tasksMap-----------------"+tasksMap.toString());
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
