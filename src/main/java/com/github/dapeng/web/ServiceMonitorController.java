@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.ZooKeeper;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
@@ -129,7 +130,6 @@ public class ServiceMonitorController {
                     k++;
                     MonitorHosts monitorHosts = hosts.get(j);
                     ipNameMap.put(Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()), smlv.getService());
-
                     subservices.stream().forEach(x -> {
                         serviceIpMap.put(x.getName(), Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()));
                     });
@@ -140,11 +140,13 @@ public class ServiceMonitorController {
             for (int i = 0; i < k; i++) {
                 try {
                     String takeStr = completionService.take().get();
-                    JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
-                    jsonObjectList.add(asJsonObject);
+                    if(StringUtils.isNotBlank(takeStr)){
+                        JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
+                        jsonObjectList.add(asJsonObject);
+                    }
                 } catch (InterruptedException e) {
                     LOGGER.error("获取服务echo信息出现异常");
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
             for (int i = 0; i < jsonObjectList.size(); i++) {
@@ -153,7 +155,10 @@ public class ServiceMonitorController {
                 if (object.has("child")) {
                     serviceName = object.get("name").getAsString();
                     Map<String, Map> valueMap = new HashMap<>(16);
+                    Map<String, Object> nodeMap = new HashMap(4);
                     valueMap.put("serviceInfo", gson.fromJson(gson.toJson(object), Map.class));
+                    nodeMap.put("nodeCount",0);
+                    valueMap.put("node",nodeMap);
                     resultMap.put(serviceName, valueMap);
                 } else {
                     serviceName = object.get("service").getAsString();
@@ -167,26 +172,31 @@ public class ServiceMonitorController {
                         Map tasksMap = (Map) instanceMap.get("tasks");
                         Map flowsMap = (Map) instanceMap.get("flows");
                         Map GcMap = (Map) instanceMap.get("gcInfos");
+                        Map nodeMap =(Map) instanceMap.get("node");
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
                         flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + (flowsMap.containsKey("max")?Integer.parseInt(flowsMap.get("max").toString()):0));
                         flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + (flowsMap.containsKey("min")?Integer.parseInt(flowsMap.get("min").toString()):0));
                         flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + (flowsMap.containsKey("avg")?Integer.parseInt(flowsMap.get("avg").toString()):0));
+                        nodeMap.put("nodeCount",Integer.parseInt(nodeMap.get("nodeCount").toString())+1);
                     } else {
                         Map<String, Map> valueMap = new HashMap<>(16);
                         Map<String, Object> tasksMap = new HashMap(16);
                         Map<String, Object> GcMap = new HashMap(16);
                         Map<String, Object> flowsMap = new HashMap(16);
+                        Map<String, Object> nodeMap = new HashMap(16);
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue"));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total"));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed"));
                         flowsMap.put("min", getJsonObjectByKey(flowsObject, "min"));
                         flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg"));
                         flowsMap.put("max", getJsonObjectByKey(flowsObject, "max"));
+                        nodeMap.put("nodeCount",1);
                         valueMap.put("tasks", tasksMap);
                         valueMap.put("gcInfos", GcMap);
                         valueMap.put("flows",flowsMap);
+                        valueMap.put("node",nodeMap);
                         resultMap.put(serviceName, valueMap);
                         Map<String, Object> tmpMap = (Map) resultMap.get(serviceName);
                         String tmpJson = gson.toJson(serviceObject);
@@ -196,28 +206,14 @@ public class ServiceMonitorController {
                     }
                 }
             }
-            //服务节点数统计
+            //服务名替换
             for (Map.Entry<String, Object> map : resultMap.entrySet()) {
                 String serviceName = map.getKey().toString();
                 Map<String, Object> resMap = (Map) map.getValue();
                 if (ipNameMap.get(serviceIpMap.get(serviceName)) != null) {
                     resMap.put("name", ipNameMap.get(serviceIpMap.get(serviceName)));
-                    for (int i = 0; i < monitorList.size(); i++) {
-                        ServiceGroupVo serviceMonitorListVo = monitorList.get(i);
-                        if (serviceMonitorListVo.getService().equals(serviceName)) {
-                            Map nodesmap = (Map) resMap.get("node");
-                            nodesmap.put("nodeCount", Integer.parseInt(nodesmap.get("nodeCount").toString() + 1));
-                        } else {
-                            Map nodesmap = new HashMap();
-                            nodesmap.put("nodeCount", 1);
-                            resMap.put("node", nodesmap);
-                        }
-                    }
                 } else {
                     resMap.put("name", serviceName);
-                    Map nodesmap = new HashMap();
-                    nodesmap.put("nodeCount", 0);
-                    resMap.put("node", nodesmap);
                 }
                 resList.add(resMap);
             }
