@@ -178,9 +178,9 @@ public class ServiceMonitorController {
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
-                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + Integer.parseInt(flowsMap.get("max").toString()));
-                        flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + Integer.parseInt(flowsMap.get("min").toString()));
-                        flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + Integer.parseInt(flowsMap.get("avg").toString()));
+                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + (flowsMap.containsKey("max")?Integer.parseInt(flowsMap.get("max").toString()):0));
+                        flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + (flowsMap.containsKey("min")?Integer.parseInt(flowsMap.get("min").toString()):0));
+                        flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + (flowsMap.containsKey("avg")?Integer.parseInt(flowsMap.get("avg").toString()):0));
                     } else {
                         Map<String, Map> valueMap = new HashMap<>(16);
                         Map<String, Object> tasksMap = new HashMap(16);
@@ -191,8 +191,10 @@ public class ServiceMonitorController {
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed"));
                         flowsMap.put("min", getJsonObjectByKey(flowsObject, "min"));
                         flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg"));
+                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max"));
                         valueMap.put("tasks", tasksMap);
                         valueMap.put("gcInfos", GcMap);
+                        valueMap.put("flows",flowsMap);
                         resultMap.put(serviceName, valueMap);
                         Map<String, Object> tmpMap = (Map) resultMap.get(serviceName);
                         String tmpJson = gson.toJson(serviceObject);
