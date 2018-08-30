@@ -170,6 +170,7 @@ public class ServiceMonitorController {
                         Map tasksMap = (Map) resultMap.get("tasks");
                         Map GcMap = (Map) resultMap.get("gcInfos");
                         Map flowsMap = (Map) resultMap.get("flows");
+                        LOGGER.info("---------------tasksMap-----------------"+tasksMap.toString());
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
