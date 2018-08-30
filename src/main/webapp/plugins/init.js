@@ -46,9 +46,7 @@ layui.use('element', function () {
     });
 
     element.on('collapse(filter)', function (data) {
-        console.log(data.show); //得到当前面板的展开状态，true或者false
-        console.log(data.title); //得到当前点击面板的标题区域DOM对象
-        console.log(data.content); //得到当前点击面板的内容区域DOM对象
+
     });
 });
 
@@ -192,7 +190,7 @@ window.indexFormatter = function (value, row, index) {
         this.paginationType = "server";         //默认分页方式是服务器分页,可选项"client"
         this.toolbarId = bstableId + "Toolbar";
         this.columns = columns;
-        this.height = 665;                      //默认表格高度665
+        this.height = 700;                      //默认表格高度700
         this.data = {};
         this.onLoadSuccess = function () {
         };
@@ -404,6 +402,9 @@ window.indexFormatter = function (value, row, index) {
 
     }
 
+}());
+
+(function () {
 }());
 
 
