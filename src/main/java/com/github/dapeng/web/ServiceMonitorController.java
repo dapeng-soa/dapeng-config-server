@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.ZooKeeper;
 import org.hibernate.SQLQuery;
@@ -141,8 +142,12 @@ public class ServiceMonitorController {
                 try {
                     String takeStr = completionService.take().get();
                     if(StringUtils.isNotBlank(takeStr)){
-                        JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
-                        jsonObjectList.add(asJsonObject);
+                        try {
+                            JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
+                            jsonObjectList.add(asJsonObject);
+                        } catch (JsonSyntaxException e) {
+                            LOGGER.error("echo返回不是json串");
+                        }
                     }
                 } catch (InterruptedException e) {
                     LOGGER.error("获取服务echo信息出现异常");
