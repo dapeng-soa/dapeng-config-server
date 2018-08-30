@@ -161,6 +161,7 @@ public class ServiceMonitorController {
                 } else {
                     serviceName = object.get("service").getAsString();
                     LOGGER.info("---------serviceObject-------------"+object.toString());
+                    LOGGER.info("---------resultMap-----------------"+resultMap.toString());
                     JsonObject serviceObject = object.get("serviceInfo").getAsJsonObject();
                     JsonObject taskInfoObject = object.get("tasks").getAsJsonObject();
                     JsonObject GcInfoObject = object.get("gcInfos").getAsJsonObject();
