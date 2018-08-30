@@ -169,10 +169,11 @@ public class ServiceMonitorController {
                     JsonObject flowsObject = object.get("flows").getAsJsonObject();
                     //相同节点数累加
                     if (resultMap.containsKey(serviceName)) {
-                        Map tasksMap = (Map) resultMap.get("tasks");
+                        Map instanceMap = (Map)resultMap.get(serviceName);
+                        Map tasksMap = (Map) instanceMap.get("tasks");
                         LOGGER.info("---------tasksMap-------------"+tasksMap.size());
-                        Map flowsMap = (Map) resultMap.get("flows");
-                        Map GcMap = (Map) resultMap.get("gcInfos");
+                        Map flowsMap = (Map) instanceMap.get("flows");
+                        Map GcMap = (Map) instanceMap.get("gcInfos");
                         LOGGER.info("---------------tasksMap-----------------"+tasksMap.toString());
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
