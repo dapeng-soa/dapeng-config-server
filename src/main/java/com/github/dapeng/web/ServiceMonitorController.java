@@ -141,6 +141,7 @@ public class ServiceMonitorController {
                 try {
                     String takeStr = completionService.take().get();
                     if(StringUtils.isNotBlank(takeStr)){
+                        LOGGER.info("----------------takeStr--------------"+takeStr);
                         JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
                         jsonObjectList.add(asJsonObject);
                     }
