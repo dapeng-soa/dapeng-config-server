@@ -17,7 +17,6 @@ import com.google.gson.JsonParser;
 import org.apache.zookeeper.ZooKeeper;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
-import org.hibernate.transform.TupleSubsetResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.logging.XMLFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -97,9 +95,6 @@ public class ServiceMonitorController {
                 return Integer.parseInt(xValue.substring(0, xValue.indexOf("."))) - Integer.parseInt(yValue.substring(0, yValue.indexOf(".")));
             }).collect(Collectors.toList());
             Collections.reverse(collect);
-
-
-            System.out.println(collect.subList(0, 10).size());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,7 +114,6 @@ public class ServiceMonitorController {
         Map<String, String> ipNameMap = new HashMap<>(16);
         try {
             List<JsonObject> jsonObjectList = new ArrayList<>(16);
-            //ExecutorService threadPool = Executors.newCachedThreadPool();
             CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
             int k = 0;
             for (int i = 0; i < monitorList.size(); i++) {
@@ -158,12 +152,6 @@ public class ServiceMonitorController {
             }
             for (int i = 0; i < jsonObjectList.size(); i++) {
                 JsonObject object = jsonObjectList.get(i);
-                //{"gcInfos":{"gcInfos":"0/0"},"flows":{},
-                // "service":"com.github.dapeng.hello.service.HelloService",
-                // "container_info":" shutdown/terminating/terminated[false/false/false] -activeCount/poolSize[0/8] -waitingTasks/completeTasks/totalTasks[0/10/10]",
-                // "serviceInfo":{"com.github.dapeng.hello.scala.service.HelloService":"Green|test"},
-                // "tasks":{"waitingQueue":0,"total":10,"succeed":10},
-                // "errors":{}}
                 String serviceName = null;
                 if (object.has("child")) {
                     serviceName = object.get("name").getAsString();
@@ -172,6 +160,7 @@ public class ServiceMonitorController {
                     resultMap.put(serviceName, valueMap);
                 } else {
                     serviceName = object.get("service").getAsString();
+                    LOGGER.info("---------serviceObject-------------"+object.toString());
                     JsonObject serviceObject = object.get("serviceInfo").getAsJsonObject();
                     JsonObject taskInfoObject = object.get("tasks").getAsJsonObject();
                     JsonObject GcInfoObject = object.get("gcInfos").getAsJsonObject();
@@ -184,10 +173,6 @@ public class ServiceMonitorController {
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
-
-                    /*GcMap.put("minorGc", getJsonObjectByKey(GcInfoObject, "minorGc") + Integer.parseInt(GcMap.get("minorGc").toString()));
-                    GcMap.put("majorGc", getJsonObjectByKey(GcInfoObject, "majorGc") + Integer.parseInt(GcMap.get("majorGc").toString()));*/
-
                         flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + Integer.parseInt(flowsMap.get("max").toString()));
                         flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + Integer.parseInt(flowsMap.get("min").toString()));
                         flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + Integer.parseInt(flowsMap.get("avg").toString()));
@@ -199,10 +184,6 @@ public class ServiceMonitorController {
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue"));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total"));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed"));
-
-                   /* GcMap.put("minorGc", getJsonObjectByKey(GcInfoObject, "minorGc"));
-                    GcMap.put("majorGc", getJsonObjectByKey(GcInfoObject, "majorGc"));*/
-                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max"));
                         flowsMap.put("min", getJsonObjectByKey(flowsObject, "min"));
                         flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg"));
                         valueMap.put("tasks", tasksMap);
@@ -241,25 +222,6 @@ public class ServiceMonitorController {
                 }
                 resList.add(resMap);
             }
-            /**
-             * {
-             "gcInfos": {
-             "gcInfos": "0/0"
-             },
-             "flows": {},
-             "service": "com.github.dapeng.hello.service.HelloService",
-             "tasks": {
-             "waitingQueue": 0,
-             "total": 48,
-             "succeed": 48
-             },
-             "errors": {},
-             "serviceInfo":{
-             "className":"value"
-             }
-             }
-             */
-
             return resList;
         } catch (Exception e) {
             LOGGER.error("拼装健康度信息出现异常");
