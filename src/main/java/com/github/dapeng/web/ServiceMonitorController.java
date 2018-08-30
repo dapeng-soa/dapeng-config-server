@@ -114,7 +114,6 @@ public class ServiceMonitorController {
             List<JsonObject> jsonObjectList = new ArrayList<>(16);
             CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
             int k = 0;
-            Map testMap = new HashMap();
             for (int i = 0; i < monitorList.size(); i++) {
                 ServiceGroupVo smlv = monitorList.get(i);
                 List<MonitorHosts> hosts = smlv.getHosts();
@@ -129,7 +128,6 @@ public class ServiceMonitorController {
 
                 for (int j = 0; j < hosts.size(); j++) {
                     MonitorHosts monitorHosts = hosts.get(j);
-                    testMap.put(k,monitorHosts.getIp()+monitorHosts.getPort());
                     k++;
                     ipNameMap.put(Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()), smlv.getService());
                     subservices.stream().forEach(x -> {
@@ -143,9 +141,6 @@ public class ServiceMonitorController {
                 try {
                     String takeStr = completionService.take().get();
                     if(StringUtils.isNotBlank(takeStr)){
-                        LOGGER.info("----------------takeStr--------------"+takeStr);
-                        LOGGER.info("----------------tmpMap--------------"+testMap.get(i));
-                        LOGGER.info("----------------service--------------"+i);
                         JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
                         jsonObjectList.add(asJsonObject);
                     }

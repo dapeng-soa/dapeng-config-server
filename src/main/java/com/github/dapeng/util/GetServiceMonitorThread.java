@@ -1,6 +1,7 @@
 package com.github.dapeng.util;
 
 import com.github.dapeng.client.netty.RequestUtils;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Callable;
 
@@ -11,6 +12,8 @@ import java.util.concurrent.Callable;
 
 public class GetServiceMonitorThread implements Callable<String> {
 
+
+    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GetServiceMonitorThread.class);
     private String romoteIp;
     private Integer remotePort;
     private String serviceName;
@@ -58,6 +61,7 @@ public class GetServiceMonitorThread implements Callable<String> {
     @Override
     public String call() throws Exception {
         String romoteServiceEcho = RequestUtils.getRemoteServiceEcho(romoteIp, remotePort, serviceName, version);
+        LOGGER.info("serviceName---romoteIp---remotePort"+romoteIp, remotePort, serviceName);
         return romoteServiceEcho;
     }
 }
