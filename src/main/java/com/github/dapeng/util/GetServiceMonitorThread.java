@@ -61,7 +61,7 @@ public class GetServiceMonitorThread implements Callable<String> {
     @Override
     public String call() throws Exception {
         String romoteServiceEcho = RequestUtils.getRemoteServiceEcho(romoteIp, remotePort, serviceName, version);
-        LOGGER.info("serviceName---romoteIp---remotePort"+romoteIp, remotePort, serviceName);
+        LOGGER.info("serviceName:{}---romoteIp:{}---remotePort:{}----result:{}",serviceName,romoteIp,remotePort,romoteServiceEcho );
         return romoteServiceEcho;
     }
 }
