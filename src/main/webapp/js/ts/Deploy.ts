@@ -778,8 +778,8 @@ ${data.yml}
             let realUpdateTime = c.el(`${updateTime}`).innerHTML;
             return `
                 <div class="diff-tit" >
-                <span>线上服务(只读)[${realDeployTime}]</span>
-                <span>当前配置(只读)[${realUpdateTime}]</span>
+                <span>运行配置(只读)[${realDeployTime}]</span>
+                <span>当前版本(只读)[${realUpdateTime}]</span>
                 </div>
                 <div id="mergely" style="margin:20px 0;">
                 </div>
@@ -789,7 +789,7 @@ ${data.yml}
                         <button type="button" class="btn btn-success" onclick="execServiceUpdate(${unitId})">确认升级</button>
                         <button type="button" class="btn btn-danger" onclick="cancelServiceUpdate()">取消升级</button>
                         ` : ""}
-                <button type="button" class="btn btn-info" onclick="downloadYaml(${unitId})">下载配置</button>
+                <button type="button" class="btn btn-info" onclick="downloadYaml(${unitId})">下载当前配置</button>
                  </span>
                 </div>
             `
