@@ -2,6 +2,7 @@ $(document).ready(function () {
     InitDeployHosts();
 });
 var deploy = new api.Deploy();
+var bsTable = {};
 
 function InitDeployHosts() {
     //记录页面bootstrap-table全局变量$table，方便应用
@@ -16,7 +17,11 @@ function InitDeployHosts() {
             rows: res.context.content
         };
     };
+    table.params = function (ps) {
+        ps.sort = "name";
+    };
     table.init();
+    bsTable = table;
 }
 
 setColumns = function () {
@@ -42,7 +47,9 @@ setColumns = function () {
     }, {
         field: 'extra',
         title: '外部机器',
-        formatter: extraFormatter
+        formatter: extraFormatter,
+        align: 'center',
+        valign: 'middle'
     },{
         field: 'remark',
         title: '备注'
@@ -86,7 +93,9 @@ openAddDeployHostModle = function () {
     // 导出弹窗内容模版
     var context = deploy.exportAddDeployHostContext("add");
     // 初始化弹窗
-    initModelContext(context, refresh);
+    initModelContext(context, function(){
+        bsTable.refresh();
+    });
     initSetList();
 };
 
@@ -105,7 +114,7 @@ saveDeployHost = function () {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -155,7 +164,9 @@ viewDeployHostOrEditByID = function (id, op) {
         // 导出弹窗内容模版
         var context = deploy.exportAddDeployHostContext(op, "", res.context);
         // 初始化弹窗
-        initModelContext(context, refresh);
+        initModelContext(context, function(){
+            bsTable.refresh();
+        });
         initSetList(res.context.setId);
     }, "json");
 };
@@ -177,7 +188,7 @@ editedDeployHost = function (id) {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -194,12 +205,6 @@ initSetList = function (id) {
     var curl = basePath + "/api/deploy-sets";
     var ss = new BzSelect(curl, "setSelect", "id", "name");
     ss.v_selected = id;
-    ss.after = function () {
-        if (id === undefined || id === "") {
-            initHostList()
-        }
-        addUnitSetChanged();
-    };
     ss.responseHandler = function (res) {
         return res.context.content
     };

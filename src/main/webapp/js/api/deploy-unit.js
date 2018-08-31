@@ -15,11 +15,11 @@ function initDeployUnits() {
     };
     table.params = function (ps) {
         ps.setId = $("#setSelectView").find("option:selected").val();
-        ps.hostId = $("#hostSelectView").find("option:selected").val();;
-        ps.serviceId = $("#serviceSelectView").find("option:selected").val();;
+        ps.hostId = $("#hostSelectView").find("option:selected").val();
+        ps.serviceId = $("#serviceSelectView").find("option:selected").val();
         return ps;
     };
-    table.responseHandler= function(res){
+    table.responseHandler = function (res) {
         return {
             total: res.context == null ? 0 : res.context.totalElements,
             rows: res.context.content
@@ -83,7 +83,9 @@ openAddDeployUnitModle = function () {
     // 导出弹窗内容模版
     var context = deploy.exportAddDeployUnitContext("add");
     // 初始化弹窗
-    initModelContext(context, refresh);
+    initModelContext(context, function () {
+        bsTable.refresh();
+    });
     initSetList();
     initServiceList();
 };
@@ -103,7 +105,7 @@ saveDeployUnit = function () {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -157,11 +159,11 @@ viewDeployUnitOrEditByID = function (id, op) {
         // 导出弹窗内容模版
         var context = deploy.exportAddDeployUnitContext(op, "", res.context);
         // 初始化弹窗
-        initModelContext(context, refresh);
+        initModelContext(context, function () {
+            bsTable.refresh();
+        });
         initSetList(res.context.setId);
-        setTimeout(function () {
-            initHostList(res.context.hostId)
-        }, 100);
+        initHostList(res.context.hostId);
         initServiceList(res.context.serviceId)
     }, "json");
 };
@@ -183,7 +185,7 @@ editedDeployUnit = function (id) {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -248,9 +250,11 @@ initSetList = function (id) {
     ss.v_selected = id;
     ss.after = function () {
         if (id === undefined || id === "") {
-            initHostList()
+            initHostList();
+            addUnitSetChanged();
+        } else {
+            addUnitSetEnvInit(id);
         }
-        addUnitSetChanged();
     };
     ss.responseHandler = function (res) {
         return res.context.content
@@ -265,6 +269,9 @@ initSetList = function (id) {
 initHostList = function (id) {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
+    if (id !== undefined && id !== "") {
+        curl = basePath + "/api/deploy-hosts/";
+    }
     var ss = new BzSelect(curl, "hostSelect", "id", "name");
     ss.v_selected = id;
     ss.after = function () {
@@ -273,6 +280,11 @@ initHostList = function (id) {
     ss.responseHandler = function (res) {
         return res.context
     };
+    if (id !== undefined && id !== "") {
+        ss.responseHandler = function (res) {
+            return res.context.content
+        };
+    }
     ss.init();
 };
 
@@ -297,10 +309,8 @@ initServiceList = function (id) {
  * 当环境集选择变更时
  * @param obj
  */
-setChanged = function (obj) {
-    console.log(obj);
-    var setId = $(obj).find("option:selected").val();
-    initHostList(setId);
+setChanged = function () {
+    initHostList();
 };
 
 
@@ -308,20 +318,25 @@ setChanged = function (obj) {
  * 增加环境集变更时，重新获取变量信息
  * @param obj
  */
-addUnitSetChanged = function (obj) {
+addUnitSetChanged = function () {
     var setId = $("#setSelect").find("option:selected").val();
     if (setId !== '0') {
-        initHostList(setId);
-        var url = basePath + "/api/deploy-set/" + setId;
-        $.get(url, function (res) {
-            if (res.code === SUCCESS_CODE) {
-                $("#setEnvView").html(deploy.setCnfigView(res.context));
-            }
-        }, "json");
+        initHostList();
+        addUnitSetEnvInit(setId);
     } else {
         $("#setEnvView").html("无");
     }
 };
+
+addUnitSetEnvInit = function (setId) {
+    var url = basePath + "/api/deploy-set/" + setId;
+    $.get(url, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            $("#setEnvView").html(deploy.setCnfigView(res.context));
+        }
+    }, "json");
+};
+
 /**
  * host 变化，重新获取变量信息
  */
