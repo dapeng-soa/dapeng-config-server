@@ -140,7 +140,7 @@ var api;
             var view = "";
             for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
                 var em = data_1[_i];
-                view += "\n            <div class=\"col-sm-6 col-xs-12\">\n                <div class=\"panel panel-default panel-box\">\n                    <div class=\"panel-heading\"><p style=\"text-align: center\">" + (viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']') + "</p>\n                    </div>\n                    <div class=\"panel-body\" style=\"overflow-y: auto;max-height: 400px\">\n                         " + dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos, em) + "\n                    </div>\n                </div>\n            </div>\n            ";
+                view += "\n            <div class=\"col-sm-6 col-xs-12\">\n                <div class=\"panel panel-default panel-box\">\n                    <div class=\"panel-heading\"><p style=\"text-align: center\">" + (viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']') + "</p>\n                    </div>\n                    <div class=\"panel-body\" style=\"overflow-y: auto;height:320px\">\n                         " + dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos, em) + "\n                    </div>\n                </div>\n            </div>\n            ";
             }
             return view;
         };
