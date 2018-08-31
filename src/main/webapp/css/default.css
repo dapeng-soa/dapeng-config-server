@@ -369,9 +369,9 @@ table {
 }
 
 /* box下拉菜单 */
-.panel-box {
+/*.panel-box {
     min-height: 300px;
-}
+}*/
 
 .panel-box-menu {
     position: absolute;
