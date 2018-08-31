@@ -71,6 +71,9 @@ public class ServiceMonitorController {
             if(Integer.parseInt(xnode.get("nodeCount").toString())==Integer.parseInt(ynode.get("nodeCount").toString())){
                 HashMap xtask = (HashMap)x.get("tasks");
                 HashMap ytask = (HashMap)y.get("tasks");
+                if(Integer.parseInt(xtask.get("waitingQueue").toString())==Integer.parseInt(ytask.get("waitingQueue").toString())){
+                    return Integer.parseInt(ytask.get("total").toString())-Integer.parseInt(xtask.get("total").toString());
+                }
                 return Integer.parseInt(xtask.get("waitingQueue").toString())-Integer.parseInt(ytask.get("waitingQueue").toString());
             }
             return Integer.parseInt(xnode.get("nodeCount").toString())-Integer.parseInt(ynode.get("nodeCount").toString()) ;
