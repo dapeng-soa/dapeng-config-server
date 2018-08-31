@@ -2,6 +2,7 @@ $(document).ready(function () {
     InitDeployServices();
 });
 var deploy = new api.Deploy();
+var bsTable = {};
 
 function InitDeployServices() {
     //记录页面bootstrap-table全局变量$table，方便应用
@@ -10,13 +11,17 @@ function InitDeployServices() {
     table.onDblClickRow = function (row) {
         viewDeployServiceOrEditByID(row.id, VIEW)
     };
-    table.responseHandler= function(res){
+    table.responseHandler = function (res) {
         return {
             total: res.context == null ? 0 : res.context.totalElements,
             rows: res.context.content
         };
     };
+    table.params = function (ps) {
+        ps.sort = "name";
+    };
     table.init();
+    bsTable = table;
 }
 
 setColumns = function () {
@@ -73,7 +78,9 @@ openAddDeployServiceModle = function () {
     // 导出弹窗内容模版
     var context = deploy.exportAddDeployServiceContext(ADD);
     // 初始化弹窗
-    initModelContext(context, refresh);
+    initModelContext(context, function () {
+        bsTable.refresh();
+    });
 };
 
 /**
@@ -91,7 +98,7 @@ saveDeployService = function () {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -145,7 +152,9 @@ viewDeployServiceOrEditByID = function (id, op) {
         // 导出弹窗内容模版
         var context = deploy.exportAddDeployServiceContext(op, "", res.context);
         // 初始化弹窗
-        initModelContext(context, refresh);
+        initModelContext(context, function(){
+            bsTable.refresh();
+        });
     }, "json");
 };
 
@@ -166,7 +175,7 @@ editedDeployService = function (id) {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };

@@ -2,6 +2,7 @@ $(document).ready(function () {
     InitDeploySets();
 });
 var deploy = new api.Deploy();
+var bsTable = {};
 
 function InitDeploySets() {
     //记录页面bootstrap-table全局变量$table，方便应用
@@ -10,13 +11,14 @@ function InitDeploySets() {
     table.onDblClickRow = function (row) {
         viewDeploySetEditByID(row.id, VIEW)
     };
-    table.responseHandler= function(res){
+    table.responseHandler = function (res) {
         return {
             total: res.context == null ? 0 : res.context.totalElements,
             rows: res.context.content
         };
     };
     table.init();
+    bsTable = table;
 }
 
 setColumns = function () {
@@ -83,7 +85,7 @@ saveDeploySet = function () {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -125,7 +127,9 @@ viewDeploySetEditByID = function (id, op) {
         // 导出弹窗内容模版
         var context = deploy.exportAddDeploySetContext(op, "", res.context);
         // 初始化弹窗
-        initModelContext(context, refresh);
+        initModelContext(context, function () {
+            bsTable.refresh()
+        });
     }, "json");
 };
 
@@ -146,7 +150,7 @@ editedDeploySet = function (id) {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };

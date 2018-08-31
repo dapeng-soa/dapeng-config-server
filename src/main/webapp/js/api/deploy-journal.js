@@ -158,7 +158,9 @@ viewDeployJournalYml = function (id) {
         // 导出弹窗内容模版
         var context = deploy.exportViewDeployJournalContext(res.context);
         // 初始化弹窗
-        initModelContext(context, refresh);
+        initModelContext(context, function () {
+            bsTable.refresh();
+        });
     }, "json");
 };
 
