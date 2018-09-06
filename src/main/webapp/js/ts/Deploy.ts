@@ -728,7 +728,7 @@ restart: on-failure:3
          */
         public exportDeployJournalActionContext(value, row) {
             return `<span class="link-button-table">
-            ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="回滚"  onclick="rollbackDeploy(${value},'${row.hostName}','${row.serviceName}')"><span class="glyphicon glyphicon-repeat"></span></a>` : `-`}
+            ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="回滚"  onclick="rollbackDeploy(${value},'${row.hostName}','${row.serviceName}')"><i class="fa fa-reply-all" aria-hidden="true"></i></a>` : `-`}
             </span>`;
         }
 

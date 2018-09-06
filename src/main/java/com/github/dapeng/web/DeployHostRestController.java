@@ -139,10 +139,14 @@ public class DeployHostRestController {
         try {
             if (isEmpty(hostDto.getName()) || isEmpty(hostDto.getIp()) || isEmpty(hostDto.getSetId())) {
                 return ResponseEntity
-                        .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
+                        .ok(Resp.of(ERROR_CODE, "服务名,IP,所属环境集不能为空"));
             }
             DeployCheck.hasChinese(hostDto.getName(), "节点名");
             DeployCheck.isboolIp(hostDto.getIp());
+            List<THost> tHosts = hostRepository.findByName(hostDto.getName());
+            if (!isEmpty(tHosts)) {
+                throw new Exception("已存在同名节点");
+            }
             THost host = new THost();
             host.setIp(IPUtils.transferIp(hostDto.getIp()));
             host.setName(hostDto.getName());

@@ -83,11 +83,15 @@ public class DeployServiceRestController {
     public ResponseEntity<?> addService(@RequestBody ServiceDto serviceDto) {
         if (isEmpty(serviceDto.getName()) || isEmpty(serviceDto.getImage())) {
             return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
+                    .ok(Resp.of(ERROR_CODE, "服务名，镜像名不能为空"));
         }
         try {
             DeployCheck.hasChinese(serviceDto.getName(), "服务名");
             DeployCheck.hasChinese(serviceDto.getImage(), "镜像名");
+            List<TService> tServices = serviceRepository.findByName(serviceDto.getName());
+            if (!isEmpty(tServices)){
+                throw new Exception("已存在同名服务");
+            }
             TService service = new TService();
             service.setName(serviceDto.getName());
             service.setRemark(serviceDto.getRemark());

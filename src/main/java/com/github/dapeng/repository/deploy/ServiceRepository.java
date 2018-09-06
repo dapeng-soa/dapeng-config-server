@@ -14,4 +14,12 @@ import java.util.List;
 
 public interface ServiceRepository extends JpaRepository<TService, Long>,JpaSpecificationExecutor<TService> {
     List<TService> findTop1ByIdOrderByUpdatedAtDesc(Long id);
+
+
+    /**
+     * 根据服务名查找
+     * @param name
+     * @return
+     */
+    List<TService> findByName(String name);
 }
