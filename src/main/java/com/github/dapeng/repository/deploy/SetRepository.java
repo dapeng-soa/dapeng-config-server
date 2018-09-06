@@ -12,12 +12,21 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public interface SetRepository  extends JpaRepository<TSet,Long>,JpaSpecificationExecutor<TSet> {
+public interface SetRepository extends JpaRepository<TSet, Long>, JpaSpecificationExecutor<TSet> {
 
     /**
      * 获取
+     *
      * @param id
      * @return
      */
     List<TSet> findTop1ByIdOrderByUpdatedAtDesc(Long id);
+
+    /**
+     * 根据名字查找
+     *
+     * @param name
+     * @return
+     */
+    List<TSet> findByName(String name);
 }

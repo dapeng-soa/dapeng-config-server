@@ -21,5 +21,17 @@ public interface HostRepository extends JpaRepository<THost,Long>,JpaSpecificati
      */
     List<THost> findBySetId(long setId);
 
+    /**
+     * 查询最新一条记录
+     * @param id
+     * @return
+     */
     List<THost> findTop1ByIdOrderByUpdatedAtDesc(Long id);
+
+    /**
+     * 根据名称查查找
+     * @param name
+     * @return
+     */
+    List<THost> findByName(String name);
 }

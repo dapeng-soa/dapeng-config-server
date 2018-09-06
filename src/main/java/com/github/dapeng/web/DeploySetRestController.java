@@ -2,10 +2,7 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.SetDto;
-import com.github.dapeng.entity.deploy.TDeployUnit;
-import com.github.dapeng.entity.deploy.THost;
-import com.github.dapeng.entity.deploy.TSet;
-import com.github.dapeng.entity.deploy.TSetServiceEnv;
+import com.github.dapeng.entity.deploy.*;
 import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
@@ -105,6 +102,10 @@ public class DeploySetRestController {
                     .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
         }
         try {
+            List<TSet> tSets = setRepository.findByName(setDto.getName());
+            if (!isEmpty(tSets)) {
+                throw new Exception("已存在同名环境集");
+            }
             TSet set = new TSet();
             set.setName(setDto.getName());
             set.setRemark(setDto.getRemark());
