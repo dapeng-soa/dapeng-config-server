@@ -1,8 +1,8 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
-import com.github.dapeng.core.metadata.Service;
+import com.github.dapeng.common.Resp;
+import com.github.dapeng.json.OptimizedMetadata;
 import com.github.dapeng.openapi.cache.ServiceCache;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +30,10 @@ public class ServiceController {
      */
     @GetMapping(value = "/services")
     public ResponseEntity<?> serviceList() {
-        Map<String, Service> services = ServiceCache.getServices();
+        Map<String, OptimizedMetadata.OptimizedService> services = ServiceCache.getServices();
         List<String> list = new ArrayList(16);
         services.forEach((k, v) -> {
-            list.add(v.namespace + "." + v.name);
+            list.add(v.getService().namespace + "." + v.getService().name);
         });
         return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, list));
     }
