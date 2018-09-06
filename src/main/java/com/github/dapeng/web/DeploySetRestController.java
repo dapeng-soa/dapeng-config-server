@@ -4,9 +4,12 @@ import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.SetDto;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TSet;
+import com.github.dapeng.entity.deploy.TSetServiceEnv;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
+import com.github.dapeng.repository.deploy.SetServiceEnvRepository;
 import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.vo.DeploySetServiceEnvVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,9 @@ public class DeploySetRestController {
 
     @Autowired
     HostRepository hostRepository;
+
+    @Autowired
+    SetServiceEnvRepository envRepository;
 
     /**
      * @return 环境集
@@ -151,5 +157,37 @@ public class DeploySetRestController {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
+    }
+
+    @GetMapping(value = "/deploy-set/sub-env/{sid}")
+    public ResponseEntity getSubEnvBySet(@PathVariable Long sid) {
+        List<TSetServiceEnv> subEnvs = envRepository.findAllBySetId(sid);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, subEnvs));
+    }
+
+    @PostMapping(value = "deploy-set/sub-env/add")
+    public ResponseEntity addSubEnv(@RequestBody DeploySetServiceEnvVo subEnv) {
+        List<TSetServiceEnv> envList = new ArrayList<>();
+        List<Long> serviceIds = new ArrayList<>();
+        subEnv.getSubEnv().forEach(x -> {
+            serviceIds.add(x.getServiceId());
+            if (isEmpty(x.getId())) {
+                TSetServiceEnv se = new TSetServiceEnv();
+                se.setEnv(x.getEnv());
+                se.setServiceId(x.getServiceId());
+                se.setCreatedAt(DateUtil.now());
+                se.setSetId(x.getSetId());
+                se.setUpdateAt(DateUtil.now());
+                envList.add(se);
+            } else {
+                TSetServiceEnv se = envRepository.findOne(x.getId());
+                se.setEnv(String.valueOf(x.getEnv()));
+                envList.add(se);
+            }
+        });
+        envRepository.save(envList);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
     }
 }

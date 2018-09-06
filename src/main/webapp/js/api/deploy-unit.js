@@ -190,8 +190,21 @@ editedDeployUnit = function (id) {
     });
 };
 
-delDeployUnit = function () {
-    layer.msg("暂无权限")
+delDeployUnit = function (id) {
+    bodyAbs();
+    layer.confirm('确定删除？', {
+        btn: ['确认', '取消']
+    }, function () {
+        var url = basePath + "/api/deploy-unit/del/"+id;
+        $.post(url, function (res) {
+            layer.msg(res.msg);
+            bsTable.refresh();
+        }, "json");
+        rmBodyAbs();
+    }, function () {
+        layer.msg("未做任何改动");
+        rmBodyAbs();
+    });
 };
 
 var initViewSetSelect = function () {

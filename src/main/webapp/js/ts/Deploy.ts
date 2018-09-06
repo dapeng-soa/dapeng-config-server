@@ -55,6 +55,7 @@ appName:goodsService
                               </div>
                         </div>
                     </div>
+                   
                     <div class="form-group">
                         <label class="col-sm-2 control-label">备注:</label>
                         <div class="col-sm-9">
@@ -74,6 +75,86 @@ appName:goodsService
                     ` : ""}
                 </div>
 `;
+        }
+
+
+        public exportAddSubEnvBySetIdContext(type: string,setId:number, subEnv?: any) {
+            let c = this;
+            return `
+            <div class="panel-header window-header">
+                <div class="input-group">
+                    <p class="left-panel-title">环境集服务ENV配置</p>
+                </div>
+            </div>
+            <div class="form-horizontal" style="margin-top: 81px;">
+            
+                 <div class="form-group">
+                        <label class="col-sm-1 control-label"></label>
+                        <div class="col-sm-10">
+                            <div id="sub-from-container">
+                            ${c.viewSubEnv("view", subEnv)}
+                            </div>
+                            ${type !== c.view ? `
+                        <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addSubFromBySet()"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
+                          </div>
+                        </div>
+                    </div>
+                    <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="saveSubEnvs(${setId})">保存</button>
+                    </span>
+` : ""}
+                    
+`
+        }
+
+        public viewSubEnv(type: string = this.add || this.edit || this.view, subEnvs: any) {
+            let c = this;
+            const url = basePath + "/api/deploy-services";
+            $.get(url, res => {
+                let ops = res.context.content;
+                let view = "";
+                for (let index in subEnvs) {
+                    let s = subEnvs[index];
+                    view += c.exportAddSubEnvContext(type, ops, s);
+                }
+                $("#sub-from-container").append(view);
+            }, "json");
+            return "";
+        }
+
+        public exportAddSubEnvContext(type: string = this.add || this.edit || this.view, services: any, subEnv?: any) {
+            console.log(subEnv);
+            let ops = `<option value="0">请选择服务</option>`;
+            let sId = 0;
+            let env = {};
+            if (type !== this.add) {
+                sId = subEnv.serviceId;
+                env = subEnv.env;
+            }
+            for (let index in services) {
+                let s = services[index];
+                let sed = "";
+                if (s.id === sId) {
+                    sed = "selected"
+                }
+                ops += `<option  ${sed} value="${s.id}">${s.name}</option>`
+            }
+            return `
+                <div class="form-horizontal from-group-item" style="margin-top: 20px;">
+                    ${type !== this.add ? "" : `<a class="from-group-item-rm" href="javascript:void(0)"><span class="glyphicon glyphicon-remove"></span></a>`}
+                    <input type="hidden" class="data-ops-id" value="${subEnv === undefined ? 0 : subEnv.id}">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <select  class="form-control data-service-select" ${type !== this.add ? "disabled" : ""}>${ops}</select>
+                        </div>
+                    </div>   
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <textarea class="form-control data-env-textarea"  >${type === this.add ? "" : env}</textarea>
+                        </div>
+                    </div> 
+                </div>
+            `;
         }
 
         /**
@@ -101,6 +182,8 @@ appName:goodsService
                             <label class="col-sm-2 control-label">服务镜像:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="image" class="col-sm-2 form-control" value="${type != c.add ? data.image : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
 备注:
@@ -110,6 +193,7 @@ appName:goodsService
 dapengsoa/redis-wzx(正确)
 dapengsoa/redis-wzx:3.2.3.1(错误,无需填写镜像TAG)
                                   </pre>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -558,6 +642,7 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeploySetEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeploySetEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="添加服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-th"></span></a>
             <a href="javascript:void(0)" title="删除"  onclick="delDeploySet(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
         }

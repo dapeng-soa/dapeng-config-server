@@ -62,12 +62,70 @@ deploySetActionFormatter = function (value, row, index) {
     return deploy.exportDeploySetActionContext(value, row);
 };
 
+/**
+ * 添加环境变量
+ * @param setId
+ * @param op
+ */
+openAddSubEnvBySetId = function (setId, op) {
+    console.log(setId);
+    var url = basePath + "/api/deploy-set/sub-env/" + setId;
+    $.get(url, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var context = deploy.exportAddSubEnvBySetIdContext("add",setId, res.context);
+            initModelContext(context, function () {
+                bsTable.refresh();
+            });
+        }
+    }, "json");
+};
+
+/**
+ * 保存环境集中的服务配置
+ */
+saveSubEnvs = function (setId) {
+    var selectedService = $("#sub-from-container").find("select.data-service-select").find("option:selected");
+    var subEnvs = $("#sub-from-container").find("textarea.data-env-textarea");
+    var opsIds = $("#sub-from-container").find("input.data-ops-id");
+    var subEnv = [];
+    $.each(selectedService, function (index, em) {
+        subEnv.push({
+            serviceId: $(em).val(),
+            env: $(subEnvs[index]).val(),
+            id: $(opsIds[index]).val() === undefined ? 0 : $(opsIds[index]).val(),
+            setId: setId
+        });
+    });
+    for (s in subEnv) {
+        if (Number(subEnv[s].serviceId) === 0) {
+            layer.msg("存在未选择服务的配置，请检查");
+            return;
+        }
+    }
+    var url = basePath + "/api/deploy-set/sub-env/add";
+    var settings = {
+        type: "post",
+        url: url,
+        data: JSON.stringify({subEnv: subEnv}),
+        dataType: "json",
+        contentType: "application/json"
+    };
+    $.ajax(settings).done(function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            closeModel();
+        }
+    });
+
+};
+
 openAddDeploySetModle = function () {
     // 导出弹窗内容模版
     var context = deploy.exportAddDeploySetContext("add");
-    console.log(context);
     // 初始化弹窗
-    initModelContext(context, refresh);
+    initModelContext(context, function () {
+        bsTable.refresh();
+    });
 };
 
 /**
@@ -89,6 +147,21 @@ saveDeploySet = function () {
         }
     });
 };
+
+addSubFromBySet = function () {
+    var url = basePath + "/api/deploy-services";
+    $.get(url, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var ops = res.context.content;
+            var context = deploy.exportAddSubEnvContext(ADD, ops);
+        }
+        $("#sub-from-container").append(context);
+        $(".from-group-item-rm").bind("click", function (eo) {
+            $(this).parent().remove();
+        });
+    }, "json");
+};
+
 
 /**
  * 清空配置

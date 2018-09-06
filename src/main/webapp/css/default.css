@@ -45,7 +45,7 @@ body.model-opened {
 /*=============================只能调整垂直大小*/
 textarea {
     resize: vertical !important;
-    min-height: 70px;
+    min-height: 120px;
     max-height: 500px;
 }
 
@@ -476,4 +476,9 @@ table {
 
 .layui-nav-child a{
     text-indent:1em;
+}
+.from-group-item-rm{
+    position: absolute;
+    z-index: 99;
+    right: -5px;
 }

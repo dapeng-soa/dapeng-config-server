@@ -195,7 +195,7 @@ public class DeployUnitRestController {
      * @return
      */
     @PostMapping(value = "/deploy-unit/edit/{id}")
-    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody UnitDto unitDto) {
+    public ResponseEntity<?> updateUnit(@PathVariable Long id, @RequestBody UnitDto unitDto) {
         try {
             if (isEmpty(unitDto.getSetId())
                     || isEmpty(unitDto.getHostId())
@@ -227,5 +227,14 @@ public class DeployUnitRestController {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
         }
+    }
+
+    @PostMapping(value = "/deploy-unit/del/{id}")
+    public ResponseEntity delUnit(@PathVariable Long id) {
+        TDeployUnit unit = unitRepository.getOne(id);
+        LOGGER.info("del deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
+        unitRepository.delete(unit.getId());
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
     }
 }
