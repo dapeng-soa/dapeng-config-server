@@ -46,7 +46,6 @@ var api;
         };
         Deploy.prototype.exportAddSubEnvContext = function (type, services, subEnv) {
             if (type === void 0) { type = this.add || this.edit || this.view; }
-            console.log(subEnv);
             var ops = "<option value=\"0\">\u8BF7\u9009\u62E9\u670D\u52A1</option>";
             var sId = 0;
             var env = {};
@@ -103,7 +102,7 @@ var api;
          * @param row
          */
         Deploy.prototype.exportDeploySetActionContext = function (value, row) {
-            return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u8BE6\u60C5\"  onclick=\"viewDeploySetEditByID(" + value + ",'view')\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewDeploySetEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u6DFB\u52A0\u670D\u52A1\u73AF\u5883\u53D8\u91CF\"  onclick=\"openAddSubEnvBySetId(" + value + ",'add')\"><span class=\"glyphicon glyphicon-th\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5220\u9664\"  onclick=\"delDeploySet(" + value + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
+            return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u8BE6\u60C5\"  onclick=\"viewDeploySetEditByID(" + value + ",'view')\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewDeploySetEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u6DFB\u52A0\u670D\u52A1\u73AF\u5883\u53D8\u91CF\"  onclick=\"openAddSubEnvBySetId(" + value + ",'add')\"><span class=\"glyphicon glyphicon-folder-close\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5220\u9664\"  onclick=\"delDeploySet(" + value + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
         };
         /**
          * 节点操作栏

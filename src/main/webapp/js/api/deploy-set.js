@@ -68,7 +68,6 @@ deploySetActionFormatter = function (value, row, index) {
  * @param op
  */
 openAddSubEnvBySetId = function (setId, op) {
-    console.log(setId);
     var url = basePath + "/api/deploy-set/sub-env/" + setId;
     $.get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
@@ -228,8 +227,21 @@ editedDeploySet = function (id) {
     });
 };
 
-delDeploySet = function () {
-    layer.msg("暂无权限")
+delDeploySet = function (id) {
+    bodyAbs();
+    layer.confirm('确定删除？', {
+        btn: ['确认', '取消']
+    }, function () {
+        var url = basePath + "/api/deploy-set/del/"+id;
+        $.post(url, function (res) {
+            layer.msg(res.msg);
+            bsTable.refresh();
+        }, "json");
+        rmBodyAbs();
+    }, function () {
+        layer.msg("未做任何改动");
+        rmBodyAbs();
+    });
 };
 
 

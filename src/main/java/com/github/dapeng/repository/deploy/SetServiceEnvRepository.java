@@ -14,8 +14,17 @@ import java.util.List;
 public interface SetServiceEnvRepository extends JpaRepository<TSetServiceEnv, Long> {
     /**
      * 某个环境集下的子环境变量
+     *
      * @param setId
      * @return
      */
     List<TSetServiceEnv> findAllBySetId(Long setId);
+
+    /**
+     * 按照服务查找最新一条记录
+     *
+     * @param serviceId
+     * @return
+     */
+    List<TSetServiceEnv> findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(Long setId, Long serviceId);
 }

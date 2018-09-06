@@ -123,7 +123,6 @@ appName:goodsService
         }
 
         public exportAddSubEnvContext(type: string = this.add || this.edit || this.view, services: any, subEnv?: any) {
-            console.log(subEnv);
             let ops = `<option value="0">请选择服务</option>`;
             let sId = 0;
             let env = {};
@@ -642,7 +641,7 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeploySetEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeploySetEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <a href="javascript:void(0)" title="添加服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-th"></span></a>
+            <a href="javascript:void(0)" title="添加服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-folder-close"></span></a>
             <a href="javascript:void(0)" title="删除"  onclick="delDeploySet(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
         }

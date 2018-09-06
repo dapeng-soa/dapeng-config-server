@@ -1,10 +1,7 @@
 package com.github.dapeng.util;
 
 import com.github.dapeng.core.helper.IPUtils;
-import com.github.dapeng.entity.deploy.TDeployUnit;
-import com.github.dapeng.entity.deploy.THost;
-import com.github.dapeng.entity.deploy.TService;
-import com.github.dapeng.entity.deploy.TSet;
+import com.github.dapeng.entity.deploy.*;
 import com.github.dapeng.vo.DockerYaml;
 import com.github.dapeng.vo.DockerService;
 import org.slf4j.Logger;
@@ -49,7 +46,7 @@ public class Composeutil {
      *
      * @return YamlService
      */
-    public static DockerService processServiceOfUnit(TSet set, THost host, TService service, TDeployUnit unit) {
+    public static DockerService processServiceOfUnit(TSet set, THost host, TService service, TDeployUnit unit, TSetServiceEnv setSubEnv) {
 
         DockerService dockerService1 = new DockerService();
 
@@ -62,7 +59,7 @@ public class Composeutil {
 
         //==================environment
 
-        dockerService1.setEnvironment(processEnv(service, set, host, unit));
+        dockerService1.setEnvironment(processEnv(service, set, setSubEnv, host, unit));
 
         //==================volumes
         dockerService1.setVolumes(processVolume(unit.getVolumes(), service.getVolumes()));
@@ -87,13 +84,14 @@ public class Composeutil {
      * @param service
      * @return
      */
-    private static Map<String, String> processEnv(TService service, TSet set, THost host, TDeployUnit unit) {
+    private static Map<String, String> processEnv(TService service, TSet set, TSetServiceEnv setSubEnv, THost host, TDeployUnit unit) {
         Map<String, String> setEnvs = ofEnv(set.getEnv());
         Map<String, String> hostEnvs = ofEnv(host.getEnv());
         Map<String, String> serviceEnvs = ofEnv(service.getEnv());
         Map<String, String> unitEnvs = ofEnv(unit.getEnv());
+        Map<String, String> subEnvs = ofEnv(setSubEnv.getEnv());
 
-        Map<String, String> realEnvs = mergeEnvs(mergeEnvs(mergeEnvs(unitEnvs, hostEnvs), setEnvs), serviceEnvs);
+        Map<String, String> realEnvs = mergeEnvs(mergeEnvs(mergeEnvs(mergeEnvs(unitEnvs, hostEnvs), subEnvs), setEnvs), serviceEnvs);
 
         StringBuilder sb = new StringBuilder();
         if (realEnvs.size() > 0) {
@@ -231,7 +229,7 @@ public class Composeutil {
         dockerService1.setImage(service.getImage());
 
         //==================environment
-        dockerService1.setEnvironment(processEnv(service, set, host, new TDeployUnit()));
+        dockerService1.setEnvironment(processEnv(service, set, new TSetServiceEnv(), host, new TDeployUnit()));
 
         //==================volumes
         dockerService1.setVolumes(ofList(service.getVolumes()));
