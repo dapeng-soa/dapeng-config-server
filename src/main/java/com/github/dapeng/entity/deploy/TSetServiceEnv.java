@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "t_set_service_env")
@@ -26,7 +27,7 @@ public class TSetServiceEnv {
     private java.sql.Timestamp createdAt;
     @Column(name = "updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
-    private java.sql.Timestamp updateAt;
+    private java.sql.Timestamp updatedAt;
 
 
     public long getId() {
@@ -74,12 +75,11 @@ public class TSetServiceEnv {
     }
 
 
-    public java.sql.Timestamp getUpdateAt() {
-        return updateAt;
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdateAt(java.sql.Timestamp updateAt) {
-        this.updateAt = updateAt;
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
-
 }

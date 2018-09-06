@@ -2,9 +2,11 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.SetDto;
+import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.entity.deploy.TSetServiceEnv;
+import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.repository.deploy.SetServiceEnvRepository;
@@ -49,6 +51,9 @@ public class DeploySetRestController {
 
     @Autowired
     SetServiceEnvRepository envRepository;
+
+    @Autowired
+    DeployUnitRepository unitRepository;
 
     /**
      * @return 环境集
@@ -120,13 +125,24 @@ public class DeploySetRestController {
     @PostMapping("/deploy-set/del/{id}")
     public ResponseEntity delSet(@PathVariable long id) {
         List<THost> hosts = hostRepository.findBySetId(id);
-        if (isEmpty(hosts)) {
+        List<TSetServiceEnv> serviceEnvs = envRepository.findAllBySetId(id);
+        List<TDeployUnit> deployUnits = unitRepository.findAllBySetId(id);
+        try {
+            if (!isEmpty(hosts)) {
+                throw new Exception("不能删除,此环境集下仍有绑定主机");
+            }
+            if (!isEmpty(serviceEnvs)) {
+                throw new Exception("不能删除,此环境集下仍有绑定的服务环境变量");
+            }
+            if (!isEmpty(deployUnits)) {
+                throw new Exception("不能删除,此环境集下仍有绑定的部署单元");
+            }
             setRepository.delete(id);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
-        } else {
+        } catch (Exception e) {
             return ResponseEntity
-                    .ok(Resp.of(SUCCESS_CODE, "不能删除,此环境集下仍有绑定主机"));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 
@@ -175,7 +191,7 @@ public class DeploySetRestController {
             AtomicBoolean flag = new AtomicBoolean(true);
             AtomicBoolean flag2 = new AtomicBoolean(true);
             subEnv.getSubEnv().forEach(x -> {
-                if (isEmpty(x.getServiceId())){
+                if (isEmpty(x.getServiceId())) {
                     flag2.set(false);
                 }
                 if (serviceIds.contains(x.getServiceId())) {
@@ -188,7 +204,7 @@ public class DeploySetRestController {
                     se.setServiceId(x.getServiceId());
                     se.setCreatedAt(DateUtil.now());
                     se.setSetId(x.getSetId());
-                    se.setUpdateAt(DateUtil.now());
+                    se.setUpdatedAt(DateUtil.now());
                     envList.add(se);
                 } else {
                     TSetServiceEnv se = envRepository.findOne(x.getId());
@@ -199,7 +215,7 @@ public class DeploySetRestController {
             if (!flag.get()) {
                 throw new Exception("存在相同的服务配置，请检查！");
             }
-            if (!flag2.get()){
+            if (!flag2.get()) {
                 throw new Exception("存在未选择服务的配置，请检查");
             }
             envRepository.save(envList);

@@ -49,6 +49,8 @@ public class DeployExecRestController {
     DeployUnitRepository unitRepository;
     @Autowired
     DeployOpJournalRepository journalRepository;
+    @Autowired
+    SetServiceEnvRepository subEnvRepository;
 
     /**
      * 向agent发送问询指令
@@ -179,11 +181,13 @@ public class DeployExecRestController {
         List<TSet> setList = setRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getSetId());
         List<THost> hosts = hostRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getHostId());
         List<TService> serviceList = serviceRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getServiceId());
+        List<TSetServiceEnv> subEnvs = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(u.getSetId(), u.getServiceId());
         Long setUpdateAt = !isEmpty(setList) ? setList.get(0).getUpdatedAt().getTime() : 0;
         Long hostUpdateAt = !isEmpty(hosts) ? hosts.get(0).getUpdatedAt().getTime() : 0;
         Long serviceUpdateAt = !isEmpty(serviceList) ? serviceList.get(0).getUpdatedAt().getTime() : 0;
+        Long subEnvUpdateAt = !isEmpty(subEnvs) ? subEnvs.get(0).getUpdatedAt().getTime() : 0;
         Long unitUpdateAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
-        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, unitUpdateAt};
+        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, unitUpdateAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
     }
 
@@ -198,8 +202,12 @@ public class DeployExecRestController {
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-
-        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit);
+        List<TSetServiceEnv> envList = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(unit.getSetId(), unit.getServiceId());
+        TSetServiceEnv setSubEnv = new TSetServiceEnv();
+        if (!isEmpty(envList)) {
+            setSubEnv = envList.get(0);
+        }
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 
@@ -311,8 +319,12 @@ public class DeployExecRestController {
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-
-        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit);
+        List<TSetServiceEnv> envList = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(unit.getSetId(), unit.getServiceId());
+        TSetServiceEnv setSubEnv = new TSetServiceEnv();
+        if (!isEmpty(envList)) {
+            setSubEnv = envList.get(0);
+        }
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 
@@ -338,8 +350,12 @@ public class DeployExecRestController {
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
         List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-
-        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit);
+        List<TSetServiceEnv> envList = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(unit.getSetId(), unit.getServiceId());
+        TSetServiceEnv setSubEnv = new TSetServiceEnv();
+        if (!isEmpty(envList)) {
+            setSubEnv = envList.get(0);
+        }
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
         String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + service.getName() + ".yml";
