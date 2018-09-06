@@ -98,7 +98,7 @@ public class ServiceMonitorController {
             }).collect(Collectors.toList());
             Collections.reverse(collect);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.info("influxdb连接异常");
         }
         return "";
     }
@@ -149,11 +149,11 @@ public class ServiceMonitorController {
                             JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
                             jsonObjectList.add(asJsonObject);
                         } catch (JsonSyntaxException e) {
-                            LOGGER.error("echo返回不是json串");
+                            LOGGER.error("echo返回不是json串",e);
                         }
                     }
                 } catch (InterruptedException e) {
-                    LOGGER.error("获取服务echo信息出现异常");
+                    LOGGER.error("获取服务echo信息出现异常",e);
                     //e.printStackTrace();
                 }
             }
@@ -227,8 +227,7 @@ public class ServiceMonitorController {
             }
             return resList;
         } catch (Exception e) {
-            LOGGER.error("拼装健康度信息出现异常");
-            e.printStackTrace();
+            LOGGER.error("拼装健康度信息出现异常",e);
         }
         return resList;
     }
@@ -299,8 +298,7 @@ public class ServiceMonitorController {
                 dataList.add(smvo);
             }
         } catch (Exception e1) {
-            LOGGER.error("拼装服务信息出现异常");
-            e1.printStackTrace();
+            LOGGER.error("拼装服务信息出现异常",e1);
         }
         return dataList;
     }
@@ -326,8 +324,7 @@ public class ServiceMonitorController {
             ZkUtil.closeZk(zkByHost);
             return zkNodeList;
         } catch (Exception e) {
-            LOGGER.error("获取zk连接信息出现异常");
-            e.printStackTrace();
+            LOGGER.error("获取zk连接信息出现异常",e);
         } finally {
             ZkUtil.closeZk(zkByHost);
         }
