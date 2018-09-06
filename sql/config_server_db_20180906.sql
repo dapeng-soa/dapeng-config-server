@@ -231,6 +231,21 @@ CREATE TABLE `zk_node` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='zk节点配置';
 
+-- ----------------------------
+--  Table structure for `t_set_service_env`
+-- ----------------------------
+DROP TABLE IF EXISTS `t_set_service_env`;
+CREATE TABLE `t_set_service_env` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `set_id` int(11) NOT NULL DEFAULT 0 COMMENT '环境集id',
+  `service_id` int(11) NOT NULL DEFAULT 0 COMMENT '服务id',
+  `env` varchar(8192) NOT NULL DEFAULT '' COMMENT '当前环境集中某服务的环境变量',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT '添加时间',
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COMMENT='环境集服务环境变量';
+
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO `users` VALUES ('1','admin', '9a8fe2f9f59093b02dade34aab295fd4', '0');
