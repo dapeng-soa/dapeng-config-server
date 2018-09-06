@@ -24,6 +24,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -168,26 +169,45 @@ public class DeploySetRestController {
 
     @PostMapping(value = "deploy-set/sub-env/add")
     public ResponseEntity addSubEnv(@RequestBody DeploySetServiceEnvVo subEnv) {
-        List<TSetServiceEnv> envList = new ArrayList<>();
-        List<Long> serviceIds = new ArrayList<>();
-        subEnv.getSubEnv().forEach(x -> {
-            serviceIds.add(x.getServiceId());
-            if (isEmpty(x.getId())) {
-                TSetServiceEnv se = new TSetServiceEnv();
-                se.setEnv(x.getEnv());
-                se.setServiceId(x.getServiceId());
-                se.setCreatedAt(DateUtil.now());
-                se.setSetId(x.getSetId());
-                se.setUpdateAt(DateUtil.now());
-                envList.add(se);
-            } else {
-                TSetServiceEnv se = envRepository.findOne(x.getId());
-                se.setEnv(String.valueOf(x.getEnv()));
-                envList.add(se);
+        try {
+            List<TSetServiceEnv> envList = new ArrayList<>();
+            List<Long> serviceIds = new ArrayList<>();
+            AtomicBoolean flag = new AtomicBoolean(true);
+            AtomicBoolean flag2 = new AtomicBoolean(true);
+            subEnv.getSubEnv().forEach(x -> {
+                if (isEmpty(x.getServiceId())){
+                    flag2.set(false);
+                }
+                if (serviceIds.contains(x.getServiceId())) {
+                    flag.set(false);
+                }
+                serviceIds.add(x.getServiceId());
+                if (isEmpty(x.getId())) {
+                    TSetServiceEnv se = new TSetServiceEnv();
+                    se.setEnv(x.getEnv());
+                    se.setServiceId(x.getServiceId());
+                    se.setCreatedAt(DateUtil.now());
+                    se.setSetId(x.getSetId());
+                    se.setUpdateAt(DateUtil.now());
+                    envList.add(se);
+                } else {
+                    TSetServiceEnv se = envRepository.findOne(x.getId());
+                    se.setEnv(String.valueOf(x.getEnv()));
+                    envList.add(se);
+                }
+            });
+            if (!flag.get()) {
+                throw new Exception("存在相同的服务配置，请检查！");
             }
-        });
-        envRepository.save(envList);
-        return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+            if (!flag2.get()){
+                throw new Exception("存在未选择服务的配置，请检查");
+            }
+            envRepository.save(envList);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
     }
 }
