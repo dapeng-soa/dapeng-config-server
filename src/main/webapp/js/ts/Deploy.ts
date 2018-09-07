@@ -78,7 +78,7 @@ appName:goodsService
         }
 
 
-        public exportAddSubEnvBySetIdContext(type: string,setId:number, subEnv?: any) {
+        public exportAddSubEnvBySetIdContext(type: string, setId: number, subEnv?: any) {
             let c = this;
             return `
             <div class="panel-header window-header">
@@ -784,10 +784,10 @@ ${data.yml}
                                 <p>需要更新：<span id="${IdPrefix}-needUpdate">${dep.updateStatus(em.needUpdate)}</span></p>
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
-                                    <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId})">升级</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
-                                <p ><a href="#" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId},'view')">预览</a></p>
+                                    <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId})">升级</a></p>
+                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
+                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
+                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId},'view')">预览</a></p>
                             </div>
                         </div>
             `

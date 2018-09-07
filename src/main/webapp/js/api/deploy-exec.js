@@ -256,14 +256,16 @@ stopService = function (unitId) {
     var url = basePath + "/api/deploy/stopRealService";
     util.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            //bodyAbs();
+            bodyAbs();
             layer.confirm('停止服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
                 btn: ['停止', '取消']
             }, function () {
                 socket.emit(STOP, JSON.stringify(res.context));
                 layer.msg("操作已发送");
+                bodyAbs();
             }, function () {
                 layer.msg("操作取消");
+                bodyAbs();
             });
         }
     });
@@ -278,14 +280,16 @@ restartService = function (unitId) {
     var url = basePath + "/api/deploy/restartRealService";
     util.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            //bodyAbs();
+            bodyAbs();
             layer.confirm('重启服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
                 btn: ['重启', '取消']
             }, function () {
                 socket.emit(RESTART, JSON.stringify(res.context));
                 layer.msg("操作已发送");
+                rmBodyAbs();
             }, function () {
                 layer.msg("操作取消");
+                rmBodyAbs();
             });
         }
     })
