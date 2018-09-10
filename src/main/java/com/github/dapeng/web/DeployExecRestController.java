@@ -101,7 +101,6 @@ public class DeployExecRestController {
                     list.add(x);
                 }
             });
-            LOGGER.info("服务视图");
             map.forEach((Long k, List<TDeployUnit> v) -> {
                 DeployServiceVo deployServiceVo = new DeployServiceVo();
                 TService tService = serviceRepository.getOne(k);
@@ -128,7 +127,6 @@ public class DeployExecRestController {
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, serviceVos));
         } else {
-            LOGGER.info("主机视图");
             // (hostId->unit)
             Map<Long, List<TDeployUnit>> map = new HashMap<>(16);
 
@@ -384,12 +382,24 @@ public class DeployExecRestController {
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, toDeployRequest(unitId)));
     }
 
+    @GetMapping("/deploy-unit/event_rep")
+    public ResponseEntity eventRep2(@RequestParam Long hostId,
+                                    @RequestParam Long serviceId) {
+        THost host = hostRepository.getOne(hostId);
+        TService service = serviceRepository.getOne(serviceId);
+        DeployRequest request = new DeployRequest();
+        String ip = IPUtils.transferIp(host.getIp());
+        request.setIp(ip);
+        request.setServiceName(service.getName());
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, request));
+    }
 
-    private DeployRequest toDeployRequest(long unitId) {
+
+    private DeployRequest toDeployRequest(Long unitId) {
         TDeployUnit unit = unitRepository.getOne(unitId);
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
-
         DeployRequest request = new DeployRequest();
         String ip = IPUtils.transferIp(host.getIp());
         request.setIp(ip);

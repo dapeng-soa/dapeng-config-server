@@ -1,5 +1,6 @@
 $(document).ready(function () {
     InitDeployHosts();
+    viewInitSetList();
 });
 var deploy = new api.Deploy();
 var bsTable = {};
@@ -19,6 +20,8 @@ function InitDeployHosts() {
     };
     table.params = function (ps) {
         ps.sort = "name";
+        ps.setId = $("#setSelectView").find("option:selected").val();
+        return ps;
     };
     table.init();
     bsTable = table;
@@ -40,6 +43,9 @@ setColumns = function () {
     }, {
         field: 'ip',
         title: '节点host'
+    }, {
+        field: 'setName',
+        title: '所属环境集'
     }, {
         field: 'labels',
         title: '标签',
@@ -117,6 +123,24 @@ saveDeployHost = function () {
             closeModel();
         }
     });
+};
+
+viewSetChanged = function () {
+    bsTable.refresh();
+};
+
+/**
+ * 初始化set
+ * @constructor
+ */
+viewInitSetList = function () {
+    var curl = basePath + "/api/deploy-sets";
+    var ss = new BzSelect(curl, "setSelectView", "id", "name");
+    ss.refresh = true;
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.init();
 };
 
 /**

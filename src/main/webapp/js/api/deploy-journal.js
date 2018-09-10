@@ -1,6 +1,7 @@
 var deploy = new api.Deploy();
 var bsTable = {};
 var socket = {};
+var yaml = "";
 var util = new api.Api();
 $(document).ready(function () {
     initDeployJournals();
@@ -32,6 +33,13 @@ $(document).ready(function () {
         layer.msg(data);
         openConloseView();
         deploy.consoleView(data, ERROR);
+    });
+
+    /**
+     * 获取yaml配置返回
+     */
+    socket.on(GET_YAML_FILE_RESP, function (data) {
+        yaml += data + "\n";
     });
 
     socket.on(SOC_CDISCONNECT, function () {
@@ -152,16 +160,28 @@ viewDeployJournal = function (id) {
  * 预览yml
  * @param id
  */
-viewDeployJournalYml = function (id) {
-    var url = basePath + "/api/deploy-journal/" + id;
-    $.get(url, function (res) {
-        // 导出弹窗内容模版
-        var context = deploy.exportViewDeployJournalContext(res.context);
-        // 初始化弹窗
-        initModelContext(context, function () {
-            bsTable.refresh();
-        });
-    }, "json");
+viewDeployJournalYml = function (id, hostId, serviceId) {
+
+    var event_url = basePath + "/api/deploy-unit/event_rep";
+    util.get(event_url, {hostId: hostId, serviceId: serviceId}, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            yaml = "";
+            socket.emit(GET_YAML_FILE, JSON.stringify(res.context));
+
+            var url = basePath + "/api/deploy-journal/" + id;
+            util.$get(url, function (res2) {
+                if (res2.code === SUCCESS_CODE) {
+                    // 导出弹窗内容模版
+                    var context = deploy.exportViewDeployJournalContext(id);
+                    initModelContext(context, function () {
+                    });
+                    setTimeout(function () {
+                        diffTxt(res2.context.yml, yaml)
+                    }, 300);
+                }
+            });
+        }
+    });
 };
 
 /**

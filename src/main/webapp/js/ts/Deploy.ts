@@ -716,7 +716,7 @@ restart: on-failure:3
          */
         public exportDeployJournalYmlContext(value, row) {
             return `<span class="link-button-table">
- ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="yml"  onclick="viewDeployJournalYml(${row.id})"><span class="glyphicon glyphicon-eye-open"></span></a>` : `-`}
+ ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="yml"  onclick="viewDeployJournalYml(${row.id},${row.hostId},${row.serviceId})"><span class="glyphicon glyphicon-eye-open"></span></a>` : `-`}
 </span>
 `
         }
@@ -732,16 +732,19 @@ restart: on-failure:3
             </span>`;
         }
 
-        public exportViewDeployJournalContext(data: any) {
+        public exportViewDeployJournalContext() {
+
+            let c = this;
             return `
-<div class="panel-header window-header" >
-                    <div class="input-group">
-                        <p class="left-panel-title">${data.gitTag}:${data.serviceName}:${data.imageTag}</p>
-                    </div>
+                <div class="diff-tit" >
+                <span>运行配置(只读)</span>
+                <span>当前版本(只读)</span>
                 </div>
-<pre style="margin-top: 60px">
-${data.yml}
-                    </pre>`;
+                <div id="mergely" style="margin:20px 0;">
+                </div>
+                <div class="fixed-footer-btn" >
+                </div>
+            `
         }
 
         /**

@@ -157,7 +157,7 @@ var api;
          * @returns {string}
          */
         Deploy.prototype.exportDeployJournalYmlContext = function (value, row) {
-            return "<span class=\"link-button-table\">\n " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"yml\"  onclick=\"viewDeployJournalYml(" + row.id + ")\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>" : "-") + "\n</span>\n";
+            return "<span class=\"link-button-table\">\n " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"yml\"  onclick=\"viewDeployJournalYml(" + row.id + "," + row.hostId + "," + row.serviceId + ")\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>" : "-") + "\n</span>\n";
         };
         /**
          * 流水操作
@@ -167,8 +167,9 @@ var api;
         Deploy.prototype.exportDeployJournalActionContext = function (value, row) {
             return "<span class=\"link-button-table\">\n            " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"\u56DE\u6EDA\"  onclick=\"rollbackDeploy(" + value + ",'" + row.hostName + "','" + row.serviceName + "')\"><i class=\"fa fa-reply-all\" aria-hidden=\"true\"></i></a>" : "-") + "\n            </span>";
         };
-        Deploy.prototype.exportViewDeployJournalContext = function (data) {
-            return "\n<div class=\"panel-header window-header\" >\n                    <div class=\"input-group\">\n                        <p class=\"left-panel-title\">" + data.gitTag + ":" + data.serviceName + ":" + data.imageTag + "</p>\n                    </div>\n                </div>\n<pre style=\"margin-top: 60px\">\n" + data.yml + "\n                    </pre>";
+        Deploy.prototype.exportViewDeployJournalContext = function () {
+            var c = this;
+            return "\n                <div class=\"diff-tit\" >\n                <span>\u8FD0\u884C\u914D\u7F6E(\u53EA\u8BFB)</span>\n                <span>\u5F53\u524D\u7248\u672C(\u53EA\u8BFB)</span>\n                </div>\n                <div id=\"mergely\" style=\"margin:20px 0;\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                </div>\n            ";
         };
         /**
          * 服务/主机视图
