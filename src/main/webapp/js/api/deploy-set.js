@@ -71,7 +71,7 @@ openAddSubEnvBySetId = function (setId, op) {
     var url = basePath + "/api/deploy-set/sub-env/" + setId;
     $.get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
-            var context = deploy.exportAddSubEnvBySetIdContext("add",setId, res.context);
+            var context = deploy.exportAddSubEnvBySetIdContext("add", setId, res.context);
             initModelContext(context, function () {
                 bsTable.refresh();
             });
@@ -232,7 +232,7 @@ delDeploySet = function (id) {
     layer.confirm('确定删除？', {
         btn: ['确认', '取消']
     }, function () {
-        var url = basePath + "/api/deploy-set/del/"+id;
+        var url = basePath + "/api/deploy-set/del/" + id;
         $.post(url, function (res) {
             layer.msg(res.msg);
             bsTable.refresh();
@@ -242,6 +242,16 @@ delDeploySet = function (id) {
         layer.msg("未做任何改动");
         rmBodyAbs();
     });
+};
+
+
+
+/**
+ * copy set
+ * @param obj
+ */
+copySetChange = function (obj) {
+
 };
 
 
