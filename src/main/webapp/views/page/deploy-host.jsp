@@ -26,6 +26,15 @@
             </div>
         </div>
 
+        <div id="deploy-host-tableToolbar">
+            <span>环境集： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="viewSetChanged()"
+                        id="setSelectView">
+
+                </select>
+            </span></span>
+        </div>
+
         <table id="deploy-host-table">
         </table>
         <jsp:include page="../core/footer.jsp"/>

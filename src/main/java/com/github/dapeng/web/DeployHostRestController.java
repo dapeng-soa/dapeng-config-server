@@ -54,7 +54,8 @@ public class DeployHostRestController {
                                          @RequestParam(required = false, defaultValue = "100000") int limit,
                                          @RequestParam(required = false) String sort,
                                          @RequestParam(required = false, defaultValue = "desc") String order,
-                                         @RequestParam(required = false, defaultValue = "") String search) {
+                                         @RequestParam(required = false, defaultValue = "") String search,
+                                         @RequestParam(required = false, defaultValue = "0") Long setId) {
         PageRequest pageRequest = new PageRequest
                 (offset / limit, limit,
                         new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
@@ -62,7 +63,11 @@ public class DeployHostRestController {
         Page<THost> page = hostRepository.findAll((root, query, cb) -> {
             Path<String> name = root.get("name");
             Path<String> remark = root.get("remark");
+            Path<Long> setId1 = root.get("setId");
             List<Predicate> ps = new ArrayList<>();
+            if (!isEmpty(setId)) {
+                ps.add(cb.equal(setId1, setId));
+            }
             ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%")));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
