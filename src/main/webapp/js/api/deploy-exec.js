@@ -6,6 +6,9 @@ var util = new api.Api();
 var diff = {};
 var ansi = new AnsiUp;
 $(document).ready(function () {
+    window.onbeforeunload = function () {
+        return "控制台输出将不被保存,确认要离开此页面吗？"
+    };
     socket = io(socketUrl);
     socket.on(SOC_CONNECT, function () {
         if (socket.connected) {
