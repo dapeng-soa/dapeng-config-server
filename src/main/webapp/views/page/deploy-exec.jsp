@@ -29,12 +29,14 @@
 
         <div class="row" style="margin-top: 20px">
             <span>环境： <span style="display: inline-block;width: 120px">
-                <select id="setSelect" data-live-search="true" onchange="execSetChanged(this)" class="selectpicker form-control">
+                <select id="setSelect" data-live-search="true" onchange="execSetChanged(this)"
+                        class="selectpicker form-control">
 
                 </select>
             </span></span>
             <span>视图： <span style="display: inline-block;width: 120px">
-                <select id="viewType" data-live-search="true" class="selectpicker form-control" onchange="execViewTypeChanged(this)" >
+                <select id="viewType" data-live-search="true" class="selectpicker form-control"
+                        onchange="execViewTypeChanged(this)">
                     <option value="1" selected>服务视图</option>
                     <option value="2">主机视图</option>
                 </select>
