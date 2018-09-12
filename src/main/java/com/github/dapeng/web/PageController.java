@@ -62,6 +62,7 @@ public class PageController {
     @GetMapping(value = "/clusters")
     public String clusters(Model model) {
         model.addAttribute("tagName", "clusters");
+        model.addAttribute("sideName", "clusters");
         return "page/clusters";
     }
 

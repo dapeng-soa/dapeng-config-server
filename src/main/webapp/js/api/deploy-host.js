@@ -134,7 +134,7 @@ viewSetChanged = function () {
  * @constructor
  */
 viewInitSetList = function () {
-    var curl = basePath + "/api/deploy-sets";
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
     var ss = new BzSelect(curl, "setSelectView", "id", "name");
     ss.refresh = true;
     ss.responseHandler = function (res) {
@@ -226,7 +226,7 @@ delDeployHost = function () {
  * @constructor
  */
 initSetList = function (id) {
-    var curl = basePath + "/api/deploy-sets";
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
     var ss = new BzSelect(curl, "setSelect", "id", "name");
     ss.v_selected = id;
     ss.responseHandler = function (res) {

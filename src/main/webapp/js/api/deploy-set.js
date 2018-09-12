@@ -125,6 +125,16 @@ openAddDeploySetModle = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    addCopySetSelectInit();
+};
+
+addCopySetSelectInit = function () {
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
+    var ss = new BzSelect(curl, "addCopySetSelect", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.init();
 };
 
 /**
@@ -245,13 +255,20 @@ delDeploySet = function (id) {
 };
 
 
-
 /**
  * copy set
  * @param obj
  */
-copySetChange = function (obj) {
-
+copySetChange = function () {
+    var ed = $("#addCopySetSelect").find("option:selected").val();
+    if (Number(ed) !== undefined && Number(ed) !== 0) {
+        var url = basePath + "/api/deploy-set/" + ed;
+        $.get(url, function (res) {
+            $("#name").val(res.context.name);
+            $("#env-area").val(res.context.env);
+            $("#remark-area").val(res.context.remark);
+        }, "json");
+    }
 };
 
 

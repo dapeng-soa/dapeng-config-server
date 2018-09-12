@@ -205,10 +205,7 @@ button[type="button"][name="toggle"]:before {
 
 .container-right-context {
     border-radius: 4px;
-    margin-top: 15px;
-    /*box-shadow: 0 0 1em #ccc;*/
     padding: 15px;
-    /*border: 1px solid #ccc;*/
 }
 
 .panel-header {

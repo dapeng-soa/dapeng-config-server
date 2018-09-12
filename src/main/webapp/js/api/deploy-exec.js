@@ -105,7 +105,7 @@ emitGetInfoEvent = function () {
  * @constructor
  */
 initSetList = function () {
-    var curl = basePath + "/api/deploy-sets";
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
     var ss = new BzSelect(curl, "setSelect", "id", "name");
     ss.refresh = true;
     ss.after = function () {
@@ -122,7 +122,7 @@ initSetList = function () {
  * @constructor
  */
 initServiceList = function () {
-    var curl = basePath + "/api/deploy-services";
+    var curl = basePath + "/api/deploy-services?sort=name&order=asc";
     var ss = new BzSelect(curl, "serviceSelect", "id", "name");
     ss.responseHandler = function (res) {
         return res.context.content
@@ -135,7 +135,7 @@ initHostList = function () {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
     if (Number(setSelected) === 0) {
-        curl = basePath + "/api/deploy-hosts"
+        curl = basePath + "/api/deploy-hosts?sort=name&order=asc"
     }
     var ss = new BzSelect(curl, "hostSelect", "id", "name");
     ss.responseHandler = function (res) {

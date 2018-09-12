@@ -12,11 +12,12 @@
         </a>
     </div>
     <ul class="layui-nav layui-nav-tree menu-left" lay-filter="test">
-        <li class="layui-nav-item"><a href="${basePath}/clusters"><i class="fa fa-server" aria-hidden="true"></i>集群管理</a>
-        </li>
         <li class="layui-nav-item layui-nav-itemed">
             <a href="javascript:void(0);"><i class="fa fa-cogs" aria-hidden="true"></i>配置管理</a>
             <dl class="layui-nav-child">
+                <dd class="${sideName == 'clusters' ? 'layui-this' : ''}">
+                    <a href="${basePath}/clusters"><i class="fa fa-server" aria-hidden="true"></i>集群管理</a>
+                </dd>
                 <dd class="${sideName == 'config-service' ? 'layui-this' : ''}">
                     <a href="${basePath}/config/service"><i class="fa fa-wrench" aria-hidden="true"></i>服务配置</a>
                 </dd>
