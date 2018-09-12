@@ -65,6 +65,7 @@
 <script src="${basePath}/plugins/socketIo/socket.io.js"></script>
 <script src="${basePath}/plugins/model.js"></script>
 <script src="${basePath}/plugins/init.js"></script>
+<script src="${basePath}/plugins/ansi_up.js"></script>
 <script>
     window.basePath = "${basePath}";
     window.socketUrl = "${socketUrl}"

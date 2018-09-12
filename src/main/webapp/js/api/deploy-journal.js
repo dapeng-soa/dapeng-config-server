@@ -23,16 +23,17 @@ $(document).ready(function () {
      * 升级返回
      */
     socket.on(DEPLOY_RESP, function (data) {
-        deploy.consoleView(data);
+        var html = ansi.ansi_to_html(data);
+        deploy.consoleView(html);
     });
 
     /**
      * 错误返回
      */
     socket.on(ERROR_EVENT, function (data) {
-        layer.msg(data);
         openConloseView();
-        deploy.consoleView(data, ERROR);
+        var html = ansi.ansi_to_html(data);
+        deploy.consoleView(html);
     });
 
     /**

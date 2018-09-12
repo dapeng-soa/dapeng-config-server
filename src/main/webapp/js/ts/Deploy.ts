@@ -983,7 +983,7 @@ ${data.extra == 1 ? '否' : '是'}
         public consoleView(row: string, lv?: string) {
             let c = this;
             let rowStr = `
-            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> <span style="${lv === window.ERROR ? `color:ff4d4d` : ``}">${row}</span></p>
+            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> ${row}</p>
             `;
             let ob = $("#consoleView");
             ob.append(rowStr);
