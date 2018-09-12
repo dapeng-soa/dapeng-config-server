@@ -83,6 +83,7 @@ window.diffTxt = function (current, old) {
         license: 'gpl',
         autoresize: true,
         sidebar: false,
+        viewport: false,
         cmsettings: {
             readOnly: true
         },

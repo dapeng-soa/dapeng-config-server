@@ -3,6 +3,8 @@ var yaml = "";
 var serviceNum = 0; // 当前的服务数量
 var deploy = new api.Deploy();
 var util = new api.Api();
+var diff = {};
+var ansi = new AnsiUp;
 $(document).ready(function () {
     socket = io(socketUrl);
     socket.on(SOC_CONNECT, function () {
@@ -37,30 +39,36 @@ $(document).ready(function () {
      * 升级返回
      */
     socket.on(DEPLOY_RESP, function (data) {
-        deploy.consoleView(data);
+        openConloseView();
+        var html = ansi.ansi_to_html(data);
+        deploy.consoleView(html);
     });
 
     /**
      * 停止返回
      */
     socket.on(STOP_RESP, function (data) {
-        deploy.consoleView(data);
+        openConloseView();
+        var html = ansi.ansi_to_html(data);
+        deploy.consoleView(html);
     });
 
     /**
      * 重启返回
      */
     socket.on(RESTART_RESP, function (data) {
-        deploy.consoleView(data);
+        openConloseView();
+        var html = ansi.ansi_to_html(data);
+        deploy.consoleView(html);
     });
 
     /**
      * 错误返回
      */
     socket.on(ERROR_EVENT, function (data) {
-        layer.msg(data);
         openConloseView();
-        deploy.consoleView(data, ERROR);
+        var html = ansi.ansi_to_html(data);
+        deploy.consoleView(html);
     });
 
     socket.on(SOC_CDISCONNECT, function () {
@@ -221,7 +229,7 @@ serviceYamlPreview = function (deployTime, updateTime, unitId, viewType) {
                         //refresh()
                     });
                     setTimeout(function () {
-                        diffTxt(res2.context.fileContent, yaml)
+                        diff = diffTxt(res2.context.fileContent, yaml)
                     }, 300);
                 }
             });

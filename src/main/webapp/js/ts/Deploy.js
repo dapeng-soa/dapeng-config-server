@@ -279,7 +279,7 @@ var api;
          */
         Deploy.prototype.consoleView = function (row, lv) {
             var c = this;
-            var rowStr = "\n            <p><span style=\"color:#00bb00\">[" + new Date().toLocaleTimeString() + "]#</span> <span style=\"" + (lv === window.ERROR ? "color:ff4d4d" : "") + "\">" + row + "</span></p>\n            ";
+            var rowStr = "\n            <p><span style=\"color:#00bb00\">[" + new Date().toLocaleTimeString() + "]#</span> " + row + "</p>\n            ";
             var ob = $("#consoleView");
             ob.append(rowStr);
             document.getElementById("consoleView").scrollTop = document.getElementById("consoleView").scrollHeight;
