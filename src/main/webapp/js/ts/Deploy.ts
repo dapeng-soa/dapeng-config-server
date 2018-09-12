@@ -83,7 +83,7 @@ appName:goodsService
             return `
             <div class="panel-header window-header">
                 <div class="input-group">
-                    <p class="left-panel-title">环境集服务ENV配置</p>
+                    <p class="left-panel-title">环境集服务ENV配置(SetSubEnv)</p>
                 </div>
             </div>
             <div class="form-horizontal" style="margin-top: 81px;">
