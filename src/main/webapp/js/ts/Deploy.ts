@@ -791,7 +791,7 @@ restart: on-failure:3
                 view += `
             <div class="col-sm-6 col-xs-12">
                 <div class="panel panel-default panel-box">
-                    <div class="panel-heading"><p style="text-align: center">${viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']'}</p>
+                    <div class="panel-heading" style="background: #fff"><p style="text-align: center;font-size: 18px">${viewType == dep.serviceView ? em.serviceName : em.hostName + ':[' + em.hostIp + ']'}</p>
                     </div>
                     <div class="panel-body" style="overflow-y: auto;height:320px">
                          ${dep.serviceViewSubHost(viewType, viewType == dep.serviceView ? em.deploySubHostVos : em.deploySubServiceVos, em)}
