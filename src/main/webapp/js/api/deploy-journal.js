@@ -212,7 +212,7 @@ delDeployJournal = function () {
 };
 
 var initViewSetSelect = function () {
-    var curl = basePath + "/api/deploy-sets";
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
     var s1 = new BzSelect(curl, "setSelectView", "id", "name");
     s1.after = function () {
         viewUnitSetChanged();
@@ -225,7 +225,7 @@ var initViewSetSelect = function () {
 };
 
 var initViewHostSelect = function () {
-    var curl = basePath + "/api/deploy-hosts/";
+    var curl = basePath + "/api/deploy-hosts?sort=name&order=asc";
     var ss = new BzSelect(curl, "hostSelectView", "id", "name");
     ss.refresh = true;
     ss.responseHandler = function (res) {
@@ -235,7 +235,7 @@ var initViewHostSelect = function () {
 };
 
 var initViewServiceSelect = function () {
-    var curl = basePath + "/api/deploy-services";
+    var curl = basePath + "/api/deploy-services?sort=name&order=asc";
     var ss = new BzSelect(curl, "serviceSelectView", "id", "name");
     ss.refresh = true;
     ss.responseHandler = function (res) {

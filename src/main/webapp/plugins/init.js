@@ -232,7 +232,7 @@ window.indexFormatter = function (value, row, index) {
                     sidePagination: this.paginationType,   //分页方式：client客户端分页，server服务端分页（*）
                     pageNumber: 1,                  //初始化加载第一页，默认第一页
                     pageSize: 15,               //每页的记录行数（*）
-                    pageList: [5, 10, 15, 20 , 30 , 40, 50],    //可供选择的每页的行数（*）
+                    pageList: [5, 10, 15, 20, 30, 40, 50],    //可供选择的每页的行数（*）
                     search: true,              //是否显示表格搜索，此搜索是客户端搜索，不会进服务端
                     strictSearch: false,         //设置为 true启用 全匹配搜索，否则为模糊搜索
                     showColumns: true,          //是否显示所有的列

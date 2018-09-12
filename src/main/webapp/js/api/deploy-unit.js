@@ -208,7 +208,7 @@ delDeployUnit = function (id) {
 };
 
 var initViewSetSelect = function () {
-    var curl = basePath + "/api/deploy-sets";
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
     var s1 = new BzSelect(curl, "setSelectView", "id", "name");
     s1.after = function () {
         viewUnitSetChanged();
@@ -221,7 +221,7 @@ var initViewSetSelect = function () {
 };
 
 var initViewHostSelect = function () {
-    var curl = basePath + "/api/deploy-hosts/";
+    var curl = basePath + "/api/deploy-hosts?sort=name&order=asc";
     var ss = new BzSelect(curl, "hostSelectView", "id", "name");
     ss.responseHandler = function (res) {
         return res.context.content
@@ -231,7 +231,7 @@ var initViewHostSelect = function () {
 };
 
 var initViewServiceSelect = function () {
-    var curl = basePath + "/api/deploy-services";
+    var curl = basePath + "/api/deploy-services?sort=name&order=asc";
     var ss = new BzSelect(curl, "serviceSelectView", "id", "name");
     ss.responseHandler = function (res) {
         return res.context.content
@@ -258,7 +258,7 @@ var viewUnitServiceChanged = function () {
  */
 
 initSetList = function (id) {
-    var curl = basePath + "/api/deploy-sets";
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
     var ss = new BzSelect(curl, "setSelect", "id", "name");
     ss.v_selected = id;
     ss.after = function () {
@@ -283,7 +283,7 @@ initHostList = function (id) {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
     if (id !== undefined && id !== "") {
-        curl = basePath + "/api/deploy-hosts/";
+        curl = basePath + "/api/deploy-hosts?sort=name&order=asc";
     }
     var ss = new BzSelect(curl, "hostSelect", "id", "name");
     ss.v_selected = id;
@@ -306,7 +306,7 @@ initHostList = function (id) {
  * @constructor
  */
 initServiceList = function (id) {
-    var curl = basePath + "/api/deploy-services";
+    var curl = basePath + "/api/deploy-services?sort=name&order=asc";
     var ss = new BzSelect(curl, "serviceSelect", "id", "name");
     ss.v_selected = id;
     ss.after = function () {
