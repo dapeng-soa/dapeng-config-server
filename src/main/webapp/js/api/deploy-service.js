@@ -82,6 +82,7 @@ openAddDeployServiceModle = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    addCopyServiceSelectInit();
 };
 
 /**
@@ -153,7 +154,7 @@ viewDeployServiceOrEditByID = function (id, op) {
         // 导出弹窗内容模版
         var context = deploy.exportAddDeployServiceContext(op, "", res.context);
         // 初始化弹窗
-        initModelContext(context, function(){
+        initModelContext(context, function () {
             bsTable.refresh();
         });
     }, "json");
@@ -183,6 +184,34 @@ editedDeployService = function (id) {
 
 delDeployService = function () {
     layer.msg("暂无权限")
+};
+
+addCopyServiceSelectInit = function () {
+    var curl = basePath + "/api/deploy-services?sort=name&order=asc";
+    var ss = new BzSelect(curl, "addCopyServiceSelect", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.init();
+};
+
+copyServiceChange = function () {
+    var ed = $("#addCopyServiceSelect").find("option:selected").val();
+    if (Number(ed) !== undefined && Number(ed) !== 0) {
+        var url = basePath + "/api/deploy-service/" + ed;
+        $.get(url, function (res) {
+            var s = res.context;
+            $("#name").val(s.name);
+            $("#image").val(s.image);
+            $("#labels").val(s.labels);
+            $("#env-area").val(s.env);
+            $("#volumes-area").val(s.volumes);
+            $("#ports-area").val(s.ports);
+            $("#composeLabels-area").val(s.composeLabels);
+            $("#dockerExtras-area").val(s.dockerExtras);
+            $("#remark-area").val(s.remark);
+        }, "json");
+    }
 };
 
 

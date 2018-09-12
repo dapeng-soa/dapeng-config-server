@@ -29,6 +29,23 @@ module api {
                 </div>
             </div>
             <div class="form-horizontal" style="margin-top: 81px;">
+                 ${type == c.add?`
+                 <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-9">
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><i class="fa fa-files-o" aria-hidden="true"></i>点此可复制一个已存在的环境集</p>
+                                <div class="advance-format-content">
+                                <div class="row">
+                                <div class="col-sm-10"><select class="form-control" id="addCopySetSelect" style="width:100%"></select></div>
+                                <div class="col-sm-2"><button style="width: 100%" type="button" class="btn btn-info" onclick="copySetChange()">复制</button></div>
+                                </div>
+                                <code>选择一个已有的环境集,并点击复制,不要忘记修改环境集的名称和对应的ENV！</code>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                 `:``}
                   <div class="form-group">
                         <label class="col-sm-2 control-label">环境集名称:</label>
                         <div class="col-sm-9">
@@ -62,22 +79,6 @@ appName:goodsService
                             <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"></label>
-                        <div class="col-sm-9">
-                            <div class="advance-format-item">
-                                <p class="advance-format-title" onclick="toggleBlock(this)" ><i class="fa fa-files-o" aria-hidden="true"></i>点此复制一个已存在的环境集</p>
-                                <div class="advance-format-content">
-                                <div class="row">
-                                <div class="col-sm-10"><select class="form-control" id="addCopySetSelect" style="width:100%"></select></div>
-                                <div class="col-sm-2"><button style="width: 100%" type="button" class="btn btn-info" onclick="copySetChange()">复制</button></div>
-                                </div>
-                                <code>选择一个已有的服务,并点击复制,不要忘记修改环境集的名称和对应的ENV！</code>
-                                </div>
-                              </div>
-                        </div>
-                    </div> 
                    
                     ${type == c.add ? `
                     <span class="input-group-btn panel-button-group text-center">
@@ -187,6 +188,23 @@ appName:goodsService
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
+                 ${type == c.add?`
+                  <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-9">
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><i class="fa fa-files-o" aria-hidden="true"></i>点此可复制一个已存在的服务</p>
+                                <div class="advance-format-content">
+                                <div class="row">
+                                <div class="col-sm-10"><select class="form-control" id="addCopyServiceSelect" style="width:100%"></select></div>
+                                <div class="col-sm-2"><button style="width: 100%" type="button" class="btn btn-info" onclick="copyServiceChange()">复制</button></div>
+                                </div>
+                                <code>选择一个已有的服务,并点击复制,不要忘记修改新加的服务信息！</code>
+                                </div>
+                              </div>
+                        </div>
+                    </div> 
+                 `:``}
                    <div class="form-group">
                             <label class="col-sm-2 control-label">服务名字:</label>
                             <div class="col-sm-9">
