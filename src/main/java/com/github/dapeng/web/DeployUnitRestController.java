@@ -248,16 +248,17 @@ public class DeployUnitRestController {
     @PostMapping(value = "deploy-unit/modify-batch")
     public ResponseEntity modifyBatch(@RequestBody MofifyBatchTagDto tagDto) {
         try {
+            DeployCheck.hasChinese(tagDto.getTag(), "镜像tag");
             tagDto.getIds().forEach(x -> {
                 TDeployUnit unit = unitRepository.getOne(x);
                 unit.setImageTag(tagDto.getTag());
                 unitRepository.save(unit);
             });
             return ResponseEntity
-                    .ok(Resp.of(SUCCESS_CODE, "批量修改成功"));
+                    .ok(Resp.of(SUCCESS_CODE, "批量修改镜像tag成功"));
         } catch (Exception e) {
             return ResponseEntity
-                    .ok(Resp.of(SUCCESS_CODE, COMMON_ERRO_MSG));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 }
