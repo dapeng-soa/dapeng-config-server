@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="row" style="margin-top: 20px">
+        <div class="row" style="margin-top: 20px;padding:0 15px">
             <span>环境： <span style="display: inline-block;width: 120px">
                 <select id="setSelect" data-live-search="true" onchange="execSetChanged(this)"
                         class="selectpicker form-control">
