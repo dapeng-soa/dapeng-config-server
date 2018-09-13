@@ -2,29 +2,11 @@
 <html>
 <head>
     <jsp:include page="core/resource.jsp"/>
+    <link rel="stylesheet" href="../css/login.css" type="text/css"/>
 </head>
-<style>
-html,body{
-    padding: 0;
-    margin: 0;
-    color: #FFF;
-}
-html,body{
-    background: url(${basePath}/images/bg.jpg) no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}
-</style>
 <body>
 <div class="container animated fadeIn">
     <form id="login-from" name='login' action='${basePath}/login' method='POST'>
-        <%--<div class="sidebar-cover" style="margin-top: 10px">--%>
-            <%--<span>--%>
-                <%--<img src="${basePath}/images/favicon.png">--%>
-            <%--</span>--%>
-        <%--</div>--%>
         <h2 class="text-center" style="margin-bottom: 30px;color: #222">大鹏配置中心</h2>
         <div class="form-group">
             <label style="color: #222">用户名:</label>
