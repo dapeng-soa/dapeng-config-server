@@ -1,6 +1,7 @@
 package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
+import com.github.dapeng.dto.MofifyBatchTagDto;
 import com.github.dapeng.dto.UnitDto;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.repository.deploy.DeployUnitRepository;
@@ -236,5 +237,27 @@ public class DeployUnitRestController {
         unitRepository.delete(unit.getId());
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+    }
+
+    /**
+     * 批量修改镜像tag
+     *
+     * @param tagDto
+     * @return
+     */
+    @PostMapping(value = "deploy-unit/modify-batch")
+    public ResponseEntity modifyBatch(@RequestBody MofifyBatchTagDto tagDto) {
+        try {
+            tagDto.getIds().forEach(x -> {
+                TDeployUnit unit = unitRepository.getOne(x);
+                unit.setImageTag(tagDto.getTag());
+                unitRepository.save(unit);
+            });
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, "批量修改成功"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, COMMON_ERRO_MSG));
+        }
     }
 }

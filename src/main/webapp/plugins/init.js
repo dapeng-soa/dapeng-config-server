@@ -193,6 +193,7 @@ window.indexFormatter = function (value, row, index) {
         this.columns = columns;
         this.height = 700;                      //默认表格高度700
         this.data = {};
+        this.showFullscreen = false;
         this.onLoadSuccess = function () {
         };
         this.onLoadError = function () {
@@ -242,6 +243,8 @@ window.indexFormatter = function (value, row, index) {
                     clickToSelect: true,        //是否启用点击选中行
                     searchOnEnterKey: true,     //设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
                     height: this.height,
+                    showFullscreen: this.showFullscreen,
+                    maintainSelected: true,
                     uniqueId: "id",                     //每一行的唯一标识，一般为主键列
                     showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
                     cardView: ($(window).width() < 1024),                    //是否显示详细视图
@@ -268,6 +271,13 @@ window.indexFormatter = function (value, row, index) {
          */
         setPaginationType: function (type) {
             this.paginationType = type;
+        },
+        /**
+         * 获取所有的选中参数
+         * @returns {*}
+         */
+        getAllSelections: function () {
+            return this.btInstance.bootstrapTable('getAllSelections');
         },
 
         /**

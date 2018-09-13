@@ -150,6 +150,9 @@ var api;
                     return '<span class="label label-warning">未知</span>';
             }
         };
+        Deploy.prototype.exportModifyBatchTagContent = function (eid) {
+            return "\n                <div class=\"form-group\" style=\"margin-top: 20px\">\n                        <div class=\"col-sm-12\">\n                            <input type=\"text\"  id=\"" + eid + "\" class=\"form-control\" />\n                        </div>\n                 </div>\n            ";
+        };
         /**
          * 查看yml
          * @param value

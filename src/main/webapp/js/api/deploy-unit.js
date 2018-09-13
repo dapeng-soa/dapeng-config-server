@@ -31,8 +31,8 @@ function initDeployUnits() {
 
 setColumns = function () {
     return [{
-        checkbox: false,
-        visible: false//是否显示复选框
+        checkbox: true,
+        visible: true//是否显示复选框
     }, {
         field: 'id',
         title: '#',
@@ -76,6 +76,59 @@ setColumns = function () {
  */
 deployUnitActionFormatter = function (value, row, index) {
     return deploy.exportDeployUnitActionContext(value, row);
+};
+
+/**
+ * 批量修改tag
+ */
+modifyBatchTag = function () {
+    var selected = bsTable.getAllSelections();
+    var ids = [];
+    if (selected.length !== 0) {
+        $.each(selected, function (index, em) {
+            ids.push(em.id);
+        });
+        bodyAbs();
+        var modifyBatchTagInputId = "modifyBatchTagInputId";
+        layer.open({
+            type: 1,
+            title: '填写新的镜像tag',
+            area: ['300px', 'auto'],
+            content: deploy.exportModifyBatchTagContent("modifyBatchTagInputId"),
+            btn: ['修改', '取消'],
+            yes: function (index, layero) {
+                var tag = $("#" + modifyBatchTagInputId).val();
+                if (tag !== undefined && tag !== "") {
+                    var url = basePath + "/api/deploy-unit/modify-batch";
+                    var p = JSON.stringify({tag: tag, ids: ids});
+
+                    var settings = {
+                        type: "post",
+                        url: url,
+                        data: p,
+                        dataType: "json",
+                        contentType: "application/json"
+                    };
+                    $.ajax(settings).done(function (res) {
+                        if (res.code === SUCCESS_CODE) {
+                            showMessage(SUCCESS, res.msg, "修改成功");
+                            bsTable.refresh();
+                            layer.close(index);
+                        }
+                    });
+                } else {
+                    layer.msg("请填写tag！");
+                }
+            }, btn2: function (index, layero) {
+                layer.msg("操作取消");
+            }, cancel: function () {
+                layer.msg("操作取消");
+            }
+        });
+        rmBodyAbs();
+    } else {
+        showMessage(ERROR, "未选中任何数据", "警告")
+    }
 };
 
 
@@ -195,7 +248,7 @@ delDeployUnit = function (id) {
     layer.confirm('确定删除？', {
         btn: ['确认', '取消']
     }, function () {
-        var url = basePath + "/api/deploy-unit/del/"+id;
+        var url = basePath + "/api/deploy-unit/del/" + id;
         $.post(url, function (res) {
             layer.msg(res.msg);
             bsTable.refresh();
