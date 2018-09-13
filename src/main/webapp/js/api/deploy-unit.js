@@ -114,6 +114,8 @@ modifyBatchTag = function () {
                             showMessage(SUCCESS, res.msg, "修改成功");
                             bsTable.refresh();
                             layer.close(index);
+                        }else {
+                            showMessage(ERROR, res.msg, "修改失败");
                         }
                     });
                 } else {
