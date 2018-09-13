@@ -742,6 +742,17 @@ restart: on-failure:3
             }
         }
 
+
+        public exportModifyBatchTagContent(eid:string){
+            return `
+                <div class="form-group" style="margin-top: 20px">
+                        <div class="col-sm-12">
+                            <input type="text"  id="${eid}" class="form-control" />
+                        </div>
+                 </div>
+            `
+        }
+
         /**
          * 查看yml
          * @param value
@@ -832,6 +843,8 @@ restart: on-failure:3
 
             return subView
         }
+
+
 
         /**
          * 根据事件返回处理
