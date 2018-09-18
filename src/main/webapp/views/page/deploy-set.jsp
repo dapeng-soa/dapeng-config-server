@@ -21,7 +21,6 @@
             <div class="input-group">
                 <p class="left-panel-title">环境集管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
                     <button type="button" class="btn btn-primary" onclick="openAddDeploySetModle()">新增</button>
                 </span>
             </div>

@@ -59,6 +59,10 @@
 <script src="${basePath}/plugins/mergely/mergely.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/mergely/mergely.css">
 
+<%--xterm--%>
+<script src="${basePath}/plugins/xterm/xterm.min.js"></script>
+<link rel="stylesheet" href="${basePath}/plugins/xterm/xterm.min.css">
+
 <script src="${basePath}/js/ts/Config.js"></script>
 <script src="${basePath}/js/ts/Deploy.js"></script>
 <script src="${basePath}/js/ts/Api.js"></script>
