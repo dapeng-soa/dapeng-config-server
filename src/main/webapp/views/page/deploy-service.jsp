@@ -20,7 +20,6 @@
             <div class="input-group">
                 <p class="left-panel-title">服务管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
                     <button type="button" class="btn btn-primary" onclick="openAddDeployServiceModle()">新增</button>
                 </span>
             </div>

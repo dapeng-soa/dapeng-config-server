@@ -29,7 +29,7 @@ module api {
                 </div>
             </div>
             <div class="form-horizontal" style="margin-top: 81px;">
-                 ${type == c.add?`
+                 ${type == c.add ? `
                  <div class="form-group">
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-9">
@@ -45,7 +45,7 @@ module api {
                               </div>
                         </div>
                     </div>
-                 `:``}
+                 ` : ``}
                   <div class="form-group">
                         <label class="col-sm-2 control-label">环境集名称:</label>
                         <div class="col-sm-9">
@@ -113,15 +113,77 @@ appName:goodsService
                             </div>
                             ${type !== c.view ? `
                         <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addSubFromBySet()"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
-                          </div>
-                        </div>
-                    </div>
                     <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveSubEnvs(${setId})">保存</button>
                     </span>
-` : ""}
-                    
+                    ` : ""}
+           </div>
+           </div>
+           </div>               
 `
+        }
+
+        /**
+         * 环境集配置文件管理
+         */
+        public exportAddConfigBySetIdContext(setId: string, files?: any) {
+            var c = this;
+            return `
+            <div class="panel-header window-header">
+                <div class="input-group">
+                    <p class="left-panel-title">环境集配置文件管理</p>
+                </div>
+            </div>
+            <div class="form-horizontal" style="margin-top: 81px;">
+                 <div class="form-group">
+                    <label class="col-sm-1 control-label"></label>
+                    <div class="col-sm-10">
+                        <div id="configFiles-from-container">
+                           ${c.getConfigFiles(files)}
+                         </div>
+                         <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addConfigFilesEm()"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
+                        <span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="saveConfigFile(${setId})">保存</button>
+                        </span>
+                    </div>
+                </div>
+            </div> 
+            `
+        }
+
+        public getConfigFiles(files?: any) {
+            let html = "";
+            let c = this;
+            if (files !== undefined && files.length > 0) {
+                for (let f in files) {
+                    html += c.exportConfigFilesContext(files[f]);
+                }
+            }
+            return html;
+        }
+
+
+        /**
+         * 导出
+         * @returns {string}
+         */
+        public exportConfigFilesContext(file?: any) {
+            return `
+            <div class="form-horizontal from-group-item" style="margin-top: 20px;">
+                ${file !== undefined ? "" : `<a class="from-group-item-rm" href="javascript:void(0)"><span class="glyphicon glyphicon-remove"></span></a>`}
+                <input type="hidden" class="data-ops-id" value="${file === undefined ? 0 : file.id}">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input class="form-control data-name-input" placeholder="文件名(含文件类型如：server.xml)" value="${file === undefined ? `` : file.fileName}" >
+                    </div>
+                </div>   
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <textarea class="form-control data-context-textarea" placeholder="文件内容">${file === undefined ? `` : file.fileContext}</textarea>
+                            </div>
+                        </div> 
+                    </div>
+            `;
         }
 
         public viewSubEnv(type: string = this.add || this.edit || this.view, subEnvs: any) {
@@ -188,7 +250,7 @@ appName:goodsService
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
-                 ${type == c.add?`
+                 ${type == c.add ? `
                   <div class="form-group">
                         <label class="col-sm-2 control-label"></label>
                         <div class="col-sm-9">
@@ -204,7 +266,7 @@ appName:goodsService
                               </div>
                         </div>
                     </div> 
-                 `:``}
+                 ` : ``}
                    <div class="form-group">
                             <label class="col-sm-2 control-label">服务名字:</label>
                             <div class="col-sm-9">
@@ -675,7 +737,8 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeploySetEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeploySetEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <a href="javascript:void(0)" title="添加服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-folder-close"></span></a>
+            <!--<a href="javascript:void(0)" title="管理配置文件"  onclick="openAddConfigBySetId(${value})"><i class="fa fa-file-text" aria-hidden="true"></i></a>-->
+            <a href="javascript:void(0)" title="管理服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-folder-close"></span></a>
             <a href="javascript:void(0)" title="删除"  onclick="delDeploySet(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
         }
@@ -743,7 +806,7 @@ restart: on-failure:3
         }
 
 
-        public exportModifyBatchTagContent(eid:string){
+        public exportModifyBatchTagContent(eid: string) {
             return `
                 <div class="form-group" style="margin-top: 20px">
                         <div class="col-sm-12">
@@ -843,7 +906,6 @@ restart: on-failure:3
 
             return subView
         }
-
 
 
         /**

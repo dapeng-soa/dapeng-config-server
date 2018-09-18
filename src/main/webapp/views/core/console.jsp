@@ -7,7 +7,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <script>
-
     toggleConloseView = function () {
         var ob = $("#consoleView");
         if (!ob.hasClass("opened")) {
@@ -17,6 +16,7 @@
         }
     };
     openConloseView = function () {
+
         var ob = $("#consoleView");
         var line = $("#line");
         if (ob.hasClass("opened")) {
@@ -25,6 +25,19 @@
         ob.animateCss("fadeInRight").addClass("opened");
         ob.css({top: "0", right: 0 + "px"});
         line.css({position: "fixed"});
+        /*var term = new Terminal({
+            useStyle: true,
+            convertEol: true,
+            screenKeys: false,
+            cursorBlink: false,
+            visualBell: false,
+            disableStdin: true,
+            colors: Terminal.xtermColors
+        });
+        term.open(document.getElementById('terminal'));
+        for(var i =0 ;i<1000;i++){
+            term.write(i+'Hello from \x1B[1;3;31mxterm.js\x1B[0m $ \r\n')
+        }*/
 
     };
 
@@ -69,5 +82,6 @@
 <div id="consoleView" class="closed">
     <p title="控制台" onclick="toggleConloseView(this)">[console >>]</p>
     <div id="line" onmousedown="slideLine(event)"></div>
+    <div id="terminal" style="width: 100%;height: 100%;"></div>
 </div>
 
