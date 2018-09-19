@@ -84,26 +84,46 @@ openAddSubEnvBySetId = function (setId, op) {
  * @param setId
  */
 openAddConfigBySetId = function (setId) {
+    console.log(setId)
     var url = basePath + "/api/config-files/" + setId;
     $.get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
-            var context = deploy.exportAddConfigBySetIdContext(setId,res.context);
-            initModelContext(context, function () {
-                bsTable.refresh();
-            });
+            var url1 = basePath + "/api/deploy-services";
+            $.get(url1, function (res1) {
+                if (res1.code === SUCCESS_CODE) {
+                    var services = res1.context.content;
+                    var context = deploy.exportAddConfigBySetIdContext(setId, services, res.context);
+                    initModelContext(context, function () {
+                        bsTable.refresh();
+                    });
+                    $(".selectpicker").selectpicker('refresh');
+                    for (x in res.context) {
+                        console.log(res.context)
+                        var serviceIds = JSON.parse(res.context[x].serviceId);
+                        $($("select.data-service-select.selectpicker")[x]).selectpicker('val', serviceIds);
+                    }
+                }
+            }, "json")
         }
-    },"json");
+    }, "json");
 };
 
 /**
  * 新增文件输入框
  */
 addConfigFilesEm = function () {
-    var context = deploy.exportConfigFilesContext();
-    $("#configFiles-from-container").append(context);
-    $(".from-group-item-rm").bind("click", function (eo) {
-        $(this).parent().remove();
-    });
+    var url1 = basePath + "/api/deploy-services";
+    $.get(url1, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var services = res.context.content;
+            var context = deploy.exportConfigFilesContext(services);
+            $("#configFiles-from-container").append(context);
+            $(".selectpicker").selectpicker('refresh');
+            $(".from-group-item-rm").bind("click", function (eo) {
+                $(this).parent().remove();
+            });
+        }
+    }, "json");
 };
 
 /**
@@ -113,18 +133,20 @@ addConfigFilesEm = function () {
 saveConfigFile = function (setId) {
     var ids = $(".data-ops-id");
     var fileName = $(".data-name-input");
+    var serviceIds = $("select.data-service-select.selectpicker");
     var fileContext = $(".data-context-textarea");
     var configFiles = [];
     $.each(ids, function (index, id) {
+        var serviceId = $(serviceIds[index]).selectpicker('val');
         var file = {
             setId: setId,
             id: $(id).val(),
             fileName: $(fileName[index]).val(),
-            fileContext: $(fileContext[index]).val()
+            fileContext: $(fileContext[index]).val(),
+            serviceId: JSON.stringify(serviceId == null ? [] : serviceId)
         };
         configFiles.push(file);
     });
-    console.log(configFiles);
     var url = basePath + "/api/config-file/add";
 
     var settings = {

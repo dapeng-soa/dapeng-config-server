@@ -1,6 +1,6 @@
 /*=============================全局*/
 /* 自定义滚动条样式 */
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
     width: 4px;
     border-radius: 100%;
 }
@@ -19,7 +19,7 @@
 
 ::-webkit-scrollbar-thumb:active {
     background-color: #f2f2f0
-}
+}*/
 
 body {
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
@@ -87,7 +87,7 @@ button[type="button"][name="toggle"]:before {
 
 .sidebar-left {
     text-align: center;
-    z-index: 1500;
+    z-index: 1000;
     color: #333;
     position: fixed;
     left: 0;
@@ -138,7 +138,7 @@ button[type="button"][name="toggle"]:before {
 .toggle-sidebar-btn {
     text-decoration: none;
     position: absolute;
-    right: -35px;
+    right: -40px;
     display: inline;
     cursor: pointer;
     color: #303a40;

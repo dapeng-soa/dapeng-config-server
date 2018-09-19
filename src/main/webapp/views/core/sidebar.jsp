@@ -30,6 +30,17 @@
             </dl>
         </li>
         <li class="layui-nav-item layui-nav-itemed">
+            <a href="javascript:void(0);"><i class="fa fa-recycle" aria-hidden="true"></i>持续集成</a>
+            <dl class="layui-nav-child">
+                <dd class="${sideName == 'build-host' ? 'layui-this' : ''}">
+                    <a href="${basePath}/build/host"><i class="fa fa-sitemap" aria-hidden="true"></i>构建主机</a>
+                </dd>
+                <dd class="${sideName == 'build-exec' ? 'layui-this' : ''}">
+                    <a href="${basePath}/build/exec"><i class="fa fa-bug" aria-hidden="true"></i>构建任务</a>
+                </dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item layui-nav-itemed">
             <a href="javascript:void(0);"><i class="fa fa-paper-plane" aria-hidden="true"></i>发布部署</a>
             <dl class="layui-nav-child">
                 <dd class="${sideName == 'deploy-service' ? 'layui-this' : ''}">
@@ -52,11 +63,11 @@
                 </dd>
             </dl>
         </li>
-        <li class="layui-nav-item"><a href="${basePath}/monitor"><i class="fa fa-tachometer" aria-hidden="true"></i>服务监控</a>
-        </li>
+        <%--<li class="layui-nav-item"><a href="${basePath}/monitor"><i class="fa fa-tachometer" aria-hidden="true"></i>服务监控</a>
+        </li>--%>
     </ul>
     <a class="toggle-sidebar-btn" onclick="toggleSidebar()">
-        <i class="fa fa-play-circle" aria-hidden="true"></i>
+        <i class="fa fa-outdent" aria-hidden="true"></i>
     </a>
 </div>
 <script>

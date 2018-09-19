@@ -126,7 +126,7 @@ appName:goodsService
         /**
          * 环境集配置文件管理
          */
-        public exportAddConfigBySetIdContext(setId: string, files?: any) {
+        public exportAddConfigBySetIdContext(setId: string, services: any, files?: any) {
             var c = this;
             return `
             <div class="panel-header window-header">
@@ -139,7 +139,7 @@ appName:goodsService
                     <label class="col-sm-1 control-label"></label>
                     <div class="col-sm-10">
                         <div id="configFiles-from-container">
-                           ${c.getConfigFiles(files)}
+                           ${c.getConfigFiles(services, files)}
                          </div>
                          <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addConfigFilesEm()"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
                         <span class="input-group-btn panel-button-group text-center">
@@ -151,12 +151,12 @@ appName:goodsService
             `
         }
 
-        public getConfigFiles(files?: any) {
+        public getConfigFiles(services: any, files?: any) {
             let html = "";
             let c = this;
             if (files !== undefined && files.length > 0) {
                 for (let f in files) {
-                    html += c.exportConfigFilesContext(files[f]);
+                    html += c.exportConfigFilesContext(services, files[f]);
                 }
             }
             return html;
@@ -167,7 +167,12 @@ appName:goodsService
          * 导出
          * @returns {string}
          */
-        public exportConfigFilesContext(file?: any) {
+        public exportConfigFilesContext(services: any, file?: any) {
+            let options = "";
+            for (let index in services) {
+                let s = services[index];
+                options += `<option  value="${s.id}">${s.name}</option>`
+            }
             return `
             <div class="form-horizontal from-group-item" style="margin-top: 20px;">
                 ${file !== undefined ? "" : `<a class="from-group-item-rm" href="javascript:void(0)"><span class="glyphicon glyphicon-remove"></span></a>`}
@@ -176,6 +181,13 @@ appName:goodsService
                     <div class="col-sm-12">
                         <input class="form-control data-name-input" placeholder="文件名(含文件类型如：server.xml)" value="${file === undefined ? `` : file.fileName}" >
                     </div>
+                </div>
+                <div class="form-group">
+                        <div class="col-sm-12">
+                            <select class="form-control selectpicker data-service-select" multiple data-live-search="true" data-actions-box="true" title="绑定服务">
+                                ${options}
+                            </select>
+                        </div>
                 </div>   
                 <div class="form-group">
                     <div class="col-sm-12">
@@ -737,7 +749,7 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeploySetEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeploySetEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <!--<a href="javascript:void(0)" title="管理配置文件"  onclick="openAddConfigBySetId(${value})"><i class="fa fa-file-text" aria-hidden="true"></i></a>-->
+            <a href="javascript:void(0)" title="管理配置文件"  onclick="openAddConfigBySetId(${value})"><i class="fa fa-file-text" aria-hidden="true"></i></a>
             <a href="javascript:void(0)" title="管理服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-folder-close"></span></a>
             <a href="javascript:void(0)" title="删除"  onclick="delDeploySet(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;

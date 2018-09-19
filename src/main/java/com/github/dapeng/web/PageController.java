@@ -197,4 +197,24 @@ public class PageController {
         return "page/deploy-journal";
     }
 
+    @GetMapping(value = "/build")
+    public String build(Model model) {
+        model.addAttribute("tagName", "deploy");
+        return "redirect:build/exec";
+    }
+
+    @GetMapping(value = "/build/exec")
+    public String buildExec(Model model) {
+        model.addAttribute("tagName", "build-exec");
+        model.addAttribute("sideName", "build-exec");
+        return "page/build-exec";
+    }
+
+    @GetMapping(value = "/build/host")
+    public String buildHost(Model model) {
+        model.addAttribute("tagName", "build-host");
+        model.addAttribute("sideName", "build-host");
+        return "page/build-host";
+    }
+
 }
