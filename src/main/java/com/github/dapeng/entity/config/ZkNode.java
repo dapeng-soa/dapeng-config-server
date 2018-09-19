@@ -1,4 +1,4 @@
-package com.github.dapeng.entity;
+package com.github.dapeng.entity.config;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

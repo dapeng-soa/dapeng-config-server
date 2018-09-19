@@ -1,6 +1,6 @@
 package com.github.dapeng.repository;
 
-import com.github.dapeng.entity.ApiKeyInfo;
+import com.github.dapeng.entity.config.ApiKeyInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

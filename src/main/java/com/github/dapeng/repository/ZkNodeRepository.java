@@ -1,11 +1,9 @@
 package com.github.dapeng.repository;
 
-import com.github.dapeng.entity.ZkNode;
+import com.github.dapeng.entity.config.ZkNode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @author huyj

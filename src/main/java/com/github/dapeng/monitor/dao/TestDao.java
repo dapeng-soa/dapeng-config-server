@@ -1,6 +1,6 @@
 package com.github.dapeng.monitor.dao;
 
-import com.github.dapeng.entity.ApiKeyInfo;
+import com.github.dapeng.entity.config.ApiKeyInfo;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;

@@ -1,6 +1,6 @@
 package com.github.dapeng.repository;
 
-import com.github.dapeng.entity.ConfigPublishHistory;
+import com.github.dapeng.entity.config.ConfigPublishHistory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

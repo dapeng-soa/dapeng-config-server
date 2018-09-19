@@ -3,7 +3,7 @@ package com.github.dapeng.web;
 import com.github.dapeng.client.netty.RequestUtils;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
-import com.github.dapeng.entity.ZkNode;
+import com.github.dapeng.entity.config.ZkNode;
 import com.github.dapeng.entity.monitor.MonitorInstance;
 import com.github.dapeng.entity.monitor.MonitorMethod;
 import com.github.dapeng.entity.monitor.MonitorService;

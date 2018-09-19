@@ -3,7 +3,7 @@ package com.github.dapeng.web;
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ZkNodeDto;
-import com.github.dapeng.entity.ZkNode;
+import com.github.dapeng.entity.config.ZkNode;
 import com.github.dapeng.repository.ZkNodeRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.NullUtil;
@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

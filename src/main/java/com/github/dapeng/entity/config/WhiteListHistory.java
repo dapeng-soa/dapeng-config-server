@@ -1,4 +1,4 @@
-package com.github.dapeng.entity;
+package com.github.dapeng.entity.config;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

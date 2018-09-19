@@ -2,7 +2,7 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
-import com.github.dapeng.entity.ZkNode;
+import com.github.dapeng.entity.config.ZkNode;
 import com.github.dapeng.openapi.utils.Constants;
 import com.github.dapeng.openapi.utils.ZkUtil;
 import com.github.dapeng.repository.WhiteListHistoryRepository;

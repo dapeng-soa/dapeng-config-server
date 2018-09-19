@@ -3,7 +3,7 @@ package com.github.dapeng.util;
 import com.github.dapeng.common.mail.MailUtils;
 import com.github.dapeng.common.mail.entity.MailMsg;
 import com.github.dapeng.common.mail.enums.MailMsgType;
-import com.github.dapeng.entity.ApiKeyInfo;
+import com.github.dapeng.entity.config.ApiKeyInfo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

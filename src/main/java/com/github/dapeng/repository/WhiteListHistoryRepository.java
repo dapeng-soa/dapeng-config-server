@@ -1,6 +1,6 @@
 package com.github.dapeng.repository;
 
-import com.github.dapeng.entity.WhiteListHistory;
+import com.github.dapeng.entity.config.WhiteListHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

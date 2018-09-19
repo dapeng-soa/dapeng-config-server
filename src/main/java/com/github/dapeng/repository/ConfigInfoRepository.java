@@ -1,12 +1,10 @@
 package com.github.dapeng.repository;
 
-import com.github.dapeng.entity.ConfigInfo;
+import com.github.dapeng.entity.config.ConfigInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
