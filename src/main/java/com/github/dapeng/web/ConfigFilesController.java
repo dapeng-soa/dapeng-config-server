@@ -40,6 +40,7 @@ public class ConfigFilesController {
                     TConfigFiles one = configFilesRepository.findOne(x.getId());
                     one.setUpdatedAt(DateUtil.now());
                     one.setFileContext(x.getFileContext());
+                    one.setServiceId(x.getServiceId());
                     one.setFileName(x.getFileName());
                 }
             });

@@ -415,8 +415,6 @@ window.indexFormatter = function (value, row, index) {
 
 }());
 
-(function () {
-}());
 
 
 Date.prototype.pattern = function (fmt) {

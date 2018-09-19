@@ -16,6 +16,8 @@ public class TConfigFiles {
     private Long id;
     @Column(name = "set_id")
     private Long setId;
+    @Column(name = "service_id")
+    private String serviceId;
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "file_context")
@@ -85,5 +87,13 @@ public class TConfigFiles {
 
     public void setSetId(Long setId) {
         this.setId = setId;
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 }
