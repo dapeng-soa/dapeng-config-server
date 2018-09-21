@@ -389,11 +389,11 @@ table {
     z-index: 1400;
 }
 
-.fixed-footer-btn>.input-group-btn>button:not(:first-child){
+.fixed-footer-btn > .input-group-btn > button:not(:first-child) {
     margin-left: 32px;
 }
 
-.diff-tit{
+.diff-tit {
     position: fixed;
     z-index: 1300;
     left: 0;
@@ -401,7 +401,8 @@ table {
     background-color: #FFF;
     border-bottom: 1px solid #eee;
 }
-.diff-tit> span{
+
+.diff-tit > span {
     display: block;
     width: 50%;
     margin: 3px 0;
@@ -409,11 +410,10 @@ table {
     float: left;
 }
 
-
 /**
 
  */
-#consoleView{
+#consoleView {
     width: 400px;
     min-width: 300px !important;
     position: fixed;
@@ -428,13 +428,15 @@ table {
     overflow-x: unset;
     z-index: 10000;
 }
+
 #consoleView.opened {
     right: 0;
     overflow-y: auto;
     overflow-x: auto;
     word-break: break-all;
 }
-#consoleView>#line{
+
+#consoleView > #line {
     width: 4px;
     height: 100%;
     top: 0;
@@ -444,7 +446,8 @@ table {
     right: 396px;
     cursor: w-resize;
 }
-#consoleView>p:first-of-type{
+
+#consoleView > p:first-of-type {
     font-weight: 700;
     background: #333;
     position: absolute;
@@ -454,28 +457,37 @@ table {
     padding-left: 25px;
     border-radius: 4px 0 0 4px;
 }
-#consoleView>p:nth-of-type(2){
+
+#consoleView > p:nth-of-type(2) {
     margin-top: 20px;
 }
-#consoleView>p:first-of-type:before{
+
+#consoleView > p:first-of-type:before {
     content: "<<";
     position: absolute;
     left: 2px;
     bottom: 2px;
 }
 
-.icon-spin{
+.icon-spin {
     display: inline-block;
     -webkit-animation: fa-spin 2s infinite linear !important;
     animation: fa-spin 2s infinite linear !important;
     padding-right: 0 !important;
 }
 
-.layui-nav-child a{
-    text-indent:1em;
+.layui-nav-child a {
+    text-indent: 1em;
 }
-.from-group-item-rm{
+
+.from-group-item-rm {
     position: absolute;
     z-index: 99;
     right: -5px;
+}
+
+.tab-link {
+    position: absolute;
+    height: 42px;
+    z-index: 1;
 }

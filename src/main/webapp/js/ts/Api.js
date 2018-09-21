@@ -15,8 +15,17 @@ var api;
             $.ajax(settings)
                 .done(success);
         };
-        Api.prototype.post = function (url, data, success) {
+        /**
+         *
+         * @param {string} url
+         * @param data
+         * @param {(data: any) => any} success
+         * @param {string} contentType eg:"application/json"
+         */
+        Api.prototype.post = function (url, data, success, contentType) {
             var settings = { type: "post", data: data, url: url, dataType: "json" };
+            if (contentType != undefined)
+                settings.contentType = contentType;
             $.ajax(settings)
                 .done(success);
         };

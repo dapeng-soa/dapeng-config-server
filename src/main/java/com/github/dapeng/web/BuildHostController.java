@@ -58,10 +58,10 @@ public class BuildHostController {
     }
 
     @GetMapping("/build-host/{id}")
-    public ResponseEntity getBuildHost(@PathVariable Long id){
+    public ResponseEntity getBuildHost(@PathVariable Long id) {
         TBuildHost host = buildHostRepository.getOne(id);
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG,toVo(host)));
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, toVo(host)));
     }
 
     private BuildHostVo toVo(TBuildHost host) {
@@ -84,6 +84,18 @@ public class BuildHostController {
         host.setHost(IPUtils.transferIp(dto.getHost()));
         host.setRemark(dto.getRemark());
         buildHostRepository.save(host);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+    }
+
+    @PostMapping("/build-host/edit/{id}")
+    public ResponseEntity editBuildHost(@PathVariable Long id, @RequestBody BuildHostDto dto) {
+        TBuildHost buildHost = buildHostRepository.getOne(id);
+        buildHost.setRemark(dto.getRemark());
+        buildHost.setName(dto.getName());
+        buildHost.setUpdatedAt(DateUtil.now());
+        buildHost.setHost(IPUtils.transferIp(dto.getHost()));
+        buildHostRepository.save(buildHost);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
     }

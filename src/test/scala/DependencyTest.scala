@@ -1,9 +1,5 @@
 package scala
 
-import java.io.{BufferedReader, StringReader}
-
-import com.today.api.dailyorder.scala.enums.PayTypeEnum
-
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.io.Source

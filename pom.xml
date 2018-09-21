@@ -94,6 +94,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.dapeng</groupId>
+            <artifactId>agent_server-api_2.12</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>

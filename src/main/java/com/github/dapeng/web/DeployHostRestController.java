@@ -115,21 +115,8 @@ public class DeployHostRestController {
     @GetMapping("/deploy-host/{id}")
     public ResponseEntity<?> deployHostById(@PathVariable long id) {
         THost x = hostRepository.findOne(id);
-        HostVo hostVo = new HostVo();
-        hostVo.setId(x.getId());
-        hostVo.setIp(IPUtils.transferIp(x.getIp()));
-        hostVo.setEnv(x.getEnv());
-        hostVo.setName(x.getName());
-        hostVo.setCreatedAt(x.getCreatedAt());
-        hostVo.setUpdatedAt(x.getUpdatedAt());
-        hostVo.setSetId(x.getSetId());
-        TSet tSet = setRepository.getOne(x.getSetId());
-        hostVo.setSetName(tSet.getName());
-        hostVo.setExtra(x.getExtra());
-        hostVo.setLabels(x.getLabels());
-        hostVo.setRemark(x.getRemark());
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hostVo));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, toVo(x)));
     }
 
 

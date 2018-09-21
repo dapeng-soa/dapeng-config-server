@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "t_build_host")
@@ -76,4 +77,22 @@ public class TBuildHost {
         this.updatedAt = updatedAt;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TBuildHost host1 = (TBuildHost) o;
+        return id == host1.id &&
+                host == host1.host &&
+                Objects.equals(name, host1.name) &&
+                Objects.equals(remark, host1.remark) &&
+                Objects.equals(createdAt, host1.createdAt) &&
+                Objects.equals(updatedAt, host1.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, host, remark, createdAt, updatedAt);
+    }
 }

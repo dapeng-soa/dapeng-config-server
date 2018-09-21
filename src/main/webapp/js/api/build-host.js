@@ -3,6 +3,7 @@ $(document).ready(function () {
 });
 
 var build = new api.Build();
+var $$ = new api.Api();
 var bsTable = {};
 
 function viewBuildHostOrEditByID(id, op) {
@@ -12,7 +13,7 @@ function viewBuildHostOrEditByID(id, op) {
         initModelContext(context, function () {
             bsTable.refresh();
         });
-    },"json");
+    }, "json");
 }
 
 function delBuildHost() {
@@ -20,14 +21,12 @@ function delBuildHost() {
 }
 
 function initBuildHosts() {
-    //记录页面bootstrap-table全局变量$table，方便应用
     var queryUrl = basePath + '/api/build-hosts';
     var table = new BSTable("build-host-table", queryUrl, setColumns());
     table.onDblClickRow = function (row) {
         viewBuildHostOrEditByID(row.id, VIEW)
     };
     table.responseHandler = function (res) {
-        console.log(res);
         return {
             total: res.context == null ? 0 : res.context.totalElements,
             rows: res.context.content
@@ -79,7 +78,7 @@ var setColumns = function () {
 };
 openAddBuildHostModle = function () {
     // 导出弹窗内容模版
-    var context = build.exportAddBuildHostContext("add");
+    var context = build.exportAddBuildHostContext(ADD);
     // 初始化弹窗
     initModelContext(context, function () {
         bsTable.refresh();
@@ -92,19 +91,12 @@ var buildHostActionFormatter = function (value, row) {
 
 saveBuildHost = function () {
     var url = basePath + "/api/build-host/add";
-    var settings = {
-        type: "post",
-        url: url,
-        data: JSON.stringify(processBuildHostData()),
-        dataType: "json",
-        contentType: "application/json"
-    };
-    $.ajax(settings).done(function (res) {
+    $$.post(url, JSON.stringify(processBuildHostData()), function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
-    });
+    }, "application/json");
 };
 
 processBuildHostData = function () {
@@ -122,6 +114,13 @@ clearBuildHostInput = function () {
 
 };
 
-editedBuildHost = function () {
-
+editedBuildHost = function (id) {
+    var url = basePath + "/api/build-host/edit/" + id;
+    console.log(id);
+    $$.post(url, JSON.stringify(processBuildHostData()), function (res) {
+        layer.msg(res.msg);
+        if (res.code === SUCCESS_CODE) {
+            closeModel();
+        }
+    }, "application/json");
 };

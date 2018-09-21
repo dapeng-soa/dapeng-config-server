@@ -36,7 +36,6 @@ window.VIEW = "view";
 window.ADD = "add";
 window.EDIT = "edit";
 
-
 layui.use('element', function () {
     var element = layui.element;
 

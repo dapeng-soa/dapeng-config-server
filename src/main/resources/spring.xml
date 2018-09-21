@@ -22,7 +22,7 @@
     </bean>
 
     <!-- 默认数据源，配置中心数据源 -->
-    <bean id="mainDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <bean id="mainDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${DB_CONFIG_SERVER_URL}"/>
         <property name="username" value="${DB_CONFIG_SERVER_USER}"/>
@@ -34,7 +34,7 @@
 
 
     <!-- 其他数据源 -->
-    <bean id="extraDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <bean id="extraDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="${DB_ADMIN_URL}"/>
         <property name="username" value="${DB_ADMIN_USER}"/>

@@ -1,8 +1,19 @@
 package com.github.dapeng.web;
 
+import com.github.dapeng.entity.build.TBuildHost;
+import com.github.dapeng.entity.deploy.TService;
+import com.github.dapeng.repository.build.BuildHostRepository;
+import com.github.dapeng.repository.deploy.ServiceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author with struy.
@@ -11,7 +22,15 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 
 @Controller
+@Transactional(rollbackFor = Throwable.class)
 public class PageController {
+
+    @Autowired
+    BuildHostRepository buildHostRepository;
+
+    @Autowired
+    ServiceRepository serviceRepository;
+
     /**
      * 首页
      *
@@ -203,10 +222,29 @@ public class PageController {
         return "redirect:build/exec";
     }
 
+    /**
+     * buildViews host -> tasks 构建主机
+     * current 当前选定构建主机
+     *
+     * @param model
+     * @return
+     */
     @GetMapping(value = "/build/exec")
-    public String buildExec(Model model) {
+    public String buildExec(Model model, @RequestParam(required = false) Long id) {
+        List<TBuildHost> buildHosts = buildHostRepository.findAll();
+        List<TService> services = serviceRepository.findAll();
+        TBuildHost one = null;
+        if (id != null) {
+            one = buildHostRepository.getOne(id);
+        }
+        Map<TBuildHost, List<TService>> buildViews = new HashMap<>(16);
+        buildHosts.forEach(x -> {
+            buildViews.put(x, services);
+        });
         model.addAttribute("tagName", "build-exec");
         model.addAttribute("sideName", "build-exec");
+        model.addAttribute("buildViews", buildViews);
+        model.addAttribute("current", one);
         return "page/build-exec";
     }
 
