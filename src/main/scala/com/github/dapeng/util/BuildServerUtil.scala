@@ -74,7 +74,7 @@ object BuildServerUtil {
   }
 
   def getSortedBuildServices(serviceYmlFile: String, services: java.util.ArrayList[YamlServiceVo]): java.util.List[YamlServiceVo] = {
-    getBuildServices(serviceYmlFile, services).distinct.reverse.asJava
+    getBuildServices(serviceYmlFile, services).distinct.reverse.filterNot(_.getServiceName.isEmpty).asJava
   }
 
 
