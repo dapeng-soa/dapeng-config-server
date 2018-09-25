@@ -68,5 +68,21 @@ module api {
             <a href="javascript:void(0)" title="删除"  onclick="delBuildHost(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
         }
+
+        /**
+         * 构建依赖
+         * @param depends
+         */
+        public buildTaskDependsContext(depends: any) {
+            let options = "";
+            for (let i in depends) {
+                options += `<tr>
+                    <th>${i}</th>
+                    <td><span class="buildDependServiceName">${depends[i].serviceName}</span></td>
+                    <td><input class="form-control buildDependBranch" type="text" value="${depends[i].branchName}"/></td>
+                 </tr>`;
+            }
+            return options;
+        }
     }
 }

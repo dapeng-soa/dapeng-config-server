@@ -43,37 +43,55 @@
                      class="tab-pane fade <c:choose><c:when test="${current.id == view.key.id}">in active</c:when></c:choose>"
                      id="view${vs.index}"
                      aria-labelledby="view${vs.index}Data-tab">
-                    <div>
-                        <div class="advance-format-item">
-                            <p class="advance-format-title" onclick="toggleBlock(this)">新增</p>
-                            <div class="advance-format-content">
-                                <div class="form-inline">
-                                    <div class="form-group">
-                                        <label for="buildTaskName">taskName</label>
-                                        <input type="text" class="form-control" id="buildTaskName" placeholder="">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="buildService">service</label>
-                                        <select data-live-search="true"  class="form-control selectpicker" id="buildService">
-                                            <c:forEach var="task" items="${view.value}" varStatus="vs">
-                                                <option <c:choose><c:when test="${vs.first}">selected</c:when></c:choose> value="${task.id}">${task.name}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="advance-format-item">
-                                            <p class="advance-format-title" onclick="toggleBlock(this)">点击修改构建分支</p>
-                                            <div class="advance-format-content">
-                                                <ul>
-                                                    <li><span>orderService</span>:<input class="form-control" type="text" value="master"></li>
-                                                    <li><span>orderService</span>:<input class="form-control" type="text" value="master"></li>
-                                                    <li><span>orderService</span>:<input class="form-control" type="text" value="master"></li>
-                                                    <li><span>orderService</span>:<input class="form-control" type="text" value="master"></li>
-                                                </ul>
-                                            </div>
+                    <div >
+                        <div class="advance-format-item" style="padding-bottom:15px;border-bottom: 1px solid #ccc;">
+                            <p class="advance-format-title bg-primary "
+                               style="height: 30px;line-height: 200%;padding-left: 10px;" onclick="toggleBlock(this)">
+                                <i class="fa fa-plus" aria-hidden="true"></i>新增任务</p>
+                            <div class="advance-format-content" style="padding-top: 15px">
+                                <div style="float: left;width: 100%;">
+                                    <div class="form-inline">
+                                        <div class="form-group" style="float: left;margin-right: 10px">
+                                            <label for="buildTaskName">任务名</label>
+                                            <input type="text" class="form-control" id="buildTaskName" placeholder="">
+                                        </div>
+                                        <div class="form-group" style="float: left">
+                                            <label for="buildService" style="line-height: 200%">服务</label>
+                                        </div>
+
+                                        <div class="form-group" style="float: left;margin-right: 10px">
+                                            <select data-live-search="true" class="form-control selectpicker"
+                                                    id="buildService" onchange="serviceSelectChange()">
+                                                <c:forEach var="task" items="${view.value}" varStatus="vs">
+                                                    <option
+                                                            <c:choose>
+                                                                <c:when test="${vs.first}">selected</c:when>
+                                                            </c:choose> value="${task.id}">${task.name}</option>
+                                                </c:forEach>
+                                            </select>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="saveBuildTask(${view.key.id})" class="btn btn-success">保存</button>
+                                </div>
+                                <div>
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>服务</th>
+                                                    <th>分支</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="dependsService">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="saveBuildTask(${view.key.id})"
+                                            class="btn btn-success">保存
+                                    </button>
                                 </div>
                             </div>
                         </div>

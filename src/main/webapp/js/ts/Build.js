@@ -18,6 +18,17 @@ var api;
         Build.prototype.buildHostActionContext = function (value) {
             return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u8BE6\u60C5\"  onclick=\"viewBuildHostOrEditByID(" + value + ",'view')\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewBuildHostOrEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5220\u9664\"  onclick=\"delBuildHost(" + value + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
         };
+        /**
+         * 构建依赖
+         * @param depends
+         */
+        Build.prototype.buildTaskDependsContext = function (depends) {
+            var options = "";
+            for (var i in depends) {
+                options += "<tr>\n                    <th>" + i + "</th>\n                    <td><span class=\"buildDependServiceName\">" + depends[i].serviceName + "</span></td>\n                    <td><input class=\"form-control buildDependBranch\" type=\"text\" value=\"" + depends[i].branchName + "\"/></td>\n                 </tr>";
+            }
+            return options;
+        };
         return Build;
     }());
     api.Build = Build;

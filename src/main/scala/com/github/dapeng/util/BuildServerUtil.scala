@@ -2,11 +2,12 @@ package com.github.dapeng.util
 
 import com.github.dapeng.repository.deploy.ServiceRepository
 import com.github.dapeng.socket.entity.YamlServiceVo
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
+import scala.collection.JavaConverters._
 import scala.io.Source
 import scala.util.matching.Regex
-import collection.JavaConverters._
 
 /**
   * @author with struy.
@@ -23,10 +24,13 @@ class BuildServerUtil {
 }
 
 object BuildServerUtil {
+  private val LOGGER = LoggerFactory.getLogger(classOf[BuildServerUtil])
 
   var serviceRep: ServiceRepository = _
   val NonOperationPattern: Regex = """(.*/(.*?)\.git)@@(.*)""".r
   val OperationPattern: Regex = """(.*/(.*?)\.git)@@(.*);(.*)""".r
+  val SOURCE_SIGN = "project.source"
+  val DEPENDS_SIGN = "project.build-depends"
 
   def getLabel(label: String) = {
     val pos = label.indexOf('=')
@@ -46,7 +50,7 @@ object BuildServerUtil {
   def getBuildServices(serviceYmlFile: String, services: java.util.ArrayList[YamlServiceVo]): List[YamlServiceVo] = {
     val content = Source.fromString(serviceYmlFile).getLines().toList
     services.add(getSourceService(serviceYmlFile))
-    val dependencies = content.filter(_.trim.startsWith("project.build-depends"))
+    val dependencies = content.filter(_.trim.startsWith(DEPENDS_SIGN))
     if (dependencies.isEmpty) {
       val ymlService = getSourceService(serviceYmlFile)
       if (!services.contains(ymlService)) {
@@ -57,7 +61,8 @@ object BuildServerUtil {
       dependencies.flatMap(d => {
         val (_, _, serviceName, _) = getLabelDetail(d)
         val dependencyService = serviceRep.findByName(serviceName)
-        if (null == dependencyService) {
+        if (dependencyService.size() == 0) {
+          LOGGER.warn(s":::find dependency is [ $d ], but not find Service info -> [ $serviceName ]")
           services.asScala.toList
         } else {
           val labels = dependencyService.get(0).getComposeLabels
@@ -80,7 +85,7 @@ object BuildServerUtil {
 
   def getSourceService(serviceYmlFile: String): YamlServiceVo = {
     val content = Source.fromString(serviceYmlFile).getLines().toList
-    val source = content.filter(_.trim.startsWith("project.source"))(0)
+    val source = content.filter(_.trim.startsWith(SOURCE_SIGN))(0)
 
     val (gitURL, gitName, serviceName, buildOperation) = getLabelDetail(source)
     val serviceVo = new YamlServiceVo()
