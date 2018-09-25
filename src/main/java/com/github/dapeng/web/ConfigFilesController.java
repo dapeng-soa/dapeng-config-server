@@ -38,7 +38,9 @@ public class ConfigFilesController {
                     configFilesRepository.save(x);
                 } else {
                     TConfigFiles one = configFilesRepository.findOne(x.getId());
-                    one.setUpdatedAt(DateUtil.now());
+                    if (!one.getFileContext().equals(x.getFileContext()) || !one.getFileName().equals(x.getFileName())) {
+                        one.setUpdatedAt(DateUtil.now());
+                    }
                     one.setFileContext(x.getFileContext());
                     one.setServiceId(x.getServiceId());
                     one.setFileName(x.getFileName());

@@ -51,6 +51,8 @@ public class DeployExecRestController {
     DeployOpJournalRepository journalRepository;
     @Autowired
     SetServiceEnvRepository subEnvRepository;
+    @Autowired
+    ConfigFilesRepository configFilesRepository;
 
     /**
      * 向agent发送问询指令
@@ -180,12 +182,14 @@ public class DeployExecRestController {
         List<THost> hosts = hostRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getHostId());
         List<TService> serviceList = serviceRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getServiceId());
         List<TSetServiceEnv> subEnvs = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(u.getSetId(), u.getServiceId());
+        List<TConfigFiles> configFiles = configFilesRepository.findBySetIdAndServiceIdContainsOrderByUpdatedAtDesc(u.getSetId(), String.valueOf(u.getServiceId()));
         Long setUpdateAt = !isEmpty(setList) ? setList.get(0).getUpdatedAt().getTime() : 0;
         Long hostUpdateAt = !isEmpty(hosts) ? hosts.get(0).getUpdatedAt().getTime() : 0;
         Long serviceUpdateAt = !isEmpty(serviceList) ? serviceList.get(0).getUpdatedAt().getTime() : 0;
         Long subEnvUpdateAt = !isEmpty(subEnvs) ? subEnvs.get(0).getUpdatedAt().getTime() : 0;
+        Long configFileUpdateAt = !isEmpty(configFiles) ? configFiles.get(0).getUpdatedAt().getTime() : 0;
         Long unitUpdateAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
-        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, unitUpdateAt};
+        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, configFileUpdateAt, unitUpdateAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
     }
 

@@ -2,7 +2,6 @@ package com.github.dapeng.repository.deploy;
 
 import com.github.dapeng.entity.deploy.TConfigFiles;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
 /**
@@ -19,4 +18,12 @@ public interface ConfigFilesRepository extends JpaRepository<TConfigFiles, Long>
      * @return
      */
     List<TConfigFiles> findBySetId(Long setId);
+
+    /**
+     * 查找出配置文件
+     * @param setId
+     * @param serviceId
+     * @return
+     */
+    List<TConfigFiles> findBySetIdAndServiceIdContainsOrderByUpdatedAtDesc(Long setId,String serviceId);
 }
