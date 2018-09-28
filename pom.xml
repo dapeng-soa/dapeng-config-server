@@ -5,7 +5,7 @@
 
     <groupId>com.github.dapeng</groupId>
     <artifactId>dapeng-config-server</artifactId>
-    <version>2.0.4</version>
+    <version>2.0.6</version>
     <packaging>war</packaging>
 
     <name>dapeng-config-server</name>
@@ -195,7 +195,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.10</version>
                 <configuration>
-                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-config-server:2.0.4</imageName>
+                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-config-server:V2.0</imageName>
                     <dockerDirectory>${basedir}/docker</dockerDirectory>
                 </configuration>
                 <executions>
