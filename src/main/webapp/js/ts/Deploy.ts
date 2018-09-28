@@ -749,7 +749,7 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeploySetEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeploySetEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <a href="javascript:void(0)" title="管理配置文件"  onclick="openAddConfigBySetId(${value})"><i class="fa fa-file-text" aria-hidden="true"></i></a>
+            <!--<a href="javascript:void(0)" title="管理配置文件"  onclick="openAddConfigBySetId(${value})"><i class="fa fa-file-text" aria-hidden="true"></i></a> -->
             <a href="javascript:void(0)" title="管理服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-folder-close"></span></a>
             <a href="javascript:void(0)" title="删除"  onclick="delDeploySet(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
