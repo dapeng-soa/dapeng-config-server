@@ -149,6 +149,18 @@ public class PageController {
      *
      * @return
      */
+    @GetMapping(value = "/deploy/files")
+    public String deployFiles(Model model) {
+        model.addAttribute("tagName", "deploy-files");
+        model.addAttribute("sideName", "deploy-files");
+        return "page/deploy-files";
+    }
+
+    /**
+     * 环境集管理
+     *
+     * @return
+     */
     @GetMapping(value = "/deploy/set")
     public String deploySet(Model model) {
         model.addAttribute("tagName", "deploy-set");

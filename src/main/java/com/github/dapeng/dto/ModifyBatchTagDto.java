@@ -8,9 +8,9 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public class MofifyBatchTagDto {
-    List<Long> ids;
-    String tag;
+public class ModifyBatchTagDto {
+    private List<Long> ids;
+    private String tag;
 
     public List<Long> getIds() {
         return ids;

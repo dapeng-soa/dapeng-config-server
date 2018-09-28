@@ -1,11 +1,11 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.config;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.datasource.DataSource;
 import com.github.dapeng.dto.ApiKeyInfoDto;
 import com.github.dapeng.entity.config.ApiKeyInfo;
-import com.github.dapeng.repository.ApiKeyInfoRepository;
+import com.github.dapeng.repository.config.ApiKeyInfoRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.MailSend;
 import com.github.dapeng.util.NullUtil;

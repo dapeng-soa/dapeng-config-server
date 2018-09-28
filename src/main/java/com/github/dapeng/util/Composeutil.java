@@ -136,7 +136,7 @@ public class Composeutil {
      * @param attach
      * @return
      */
-    private static List<String> processVolume(String priority, String attach) {
+    public static List<String> processVolume(String priority, String attach) {
         List<String> prioritys = ofList(priority);
         List<String> attachs = ofList(attach);
         StringBuilder sb = new StringBuilder();
@@ -284,7 +284,7 @@ public class Composeutil {
     }
 
     /**
-     * 返回字符串的
+     * 返回字符串的yml
      *
      * @param
      * @return

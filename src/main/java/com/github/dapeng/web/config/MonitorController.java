@@ -1,4 +1,4 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.config;
 
 import com.github.dapeng.client.netty.RequestUtils;
 import com.github.dapeng.common.Commons;
@@ -8,7 +8,7 @@ import com.github.dapeng.entity.monitor.MonitorInstance;
 import com.github.dapeng.entity.monitor.MonitorMethod;
 import com.github.dapeng.entity.monitor.MonitorService;
 import com.github.dapeng.openapi.utils.ZkUtil;
-import com.github.dapeng.repository.ZkNodeRepository;
+import com.github.dapeng.repository.config.ZkNodeRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.InfluxDBUtil;
 import org.apache.commons.lang3.StringUtils;

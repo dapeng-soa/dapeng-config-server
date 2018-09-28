@@ -1,4 +1,4 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.config;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ConfigInfoDto;
@@ -8,9 +8,9 @@ import com.github.dapeng.entity.config.ConfigPublishHistory;
 import com.github.dapeng.entity.config.ZkNode;
 import com.github.dapeng.openapi.utils.Constants;
 import com.github.dapeng.openapi.utils.ZkUtil;
-import com.github.dapeng.repository.ConfigInfoRepository;
-import com.github.dapeng.repository.ConfigPublishRepository;
-import com.github.dapeng.repository.ZkNodeRepository;
+import com.github.dapeng.repository.config.ConfigInfoRepository;
+import com.github.dapeng.repository.config.ConfigPublishRepository;
+import com.github.dapeng.repository.config.ZkNodeRepository;
 import com.github.dapeng.util.*;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;

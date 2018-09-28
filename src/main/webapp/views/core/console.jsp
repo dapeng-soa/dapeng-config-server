@@ -82,6 +82,6 @@
 <div id="consoleView" class="closed">
     <p title="控制台" onclick="toggleConloseView(this)">[console >>]</p>
     <div id="line" onmousedown="slideLine(event)"></div>
-    <div id="terminal" style="width: 100%;height: 100%;"></div>
+    <%--<div id="terminal" style="width: 100%;height: 100%;"></div>--%>
 </div>
 

@@ -1,4 +1,4 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.build;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.entity.deploy.TService;

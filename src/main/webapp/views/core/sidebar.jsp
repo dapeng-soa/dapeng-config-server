@@ -43,6 +43,9 @@
         <li class="layui-nav-item layui-nav-itemed">
             <a href="javascript:void(0);"><i class="fa fa-paper-plane" aria-hidden="true"></i>发布部署</a>
             <dl class="layui-nav-child">
+                <dd class="${sideName == 'deploy-files' ? 'layui-this' : ''}">
+                    <a href="${basePath}/deploy/files"><i class="fa fa-file" aria-hidden="true"></i>文件管理</a>
+                </dd>
                 <dd class="${sideName == 'deploy-service' ? 'layui-this' : ''}">
                     <a href="${basePath}/deploy/service"><i class="fa fa-wifi" aria-hidden="true"></i>服务管理</a>
                 </dd>

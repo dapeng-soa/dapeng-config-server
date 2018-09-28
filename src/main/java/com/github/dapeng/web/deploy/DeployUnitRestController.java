@@ -1,13 +1,10 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.deploy;
 
 import com.github.dapeng.common.Resp;
-import com.github.dapeng.dto.MofifyBatchTagDto;
+import com.github.dapeng.dto.ModifyBatchTagDto;
 import com.github.dapeng.dto.UnitDto;
 import com.github.dapeng.entity.deploy.TDeployUnit;
-import com.github.dapeng.repository.deploy.DeployUnitRepository;
-import com.github.dapeng.repository.deploy.HostRepository;
-import com.github.dapeng.repository.deploy.ServiceRepository;
-import com.github.dapeng.repository.deploy.SetRepository;
+import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DeployCheck;
 import com.github.dapeng.vo.DeployUnitVo;
@@ -50,6 +47,8 @@ public class DeployUnitRestController {
     ServiceRepository serviceRepository;
     @Autowired
     DeployUnitRepository unitRepository;
+    @Autowired
+    FilesUnitRepository filesUnitRepository;
 
     /**
      * @return 部署单元
@@ -246,7 +245,7 @@ public class DeployUnitRestController {
      * @return
      */
     @PostMapping(value = "deploy-unit/modify-batch")
-    public ResponseEntity modifyBatch(@RequestBody MofifyBatchTagDto tagDto) {
+    public ResponseEntity modifyBatch(@RequestBody ModifyBatchTagDto tagDto) {
         try {
             DeployCheck.hasChinese(tagDto.getTag(), "镜像tag");
             tagDto.getIds().forEach(x -> {

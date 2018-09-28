@@ -1082,4 +1082,170 @@ ${data.extra == 1 ? '否' : '是'}
             return unixTimestamp.pattern("yyyy-MM-dd hh:mm:ss");
         }
     }
+
+    export class ServiceFiles {
+        add: string = "add";
+        view: string = "view";
+        edit: string = "edit";
+        api = new api.Api();
+
+        public exportAddServiceFilesContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
+            let c = this;
+            return `
+           <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">${type == c.add ? "添加节点" : (type == c.edit ? "修改节点" : (type == c.view ? "节点详情" : ""))}</p>
+                    </div>
+                </div>
+                <div class="form-horizontal" style="margin-top: 81px;">
+                    <div class="form-group">
+                            <label class="col-sm-2 control-label">容器内文件名:</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="fileName" class="col-sm-2 form-control" value="${type != c.add ? data.fileName : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+容器内的映射文件/文件夹名(包含路径[如：/data/config/config.ini | /data/config/])
+                                 </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">外部映射文件名:</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="fileExtName" class="col-sm-2 form-control" value="${type != c.add ? data.fileExtName : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+宿主机的映射文件/文件夹名(文件夹应当写全路径/文件只写文件名)
+文件夹:/data/logs
+文件:/data/var/config.ini
+                                 </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">文件内容:</label>
+                            <div class="col-sm-9">
+                                <textarea ${type == c.view ? "disabled" : ""} id="fileContext" class="form-control" rows="10">${type != c.add ? data.fileContext : ""}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">文件类型:</label>
+                            <div class="col-sm-9">
+                               <select ${type == c.view ? "disabled" : ""} id="fileType" class="col-sm-2 form-control">
+                                 <option value="F" ${type != c.add ? (data.fileType == 'F' ? "selected" : "") : ""}>文件</option>
+                                  <option value="D" ${type != c.add ? (data.fileType == 'D' ? "selected" : "") : "selected"}>文件夹</option>
+                                </select>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+文件类型 (D: Directory [目录]; F: File [文件]),默认为文件
+                                 </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注:</label>
+                            <div class="col-sm-9">
+                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
+                            </div>
+                        </div>
+                        ${type == c.add ? `
+                        <span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="saveServiceFile()">保存</button>
+                        <button type="button" class="btn btn-danger" onclick="clearServiceFileInput()">清空</button>
+                        </span>
+                        ` : type == c.edit ? `
+                        <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedServiceFile(${data.id})">保存修改</button>
+                    </span>
+                        ` : ""}
+                       
+                </div>
+            
+            `;
+        }
+
+        /**
+         * 文件操作
+         * @param value
+         */
+        public exportServiceFileAction(value: string) {
+            return `<span class="link-button-table">
+            <a href="javascript:void(0)" title="详情"  onclick="viewServiceFilesOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
+            <a href="javascript:void(0)" title="修改"  onclick="viewServiceFilesOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="关联部署单元"  onclick="openLinkDeployUnits(${value})"><i class="fa fa-link" aria-hidden="true"></i></a>
+            <a href="javascript:void(0)" title="删除"  onclick="delServiceFiles(${value})"><span class="glyphicon glyphicon-remove"></span></a>
+            </span>`;
+        }
+
+        /**
+         * 文件关联部署单元
+         * @param vaue
+         */
+        public exportFileLinkUnitContext(value: string) {
+            return `
+             <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">关联部署单元</p>
+                        <span class="input-group-btn panel-button-group">
+                            <button type="button" class="btn btn-info"  id="linkButton" onclick="linkDeployUnits(${value})">一键关联</button>
+                            <button type="button" class="btn btn-danger" id="unLinkButton" onclick="unLinkDeployUnits(${value})">一键解绑</button>
+                        </span>
+                    </div>
+                </div>
+                <div style="margin-top: 81px;">
+                <input type="hidden" value="${value}" id="currFileId">
+                 <div id="deploy-unit-tableToolbar">
+            <span>环境集： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitSetChanged()"
+                        id="setSelectView">
+
+                </select>
+            </span></span>
+
+            <span>节点： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitHostChanged()"
+                        id="hostSelectView">
+
+                </select>
+            </span></span>
+
+            <span>服务： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitServiceChanged()"
+                        id="serviceSelectView">
+
+                </select>
+            </span></span>
+            <span>绑定类型： <span style="display: inline-block;width: 120px">
+                <select data-live-search="true" class="selectpicker form-control" onchange="linkTypeChanged(${value})"
+                        id="linkTypeSelect">
+                        <option value="1" selected>未绑定</option>
+                        <option value="2">已绑定</option>
+                </select>
+            </span></span>
+        </div>
+                
+             <table id="deploy-unit-table"></table>
+                </div>
+               `
+        }
+
+        /**
+         * 在表格中展开已经关联的部署单元
+         */
+        public listLinkedUnits(units: any) {
+
+        }
+    }
 }

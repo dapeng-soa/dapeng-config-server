@@ -1,10 +1,10 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.config;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ZkNodeDto;
 import com.github.dapeng.entity.config.ZkNode;
-import com.github.dapeng.repository.ZkNodeRepository;
+import com.github.dapeng.repository.config.ZkNodeRepository;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.NullUtil;
 import org.slf4j.Logger;

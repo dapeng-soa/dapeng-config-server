@@ -1,4 +1,4 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.deploy;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;

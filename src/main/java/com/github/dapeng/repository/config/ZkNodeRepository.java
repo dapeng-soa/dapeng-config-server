@@ -1,4 +1,4 @@
-package com.github.dapeng.repository;
+package com.github.dapeng.repository.config;
 
 import com.github.dapeng.entity.config.ZkNode;
 import org.springframework.data.jpa.repository.JpaRepository;

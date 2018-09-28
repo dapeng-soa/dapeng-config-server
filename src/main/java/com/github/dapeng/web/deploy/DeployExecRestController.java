@@ -1,4 +1,4 @@
-package com.github.dapeng.web;
+package com.github.dapeng.web.deploy;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.core.helper.IPUtils;
@@ -53,6 +53,10 @@ public class DeployExecRestController {
     SetServiceEnvRepository subEnvRepository;
     @Autowired
     ConfigFilesRepository configFilesRepository;
+    @Autowired
+    ServiceFilesRepository serviceFilesRepository;
+    @Autowired
+    FilesUnitRepository filesUnitRepository;
 
     /**
      * 向agent发送问询指令
@@ -170,6 +174,25 @@ public class DeployExecRestController {
     }
 
     /**
+     * 获取配置文件的最新关联和修改时间戳
+     *
+     * @return
+     */
+    private Long getFilesUpdateAt(TDeployUnit u) {
+        long uId = u.getId();
+        List<TFilesUnit> byUnitId = filesUnitRepository.findByUnitId(uId);
+        List<Long> latest = new ArrayList<>();
+        byUnitId.forEach(x -> {
+            latest.add(x.getCreateAt().getTime());
+            TServiceFiles one = serviceFilesRepository.getOne(x.getFileId());
+            if (!isEmpty(one)) {
+                latest.add(one.getUpdatedAt().getTime());
+            }
+        });
+        return latest.stream().max(Comparator.naturalOrder()).orElse(0L);
+    }
+
+    /**
      * 最后的更新时间
      * // 获取四个配置表最后的更新时间，用于对比是否需要更新
      *
@@ -182,14 +205,13 @@ public class DeployExecRestController {
         List<THost> hosts = hostRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getHostId());
         List<TService> serviceList = serviceRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getServiceId());
         List<TSetServiceEnv> subEnvs = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(u.getSetId(), u.getServiceId());
-        List<TConfigFiles> configFiles = configFilesRepository.findBySetIdAndServiceIdContainsOrderByUpdatedAtDesc(u.getSetId(), String.valueOf(u.getServiceId()));
         Long setUpdateAt = !isEmpty(setList) ? setList.get(0).getUpdatedAt().getTime() : 0;
         Long hostUpdateAt = !isEmpty(hosts) ? hosts.get(0).getUpdatedAt().getTime() : 0;
         Long serviceUpdateAt = !isEmpty(serviceList) ? serviceList.get(0).getUpdatedAt().getTime() : 0;
         Long subEnvUpdateAt = !isEmpty(subEnvs) ? subEnvs.get(0).getUpdatedAt().getTime() : 0;
-        Long configFileUpdateAt = !isEmpty(configFiles) ? configFiles.get(0).getUpdatedAt().getTime() : 0;
         Long unitUpdateAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
-        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, configFileUpdateAt, unitUpdateAt};
+        Long filesUpdateAt = getFilesUpdateAt(u);
+        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, filesUpdateAt, unitUpdateAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
     }
 
@@ -210,6 +232,8 @@ public class DeployExecRestController {
             setSubEnv = envList.get(0);
         }
         DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
+        String files2Volumes = processFiles2Volumes(unit);
+        dockerService1.setVolumes(Composeutil.processVolume(files2Volumes, ""));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 
@@ -222,6 +246,47 @@ public class DeployExecRestController {
         journalRepository.saveAndFlush(toOperationJournal(unit, 1, composeContext));
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
+    }
+
+    /**
+     * 新的文件挂载处理方式
+     * 将部署单元关联的文件信息处理为Volumes参数
+     * 1.如果是文件，如果外部文件只有文件名，将其前面添加固定的文件夹前缀，一般为在agent端的固定目录
+     * 2.如果是文件
+     *
+     * @return
+     */
+    private String processFiles2Volumes(TDeployUnit unit) {
+        long unitId = unit.getId();
+        List<TFilesUnit> filesUnits = filesUnitRepository.findByUnitId(unitId);
+        List<TServiceFiles> filesList = new ArrayList<>();
+        filesUnits.forEach(x -> {
+            TServiceFiles file = serviceFilesRepository.findOne(x.getFileId());
+            if (!isEmpty(file)) {
+                filesList.add(file);
+            }
+        });
+        StringBuilder sb = new StringBuilder();
+        filesList.forEach(f -> {
+            if ("F".equals(f.getFileType())) {
+                // 如果没有写路径，则存放在固定目录下(Linux)
+                if (!f.getFileExtName().startsWith("/")) {
+                    sb.append("./configs/");
+                }
+                sb.append(Tools.rmSuffix(f.getFileExtName()))
+                        .append("-")
+                        .append(f.getFileTag())
+                        .append(Tools.suffix(f.getFileExtName()))
+                        .append(":").append(f.getFileName())
+                        .append("\n");
+            } else {
+                sb.append(f.getFileExtName())
+                        .append(":")
+                        .append(f.getFileName())
+                        .append("\n");
+            }
+        });
+        return sb.toString();
     }
 
     /**
@@ -327,6 +392,8 @@ public class DeployExecRestController {
             setSubEnv = envList.get(0);
         }
         DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
+        String files2Volumes = processFiles2Volumes(unit);
+        dockerService1.setVolumes(Composeutil.processVolume(files2Volumes, ""));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
 
@@ -358,6 +425,8 @@ public class DeployExecRestController {
             setSubEnv = envList.get(0);
         }
         DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
+        String files2Volumes = processFiles2Volumes(unit);
+        dockerService1.setVolumes(Composeutil.processVolume(files2Volumes, ""));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
         String composeContext = Composeutil.processComposeContext(dockerService1);
         String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + service.getName() + ".yml";

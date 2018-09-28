@@ -1,4 +1,4 @@
-package com.github.dapeng.repository;
+package com.github.dapeng.repository.config;
 
 import com.github.dapeng.entity.config.ConfigInfo;
 import org.springframework.data.domain.Page;
