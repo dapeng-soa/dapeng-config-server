@@ -25,6 +25,11 @@
                 </span>
             </div>
         </div>
+        <div id="deploy-files-tableToolbar">
+            <code>
+                文件描述了一个或多个容器的VOLUMES信息,当添加一个文件后，都需要与指定的部署单元(容器)进行关联,关联的文件或文件夹最终将作为容器的VOLUMES,点击关联部署单元按钮查看或关联/取消关联部署单元。
+            </code>
+        </div>
         <table id="deploy-files-table">
 
         </table>

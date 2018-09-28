@@ -243,11 +243,15 @@ var setColumns = function () {
         sortable: true
     }, {
         field: 'fileName',
-        title: '容器文件(夹)名'
+        title: '容器内文件(夹)名',
+        sortable: true
     }, {
         field: 'fileType',
-        title: '文件类型(文件/文件夹)',
-        formatter: fileTypeFormatter
+        title: '文件类型',
+        align: 'center',
+        valign: 'middle',
+        formatter: fileTypeFormatter,
+        sortable: true
     }, {
         field: 'fileTag',
         title: 'fileTag'
@@ -286,10 +290,10 @@ var fileTypeFormatter = function (value, row) {
     var realType = "未知";
     switch (value) {
         case 'D':
-            realType = "文件夹";
+            realType = "<i class=\"fa fa-folder\" aria-hidden=\"true\" title='文件夹'></i>";
             break;
         case "F":
-            realType = "文件";
+            realType = "<i class=\"fa fa-file-text\" aria-hidden=\"true\" title='文件'></i>";
             break;
         default:
             break;
