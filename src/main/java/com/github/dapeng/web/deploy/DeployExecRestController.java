@@ -6,6 +6,7 @@ import com.github.dapeng.entity.deploy.*;
 import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
+import com.github.dapeng.socket.entity.VolumesFile;
 import com.github.dapeng.util.Composeutil;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DownloadUtil;
@@ -243,6 +244,7 @@ public class DeployExecRestController {
         dockerVo.setServiceName(service.getName());
         dockerVo.setFileContent(composeContext);
         dockerVo.setIp(ip);
+        dockerVo.setVolumesFiles(processVolumesFile(unit));
         journalRepository.saveAndFlush(toOperationJournal(unit, 1, composeContext));
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
@@ -251,8 +253,8 @@ public class DeployExecRestController {
     /**
      * 新的文件挂载处理方式
      * 将部署单元关联的文件信息处理为Volumes参数
-     * 1.如果是文件，如果外部文件只有文件名，将其前面添加固定的文件夹前缀，一般为在agent端的固定目录
-     * 2.如果是文件
+     * 1.如果是文件，如果外部文件只有文件名，将其前面添加固定的文件夹前缀，并用文件内容生成的tag作为文件名的一部分,一般为在agent端的固定目录
+     * 2.如果是文件夹，生成挂载内容就是了
      *
      * @return
      */
@@ -287,6 +289,39 @@ public class DeployExecRestController {
             }
         });
         return sb.toString();
+    }
+
+    /**
+     * 处理文件内容
+     *
+     * @return
+     */
+    private List<VolumesFile> processVolumesFile(TDeployUnit unit) {
+        long unitId = unit.getId();
+        List<TFilesUnit> filesUnits = filesUnitRepository.findByUnitId(unitId);
+        List<VolumesFile> filesList = new ArrayList<>();
+        filesUnits.forEach(x -> {
+            TServiceFiles file = serviceFilesRepository.findOne(x.getFileId());
+            if (!isEmpty(file)) {
+                StringBuilder sb = new StringBuilder();
+                if ("F".equals(file.getFileType())) {
+                    // 如果没有写路径，则存放在固定目录下(Linux)
+                    if (!file.getFileExtName().startsWith("/")) {
+                        sb.append("./configs/");
+                    }
+                    sb.append(Tools.rmSuffix(file.getFileExtName()))
+                            .append("-")
+                            .append(file.getFileTag())
+                            .append(Tools.suffix(file.getFileExtName()));
+                    VolumesFile vf = new VolumesFile();
+                    vf.setFileName(sb.toString());
+                    vf.setFileContext(file.getFileContext());
+                    filesList.add(vf);
+                }
+                // 文件夹就不管了
+            }
+        });
+        return filesList;
     }
 
     /**
