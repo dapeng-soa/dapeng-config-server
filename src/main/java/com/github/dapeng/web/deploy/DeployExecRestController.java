@@ -271,11 +271,13 @@ public class DeployExecRestController {
         StringBuilder sb = new StringBuilder();
         filesList.forEach(f -> {
             if ("F".equals(f.getFileType())) {
-                // 如果没有写路径，则存放在固定目录下(Linux)
-                if (!f.getFileExtName().startsWith("/")) {
-                    sb.append("./configs/");
+                // 在所有路径前加固定路径
+                String rmPath = Tools.rmSuffix(f.getFileExtName());
+                if (rmPath.startsWith("/")) {
+                    rmPath = rmPath.replaceFirst("/", "");
                 }
-                sb.append(Tools.rmSuffix(f.getFileExtName()))
+                sb.append("/data/configs/")
+                        .append(rmPath)
                         .append("-")
                         .append(f.getFileTag())
                         .append(Tools.suffix(f.getFileExtName()))
@@ -305,11 +307,13 @@ public class DeployExecRestController {
             if (!isEmpty(file)) {
                 StringBuilder sb = new StringBuilder();
                 if ("F".equals(file.getFileType())) {
-                    // 如果没有写路径，则存放在固定目录下(Linux)
-                    if (!file.getFileExtName().startsWith("/")) {
-                        sb.append("./configs/");
+                    /// 在所有路径前加固定路径
+                    String rmPath = Tools.rmSuffix(file.getFileExtName());
+                    if (rmPath.startsWith("/")) {
+                        rmPath = rmPath.replaceFirst("/", "");
                     }
-                    sb.append(Tools.rmSuffix(file.getFileExtName()))
+                    sb.append("/data/configs/")
+                            .append(rmPath)
                             .append("-")
                             .append(file.getFileTag())
                             .append(Tools.suffix(file.getFileExtName()));
