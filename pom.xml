@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.github.dapeng</groupId>
             <artifactId>agent_server-api_2.12</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
