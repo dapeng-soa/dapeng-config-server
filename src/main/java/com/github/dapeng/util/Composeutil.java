@@ -197,11 +197,11 @@ public class Composeutil {
     }
 
 
-    private static List<String> mergeList(List<String> priority, List<String> attach) {
+    public static List<String> mergeList(List<String> priority, List<String> attach) {
         List<String> rmList = new ArrayList<>();
         List<String> realList = new ArrayList<>();
         priority.forEach(x -> attach.forEach(y -> {
-            if (!isEmpty(x) && !isEmpty(y) || y.equals(x)) {
+            if (!isEmpty(x) && !isEmpty(y) && y.equals(x)) {
                 rmList.add(y);
             }
         }));
@@ -338,7 +338,7 @@ public class Composeutil {
      *
      * @return
      */
-    private static List<String> ofList(String s) {
+    public static List<String> ofList(String s) {
         if (isEmpty(s)) {
             return new ArrayList<>();
         }

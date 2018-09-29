@@ -264,7 +264,6 @@ CREATE TABLE `t_service_files` (
   `file_name` varchar(255) NOT NULL DEFAULT '' COMMENT '容器内的映射文件/文件夹名(包含路径[如：/data/config/config.ini | /data/config/])',
   `file_ext_name` varchar(255) NOT NULL DEFAULT '' COMMENT '宿主机的映射文件/文件夹名(文件夹应当写全路径/文件只写文件名)',
   `file_context` varchar(8192) NOT NULL DEFAULT '' COMMENT '文件内容，最终将映射到容器内',
-  `file_type` varchar(4) NOT NULL DEFAULT 'F' COMMENT '文件类型 (D: Directory [目录]; F: File [文件]),默认为文件',
   `file_tag` varchar(32) NOT NULL DEFAULT '' COMMENT '文件内容MD5(16位),描述了宿主机上的一部分文件名，文件内容变更，此字段变更',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `created_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT '添加时间',

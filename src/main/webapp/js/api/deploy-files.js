@@ -28,8 +28,8 @@ function delServiceFiles() {
 /**
  * 打开关联部署单元
  */
-function openLinkDeployUnits(fid) {
-    var context = sf.exportFileLinkUnitContext(fid);
+function openLinkDeployUnits(fid,name) {
+    var context = sf.exportFileLinkUnitContext(fid,name);
     initModelContext(context, function () {
         bsTable.refresh();
     });
@@ -182,15 +182,6 @@ var setUnitColumns = function () {
         checkbox: true,
         visible: true//是否显示复选框
     }, {
-        field: 'id',
-        title: '#',
-        formatter: indexFormatter
-
-    }, {
-        field: 'gitTag',
-        title: '发布tag',
-        sortable: true
-    }, {
         field: 'serviceName',
         title: 'service'
     }, {
@@ -239,18 +230,11 @@ var setColumns = function () {
 
     }, {
         field: 'fileExtName',
-        title: '外部挂载文件(夹)名',
+        title: '外部挂载文件名',
         sortable: true
     }, {
         field: 'fileName',
-        title: '容器内文件(夹)名',
-        sortable: true
-    }, {
-        field: 'fileType',
-        title: '文件类型',
-        align: 'center',
-        valign: 'middle',
-        formatter: fileTypeFormatter,
+        title: '容器内文件名',
         sortable: true
     }, {
         field: 'fileTag',
@@ -281,28 +265,9 @@ openAddServiceFileModle = function () {
         bsTable.refresh();
     });
 };
-/**
- * 文件类型
- * @param value
- * @param row
- */
-var fileTypeFormatter = function (value, row) {
-    var realType = "未知";
-    switch (value) {
-        case 'D':
-            realType = "<i class=\"fa fa-folder\" aria-hidden=\"true\" title='文件夹'></i>";
-            break;
-        case "F":
-            realType = "<i class=\"fa fa-file-text\" aria-hidden=\"true\" title='文件'></i>";
-            break;
-        default:
-            break;
-    }
-    return realType;
-};
 
 var serviceFileActionFormatter = function (value, row) {
-    return sf.exportServiceFileAction(value);
+    return sf.exportServiceFileAction(value,row.fileExtName+":"+row.fileName);
 };
 
 saveServiceFile = function () {
@@ -318,13 +283,11 @@ saveServiceFile = function () {
 processServiceFileData = function () {
     var fileName = $("#fileName").val();
     var fileExtName = $("#fileExtName").val();
-    var fileType = $("#fileType").find("option:selected").val();
     var fileContext = $("#fileContext").val();
     var remark = $("#remark-area").val();
     return {
         fileName: fileName,
         fileExtName: fileExtName,
-        fileType: fileType,
         fileContext: fileContext,
         remark: remark
     }

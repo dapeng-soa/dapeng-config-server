@@ -118,7 +118,6 @@ public class ServiceFilesController {
             one.setFileExtName(file.getFileExtName());
             one.setFileName(file.getFileName());
             one.setRemark(file.getRemark());
-            one.setFileType(file.getFileType());
             one.setFileTag(encrypt16(one.getFileContext()));
             serviceFilesRepository.save(one);
             return ResponseEntity

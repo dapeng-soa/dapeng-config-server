@@ -20,8 +20,6 @@ public class TServiceFiles {
     private String fileExtName;
     @Column(name = "file_context")
     private String fileContext;
-    @Column(name = "file_type")
-    private String fileType;
     @Column(name = "file_tag")
     private String fileTag = "";
     @Column(name = "remark")
@@ -63,14 +61,6 @@ public class TServiceFiles {
 
     public void setFileContext(String fileContext) {
         this.fileContext = fileContext;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
     }
 
     public String getFileTag() {
