@@ -80,6 +80,10 @@ public class ServiceFilesController {
     @PostMapping("/deploy-file/add")
     public ResponseEntity saveServiceFile(@RequestBody TServiceFiles file) {
         try {
+            List<TServiceFiles> files = serviceFilesRepository.findByFileNameAndFileExtName(file.getFileName(), file.getFileExtName());
+            if (!isEmpty(files)){
+                throw  new Exception("已存在相同文件配置");
+            }
             file.setCreatedAt(DateUtil.now());
             file.setUpdatedAt(DateUtil.now());
             file.setFileTag(encrypt16(file.getFileContext()));
