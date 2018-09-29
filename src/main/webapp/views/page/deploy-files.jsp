@@ -12,7 +12,6 @@
     <script src="${basePath}/js/api/deploy-files.js"></script>
 </head>
 <body>
-<jsp:include page="../core/console.jsp"/>
 <jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">

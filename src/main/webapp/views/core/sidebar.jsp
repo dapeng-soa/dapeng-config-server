@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div class="sidebar-left opened" style="overflow-y: auto">
+<div class="sidebar-left opened">
     <div class="sidebar-top-box">
         <div class="sidebar-cover">
             <span>
@@ -78,11 +78,14 @@
         var sc = $(".sidebar-left");
         var isopened = sc.hasClass("opened");
         var isclosed = sc.hasClass("closed");
-        if (!isopened){
+        if (!isopened) {
+            $(".toggle-sidebar-btn").css({right: 0, color: '#ccc'});
             openSidebar();
-        }else if (isopened && isclosed){
+        } else if (isopened && isclosed) {
+            $(".toggle-sidebar-btn").css({right: -40 + 'px', color: '#333'});
             closeSidebar();
-        }else {
+        } else {
+            $(".toggle-sidebar-btn").css({right: -40 + 'px', color: '#333'});
             closeSidebar();
         }
     }
@@ -95,6 +98,7 @@
         cn.removeClass("closed");
         cn.addClass("opened");
     }
+
     function closeSidebar() {
         var sc = $(".sidebar-left");
         var cn = $(".container-right");
