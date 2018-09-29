@@ -81,8 +81,8 @@ public class ServiceFilesController {
     public ResponseEntity saveServiceFile(@RequestBody TServiceFiles file) {
         try {
             List<TServiceFiles> files = serviceFilesRepository.findByFileNameAndFileExtName(file.getFileName(), file.getFileExtName());
-            if (!isEmpty(files)){
-                throw  new Exception("已存在相同文件配置");
+            if (!isEmpty(files)) {
+                throw new Exception("已存在相同文件配置");
             }
             file.setCreatedAt(DateUtil.now());
             file.setUpdatedAt(DateUtil.now());
@@ -92,7 +92,7 @@ public class ServiceFilesController {
                     .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
             return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 
@@ -128,7 +128,7 @@ public class ServiceFilesController {
                     .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {
             return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 
@@ -174,6 +174,29 @@ public class ServiceFilesController {
             });
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "批量取消关联成功"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
+    /**
+     * 删除文件
+     * 1.需要先检查是不是有关联的部署单元
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/deploy-file/del/{id}")
+    public ResponseEntity delFile(@PathVariable Long id) {
+        try {
+            List<TFilesUnit> byFileId = filesUnitRepository.findByFileId(id);
+            if (!isEmpty(byFileId)) {
+                throw new Exception("还存在关联的部署单元，不能删除此文件");
+            }
+            serviceFilesRepository.delete(id);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, "删除文件成功"));
         } catch (Exception e) {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));

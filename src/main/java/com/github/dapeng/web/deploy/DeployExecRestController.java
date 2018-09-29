@@ -54,8 +54,6 @@ public class DeployExecRestController {
     @Autowired
     SetServiceEnvRepository subEnvRepository;
     @Autowired
-    ConfigFilesRepository configFilesRepository;
-    @Autowired
     ServiceFilesRepository serviceFilesRepository;
     @Autowired
     FilesUnitRepository filesUnitRepository;

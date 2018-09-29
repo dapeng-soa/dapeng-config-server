@@ -123,45 +123,6 @@ appName:goodsService
 `
         }
 
-        /**
-         * 环境集配置文件管理
-         */
-        public exportAddConfigBySetIdContext(setId: string, services: any, files?: any) {
-            var c = this;
-            return `
-            <div class="panel-header window-header">
-                <div class="input-group">
-                    <p class="left-panel-title">环境集配置文件管理</p>
-                </div>
-            </div>
-            <div class="form-horizontal" style="margin-top: 81px;">
-                 <div class="form-group">
-                    <label class="col-sm-1 control-label"></label>
-                    <div class="col-sm-10">
-                        <div id="configFiles-from-container">
-                           ${c.getConfigFiles(services, files)}
-                         </div>
-                         <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addConfigFilesEm()"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
-                        <span class="input-group-btn panel-button-group text-center">
-                        <button type="button" class="btn btn-success" onclick="saveConfigFile(${setId})">保存</button>
-                        </span>
-                    </div>
-                </div>
-            </div> 
-            `
-        }
-
-        public getConfigFiles(services: any, files?: any) {
-            let html = "";
-            let c = this;
-            if (files !== undefined && files.length > 0) {
-                for (let f in files) {
-                    html += c.exportConfigFilesContext(services, files[f]);
-                }
-            }
-            return html;
-        }
-
 
         /**
          * 导出
@@ -749,7 +710,6 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeploySetEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeploySetEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <!--<a href="javascript:void(0)" title="管理配置文件"  onclick="openAddConfigBySetId(${value})"><i class="fa fa-file-text" aria-hidden="true"></i></a> -->
             <a href="javascript:void(0)" title="管理服务环境变量"  onclick="openAddSubEnvBySetId(${value},'add')"><span class="glyphicon glyphicon-folder-close"></span></a>
             <a href="javascript:void(0)" title="删除"  onclick="delDeploySet(${value})"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;

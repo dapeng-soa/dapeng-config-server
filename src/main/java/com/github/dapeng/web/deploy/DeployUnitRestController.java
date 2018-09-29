@@ -225,7 +225,7 @@ public class DeployUnitRestController {
         } catch (Exception e) {
             LOGGER.error("update deploy-unit error hostId [{}] serviceId [{}]", unitDto.getHostId(), unitDto.getServiceId(), e);
             return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 

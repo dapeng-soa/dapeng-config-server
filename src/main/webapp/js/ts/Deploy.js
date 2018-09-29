@@ -30,23 +30,6 @@ var api;
             return "\n            <div class=\"panel-header window-header\">\n                <div class=\"input-group\">\n                    <p class=\"left-panel-title\">\u73AF\u5883\u96C6\u670D\u52A1ENV\u914D\u7F6E(SetSubEnv)</p>\n                </div>\n            </div>\n            <div class=\"form-horizontal\" style=\"margin-top: 81px;\">\n            \n                 <div class=\"form-group\">\n                        <label class=\"col-sm-1 control-label\"></label>\n                        <div class=\"col-sm-10\">\n                            <div id=\"sub-from-container\">\n                            " + c.viewSubEnv("view", subEnv) + "\n                            </div>\n                            " + (type !== c.view ? "\n                        <div style=\"margin-top: 10px\" class=\"icon-add\"><a href=\"#\" onclick=\"addSubFromBySet()\"><span class=\"glyphicon glyphicon-plus\"></span></a>\u70B9\u51FB\u65B0\u589E\u914D\u7F6E</div>\n                    <span class=\"input-group-btn panel-button-group text-center\">\n                    <button type=\"button\" class=\"btn btn-success\" onclick=\"saveSubEnvs(" + setId + ")\">\u4FDD\u5B58</button>\n                    </span>\n                    " : "") + "\n           </div>\n           </div>\n           </div>               \n";
         };
         /**
-         * 环境集配置文件管理
-         */
-        Deploy.prototype.exportAddConfigBySetIdContext = function (setId, services, files) {
-            var c = this;
-            return "\n            <div class=\"panel-header window-header\">\n                <div class=\"input-group\">\n                    <p class=\"left-panel-title\">\u73AF\u5883\u96C6\u914D\u7F6E\u6587\u4EF6\u7BA1\u7406</p>\n                </div>\n            </div>\n            <div class=\"form-horizontal\" style=\"margin-top: 81px;\">\n                 <div class=\"form-group\">\n                    <label class=\"col-sm-1 control-label\"></label>\n                    <div class=\"col-sm-10\">\n                        <div id=\"configFiles-from-container\">\n                           " + c.getConfigFiles(services, files) + "\n                         </div>\n                         <div style=\"margin-top: 10px\" class=\"icon-add\"><a href=\"#\" onclick=\"addConfigFilesEm()\"><span class=\"glyphicon glyphicon-plus\"></span></a>\u70B9\u51FB\u65B0\u589E\u914D\u7F6E</div>\n                        <span class=\"input-group-btn panel-button-group text-center\">\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"saveConfigFile(" + setId + ")\">\u4FDD\u5B58</button>\n                        </span>\n                    </div>\n                </div>\n            </div> \n            ";
-        };
-        Deploy.prototype.getConfigFiles = function (services, files) {
-            var html = "";
-            var c = this;
-            if (files !== undefined && files.length > 0) {
-                for (var f in files) {
-                    html += c.exportConfigFilesContext(services, files[f]);
-                }
-            }
-            return html;
-        };
-        /**
          * 导出
          * @returns {string}
          */
@@ -131,7 +114,7 @@ var api;
          * @param row
          */
         Deploy.prototype.exportDeploySetActionContext = function (value, row) {
-            return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u8BE6\u60C5\"  onclick=\"viewDeploySetEditByID(" + value + ",'view')\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewDeploySetEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <!--<a href=\"javascript:void(0)\" title=\"\u7BA1\u7406\u914D\u7F6E\u6587\u4EF6\"  onclick=\"openAddConfigBySetId(" + value + ")\"><i class=\"fa fa-file-text\" aria-hidden=\"true\"></i></a> -->\n            <a href=\"javascript:void(0)\" title=\"\u7BA1\u7406\u670D\u52A1\u73AF\u5883\u53D8\u91CF\"  onclick=\"openAddSubEnvBySetId(" + value + ",'add')\"><span class=\"glyphicon glyphicon-folder-close\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5220\u9664\"  onclick=\"delDeploySet(" + value + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
+            return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u8BE6\u60C5\"  onclick=\"viewDeploySetEditByID(" + value + ",'view')\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewDeploySetEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u7BA1\u7406\u670D\u52A1\u73AF\u5883\u53D8\u91CF\"  onclick=\"openAddSubEnvBySetId(" + value + ",'add')\"><span class=\"glyphicon glyphicon-folder-close\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5220\u9664\"  onclick=\"delDeploySet(" + value + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a>\n            </span>";
         };
         /**
          * 节点操作栏

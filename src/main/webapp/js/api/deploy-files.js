@@ -21,8 +21,25 @@ function viewServiceFilesOrEditByID(id, op) {
     }, "json");
 }
 
-function delServiceFiles() {
-
+/**
+ * 删除配置文件
+ * @param id
+ */
+function delServiceFiles(id) {
+    bodyAbs();
+    layer.confirm('确定删除？', {
+        btn: ['确认', '取消']
+    }, function () {
+        var url = basePath + "/api/deploy-file/del/" + id;
+        $.post(url, function (res) {
+            layer.msg(res.msg);
+            bsTable.refresh();
+        }, "json");
+        rmBodyAbs();
+    }, function () {
+        layer.msg("未做任何改动");
+        rmBodyAbs();
+    });
 }
 
 /**
