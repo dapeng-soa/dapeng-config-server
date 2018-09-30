@@ -23,6 +23,9 @@ window.RESTART = "restart";
 window.RESTART_RESP = "restartResp";
 window.GET_YAML_FILE = "getYamlFile";
 window.GET_YAML_FILE_RESP = "getYamlFileResp";
+window.GET_REGED_AGENTS = "getRegedAgents";
+window.BUILD = "build";
+window.GET_REGED_AGENTS_RESP = "getRegedAgentsResp";
 window.ERROR_EVENT = "errorEvent";
 // 常用状态
 window.SUCCESS = "success";
@@ -35,7 +38,6 @@ window.INFO = "info";
 window.VIEW = "view";
 window.ADD = "add";
 window.EDIT = "edit";
-
 
 layui.use('element', function () {
     var element = layui.element;
@@ -175,6 +177,9 @@ $.fn.extend({
     }
 });
 
+window.selectRefresh = function () {
+    $(".selectpicker").selectpicker('refresh');
+};
 
 // table
 // 序号
@@ -241,12 +246,12 @@ window.indexFormatter = function (value, row, index) {
                     showRefresh: true,          //是否显示刷新按钮
                     minimumCountColumns: 2,     //最少允许的列数
                     clickToSelect: true,        //是否启用点击选中行
-                    searchOnEnterKey: true,     //设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
+                    searchOnEnterKey: false,     //设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
                     height: this.height,
                     showFullscreen: this.showFullscreen,
                     maintainSelected: true,
                     uniqueId: "id",                     //每一行的唯一标识，一般为主键列
-                    showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+                    showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
                     cardView: ($(window).width() < 1024),                    //是否显示详细视图
                     detailView: false,                  //是否显示父子表
                     queryParamsType: 'limit',   //默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
@@ -254,8 +259,7 @@ window.indexFormatter = function (value, row, index) {
                     columns: this.columns,      //列数组
                     onLoadSuccess: this.onLoadSuccess, //载入成功
                     onLoadError: this.onLoadError, //载入失败
-                    // 双击行事件
-                    onDblClickRow: this.onDblClickRow
+                    onDblClickRow: this.onDblClickRow // 双击行事件
                 });
             return this;
         },
@@ -413,9 +417,6 @@ window.indexFormatter = function (value, row, index) {
 
     }
 
-}());
-
-(function () {
 }());
 
 

@@ -15,7 +15,7 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static com.github.dapeng.util.NullUtil.isEmpty;
+import static com.github.dapeng.util.NullUtil.*;
 
 /**
  * @author with struy.
@@ -136,7 +136,7 @@ public class Composeutil {
      * @param attach
      * @return
      */
-    private static List<String> processVolume(String priority, String attach) {
+    public static List<String> processVolume(String priority, String attach) {
         List<String> prioritys = ofList(priority);
         List<String> attachs = ofList(attach);
         StringBuilder sb = new StringBuilder();
@@ -196,12 +196,11 @@ public class Composeutil {
         return list;
     }
 
-
-    private static List<String> mergeList(List<String> priority, List<String> attach) {
+    public static List<String> mergeList(List<String> priority, List<String> attach) {
         List<String> rmList = new ArrayList<>();
         List<String> realList = new ArrayList<>();
         priority.forEach(x -> attach.forEach(y -> {
-            if (!isEmpty(x) && !isEmpty(y) || y.equals(x)) {
+            if (!isEmpty(x) && !isEmpty(y) && y.equals(x)) {
                 rmList.add(y);
             }
         }));
@@ -285,6 +284,7 @@ public class Composeutil {
 
     /**
      * 返回字符串的
+     * 返回字符串的yml
      *
      * @param
      * @return
@@ -338,7 +338,7 @@ public class Composeutil {
      *
      * @return
      */
-    private static List<String> ofList(String s) {
+    public static List<String> ofList(String s) {
         if (isEmpty(s)) {
             return new ArrayList<>();
         }

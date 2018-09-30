@@ -1,6 +1,6 @@
 /*=============================全局*/
 /* 自定义滚动条样式 */
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
     width: 4px;
     border-radius: 100%;
 }
@@ -20,6 +20,7 @@
 ::-webkit-scrollbar-thumb:active {
     background-color: #f2f2f0
 }
+}*/
 
 body {
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
@@ -87,7 +88,7 @@ button[type="button"][name="toggle"]:before {
 
 .sidebar-left {
     text-align: center;
-    z-index: 1500;
+    z-index: 1000;
     color: #333;
     position: fixed;
     left: 0;
@@ -96,7 +97,8 @@ button[type="button"][name="toggle"]:before {
     width: 230px;
     box-sizing: border-box;
     box-shadow: 1px 3px 5px #ccc;
-    overflow: visible !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
     background-color: #393D49;
 }
 
@@ -138,22 +140,24 @@ button[type="button"][name="toggle"]:before {
 .toggle-sidebar-btn {
     text-decoration: none;
     position: absolute;
-    right: -35px;
+    right: 0;
     display: inline;
     cursor: pointer;
-    color: #303a40;
+    color: #ccc;
     font-size: 22px;
-    bottom: 15px;
+    top: 15px;
 }
 
 .toggle-sidebar-btn:focus,
 .toggle-sidebar-btn:hover {
     text-decoration: none;
-    color: #303a40;
+    color: #ccc;
 }
 
 .sidebar-left.closed {
     left: -235px;
+    overflow-y: initial !important;
+    overflow-x: initial !important;
 }
 
 .sidebar-left.opened {
@@ -161,21 +165,23 @@ button[type="button"][name="toggle"]:before {
 }
 
 .container-right.closed {
-    margin: 50px 0 0 0;
+    margin: 5px 0 0 0;
 }
 
 .container-right.opened {
-    margin: 66px 15px 0 245px;
+    margin: 0 15px 0 245px;
 }
 
 /*============================媒体查询适应侧边栏*/
 @media screen and (max-width: 1024px) {
     .sidebar-left {
-        left: -235px;
+        left: -235px !important;
+        overflow-y: initial !important;
+        overflow-x: initial !important;
     }
 
     .container-right {
-        margin: 0;
+        margin: 0 !important;
     }
 
     .navbar-brand {
@@ -264,7 +270,6 @@ table {
     margin: 0 auto;
     top: 50%;
     padding: 10px;
-    overflow-x: hidden;
     border-radius: 3px;
     -webkit-transform: translateY(-50%);
     -o-transform: translateY(-50%);
@@ -291,8 +296,8 @@ table {
     font-size: 22px;
     position: absolute;
     z-index: 1400;
-    right: 20px;
-    top: 10px;
+    right: -30px;
+    top: -10px;
     text-align: center;
     text-decoration: none;
 }
@@ -365,10 +370,6 @@ table {
     font-size: 14px;
 }
 
-/* box下拉菜单 */
-/*.panel-box {
-    min-height: 300px;
-}*/
 
 .panel-box-menu {
     position: absolute;
@@ -389,11 +390,11 @@ table {
     z-index: 1400;
 }
 
-.fixed-footer-btn>.input-group-btn>button:not(:first-child){
+.fixed-footer-btn > .input-group-btn > button:not(:first-child) {
     margin-left: 32px;
 }
 
-.diff-tit{
+.diff-tit {
     position: fixed;
     z-index: 1300;
     left: 0;
@@ -401,19 +402,18 @@ table {
     background-color: #FFF;
     border-bottom: 1px solid #eee;
 }
-.diff-tit> span{
+
+.diff-tit > span {
     display: block;
     width: 50%;
     margin: 3px 0;
     text-align: center;
     float: left;
 }
-
-
 /**
 
  */
-#consoleView{
+#consoleView {
     width: 400px;
     min-width: 300px !important;
     position: fixed;
@@ -434,7 +434,8 @@ table {
     overflow-x: auto;
     word-break: break-all;
 }
-#consoleView>#line{
+
+#consoleView > #line {
     width: 4px;
     height: 100%;
     top: 0;
@@ -444,7 +445,8 @@ table {
     right: 396px;
     cursor: w-resize;
 }
-#consoleView>p:first-of-type{
+
+#consoleView > p:first-of-type {
     font-weight: 700;
     background: #333;
     position: absolute;
@@ -454,28 +456,36 @@ table {
     padding-left: 25px;
     border-radius: 4px 0 0 4px;
 }
-#consoleView>p:nth-of-type(2){
+#consoleView > p:nth-of-type(2) {
     margin-top: 20px;
 }
-#consoleView>p:first-of-type:before{
+
+#consoleView > p:first-of-type:before {
     content: "<<";
     position: absolute;
     left: 2px;
     bottom: 2px;
 }
 
-.icon-spin{
+.icon-spin {
     display: inline-block;
     -webkit-animation: fa-spin 2s infinite linear !important;
     animation: fa-spin 2s infinite linear !important;
     padding-right: 0 !important;
 }
 
-.layui-nav-child a{
-    text-indent:1em;
+.layui-nav-child a {
+    text-indent: 1em;
 }
-.from-group-item-rm{
+
+.from-group-item-rm {
     position: absolute;
     z-index: 99;
     right: -5px;
+}
+
+.tab-link {
+    position: absolute;
+    height: 42px;
+    z-index: 1;
 }

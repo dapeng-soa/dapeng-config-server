@@ -80,69 +80,6 @@ openAddSubEnvBySetId = function (setId, op) {
 };
 
 /**
- * 添加配置文件
- * @param setId
- */
-openAddConfigBySetId = function (setId) {
-    var url = basePath + "/api/config-files/" + setId;
-    $.get(url, function (res) {
-        if (res.code === SUCCESS_CODE) {
-            var context = deploy.exportAddConfigBySetIdContext(setId,res.context);
-            initModelContext(context, function () {
-                bsTable.refresh();
-            });
-        }
-    },"json");
-};
-
-/**
- * 新增文件输入框
- */
-addConfigFilesEm = function () {
-    var context = deploy.exportConfigFilesContext();
-    $("#configFiles-from-container").append(context);
-    $(".from-group-item-rm").bind("click", function (eo) {
-        $(this).parent().remove();
-    });
-};
-
-/**
- * 保存配置文件内容
- * @param setId
- */
-saveConfigFile = function (setId) {
-    var ids = $(".data-ops-id");
-    var fileName = $(".data-name-input");
-    var fileContext = $(".data-context-textarea");
-    var configFiles = [];
-    $.each(ids, function (index, id) {
-        var file = {
-            setId: setId,
-            id: $(id).val(),
-            fileName: $(fileName[index]).val(),
-            fileContext: $(fileContext[index]).val()
-        };
-        configFiles.push(file);
-    });
-    console.log(configFiles);
-    var url = basePath + "/api/config-file/add";
-
-    var settings = {
-        type: "post",
-        url: url,
-        data: JSON.stringify(configFiles),
-        dataType: "json",
-        contentType: "application/json"
-    };
-    $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
-        if (res.code === SUCCESS_CODE) {
-            closeModel();
-        }
-    });
-};
-
-/**
  * 保存环境集中的服务配置
  */
 saveSubEnvs = function (setId) {

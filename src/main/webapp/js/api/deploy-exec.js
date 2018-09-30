@@ -2,7 +2,7 @@ var socket = {};
 var yaml = "";
 var serviceNum = 0; // 当前的服务数量
 var deploy = new api.Deploy();
-var util = new api.Api();
+var $$ = new api.Api();
 var diff = {};
 var ansi = new AnsiUp;
 $(document).ready(function () {
@@ -73,6 +73,14 @@ $(document).ready(function () {
         var html = ansi.ansi_to_html(data);
         deploy.consoleView(html);
     });
+    /**
+     * 监听已注册agent列表
+     */
+    socket.on(GET_REGED_AGENTS_RESP, function (data) {
+        var agents = JSON.parse(data);
+        var agentList = deploy.exportAgentList(agents);
+        $("#agentList").html(agentList);
+    });
 
     socket.on(SOC_CDISCONNECT, function () {
         showMessage(ERROR, "已断开与服务器的连接", "断开连接");
@@ -87,6 +95,14 @@ $(document).ready(function () {
     });
 });
 /**
+ * 获取已经注册agent列表
+ */
+var getRegAgents = function () {
+    socket.emit(GET_REGED_AGENTS, "");
+    var context = deploy.exportAgentsContext();
+    initModelContext(context, function(){});
+};
+/**
  * 同步每个agent上服务时间和服务状态
  */
 emitGetInfoEvent = function () {
@@ -97,7 +113,7 @@ emitGetInfoEvent = function () {
             var eventReps = [];
             $.each(res.context.content, function (idx, ement) {
                 var event_url = basePath + "/api/deploy-unit/event_rep/" + ement.id;
-                util.$get(event_url, function (res2) {
+                $$.$get(event_url, function (res2) {
                     if (res.code === SUCCESS_CODE) {
                         eventReps.push(res2.context);
                         if (serviceNum === eventReps.length) {
@@ -218,13 +234,13 @@ serviceYamlPreview = function (deployTime, updateTime, unitId, viewType) {
     closeConloseView();
 
     var event_url = basePath + "/api/deploy-unit/event_rep/" + unitId;
-    util.$get(event_url, function (res) {
+    $$.$get(event_url, function (res) {
         if (res.code === SUCCESS_CODE) {
             yaml = "";
             socket.emit(GET_YAML_FILE, JSON.stringify(res.context));
 
             var url = basePath + "/api/deploy-unit/process-envs/" + unitId;
-            util.$get(url, function (res2) {
+            $$.$get(url, function (res2) {
                 if (res2.code === SUCCESS_CODE) {
                     // 导出弹窗内容模版
                     var context = deploy.viewDeployYamlContext(deployTime, updateTime, unitId, viewType);
@@ -252,7 +268,7 @@ checkService = function () {
     var hostId = $("#hostSelect").find("option:selected").val();
 
     var url = basePath + "/api/deploy/checkRealService?setId=" + setId + "&serviceId=" + (serviceId === undefined ? 0 : serviceId) + "&hostId=" + (hostId === undefined ? 0 : hostId) + "&viewType=" + viewType;
-    util.$get(url, function (res) {
+    $$.$get(url, function (res) {
         // 展示视图（默认服务视图）
         var context = deploy.deployViewChange(viewType, res.context);
         $("#deployMain").html(context);
@@ -265,7 +281,7 @@ checkService = function () {
  */
 stopService = function (unitId) {
     var url = basePath + "/api/deploy/stopRealService";
-    util.post(url, {unitId: unitId}, function (res) {
+    $$.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
             bodyAbs();
             layer.confirm('停止服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
@@ -273,10 +289,10 @@ stopService = function (unitId) {
             }, function () {
                 socket.emit(STOP, JSON.stringify(res.context));
                 layer.msg("操作已发送");
-                bodyAbs();
+                rmBodyAbs();
             }, function () {
                 layer.msg("操作取消");
-                bodyAbs();
+                rmBodyAbs();
             });
         }
     });
@@ -289,7 +305,7 @@ stopService = function (unitId) {
  */
 restartService = function (unitId) {
     var url = basePath + "/api/deploy/restartRealService";
-    util.post(url, {unitId: unitId}, function (res) {
+    $$.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
             bodyAbs();
             layer.confirm('重启服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
@@ -314,7 +330,7 @@ execServiceUpdate = function (unitId) {
     var req = {
         unitId: unitId
     };
-    util.get(url, req, function (res) {
+    $$.get(url, req, function (res) {
         if (res.code === SUCCESS_CODE) {
             socket.emit(DEPLOY, JSON.stringify(res.context));
             closeModel();

@@ -34,6 +34,10 @@ public class Tools {
         return fileName.lastIndexOf(".") != -1 ? fileName.substring(fileName.lastIndexOf(".")) : "";
     }
 
+    public static String rmSuffix(String fileName) {
+        return fileName.replace(suffix(fileName), "");
+    }
+
     /**
      * Add the end to the folder path
      * and if folder path Non-existent then mkdirs

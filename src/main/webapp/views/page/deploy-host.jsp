@@ -20,7 +20,6 @@
             <div class="input-group">
                 <p class="left-panel-title">节点管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-success" onclick="InitWhiteList()">刷新</button>--%>
                     <button type="button" class="btn btn-primary" onclick="openAddDeployHostModle()">新增</button>
                 </span>
             </div>
@@ -28,7 +27,7 @@
 
         <div id="deploy-host-tableToolbar">
             <span>环境集： <span style="display: inline-block;width: 120px">
-                <select data-live-search="true" class="selectpicker form-control" onchange="viewSetChanged()"
+                <select data-live-search="true" class="selectpicker form-control"  onchange="viewSetChanged()"
                         id="setSelectView">
 
                 </select>

@@ -21,8 +21,7 @@
             <div class="input-group">
                 <p class="left-panel-title">发布部署</p>
                 <span class="input-group-btn panel-button-group">
-                    <button type="button" class="btn btn-default" onclick="">操作说明</button>
-                    <button type="button" class="btn btn-info" onclick="">Agent列表</button>
+                    <button type="button" class="btn btn-info" onclick="getRegAgents()">Agent列表</button>
                 </span>
             </div>
         </div>

@@ -2,7 +2,7 @@ package com.github.dapeng.util;
 
 import com.github.dapeng.core.SoaException;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
-import com.github.dapeng.entity.ZkNode;
+import com.github.dapeng.entity.config.ZkNode;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;

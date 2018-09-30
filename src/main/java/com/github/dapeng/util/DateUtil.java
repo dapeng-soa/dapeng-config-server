@@ -23,9 +23,6 @@ public class DateUtil {
     public static final String TIMESTATMP_FORMAT = "yyyy-MM-dd HH:mm:ss.S";
     public static final String INFLUXDB_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-/*    public static String getTimeStamp(Date date) {
-        return dateToStamp(getStringDate(date, DATE_FORMAT));
-    }*/
 
     public static Timestamp now() {
         long nowMil = System.currentTimeMillis();
@@ -168,8 +165,8 @@ public class DateUtil {
     /**
      * 获得当年12个月的信息
      *
-     * @param String date
-     * @param flag   是否截止到当月
+     * @param date
+     * @param flag 是否截止到当月
      */
     public static List<String> getCurrYearMonths(String date, boolean flag) {
         List<String> monthList = new ArrayList<String>();
@@ -190,8 +187,8 @@ public class DateUtil {
     /**
      * 获得当年12个月的信息
      *
-     * @param String date
-     * @param flag   是否截止到当月
+     * @param date
+     * @param flag 是否截止到当月
      */
     public static List<String> get2YearMonths(String date, boolean flag) {
         List<String> monthList = new ArrayList<String>();
