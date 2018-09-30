@@ -273,10 +273,10 @@ stopService = function (unitId) {
             }, function () {
                 socket.emit(STOP, JSON.stringify(res.context));
                 layer.msg("操作已发送");
-                bodyAbs();
+                rmBodyAbs();
             }, function () {
                 layer.msg("操作取消");
-                bodyAbs();
+                rmBodyAbs();
             });
         }
     });

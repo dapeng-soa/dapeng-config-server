@@ -15,6 +15,7 @@ import com.github.dapeng.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -92,7 +93,7 @@ public class DeployExecRestController {
             }
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
-        });
+        }, new Sort(Sort.Direction.DESC, "updatedAt"));
 
         if (viewType == 1) {
             // (serviceId->unit)
