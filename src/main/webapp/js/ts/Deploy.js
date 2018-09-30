@@ -30,16 +30,18 @@ var api;
             return "\n            <div class=\"panel-header window-header\">\n                <div class=\"input-group\">\n                    <p class=\"left-panel-title\">\u73AF\u5883\u96C6\u670D\u52A1ENV\u914D\u7F6E(SetSubEnv)</p>\n                </div>\n            </div>\n            <div class=\"form-horizontal\" style=\"margin-top: 81px;\">\n            \n                 <div class=\"form-group\">\n                        <label class=\"col-sm-1 control-label\"></label>\n                        <div class=\"col-sm-10\">\n                            <div id=\"sub-from-container\">\n                            " + c.viewSubEnv("view", subEnv) + "\n                            </div>\n                            " + (type !== c.view ? "\n                        <div style=\"margin-top: 10px\" class=\"icon-add\"><a href=\"#\" onclick=\"addSubFromBySet()\"><span class=\"glyphicon glyphicon-plus\"></span></a>\u70B9\u51FB\u65B0\u589E\u914D\u7F6E</div>\n                    <span class=\"input-group-btn panel-button-group text-center\">\n                    <button type=\"button\" class=\"btn btn-success\" onclick=\"saveSubEnvs(" + setId + ")\">\u4FDD\u5B58</button>\n                    </span>\n                    " : "") + "\n           </div>\n           </div>\n           </div>               \n";
         };
         /**
-         * 导出
-         * @returns {string}
+         * 列表
          */
-        Deploy.prototype.exportConfigFilesContext = function (services, file) {
-            var options = "";
-            for (var index in services) {
-                var s = services[index];
-                options += "<option  value=\"" + s.id + "\">" + s.name + "</option>";
+        Deploy.prototype.exportAgentsContext = function () {
+            return "\n            <div class=\"panel-header window-header\">\n                <div class=\"input-group\">\n                    <p class=\"left-panel-title\">\u5DF2\u6CE8\u518CAgent</p>\n                </div>\n            </div>\n            <div class=\"form-horizontal\" style=\"margin-top: 81px;\">\n              <ul class=\"list-group\" id=\"agentList\">\n                  \n               </ul>\n            </div>\n            ";
+        };
+        Deploy.prototype.exportAgentList = function (agents) {
+            var html = "";
+            for (var i in agents) {
+                var agent = agents[i];
+                html += "<li class=\"list-group-item\">\n                    <span class=\"badge btn-success\">" + agent.name + "</span>\n                    <code>sessionId:[" + agent.sessionId + "]  ip:[" + agent.ip + "]</code>\n                  </li>";
             }
-            return "\n            <div class=\"form-horizontal from-group-item\" style=\"margin-top: 20px;\">\n                " + (file !== undefined ? "" : "<a class=\"from-group-item-rm\" href=\"javascript:void(0)\"><span class=\"glyphicon glyphicon-remove\"></span></a>") + "\n                <input type=\"hidden\" class=\"data-ops-id\" value=\"" + (file === undefined ? 0 : file.id) + "\">\n                <div class=\"form-group\">\n                    <div class=\"col-sm-12\">\n                        <input class=\"form-control data-name-input\" placeholder=\"\u6587\u4EF6\u540D(\u542B\u6587\u4EF6\u7C7B\u578B\u5982\uFF1Aserver.xml)\" value=\"" + (file === undefined ? "" : file.fileName) + "\" >\n                    </div>\n                </div>\n                <div class=\"form-group\">\n                        <div class=\"col-sm-12\">\n                            <select class=\"form-control selectpicker data-service-select\" multiple data-live-search=\"true\" data-actions-box=\"true\" title=\"\u7ED1\u5B9A\u670D\u52A1\">\n                                " + options + "\n                            </select>\n                        </div>\n                </div>   \n                <div class=\"form-group\">\n                    <div class=\"col-sm-12\">\n                        <textarea class=\"form-control data-context-textarea\" placeholder=\"\u6587\u4EF6\u5185\u5BB9\">" + (file === undefined ? "" : file.fileContext) + "</textarea>\n                            </div>\n                        </div> \n                    </div>\n            ";
+            return html;
         };
         Deploy.prototype.viewSubEnv = function (type, subEnvs) {
             if (type === void 0) { type = this.add || this.edit || this.view; }

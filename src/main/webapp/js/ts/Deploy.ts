@@ -123,40 +123,34 @@ appName:goodsService
 `
         }
 
-
         /**
-         * 导出
-         * @returns {string}
+         * 列表
          */
-        public exportConfigFilesContext(services: any, file?: any) {
-            let options = "";
-            for (let index in services) {
-                let s = services[index];
-                options += `<option  value="${s.id}">${s.name}</option>`
-            }
+        public exportAgentsContext() {
             return `
-            <div class="form-horizontal from-group-item" style="margin-top: 20px;">
-                ${file !== undefined ? "" : `<a class="from-group-item-rm" href="javascript:void(0)"><span class="glyphicon glyphicon-remove"></span></a>`}
-                <input type="hidden" class="data-ops-id" value="${file === undefined ? 0 : file.id}">
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <input class="form-control data-name-input" placeholder="文件名(含文件类型如：server.xml)" value="${file === undefined ? `` : file.fileName}" >
-                    </div>
+            <div class="panel-header window-header">
+                <div class="input-group">
+                    <p class="left-panel-title">已注册Agent</p>
                 </div>
-                <div class="form-group">
-                        <div class="col-sm-12">
-                            <select class="form-control selectpicker data-service-select" multiple data-live-search="true" data-actions-box="true" title="绑定服务">
-                                ${options}
-                            </select>
-                        </div>
-                </div>   
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <textarea class="form-control data-context-textarea" placeholder="文件内容">${file === undefined ? `` : file.fileContext}</textarea>
-                            </div>
-                        </div> 
-                    </div>
-            `;
+            </div>
+            <div class="form-horizontal" style="margin-top: 81px;">
+              <ul class="list-group" id="agentList">
+                  
+               </ul>
+            </div>
+            `
+        }
+
+        public exportAgentList(agents: any) {
+            let html = "";
+            for (let i in agents) {
+                let agent = agents[i];
+                html += `<li class="list-group-item">
+                    <span class="badge btn-success">${agent.name}</span>
+                    <code>sessionId:[${agent.sessionId}]  ip:[${agent.ip}]</code>
+                  </li>`;
+            }
+            return html;
         }
 
         public viewSubEnv(type: string = this.add || this.edit || this.view, subEnvs: any) {
@@ -1122,7 +1116,7 @@ ${data.extra == 1 ? '否' : '是'}
          * 文件操作
          * @param value
          */
-        public exportServiceFileAction(value: string,name:string) {
+        public exportServiceFileAction(value: string, name: string) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewServiceFilesOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewServiceFilesOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
@@ -1135,7 +1129,7 @@ ${data.extra == 1 ? '否' : '是'}
          * 文件关联部署单元
          * @param vaue
          */
-        public exportFileLinkUnitContext(value: string,name:string) {
+        public exportFileLinkUnitContext(value: string, name: string) {
             return `
              <div class="panel-header window-header">
                     <div class="input-group">

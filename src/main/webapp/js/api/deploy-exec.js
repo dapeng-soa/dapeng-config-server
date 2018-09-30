@@ -73,6 +73,14 @@ $(document).ready(function () {
         var html = ansi.ansi_to_html(data);
         deploy.consoleView(html);
     });
+    /**
+     * 监听已注册agent列表
+     */
+    socket.on(GET_REGED_AGENTS_RESP, function (data) {
+        var agents = JSON.parse(data);
+        var agentList = deploy.exportAgentList(agents);
+        $("#agentList").html(agentList);
+    });
 
     socket.on(SOC_CDISCONNECT, function () {
         showMessage(ERROR, "已断开与服务器的连接", "断开连接");
@@ -86,6 +94,14 @@ $(document).ready(function () {
         showMessage(ERROR, "与服务器建立连接失败", "连接超时");
     });
 });
+/**
+ * 获取已经注册agent列表
+ */
+var getRegAgents = function () {
+    socket.emit(GET_REGED_AGENTS, "");
+    var context = deploy.exportAgentsContext();
+    initModelContext(context, function(){});
+};
 /**
  * 同步每个agent上服务时间和服务状态
  */

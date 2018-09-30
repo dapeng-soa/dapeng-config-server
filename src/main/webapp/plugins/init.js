@@ -23,6 +23,9 @@ window.RESTART = "restart";
 window.RESTART_RESP = "restartResp";
 window.GET_YAML_FILE = "getYamlFile";
 window.GET_YAML_FILE_RESP = "getYamlFileResp";
+window.GET_REGED_AGENTS = "getRegedAgents";
+window.BUILD = "build";
+window.GET_REGED_AGENTS_RESP = "getRegedAgentsResp";
 window.ERROR_EVENT = "errorEvent";
 // 常用状态
 window.SUCCESS = "success";
