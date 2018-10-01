@@ -21,7 +21,10 @@ $(document).ready(function () {
     });
     initSetList();
     socket.on(NODE_EVENT, function (data) {
-        deploy.consoleView(data);
+        if (data!==""){
+            var html = ansi.ansi_to_html(data);
+            deploy.consoleView(html);
+        }
     });
     /**
      * 获取服务更新时间返回
@@ -42,36 +45,59 @@ $(document).ready(function () {
      * 升级返回
      */
     socket.on(DEPLOY_RESP, function (data) {
-        openConloseView();
-        var html = ansi.ansi_to_html(data);
-        deploy.consoleView(html);
+        if (data !== "") {
+            openConloseView();
+            var html = ansi.ansi_to_html(data);
+            deploy.consoleView(html);
+        }
+        if (data === "[end]"){
+            setTimeout(function () {
+                closeConloseView()
+            },2000);
+        }
     });
 
     /**
      * 停止返回
      */
     socket.on(STOP_RESP, function (data) {
-        openConloseView();
-        var html = ansi.ansi_to_html(data);
-        deploy.consoleView(html);
+        if (data !== "") {
+            openConloseView();
+            var html = ansi.ansi_to_html(data);
+            deploy.consoleView(html);
+        }
+        if (data === "[end]"){
+            setTimeout(function () {
+                closeConloseView()
+            },2000);
+        }
     });
 
     /**
      * 重启返回
      */
     socket.on(RESTART_RESP, function (data) {
-        openConloseView();
-        var html = ansi.ansi_to_html(data);
-        deploy.consoleView(html);
+        if (data !== "") {
+            openConloseView();
+            var html = ansi.ansi_to_html(data);
+            deploy.consoleView(html);
+        }
+        if (data === "[end]"){
+            setTimeout(function () {
+                closeConloseView()
+            },2000);
+        }
     });
 
     /**
      * 错误返回
      */
     socket.on(ERROR_EVENT, function (data) {
-        openConloseView();
-        var html = ansi.ansi_to_html(data);
-        deploy.consoleView(html);
+        if (data!==""){
+            openConloseView();
+            var html = ansi.ansi_to_html(data);
+            deploy.consoleView(html);
+        }
     });
     /**
      * 监听已注册agent列表
@@ -100,7 +126,8 @@ $(document).ready(function () {
 var getRegAgents = function () {
     socket.emit(GET_REGED_AGENTS, "");
     var context = deploy.exportAgentsContext();
-    initModelContext(context, function(){});
+    initModelContext(context, function () {
+    });
 };
 /**
  * 同步每个agent上服务时间和服务状态
