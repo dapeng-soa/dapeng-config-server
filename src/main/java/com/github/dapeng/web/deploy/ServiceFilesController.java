@@ -188,7 +188,7 @@ public class ServiceFilesController {
      * @return
      */
     @PostMapping("/deploy-file/del/{id}")
-    public ResponseEntity delFile(@PathVariable Long id) {
+    public ResponseEntity delServiceFile(@PathVariable Long id) {
         try {
             List<TFilesUnit> byFileId = filesUnitRepository.findByFileId(id);
             if (!isEmpty(byFileId)) {

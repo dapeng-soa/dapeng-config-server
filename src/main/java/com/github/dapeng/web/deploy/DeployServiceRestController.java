@@ -80,7 +80,7 @@ public class DeployServiceRestController {
     }
 
     @PostMapping("/deploy-service/add")
-    public ResponseEntity<?> addService(@RequestBody ServiceDto serviceDto) {
+    public ResponseEntity<?> addDeployService(@RequestBody ServiceDto serviceDto) {
         if (isEmpty(serviceDto.getName()) || isEmpty(serviceDto.getImage())) {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, "服务名，镜像名不能为空"));
@@ -123,7 +123,7 @@ public class DeployServiceRestController {
      * @return
      */
     @PostMapping("/deploy-service/del/{id}")
-    public ResponseEntity delService(@PathVariable long id) {
+    public ResponseEntity delDeployService(@PathVariable long id) {
         serviceRepository.delete(id);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
@@ -137,7 +137,7 @@ public class DeployServiceRestController {
      * @return
      */
     @PostMapping(value = "/deploy-service/edit/{id}")
-    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody ServiceDto serviceDto) {
+    public ResponseEntity<?> editDeploySet(@PathVariable Long id, @RequestBody ServiceDto serviceDto) {
         try {
             if (isEmpty(serviceDto.getName()) || isEmpty(serviceDto.getImage())) {
                 return ResponseEntity

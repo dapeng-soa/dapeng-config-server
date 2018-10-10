@@ -16,6 +16,7 @@
             <label style="color: #222">密码:</label>
             <input type="password" class="form-control" name="password" value="" placeholder="Password">
         </div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
         <input style="width: 100%" type="submit" class="btn btn-success" value="登录"/>
     </form>
     <div style="position: absolute;bottom: 0;left: 0;right: 0">

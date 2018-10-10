@@ -60,4 +60,13 @@ public class WhiteListHistory {
         this.createdBy = createdBy;
     }
 
+    @Override
+    public String toString() {
+        return "WhiteListHistory{" +
+                "id=" + id +
+                ", service='" + service + '\'' +
+                ", createdAt=" + createdAt +
+                ", createdBy=" + createdBy +
+                '}';
+    }
 }

@@ -80,4 +80,16 @@ public class TSet {
         this.remark = remark;
     }
 
+
+    @Override
+    public String toString() {
+        return "TSet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", env='" + env + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

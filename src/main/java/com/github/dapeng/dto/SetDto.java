@@ -48,4 +48,14 @@ public class SetDto {
     public void setSubEnv(List subEnv) {
         this.subEnv = subEnv;
     }
+
+    @Override
+    public String toString() {
+        return "SetDto{" +
+                "name='" + name + '\'' +
+                ", env='" + env + '\'' +
+                ", remark='" + remark + '\'' +
+                ", subEnv=" + subEnv +
+                '}';
+    }
 }

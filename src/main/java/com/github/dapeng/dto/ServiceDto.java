@@ -99,4 +99,18 @@ public class ServiceDto {
         this.remark = remark;
     }
 
+    @Override
+    public String toString() {
+        return "ServiceDto{" +
+                "name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", labels='" + labels + '\'' +
+                ", env='" + env + '\'' +
+                ", volumes='" + volumes + '\'' +
+                ", ports='" + ports + '\'' +
+                ", composeLabels='" + composeLabels + '\'' +
+                ", dockerExtras='" + dockerExtras + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

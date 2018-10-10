@@ -70,4 +70,17 @@ public class ApiKeyInfoDto {
     public void setValidated(int validated) {
         this.validated = validated;
     }
+
+    @Override
+    public String toString() {
+        return "ApiKeyInfoDto{" +
+                "apiKey='" + apiKey + '\'' +
+                ", password='" + password + '\'' +
+                ", ips='" + ips + '\'' +
+                ", notes='" + notes + '\'' +
+                ", biz='" + biz + '\'' +
+                ", timeout=" + timeout +
+                ", validated=" + validated +
+                '}';
+    }
 }

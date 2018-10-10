@@ -43,4 +43,13 @@ public class RealConfig {
     public void setFreqConfig(String freqConfig) {
         this.freqConfig = freqConfig;
     }
+
+    @Override
+    public String toString() {
+        return "RealConfig{" +
+                "timeoutBalanceConfig='" + timeoutBalanceConfig + '\'' +
+                ", routerConfig='" + routerConfig + '\'' +
+                ", freqConfig='" + freqConfig + '\'' +
+                '}';
+    }
 }

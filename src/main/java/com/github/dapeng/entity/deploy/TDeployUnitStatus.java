@@ -58,4 +58,13 @@ public class TDeployUnitStatus {
     this.expired = expired;
   }
 
+  @Override
+  public String toString() {
+    return "TDeployUnitStatus{" +
+            "id=" + id +
+            ", currentTimestamp='" + currentTimestamp + '\'' +
+            ", currentYml='" + currentYml + '\'' +
+            ", expired='" + expired + '\'' +
+            '}';
+  }
 }

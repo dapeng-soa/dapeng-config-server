@@ -57,4 +57,15 @@ public class ZkNodeDto {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    @Override
+    public String toString() {
+        return "ZkNodeDto{" +
+                "zkHost='" + zkHost + '\'' +
+                ", influxdbHost='" + influxdbHost + '\'' +
+                ", influxdbUser='" + influxdbUser + '\'' +
+                ", influxdbPass='" + influxdbPass + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

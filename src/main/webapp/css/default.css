@@ -105,6 +105,7 @@ button[type="button"][name="toggle"]:before {
 .sidebar-top-box {
     margin-bottom: 10px;
     border-bottom: 1px solid #474b57;
+    color: #FFF;
 }
 
 .sidebar-cover {

@@ -99,4 +99,18 @@ public class UnitDto {
         this.dockerExtras = dockerExtras;
     }
 
+    @Override
+    public String toString() {
+        return "UnitDto{" +
+                "setId=" + setId +
+                ", hostId=" + hostId +
+                ", serviceId=" + serviceId +
+                ", gitTag='" + gitTag + '\'' +
+                ", imageTag='" + imageTag + '\'' +
+                ", env='" + env + '\'' +
+                ", ports='" + ports + '\'' +
+                ", volumes='" + volumes + '\'' +
+                ", dockerExtras='" + dockerExtras + '\'' +
+                '}';
+    }
 }

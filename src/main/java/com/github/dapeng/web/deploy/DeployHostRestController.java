@@ -127,7 +127,7 @@ public class DeployHostRestController {
      * @return
      */
     @PostMapping("/deploy-host/add")
-    public ResponseEntity<?> addHost(@RequestBody HostDto hostDto) {
+    public ResponseEntity<?> addDeployHost(@RequestBody HostDto hostDto) {
         try {
             if (isEmpty(hostDto.getName()) || isEmpty(hostDto.getIp()) || isEmpty(hostDto.getSetId())) {
                 return ResponseEntity
@@ -168,7 +168,7 @@ public class DeployHostRestController {
      * @return
      */
     @PostMapping(value = "/deploy-host/edit/{id}")
-    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody HostDto hostDto) {
+    public ResponseEntity<?> editDeploySet(@PathVariable Long id, @RequestBody HostDto hostDto) {
         try {
             if (isEmpty(hostDto.getName()) || isEmpty(hostDto.getIp()) || isEmpty(hostDto.getSetId())) {
                 return ResponseEntity
@@ -204,7 +204,7 @@ public class DeployHostRestController {
      * @return
      */
     @PostMapping("/deploy-host/del/{id}")
-    public ResponseEntity delHost(@PathVariable long id) {
+    public ResponseEntity delDeployHost(@PathVariable long id) {
         hostRepository.delete(id);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));

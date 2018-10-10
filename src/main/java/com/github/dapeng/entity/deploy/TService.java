@@ -148,4 +148,21 @@ public class TService {
     this.remark = remark;
   }
 
+  @Override
+  public String toString() {
+    return "TService{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", image='" + image + '\'' +
+            ", labels='" + labels + '\'' +
+            ", env='" + env + '\'' +
+            ", volumes='" + volumes + '\'' +
+            ", ports='" + ports + '\'' +
+            ", composeLabels='" + composeLabels + '\'' +
+            ", dockerExtras='" + dockerExtras + '\'' +
+            ", createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            ", remark='" + remark + '\'' +
+            '}';
+  }
 }

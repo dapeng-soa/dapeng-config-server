@@ -75,4 +75,16 @@ public class HostDto {
         this.remark = remark;
     }
 
+    @Override
+    public String toString() {
+        return "HostDto{" +
+                "name='" + name + '\'' +
+                ", setId=" + setId +
+                ", ip='" + ip + '\'' +
+                ", labels='" + labels + '\'' +
+                ", extra=" + extra +
+                ", env='" + env + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

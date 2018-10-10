@@ -38,4 +38,14 @@ public class BuildHostDto {
     public void setHost(String host) {
         this.host = host;
     }
+
+    @Override
+    public String toString() {
+        return "BuildHostDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", host='" + host + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

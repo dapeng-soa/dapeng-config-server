@@ -86,4 +86,17 @@ public class TConfigFiles {
     public void setSetId(Long setId) {
         this.setId = setId;
     }
+
+    @Override
+    public String toString() {
+        return "TConfigFiles{" +
+                "id=" + id +
+                ", setId=" + setId +
+                ", fileName='" + fileName + '\'' +
+                ", fileContext='" + fileContext + '\'' +
+                ", remark='" + remark + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

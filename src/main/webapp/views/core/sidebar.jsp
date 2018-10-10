@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="sidebar-left opened">
     <div class="sidebar-top-box">
@@ -7,16 +9,20 @@
                 <img src="${basePath}/images/favicon.png">
             </span>
         </div>
+        <p>
+            <security:authentication property="principal.username"/>
+        </p>
         <a class="header-icon-item" href="${basePath}/logout">
             <span>登出</span><i class="fa fa-sign-out" aria-hidden="true"></i>
         </a>
     </div>
     <ul class="layui-nav layui-nav-tree menu-left" lay-filter="test">
+        <security:authorize access="hasRole('ADMIN')">
         <li class="layui-nav-item layui-nav-itemed">
             <a href="javascript:void(0);"><i class="fa fa-cogs" aria-hidden="true"></i>配置管理</a>
             <dl class="layui-nav-child">
                 <dd class="${sideName == 'clusters' ? 'layui-this' : ''}">
-                    <a href="${basePath}/clusters"><i class="fa fa-server" aria-hidden="true"></i>集群管理</a>
+                    <a href="${basePath}/config/clusters"><i class="fa fa-server" aria-hidden="true"></i>集群管理</a>
                 </dd>
                 <dd class="${sideName == 'config-service' ? 'layui-this' : ''}">
                     <a href="${basePath}/config/service"><i class="fa fa-wrench" aria-hidden="true"></i>服务配置</a>
@@ -66,6 +72,18 @@
                 </dd>
             </dl>
         </li>
+        <li class="layui-nav-item layui-nav-itemed">
+            <a href="javascript:void(0);"><i class="fa fa-wrench" aria-hidden="true"></i>系统管理</a>
+            <dl class="layui-nav-child">
+                <dd class="${sideName == 'system-account' ? 'layui-this' : ''}">
+                    <a href="${basePath}/system/account"><i class="fa fa-users" aria-hidden="true"></i>账号管理</a>
+                </dd>
+                <dd class="${sideName == 'system-log' ? 'layui-this' : ''}">
+                    <a href="${basePath}/system/log"><i class="fa fa-file-text-o" aria-hidden="true"></i>操作日志</a>
+                </dd>
+            </dl>
+        </li>
+        </security:authorize>
         <%--<li class="layui-nav-item"><a href="${basePath}/monitor"><i class="fa fa-tachometer" aria-hidden="true"></i>服务监控</a>
         </li>--%>
     </ul>
@@ -98,6 +116,7 @@
         cn.removeClass("closed");
         cn.addClass("opened");
     }
+
     function closeSidebar() {
         var sc = $(".sidebar-left");
         var cn = $(".container-right");

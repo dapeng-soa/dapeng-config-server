@@ -149,4 +149,19 @@ public class ConfigPublishHistory {
         this.remark = remark;
     }
 
+    @Override
+    public String toString() {
+        return "ConfigPublishHistory{" +
+                "id=" + id +
+                ", version='" + version + '\'' +
+                ", serviceName='" + serviceName + '\'' +
+                ", timeoutConfig='" + timeoutConfig + '\'' +
+                ", loadbalanceConfig='" + loadbalanceConfig + '\'' +
+                ", routerConfig='" + routerConfig + '\'' +
+                ", freqConfig='" + freqConfig + '\'' +
+                ", publishedBy=" + publishedBy +
+                ", publishedAt=" + publishedAt +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

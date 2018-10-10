@@ -1,14 +1,14 @@
 package com.github.dapeng.web;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import com.github.dapeng.entity.build.TBuildHost;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.build.BuildHostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
@@ -53,6 +53,16 @@ public class PageController {
     }
 
     /**
+     * 登出
+     *
+     * @return
+     */
+    @GetMapping(value = "/logout")
+    public String logout() {
+        return "redirect:login?logout";
+    }
+
+    /**
      * 登录
      *
      * @return
@@ -73,17 +83,20 @@ public class PageController {
         return "page/monitor";
     }
 
-    /**
-     * 集群管理
-     *
-     * @return
-     */
-    @GetMapping(value = "/clusters")
-    public String clusters(Model model) {
-        model.addAttribute("tagName", "clusters");
-        model.addAttribute("sideName", "clusters");
-        return "page/clusters";
+    @GetMapping(value = "/system/account")
+    public String systemAccount(Model model) {
+        model.addAttribute("tagName", "system-account");
+        model.addAttribute("sideName", "system-account");
+        return "page/system-account";
     }
+
+    @GetMapping(value = "/system/log")
+    public String systemLog(Model model) {
+        model.addAttribute("tagName", "system-log");
+        model.addAttribute("sideName", "system-log");
+        return "page/system-log";
+    }
+
 
     /**
      * 配置管理
@@ -94,6 +107,18 @@ public class PageController {
     public String config(Model model) {
         model.addAttribute("tagName", "config");
         return "redirect:config/service";
+    }
+
+    /**
+     * 集群管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/config/clusters")
+    public String clusters(Model model) {
+        model.addAttribute("tagName", "clusters");
+        model.addAttribute("sideName", "clusters");
+        return "page/clusters";
     }
 
     /**

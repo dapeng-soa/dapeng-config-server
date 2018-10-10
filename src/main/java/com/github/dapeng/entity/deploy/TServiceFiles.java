@@ -94,4 +94,18 @@ public class TServiceFiles {
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "TServiceFiles{" +
+                "id=" + id +
+                ", fileName='" + fileName + '\'' +
+                ", fileExtName='" + fileExtName + '\'' +
+                ", fileContext='" + fileContext + '\'' +
+                ", fileTag='" + fileTag + '\'' +
+                ", remark='" + remark + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

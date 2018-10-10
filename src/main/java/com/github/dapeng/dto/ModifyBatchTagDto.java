@@ -27,4 +27,12 @@ public class ModifyBatchTagDto {
     public void setTag(String tag) {
         this.tag = tag;
     }
+
+    @Override
+    public String toString() {
+        return "ModifyBatchTagDto{" +
+                "ids=" + ids +
+                ", tag='" + tag + '\'' +
+                '}';
+    }
 }

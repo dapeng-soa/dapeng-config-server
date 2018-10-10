@@ -166,4 +166,22 @@ public class ConfigInfo {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    @Override
+    public String toString() {
+        return "ConfigInfo{" +
+                "id=" + id +
+                ", serviceName='" + serviceName + '\'' +
+                ", status=" + status +
+                ", timeoutConfig='" + timeoutConfig + '\'' +
+                ", loadbalanceConfig='" + loadbalanceConfig + '\'' +
+                ", routerConfig='" + routerConfig + '\'' +
+                ", freqConfig='" + freqConfig + '\'' +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

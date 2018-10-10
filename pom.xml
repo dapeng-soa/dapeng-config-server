@@ -125,6 +125,13 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.17</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>5.0.0.RELEASE</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 
         <!--邮件-->
         <dependency>

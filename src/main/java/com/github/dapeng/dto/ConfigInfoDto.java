@@ -77,4 +77,16 @@ public class ConfigInfoDto {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+    @Override
+    public String toString() {
+        return "ConfigInfoDto{" +
+                "serviceName='" + serviceName + '\'' +
+                ", timeoutConfig='" + timeoutConfig + '\'' +
+                ", loadbalanceConfig='" + loadbalanceConfig + '\'' +
+                ", routerConfig='" + routerConfig + '\'' +
+                ", freqConfig='" + freqConfig + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }

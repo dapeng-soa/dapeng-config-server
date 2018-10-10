@@ -168,4 +168,23 @@ public class ApiKeyInfo {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "ApiKeyInfo{" +
+                "id=" + id +
+                ", apiKey='" + apiKey + '\'' +
+                ", password='" + password + '\'' +
+                ", ips='" + ips + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                ", notes='" + notes + '\'' +
+                ", biz='" + biz + '\'' +
+                ", timeout=" + timeout +
+                ", validated=" + validated +
+                ", status=" + status +
+                '}';
+    }
 }

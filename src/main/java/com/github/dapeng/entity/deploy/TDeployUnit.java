@@ -148,4 +148,21 @@ public class TDeployUnit {
     this.dockerExtras = dockerExtras;
   }
 
+  @Override
+  public String toString() {
+    return "TDeployUnit{" +
+            "id=" + id +
+            ", setId=" + setId +
+            ", hostId=" + hostId +
+            ", serviceId=" + serviceId +
+            ", gitTag='" + gitTag + '\'' +
+            ", imageTag='" + imageTag + '\'' +
+            ", createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            ", env='" + env + '\'' +
+            ", ports='" + ports + '\'' +
+            ", volumes='" + volumes + '\'' +
+            ", dockerExtras='" + dockerExtras + '\'' +
+            '}';
+  }
 }

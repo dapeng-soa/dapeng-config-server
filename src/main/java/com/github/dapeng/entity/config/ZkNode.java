@@ -141,4 +141,20 @@ public class ZkNode {
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "ZkNode{" +
+                "id=" + id +
+                ", zkHost='" + zkHost + '\'' +
+                ", influxdbHost='" + influxdbHost + '\'' +
+                ", influxdbUser='" + influxdbUser + '\'' +
+                ", influxdbPass='" + influxdbPass + '\'' +
+                ", remark='" + remark + '\'' +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

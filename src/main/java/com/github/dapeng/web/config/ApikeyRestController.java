@@ -108,7 +108,7 @@ public class ApikeyRestController {
      */
     @PostMapping(value = "/apikey/edit/{id}")
     @DataSource(EXTRA_DATASOURCE)
-    public ResponseEntity<?> updateApiKey(@PathVariable Long id, @RequestBody ApiKeyInfoDto dto) {
+    public ResponseEntity<?> editApiKey(@PathVariable Long id, @RequestBody ApiKeyInfoDto dto) {
         try {
             ApiKeyInfo info = repository.getOne(id);
             info.setPassword(dto.getPassword());

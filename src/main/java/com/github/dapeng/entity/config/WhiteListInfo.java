@@ -36,4 +36,11 @@ public class WhiteListInfo {
         this.serveice = serveice;
     }
 
+    @Override
+    public String toString() {
+        return "WhiteListInfo{" +
+                "id=" + id +
+                ", serveice='" + serveice + '\'' +
+                '}';
+    }
 }

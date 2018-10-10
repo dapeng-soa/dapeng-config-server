@@ -25,4 +25,12 @@ public class SubEnv {
     public void setEnv(String env) {
         this.env = env;
     }
+
+    @Override
+    public String toString() {
+        return "SubEnv{" +
+                "serviceId=" + serviceId +
+                ", env='" + env + '\'' +
+                '}';
+    }
 }

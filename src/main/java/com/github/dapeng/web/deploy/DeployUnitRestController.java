@@ -152,7 +152,7 @@ public class DeployUnitRestController {
      * @return
      */
     @PostMapping("/deploy-unit/add")
-    public ResponseEntity<?> addUnit(@RequestBody UnitDto unitDto) {
+    public ResponseEntity<?> addDeployUnit(@RequestBody UnitDto unitDto) {
         if (isEmpty(unitDto.getSetId())
                 || isEmpty(unitDto.getHostId())
                 || isEmpty(unitDto.getServiceId())
@@ -195,7 +195,7 @@ public class DeployUnitRestController {
      * @return
      */
     @PostMapping(value = "/deploy-unit/edit/{id}")
-    public ResponseEntity<?> updateUnit(@PathVariable Long id, @RequestBody UnitDto unitDto) {
+    public ResponseEntity<?> editDeployUnit(@PathVariable Long id, @RequestBody UnitDto unitDto) {
         try {
             if (isEmpty(unitDto.getSetId())
                     || isEmpty(unitDto.getHostId())
@@ -230,7 +230,7 @@ public class DeployUnitRestController {
     }
 
     @PostMapping(value = "/deploy-unit/del/{id}")
-    public ResponseEntity delUnit(@PathVariable Long id) {
+    public ResponseEntity delDeployUnit(@PathVariable Long id) {
         TDeployUnit unit = unitRepository.getOne(id);
         LOGGER.info("del deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
         unitRepository.delete(unit.getId());
@@ -245,7 +245,7 @@ public class DeployUnitRestController {
      * @return
      */
     @PostMapping(value = "deploy-unit/modify-batch")
-    public ResponseEntity modifyBatch(@RequestBody ModifyBatchTagDto tagDto) {
+    public ResponseEntity modifyDeployUnitTagBatch(@RequestBody ModifyBatchTagDto tagDto) {
         try {
             DeployCheck.hasChinese(tagDto.getTag(), "镜像tag");
             tagDto.getIds().forEach(x -> {

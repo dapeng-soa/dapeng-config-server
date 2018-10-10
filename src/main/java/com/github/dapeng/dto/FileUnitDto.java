@@ -34,4 +34,12 @@ public class FileUnitDto {
     public void setFid(Long fid) {
         this.fid = fid;
     }
+
+    @Override
+    public String toString() {
+        return "FileUnitDto{" +
+                "uids=" + uids +
+                ", fid=" + fid +
+                '}';
+    }
 }

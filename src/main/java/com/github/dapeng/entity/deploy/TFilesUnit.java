@@ -57,4 +57,13 @@ public class TFilesUnit {
         this.createAt = createAt;
     }
 
+    @Override
+    public String toString() {
+        return "TFilesUnit{" +
+                "id=" + id +
+                ", fileId=" + fileId +
+                ", unitId=" + unitId +
+                ", createAt=" + createAt +
+                '}';
+    }
 }

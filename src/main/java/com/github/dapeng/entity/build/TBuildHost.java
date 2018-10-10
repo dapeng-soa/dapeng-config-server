@@ -95,4 +95,16 @@ public class TBuildHost {
 
         return Objects.hash(id, name, host, remark, createdAt, updatedAt);
     }
+
+    @Override
+    public String toString() {
+        return "TBuildHost{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", host=" + host +
+                ", remark='" + remark + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

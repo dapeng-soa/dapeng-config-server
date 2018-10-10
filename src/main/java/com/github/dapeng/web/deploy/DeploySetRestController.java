@@ -96,7 +96,7 @@ public class DeploySetRestController {
      * @return
      */
     @PostMapping("/deploy-set/add")
-    public ResponseEntity<?> addSet(@RequestBody SetDto setDto) {
+    public ResponseEntity<?> addDeploySet(@RequestBody SetDto setDto) {
         if (isEmpty(setDto.getName())) {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
@@ -124,7 +124,7 @@ public class DeploySetRestController {
     }
 
     @PostMapping("/deploy-set/del/{id}")
-    public ResponseEntity delSet(@PathVariable long id) {
+    public ResponseEntity delDeploySet(@PathVariable long id) {
         List<THost> hosts = hostRepository.findBySetId(id);
         List<TSetServiceEnv> serviceEnvs = envRepository.findAllBySetId(id);
         List<TDeployUnit> deployUnits = unitRepository.findAllBySetId(id);
@@ -155,7 +155,7 @@ public class DeploySetRestController {
      * @return
      */
     @PostMapping(value = "/deploy-set/edit/{id}")
-    public ResponseEntity<?> updateSet(@PathVariable Long id, @RequestBody SetDto setDto) {
+    public ResponseEntity<?> editDeploySet(@PathVariable Long id, @RequestBody SetDto setDto) {
         try {
             if (isEmpty(setDto.getName())) {
                 return ResponseEntity
@@ -185,7 +185,7 @@ public class DeploySetRestController {
     }
 
     @PostMapping(value = "deploy-set/sub-env/add")
-    public ResponseEntity addSubEnv(@RequestBody DeploySetServiceEnvVo subEnv) {
+    public ResponseEntity addDeploySetSubEnv(@RequestBody DeploySetServiceEnvVo subEnv) {
         try {
             List<TSetServiceEnv> envList = new ArrayList<>();
             List<Long> serviceIds = new ArrayList<>();

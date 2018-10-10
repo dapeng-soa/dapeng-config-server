@@ -53,4 +53,13 @@ public class Resp {
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+    @Override
+    public String toString() {
+        return "Resp{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", context=" + context +
+                '}';
+    }
 }

@@ -136,4 +136,20 @@ public class TOperationJournal {
     this.createdBy = createdBy;
   }
 
+  @Override
+  public String toString() {
+    return "TOperationJournal{" +
+            "id=" + id +
+            ", setId=" + setId +
+            ", hostId=" + hostId +
+            ", serviceId=" + serviceId +
+            ", gitTag='" + gitTag + '\'' +
+            ", imageTag='" + imageTag + '\'' +
+            ", yml='" + yml + '\'' +
+            ", diff='" + diff + '\'' +
+            ", opFlag=" + opFlag +
+            ", createdAt=" + createdAt +
+            ", createdBy='" + createdBy + '\'' +
+            '}';
+  }
 }

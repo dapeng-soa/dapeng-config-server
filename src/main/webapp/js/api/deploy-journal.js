@@ -2,7 +2,7 @@ var deploy = new api.Deploy();
 var bsTable = {};
 var socket = {};
 var yaml = "";
-var util = new api.Api();
+var $$ = new api.Api();
 $(document).ready(function () {
     initDeployJournals();
     initViewSetSelect();
@@ -164,13 +164,13 @@ viewDeployJournal = function (id) {
 viewDeployJournalYml = function (id, hostId, serviceId) {
 
     var event_url = basePath + "/api/deploy-unit/event_rep";
-    util.get(event_url, {hostId: hostId, serviceId: serviceId}, function (res) {
+    $$.get(event_url, {hostId: hostId, serviceId: serviceId}, function (res) {
         if (res.code === SUCCESS_CODE) {
             yaml = "";
             socket.emit(GET_YAML_FILE, JSON.stringify(res.context));
 
             var url = basePath + "/api/deploy-journal/" + id;
-            util.$get(url, function (res2) {
+            $$.$get(url, function (res2) {
                 if (res2.code === SUCCESS_CODE) {
                     // 导出弹窗内容模版
                     var context = deploy.exportViewDeployJournalContext(id);
@@ -195,7 +195,7 @@ rollbackDeploy = function (jid, host, service) {
     layer.confirm('回滚服务[' + host + ':' + service + ']?', {
         btn: ['确认', '取消']
     }, function () {
-        util.post(url, {jid: jid}, function (res) {
+        $$.post(url, {jid: jid}, function (res) {
             if (res.code === SUCCESS_CODE) {
                 socket.emit(DEPLOY, JSON.stringify(res.context));
                 layer.msg("操作已发送");

@@ -82,4 +82,17 @@ public class TSetServiceEnv {
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
+    @Override
+    public String toString() {
+        return "TSetServiceEnv{" +
+                "id=" + id +
+                ", setId=" + setId +
+                ", serviceId=" + serviceId +
+                ", env='" + env + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

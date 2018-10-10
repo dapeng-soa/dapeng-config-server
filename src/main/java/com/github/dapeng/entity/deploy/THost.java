@@ -124,4 +124,19 @@ public class THost {
     this.remark = remark;
   }
 
+  @Override
+  public String toString() {
+    return "THost{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", setId=" + setId +
+            ", ip=" + ip +
+            ", labels='" + labels + '\'' +
+            ", extra=" + extra +
+            ", env='" + env + '\'' +
+            ", createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            ", remark='" + remark + '\'' +
+            '}';
+  }
 }
