@@ -12,10 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -119,6 +116,13 @@ public class OpLogController {
         logOps.setPerators(perators);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, logOps));
+    }
+
+    @GetMapping("/system-log/{id}")
+    public ResponseEntity getOpLogById(@PathVariable Long id) {
+        TOpLog opLog = logRepository.getOne(id);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, opLog));
     }
 
 

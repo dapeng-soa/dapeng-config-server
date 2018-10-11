@@ -51,11 +51,13 @@ setColumns = function () {
     }, {
         field: 'operParams',
         title: '操作参数',
+        align: 'center',
         formatter: operParamsFormatter
     }, {
         field: 'operResult',
         title: '操作结果',
-        align: 'center'
+        align: 'center',
+        formatter: operResultFormatter
     }, {
         field: 'resultMsg',
         title: '结果消息'
@@ -86,7 +88,35 @@ initOps = function () {
 
 
 operParamsFormatter = function (value, row, index) {
-    return getFormatedJsonHTML(JSON.parse(value));
+    return '<a href="javascript:void(0)" onclick=openViewParamsModel("' + row.id + '")><i class="fa fa-eye" aria-hidden="true"></i></a>'
+};
+
+openViewParamsModel = function (id) {
+    var url = basePath + "/api/system-log/" + id;
+    $$.$get(url, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var params = res.context.operParams;
+            var context = "<h3>操作人:" + res.context.operator + " 操作方法:" + res.context.operName + "操作时间:" + res.context.operTime + "</h3>";
+            context += "<hr/>"
+            context += getFormatedJsonHTML(JSON.parse(params));
+            initModelContext(context, function () {
+            });
+        } else {
+            layer.msg(res.msg);
+        }
+    });
+};
+
+
+operResultFormatter = function (value) {
+    switch (Number(value)) {
+        case SUCCESS_CODE:
+            return '<span class="label label-success" title="' + value + '">成功</span>';
+        case ERROR_CODE:
+            return '<span class="label label-danger" title="' + value + '">失败</span>';
+        default:
+            return '<span class="label label-success" title="' + value + '">成功</span>';
+    }
 };
 
 

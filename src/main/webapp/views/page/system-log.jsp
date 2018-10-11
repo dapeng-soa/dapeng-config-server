@@ -14,6 +14,7 @@
     <script src="${basePath}/plugins/json/json.format.js"></script>
 </head>
 <body>
+<jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
     <div class="container-right-context animated fadeIn">
