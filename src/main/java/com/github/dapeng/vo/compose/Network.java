@@ -3,7 +3,7 @@ package com.github.dapeng.vo.compose;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.dapeng.common.Commons.NETWORK_MTU_KEY;
+import static com.github.dapeng.common.Commons.*;
 
 /**
  * @author with struy.
@@ -17,7 +17,7 @@ public class Network {
 
     public Network() {
         Map<String, String> map = new HashMap<>();
-        map.put(NETWORK_MTU_KEY, "1500");
+        map.put(NETWORK_MTU_KEY, NETWORK_MTU_VAL);
         this.driver_opts = map;
     }
 

@@ -16,8 +16,10 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static com.github.dapeng.common.Commons.*;
-import static com.github.dapeng.util.NullUtil.*;
+import static com.github.dapeng.common.Commons.DEFAULT_NETWORK;
+import static com.github.dapeng.common.Commons.DEFAULT_VERSION;
+import static com.github.dapeng.common.Commons.NETWORK_MTU_VAL;
+import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
  * @author with struy.
@@ -294,13 +296,15 @@ public class Composeutil {
     public static String processComposeContext(DockerService dockerService, String mtu) {
         // 时间应当查询一个最后更新时间发送
         DockerYaml dockerYaml = new DockerYaml();
-        dockerYaml.setVersion(DEFAULT_VERSION);
-        Map<String, Network> networks = new HashMap<>(1);
-        networks.put(DEFAULT_NETWORK, new Network(mtu));
-        dockerYaml.setNetworks(networks);
-        List<String> nets = new ArrayList<>();
-        nets.add(DEFAULT_NETWORK);
-        dockerService.setNetworks(nets);
+        if (!mtu.equals(NETWORK_MTU_VAL)) {
+            dockerYaml.setVersion(DEFAULT_VERSION);
+            Map<String, Network> networks = new HashMap<>(1);
+            networks.put(DEFAULT_NETWORK, new Network(mtu));
+            dockerYaml.setNetworks(networks);
+            List<String> nets = new ArrayList<>();
+            nets.add(DEFAULT_NETWORK);
+            dockerService.setNetworks(nets);
+        }
         Map<String, DockerService> serviceMap = new HashMap<>(1);
         serviceMap.put(dockerService.getContainer_name(), dockerService);
         dockerYaml.setServices(serviceMap);
