@@ -2,8 +2,9 @@ package com.github.dapeng.util;
 
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.entity.deploy.*;
-import com.github.dapeng.vo.DockerYaml;
-import com.github.dapeng.vo.DockerService;
+import com.github.dapeng.vo.compose.DockerService;
+import com.github.dapeng.vo.compose.DockerYaml;
+import com.github.dapeng.vo.compose.Network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.DumperOptions;
@@ -15,6 +16,7 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.*;
 
 /**
@@ -289,10 +291,16 @@ public class Composeutil {
      * @param
      * @return
      */
-    public static String processComposeContext(DockerService dockerService) {
+    public static String processComposeContext(DockerService dockerService, String mtu) {
         // 时间应当查询一个最后更新时间发送
         DockerYaml dockerYaml = new DockerYaml();
-        dockerYaml.setVersion("2");
+        dockerYaml.setVersion(DEFAULT_VERSION);
+        Map<String, Network> networks = new HashMap<>(1);
+        networks.put(DEFAULT_NETWORK, new Network(mtu));
+        dockerYaml.setNetworks(networks);
+        List<String> nets = new ArrayList<>();
+        nets.add(DEFAULT_NETWORK);
+        dockerService.setNetworks(nets);
         Map<String, DockerService> serviceMap = new HashMap<>(1);
         serviceMap.put(dockerService.getContainer_name(), dockerService);
         dockerYaml.setServices(serviceMap);

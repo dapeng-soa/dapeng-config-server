@@ -1,8 +1,5 @@
 package com.github.dapeng.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author with struy.
  * Create by 2018/6/22 16:09
@@ -14,7 +11,7 @@ public class SetDto {
     private String name;
     private String env = "";
     private String remark = "";
-    private List<SubEnv>  subEnv = new ArrayList<>();
+    private String networkMtu = "1500";
 
     public String getName() {
         return name;
@@ -41,12 +38,12 @@ public class SetDto {
         this.remark = remark;
     }
 
-    public List getSubEnv() {
-        return subEnv;
+    public String getNetworkMtu() {
+        return networkMtu;
     }
 
-    public void setSubEnv(List subEnv) {
-        this.subEnv = subEnv;
+    public void setNetworkMtu(String networkMtu) {
+        this.networkMtu = networkMtu;
     }
 
     @Override
@@ -55,7 +52,7 @@ public class SetDto {
                 "name='" + name + '\'' +
                 ", env='" + env + '\'' +
                 ", remark='" + remark + '\'' +
-                ", subEnv=" + subEnv +
+                ", networkMtu='" + networkMtu + '\'' +
                 '}';
     }
 }

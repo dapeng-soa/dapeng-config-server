@@ -72,6 +72,13 @@ appName:goodsService
                               </div>
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">NetWork-Mtu:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type == c.view ? "disabled" : ""} id="networkMtu" placeholder="defualt:1500" class="col-sm-2 form-control" value="${type != c.add ? data.networkMtu : ""}">
+                        </div>
+                    </div>
                    
                     <div class="form-group">
                         <label class="col-sm-2 control-label">备注:</label>

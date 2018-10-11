@@ -1,4 +1,4 @@
-package com.github.dapeng.vo;
+package com.github.dapeng.vo.compose;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +10,7 @@ public class DockerService {
     private Map<String,String> environment;
     private List<String> ports;
     private String command;
+    private List<String> networks;
     private String stop_grace_period;
     private List<String> volumes;
     private List<String> labels;
@@ -92,5 +93,13 @@ public class DockerService {
 
     public void setExtra_hosts(List<String> extra_hosts) {
         this.extra_hosts = extra_hosts;
+    }
+
+    public List<String> getNetworks() {
+        return networks;
+    }
+
+    public void setNetworks(List<String> networks) {
+        this.networks = networks;
     }
 }

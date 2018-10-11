@@ -12,6 +12,7 @@ import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.DownloadUtil;
 import com.github.dapeng.util.Tools;
 import com.github.dapeng.vo.*;
+import com.github.dapeng.vo.compose.DockerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,7 +237,7 @@ public class DeployExecRestController {
         List<String> files2Volumes = processFiles2Volumes(unit);
         dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        String composeContext = Composeutil.processComposeContext(dockerService1);
+        String composeContext = Composeutil.processComposeContext(dockerService1, set.getNetworkMtu());
 
         String ip = IPUtils.transferIp(host.getIp());
         DeployVo dockerVo = new DeployVo();
@@ -423,7 +424,7 @@ public class DeployExecRestController {
         List<String> files2Volumes = processFiles2Volumes(unit);
         dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        String composeContext = Composeutil.processComposeContext(dockerService1);
+        String composeContext = Composeutil.processComposeContext(dockerService1, set.getNetworkMtu());
 
         DeployVo dockerVo = new DeployVo();
         dockerVo.setServiceName(service.getName());
@@ -456,7 +457,7 @@ public class DeployExecRestController {
         List<String> files2Volumes = processFiles2Volumes(unit);
         dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        String composeContext = Composeutil.processComposeContext(dockerService1);
+        String composeContext = Composeutil.processComposeContext(dockerService1, set.getNetworkMtu());
         String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + service.getName() + ".yml";
         // 将内容写入文件
         Tools.writeStringToFile(path, composeContext);

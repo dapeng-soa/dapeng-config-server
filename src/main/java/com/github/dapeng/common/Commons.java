@@ -40,4 +40,8 @@ public class Commons {
 
     public static final String MAIN_DATASOURCE = "mainSource";
     public static final String EXTRA_DATASOURCE = "extraSource";
+
+    public static final String NETWORK_MTU_KEY = "com.docker.network.driver.mtu";
+    public static final String DEFAULT_NETWORK = "net";
+    public static final String DEFAULT_VERSION = "2";
 }

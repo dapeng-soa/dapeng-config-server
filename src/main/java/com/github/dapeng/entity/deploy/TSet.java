@@ -26,6 +26,8 @@ public class TSet {
     private java.sql.Timestamp updatedAt;
     @Column(name = "remark")
     private String remark;
+    @Column(name = "network_mtu")
+    private String networkMtu;
 
     public long getId() {
         return id;
@@ -80,6 +82,13 @@ public class TSet {
         this.remark = remark;
     }
 
+    public String getNetworkMtu() {
+        return networkMtu;
+    }
+
+    public void setNetworkMtu(String networkMtu) {
+        this.networkMtu = networkMtu;
+    }
 
     @Override
     public String toString() {
@@ -90,6 +99,7 @@ public class TSet {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", remark='" + remark + '\'' +
+                ", networkMtu='" + networkMtu + '\'' +
                 '}';
     }
 }

@@ -35,6 +35,9 @@ setColumns = function () {
         title: '环境集',
         sortable: true
     }, {
+        field: 'networkMtu',
+        title: 'networkMtu'
+    }, {
         field: 'remark',
         title: '备注'
     }, {
@@ -190,10 +193,12 @@ clearDeploySetInput = function () {
 processDeploySetData = function () {
     var name = $("#name").val();
     var env = $("#env-area").val();
+    var networkMtu = $("#networkMtu").val();
     var remark = $("#remark-area").val();
     return {
         name: name,
         env: env,
+        networkMtu: networkMtu,
         remark: remark
     }
 };
@@ -266,6 +271,7 @@ copySetChange = function () {
         $.get(url, function (res) {
             $("#name").val(res.context.name);
             $("#env-area").val(res.context.env);
+            $("#networkMtu").val(res.context.networkMtu);
             $("#remark-area").val(res.context.remark);
         }, "json");
     }
