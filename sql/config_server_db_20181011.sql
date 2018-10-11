@@ -174,6 +174,7 @@ CREATE TABLE `t_set` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT '添加时间',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '最后更新时间',
   `remark` varchar(255) DEFAULT 'NULL' COMMENT '备注',
+  `network_mtu` varchar(11) NOT NULL DEFAULT '1500' COMMENT '网络MTU值，默认为1500',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_set_name` (`name`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='环境集信息表';
