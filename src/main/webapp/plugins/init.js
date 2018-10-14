@@ -205,6 +205,16 @@ window.indexFormatter = function (value, row, index) {
         };
         this.onDblClickRow = function (row) {
         };
+        this.onClickRow = function (row) {
+        };
+        this.onCheck = function (row) {
+        };
+        this.onUncheck = function (row) {
+        };
+        this.onCheckAll = function (rows) {
+        };
+        this.onUncheckAll = function (rows) {
+        };
         // 可格式化处理返回参数
         this.responseHandler = function (res) {
             return {
@@ -259,7 +269,12 @@ window.indexFormatter = function (value, row, index) {
                     columns: this.columns,      //列数组
                     onLoadSuccess: this.onLoadSuccess, //载入成功
                     onLoadError: this.onLoadError, //载入失败
-                    onDblClickRow: this.onDblClickRow // 双击行事件
+                    onDblClickRow: this.onDblClickRow, // 双击行事件
+                    onClickRow: this.onClickRow, // 单击事件
+                    onCheck: this.onCheck, // 当选择某行时触发
+                    onUncheck: this.onUncheck, // 当反选某行时触发
+                    onCheckAll: this.onCheckAll, // 全选所有的行时触发
+                    onUncheckAll: this.onUncheckAll // 反选所有的行时触发
                 });
             return this;
         },
@@ -283,6 +298,16 @@ window.indexFormatter = function (value, row, index) {
         getAllSelections: function () {
             return this.btInstance.bootstrapTable('getAllSelections');
         },
+
+        /**
+         * 按值或数组选中某行，参数包含：
+         * @param field 用于查找记录的字段的名称
+         * @param values 要检查的行的值数组
+         */
+        checkBy: function (field, values) {
+            this.btInstance.bootstrapTable("checkBy", {field: field, values: values});
+        },
+
 
         /**
          * 设置ajax post请求时候附带的参数

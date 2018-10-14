@@ -45,4 +45,8 @@ public class Commons {
     public static final String NETWORK_MTU_VAL = "1500";
     public static final String DEFAULT_NETWORK = "net";
     public static final String DEFAULT_VERSION = "2";
+
+    public static final String ROLE_PREFIX = "ROLE_";
+    public static final String ADMIN = "ADMIN";
+    public static final String SUPER_ROLE = ROLE_PREFIX + ADMIN;
 }

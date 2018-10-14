@@ -1,5 +1,6 @@
 package com.github.dapeng.config;
 
+import com.github.dapeng.web.system.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
@@ -8,8 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import javax.annotation.Resource;
-import javax.sql.DataSource;
+
 
 /**
  * @author with struy.
@@ -21,8 +21,8 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource
-    private DataSource dataSource;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,15 +30,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/views/exhibition/**").permitAll()
-                .antMatchers("/serviceMonitor/**").permitAll()
-                .antMatchers("/exhibition/**").permitAll()
-                .antMatchers("/config/**").hasAnyRole("ADMIN")
+                .antMatchers("/config/**").hasAnyRole("ADMIN", "OPS")
                 .antMatchers("/monitor/**").hasAnyRole("ADMIN")
-                .antMatchers("/deploy/**").hasAnyRole("ADMIN")
-                .antMatchers("/clusters/**").hasAnyRole("ADMIN")
-                .antMatchers("/system/**").hasRole("ADMIN")
-                .antMatchers("/api/**").hasAnyRole("ADMIN")
+                .antMatchers("/deploy/**").hasAnyRole("ADMIN", "OPS")
+                .antMatchers("/clusters/**").hasAnyRole("ADMIN", "OPS")
+                .antMatchers("/system/**").hasAnyRole("ADMIN")
+                .antMatchers("/me/**").hasAnyRole("ADMIN", "OPS", "DEV")
+                .antMatchers("/build/** ").hasAnyRole("ADMIN", "OPS", "DEV")
+                .antMatchers("/api/**").hasAnyRole("ADMIN", "OPS", "DEV")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -52,13 +51,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-        final String querySql = "select username,password,true from users where username = ?";
-        final String querySql2 = "select username,authority from authorities where username = ?";
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery(querySql)
-                .authoritiesByUsernameQuery(querySql2)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(new Md5PasswordEncoder());
     }
 

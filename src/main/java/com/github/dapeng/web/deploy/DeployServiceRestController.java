@@ -5,7 +5,7 @@ import com.github.dapeng.dto.ServiceDto;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.util.DateUtil;
-import com.github.dapeng.util.DeployCheck;
+import com.github.dapeng.util.Check;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,8 +86,8 @@ public class DeployServiceRestController {
                     .ok(Resp.of(ERROR_CODE, "服务名，镜像名不能为空"));
         }
         try {
-            DeployCheck.hasChinese(serviceDto.getName(), "服务名");
-            DeployCheck.hasChinese(serviceDto.getImage(), "镜像名");
+            Check.hasChinese(serviceDto.getName(), "服务名");
+            Check.hasChinese(serviceDto.getImage(), "镜像名");
             List<TService> tServices = serviceRepository.findByName(serviceDto.getName());
             if (!isEmpty(tServices)){
                 throw new Exception("已存在同名服务");
@@ -143,8 +143,8 @@ public class DeployServiceRestController {
                 return ResponseEntity
                         .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
             }
-            DeployCheck.hasChinese(serviceDto.getName(), "服务名");
-            DeployCheck.hasChinese(serviceDto.getImage(), "镜像名");
+            Check.hasChinese(serviceDto.getName(), "服务名");
+            Check.hasChinese(serviceDto.getImage(), "镜像名");
             TService service = serviceRepository.findOne(id);
             service.setName(serviceDto.getName());
             service.setRemark(serviceDto.getRemark());

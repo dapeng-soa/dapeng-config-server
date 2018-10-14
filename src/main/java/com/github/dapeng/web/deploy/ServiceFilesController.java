@@ -34,7 +34,6 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional(rollbackFor = Throwable.class)
 public class ServiceFilesController {
 
     @Autowired
@@ -78,6 +77,7 @@ public class ServiceFilesController {
 
 
     @PostMapping("/deploy-file/add")
+    @Transactional(rollbackFor = Throwable.class)
     public ResponseEntity saveServiceFile(@RequestBody TServiceFiles file) {
         try {
             List<TServiceFiles> files = serviceFilesRepository.findByFileNameAndFileExtName(file.getFileName(), file.getFileExtName());
@@ -109,6 +109,7 @@ public class ServiceFilesController {
     }
 
     @PostMapping("/deploy-file/edit/{id}")
+    @Transactional(rollbackFor = Throwable.class)
     public ResponseEntity editServiceFile(@PathVariable Long id,
                                           @RequestBody TServiceFiles file) {
         try {
@@ -149,8 +150,6 @@ public class ServiceFilesController {
                     filesUnit.setUnitId(uid);
                     filesUnit.setCreateAt(DateUtil.now());
                     filesUnitRepository.save(filesUnit);
-                } else {
-                    // 记录失败的关联进行数据反馈？
                 }
             });
             return ResponseEntity
@@ -167,6 +166,7 @@ public class ServiceFilesController {
      * @return
      */
     @PostMapping("/deploy-file/unlink-unit")
+    @Transactional(rollbackFor = Throwable.class)
     public ResponseEntity unLinkUnit(@RequestBody FileUnitDto dto) {
         try {
             dto.getUids().forEach(uid -> {
@@ -188,6 +188,7 @@ public class ServiceFilesController {
      * @return
      */
     @PostMapping("/deploy-file/del/{id}")
+    @Transactional(rollbackFor = Throwable.class)
     public ResponseEntity delServiceFile(@PathVariable Long id) {
         try {
             List<TFilesUnit> byFileId = filesUnitRepository.findByFileId(id);

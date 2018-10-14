@@ -1,17 +1,11 @@
 var bsTable = {};
 var $$ = new api.Api();
 $(document).ready(function () {
-    initDeployJournals();
+    initSystemLogs();
     initOps();
-    setTimeout(function () {
-        var img = $(".CodeContainer>span>img");
-        if (img.attr("src") === window.ImgExpanded) {
-            img.click();
-        }
-    }, 200);
 });
 
-function initDeployJournals() {
+function initSystemLogs() {
     var queryUrl = basePath + '/api/system-logs';
     var table = new BSTable("system-log-table", queryUrl, setColumns());
     table.params = function (ps) {

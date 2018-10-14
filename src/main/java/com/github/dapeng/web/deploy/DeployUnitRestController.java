@@ -6,7 +6,7 @@ import com.github.dapeng.dto.UnitDto;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.util.DateUtil;
-import com.github.dapeng.util.DeployCheck;
+import com.github.dapeng.util.Check;
 import com.github.dapeng.vo.DeployUnitVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,8 +162,8 @@ public class DeployUnitRestController {
                     .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
         }
         try {
-            DeployCheck.hasChinese(unitDto.getGitTag(), "发布tag");
-            DeployCheck.hasChinese(unitDto.getImageTag(), "镜像tag");
+            Check.hasChinese(unitDto.getGitTag(), "发布tag");
+            Check.hasChinese(unitDto.getImageTag(), "镜像tag");
             TDeployUnit unit = new TDeployUnit();
             unit.setGitTag(unitDto.getGitTag());
             unit.setImageTag(unitDto.getImageTag());
@@ -205,8 +205,8 @@ public class DeployUnitRestController {
                 return ResponseEntity
                         .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
             }
-            DeployCheck.hasChinese(unitDto.getGitTag(), "发布tag");
-            DeployCheck.hasChinese(unitDto.getImageTag(), "镜像tag");
+            Check.hasChinese(unitDto.getGitTag(), "发布tag");
+            Check.hasChinese(unitDto.getImageTag(), "镜像tag");
             TDeployUnit unit = unitRepository.getOne(id);
             unit.setGitTag(unitDto.getGitTag());
             unit.setImageTag(unitDto.getImageTag());
@@ -247,7 +247,7 @@ public class DeployUnitRestController {
     @PostMapping(value = "deploy-unit/modify-batch")
     public ResponseEntity modifyDeployUnitTagBatch(@RequestBody ModifyBatchTagDto tagDto) {
         try {
-            DeployCheck.hasChinese(tagDto.getTag(), "镜像tag");
+            Check.hasChinese(tagDto.getTag(), "镜像tag");
             tagDto.getIds().forEach(x -> {
                 TDeployUnit unit = unitRepository.getOne(x);
                 unit.setImageTag(tagDto.getTag());

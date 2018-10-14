@@ -8,7 +8,7 @@ import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.util.DateUtil;
-import com.github.dapeng.util.DeployCheck;
+import com.github.dapeng.util.Check;
 import com.github.dapeng.vo.HostVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,8 +133,8 @@ public class DeployHostRestController {
                 return ResponseEntity
                         .ok(Resp.of(ERROR_CODE, "服务名,IP,所属环境集不能为空"));
             }
-            DeployCheck.hasChinese(hostDto.getName(), "节点名");
-            DeployCheck.isboolIp(hostDto.getIp());
+            Check.hasChinese(hostDto.getName(), "节点名");
+            Check.isboolIp(hostDto.getIp());
             List<THost> tHosts = hostRepository.findByName(hostDto.getName());
             if (!isEmpty(tHosts)) {
                 throw new Exception("已存在同名节点");
@@ -174,8 +174,8 @@ public class DeployHostRestController {
                 return ResponseEntity
                         .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
             }
-            DeployCheck.hasChinese(hostDto.getName(), "节点名");
-            DeployCheck.isboolIp(hostDto.getIp());
+            Check.hasChinese(hostDto.getName(), "节点名");
+            Check.isboolIp(hostDto.getIp());
             THost host = hostRepository.findOne(id);
             host.setIp(IPUtils.transferIp(hostDto.getIp()));
             host.setName(hostDto.getName());

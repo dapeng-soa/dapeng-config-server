@@ -4,7 +4,10 @@ import com.github.dapeng.entity.build.TBuildHost;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.build.BuildHostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
+import com.github.dapeng.util.SecurityUtil;
+import com.github.dapeng.web.system.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -31,6 +34,9 @@ public class PageController {
     @Autowired
     ServiceRepository serviceRepository;
 
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
+
     /**
      * 首页
      *
@@ -39,7 +45,7 @@ public class PageController {
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("tagName", "index");
-        return "redirect:config";
+        return "redirect:me";
     }
 
     /**
@@ -95,6 +101,13 @@ public class PageController {
         model.addAttribute("tagName", "system-log");
         model.addAttribute("sideName", "system-log");
         return "page/system-log";
+    }
+
+    @GetMapping(value = "/me")
+    public String accountMe(Model model) {
+        UserDetails user = userDetailsService.loadUserByUsername(SecurityUtil.me());
+        model.addAttribute("me", user);
+        return "page/system-me";
     }
 
 

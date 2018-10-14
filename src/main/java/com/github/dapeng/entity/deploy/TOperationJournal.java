@@ -3,10 +3,7 @@ package com.github.dapeng.entity.deploy;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "t_operation_journal")
@@ -14,6 +11,7 @@ import javax.persistence.Table;
 public class TOperationJournal {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   @Column(name = "set_id")
   private long setId;

@@ -1,6 +1,6 @@
-package com.github.dapeng.repository;
+package com.github.dapeng.repository.system;
 
-import com.github.dapeng.entity.TOpLog;
+import com.github.dapeng.entity.system.TOpLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

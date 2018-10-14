@@ -2,10 +2,7 @@ package com.github.dapeng.entity.deploy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "t_files_unit")
@@ -13,6 +10,7 @@ import javax.persistence.Table;
 public class TFilesUnit {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "file_id")
     private long fileId;

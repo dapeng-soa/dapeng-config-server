@@ -2,8 +2,8 @@ package com.github.dapeng.aop;
 
 import com.github.dapeng.common.Commons;
 import com.github.dapeng.common.Resp;
-import com.github.dapeng.entity.TOpLog;
-import com.github.dapeng.repository.OpLogRepository;
+import com.github.dapeng.entity.system.TOpLog;
+import com.github.dapeng.repository.system.OpLogRepository;
 import com.github.dapeng.util.DateUtil;
 import com.google.gson.Gson;
 import org.aspectj.lang.ProceedingJoinPoint;

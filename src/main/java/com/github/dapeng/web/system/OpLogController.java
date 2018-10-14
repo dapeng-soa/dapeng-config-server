@@ -1,8 +1,8 @@
 package com.github.dapeng.web.system;
 
 import com.github.dapeng.common.Resp;
-import com.github.dapeng.entity.TOpLog;
-import com.github.dapeng.repository.OpLogRepository;
+import com.github.dapeng.entity.system.TOpLog;
+import com.github.dapeng.repository.system.OpLogRepository;
 import com.github.dapeng.vo.SystemLogOps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

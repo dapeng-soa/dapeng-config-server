@@ -337,4 +337,36 @@ var api;
         return ServiceFiles;
     }());
     api.ServiceFiles = ServiceFiles;
+    var System = /** @class */ (function () {
+        function System() {
+            this.add = "add";
+            this.view = "view";
+            this.edit = "edit";
+            this.api = new api.Api();
+        }
+        /**
+         * 部署单元操作栏
+         * @param value
+         * @param row
+         */
+        System.prototype.exportSystemUsersActionContext = function (value, row) {
+            return "<span class=\"link-button-table\">\n            <a href=\"javascript:void(0)\" title=\"\u4FEE\u6539\"  onclick=\"viewSystemUserOrEditByID(" + value + ",'edit')\"><span class=\"glyphicon glyphicon-edit\"></span></a>\n            <a href=\"javascript:void(0)\" title=\"\u5173\u8054\u89D2\u8272\"  onclick=\"openLinkRole(" + value + ",'" + row.username + "')\"><i class=\"fa fa-user-circle-o\" aria-hidden=\"true\"></i></a>\n            <a href=\"javascript:void(0)\" title=\"\u91CD\u7F6E\u5BC6\u7801\"  onclick=\"resetUserPwd(" + value + ",'" + row.username + "')\"><i class=\"fa fa-unlock-alt\" aria-hidden=\"true\"></i></a>\n            <a href=\"javascript:void(0)\" title=\"" + (row.enabled == 0 ? "\u7981\u7528\u6B64\u8D26\u53F7" : "\u542F\u7528\u6B64\u8D26\u53F7") + "\"  onclick=\"disabledSystemUser(" + value + ",'" + row.username + "'," + row.enabled + ")\">" + (row.enabled == 0 ? "<i class=\"fa fa-toggle-on\" aria-hidden=\"true\"></i>" : "<i class=\"fa fa-toggle-off\" aria-hidden=\"true\"></i>") + "</a>\n                    </span>";
+        };
+        System.prototype.exportAddSystemUserContext = function (type, biz, data) {
+            if (type === void 0) { type = this.add || this.edit || this.view; }
+            var c = this;
+            return "\n           <div class=\"panel-header window-header\">\n                    <div class=\"input-group\">\n                        <p class=\"left-panel-title\">" + (type == c.add ? "添加账户" : (type == c.edit ? "修改账户" : (type == c.view ? "账户详情" : ""))) + "</p>\n                    </div>\n                </div>\n                <div class=\"form-horizontal\" style=\"margin-top: 81px;\">\n                   <div class=\"form-group\">\n                            <label class=\"col-sm-2 control-label\">\u7528\u6237\u540D:</label>\n                            <div class=\"col-sm-9\">\n                                <input type=\"text\" " + (type == c.view ? "disabled" : "") + " id=\"username\" class=\"col-sm-2 form-control\" value=\"" + (type != c.add ? data.username : "") + "\">\n                                " + (type == c.edit ? "<code>\u6CE8\u610F:\u4FEE\u6539\u7528\u6237\u540D,\u7528\u6237\u5BC6\u7801\u5C06\u4F1A\u88AB\u7F6E\u4E3A\u5F53\u524D\u4FEE\u6539\u7684\u7528\u6237\u540D!</code>" : "") + "\n                            </div>\n                        </div>\n                        <div class=\"form-group\">\n                            <label class=\"col-sm-2 control-label\">\u6635\u79F0:</label>\n                            <div class=\"col-sm-9\">\n                                <input type=\"text\" " + (type == c.view ? "disabled" : "") + " id=\"nickname\" class=\"col-sm-2 form-control\" value=\"" + (type != c.add ? data.nickname : "") + "\">\n                            </div>\n                        </div>\n                        <div class=\"form-group\">\n                            <label class=\"col-sm-2 control-label\">\u90AE\u7BB1:</label>\n                            <div class=\"col-sm-9\">\n                                <input type=\"email\" " + (type == c.view ? "disabled" : "") + " id=\"email\" class=\"col-sm-2 form-control\" value=\"" + (type != c.add ? data.email : "") + "\">\n                            </div>\n                        </div>\n                        \n                        <div class=\"form-group\">\n                            <label class=\"col-sm-2 control-label\">\u7535\u8BDD:</label>\n                            <div class=\"col-sm-9\">\n                                <input type=\"text\" " + (type == c.view ? "disabled" : "") + " id=\"tel\" value=\"" + (type != c.add ? data.tel : "") + "\" class=\"form-control\"/>\n                            </div>\n                        </div>\n                        <div class=\"form-group\">\n                            <label class=\"col-sm-2 control-label\">\u5907\u6CE8:</label>\n                            <div class=\"col-sm-9\">\n                                <textarea " + (type == c.view ? "disabled" : "") + " id=\"remark-area\" class=\"form-control\" rows=\"10\">" + (type != c.add ? data.remark : "") + "</textarea>\n                            </div>\n                        </div>\n                         " + (type == c.add ? "\n                         <span class=\"input-group-btn panel-button-group text-center\">\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"saveSystemUser()\">\u4FDD\u5B58</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"clearSystemUserInput()\">\u6E05\u7A7A</button>\n                        </span>\n                         " : type == c.edit ? "\n                         <span class=\"input-group-btn panel-button-group text-center\">\n                    <button type=\"button\" class=\"btn btn-success\" onclick=\"editedSystemUser(" + data.id + ")\">\u4FDD\u5B58\u4FEE\u6539</button>\n                    </span>\n                         " : "") + "\n                </div>\n            \n            ";
+        };
+        /**
+         *
+         * @param {string} value
+         * @param {string} name
+         * @returns {string}
+         */
+        System.prototype.exportUserLinkRoleContext = function (value, name) {
+            return "\n             <div class=\"panel-header window-header\">\n                    <div class=\"input-group\">\n                        <p class=\"left-panel-title\">\u5173\u8054\u7528\u6237\u89D2\u8272<small>[" + name + "]</small></p>\n                        <span class=\"input-group-btn panel-button-group\">\n                        </span>\n                    </div>\n                </div>\n                <div style=\"margin-top: 81px;\">\n                <input type=\"hidden\" value=\"" + value + "\" id=\"currUserId\">\n                \n                <table id=\"system-role-table\"></table>\n                </div>\n               ";
+        };
+        return System;
+    }());
+    api.System = System;
 })(api || (api = {}));

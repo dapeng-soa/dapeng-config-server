@@ -1184,4 +1184,105 @@ ${data.extra == 1 ? '否' : '是'}
                `
         }
     }
+
+    export class System {
+        add: string = "add";
+        view: string = "view";
+        edit: string = "edit";
+        api = new api.Api();
+
+        /**
+         * 部署单元操作栏
+         * @param value
+         * @param row
+         */
+        public exportSystemUsersActionContext(value, row) {
+            return `<span class="link-button-table">
+            <a href="javascript:void(0)" title="修改"  onclick="viewSystemUserOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="关联角色"  onclick="openLinkRole(${value},'${row.username}')"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
+            <a href="javascript:void(0)" title="重置密码"  onclick="resetUserPwd(${value},'${row.username}')"><i class="fa fa-unlock-alt" aria-hidden="true"></i></a>
+            <a href="javascript:void(0)" title="${row.enabled == 0 ? `禁用此账号` : `启用此账号`}"  onclick="disabledSystemUser(${value},'${row.username}',${row.enabled})">${row.enabled == 0 ? `<i class="fa fa-toggle-on" aria-hidden="true"></i>` : `<i class="fa fa-toggle-off" aria-hidden="true"></i>`}</a>
+                    </span>`;
+        }
+
+        public exportAddSystemUserContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
+            let c = this;
+            return `
+           <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">${type == c.add ? "添加账户" : (type == c.edit ? "修改账户" : (type == c.view ? "账户详情" : ""))}</p>
+                    </div>
+                </div>
+                <div class="form-horizontal" style="margin-top: 81px;">
+                   <div class="form-group">
+                            <label class="col-sm-2 control-label">用户名:</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="username" class="col-sm-2 form-control" value="${type != c.add ? data.username : ""}">
+                                ${type == c.edit ? `<code>注意:修改用户名,用户密码将会被置为当前修改的用户名!</code>` : ""}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">昵称:</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="nickname" class="col-sm-2 form-control" value="${type != c.add ? data.nickname : ""}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">邮箱:</label>
+                            <div class="col-sm-9">
+                                <input type="email" ${type == c.view ? "disabled" : ""} id="email" class="col-sm-2 form-control" value="${type != c.add ? data.email : ""}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">电话:</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="tel" value="${type != c.add ? data.tel : ""}" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注:</label>
+                            <div class="col-sm-9">
+                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
+                            </div>
+                        </div>
+                         ${type == c.add ? `
+                         <span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="saveSystemUser()">保存</button>
+                        <button type="button" class="btn btn-danger" onclick="clearSystemUserInput()">清空</button>
+                        </span>
+                         ` : type == c.edit ? `
+                         <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedSystemUser(${data.id})">保存修改</button>
+                    </span>
+                         ` : ""}
+                </div>
+            
+            `;
+        }
+
+        /**
+         *
+         * @param {string} value
+         * @param {string} name
+         * @returns {string}
+         */
+        public exportUserLinkRoleContext(value: string, name: string) {
+            return `
+             <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">关联用户角色<small>[${name}]</small></p>
+                        <span class="input-group-btn panel-button-group">
+                        </span>
+                    </div>
+                </div>
+                <div style="margin-top: 81px;">
+                <input type="hidden" value="${value}" id="currUserId">
+                
+                <table id="system-role-table"></table>
+                </div>
+               `
+        }
+
+    }
 }

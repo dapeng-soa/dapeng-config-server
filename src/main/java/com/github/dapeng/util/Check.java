@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * email :yq1724555319@gmail.com
  */
 
-public class DeployCheck {
+public class Check {
 
     private static final String ip = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
     private static final Pattern pattern = Pattern.compile(ip);
