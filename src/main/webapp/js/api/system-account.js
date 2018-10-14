@@ -182,6 +182,10 @@ setRoleColumns = function () {
         field: 'role',
         title: '角色名',
         sortable: true
+    }, {
+        field: 'remark',
+        title: '备注',
+        sortable: true
     }]
 };
 

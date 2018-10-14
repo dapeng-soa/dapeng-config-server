@@ -13,6 +13,10 @@ var changePwd = function () {
         confirmPwd: confirmNewPwd
     }), function (res) {
         layer.msg(res.msg);
-        console.log(res);
+        if (res.code === SUCCESS_CODE) {
+            setTimeout(function () {
+                refresh();
+            }, 1000);
+        }
     }, "application/json")
 };

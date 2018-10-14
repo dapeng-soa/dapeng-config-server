@@ -14,6 +14,8 @@ public class TRole {
     private long id;
     @Column(name = "role")
     private String role;
+    @Column
+    private String remark;
 
 
     public long getId() {
@@ -33,4 +35,11 @@ public class TRole {
         this.role = role;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }
