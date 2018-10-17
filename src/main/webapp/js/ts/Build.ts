@@ -78,8 +78,12 @@ module api {
             for (let i in depends) {
                 options += `<tr>
                     <th>${i}</th>
-                    <td><span class="buildDependServiceName">${depends[i].serviceName}</span></td>
-                    <td><input class="form-control buildDependBranch" type="text" value="${depends[i].branchName}"/></td>
+                    <td><span class="form-control-static">${depends[i].serviceName}</span></td>
+                    <input type="hidden" class="build-depend-name" value="${depends[i].serviceName}">
+                    <td><input class="form-control build-depend-branch" type="text" value="${depends[i].branchName}"/></td>
+                    <input type="hidden" class="build-depend-gitname" value="${depends[i].gitName}">
+                    <input type="hidden" class="build-depend-giturl" value="${depends[i].gitURL}" />
+                    <input type="hidden" class="build-depend-operation" value="${depends[i].buildOperation}" />
                  </tr>`;
             }
             return options;

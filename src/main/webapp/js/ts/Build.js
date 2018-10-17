@@ -25,7 +25,7 @@ var api;
         Build.prototype.buildTaskDependsContext = function (depends) {
             var options = "";
             for (var i in depends) {
-                options += "<tr>\n                    <th>" + i + "</th>\n                    <td><span class=\"buildDependServiceName\">" + depends[i].serviceName + "</span></td>\n                    <td><input class=\"form-control buildDependBranch\" type=\"text\" value=\"" + depends[i].branchName + "\"/></td>\n                 </tr>";
+                options += "<tr>\n                    <th>" + i + "</th>\n                    <td><span class=\"form-control-static\">" + depends[i].serviceName + "</span></td>\n                    <input type=\"hidden\" class=\"build-depend-name\" value=\"" + depends[i].serviceName + "\">\n                    <td><input class=\"form-control build-depend-branch\" type=\"text\" value=\"" + depends[i].branchName + "\"/></td>\n                    <input type=\"hidden\" class=\"build-depend-gitname\" value=\"" + depends[i].gitName + "\">\n                    <input type=\"hidden\" class=\"build-depend-giturl\" value=\"" + depends[i].gitURL + "\" />\n                    <input type=\"hidden\" class=\"build-depend-operation\" value=\"" + depends[i].buildOperation + "\" />\n                 </tr>";
             }
             return options;
         };

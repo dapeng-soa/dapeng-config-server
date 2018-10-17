@@ -22,7 +22,6 @@
             <div class="input-group">
                 <p class="left-panel-title">构建任务</p>
                 <span class="input-group-btn panel-button-group">
-                    <%--<button type="button" class="btn btn-primary" onclick="openAddBuildHostModle()">新增</button>--%>
                 </span>
             </div>
         </div>
@@ -43,7 +42,7 @@
                      class="tab-pane fade <c:choose><c:when test="${current.id == view.key.id}">in active</c:when></c:choose>"
                      id="view${vs.index}"
                      aria-labelledby="view${vs.index}Data-tab">
-                    <div >
+                    <div>
                         <div class="advance-format-item" style="padding-bottom:15px;border-bottom: 1px solid #ccc;">
                             <p class="advance-format-title bg-primary "
                                style="height: 30px;line-height: 200%;padding-left: 10px;" onclick="toggleBlock(this)">
@@ -52,21 +51,23 @@
                                 <div style="float: left;width: 100%;">
                                     <div class="form-inline">
                                         <div class="form-group" style="float: left;margin-right: 10px">
-                                            <label for="buildTaskName">任务名</label>
-                                            <input type="text" class="form-control" id="buildTaskName" placeholder="">
+                                            <label for="buildTaskName${view.key.id}">任务名</label>
+                                            <input type="text" class="form-control" id="buildTaskName${view.key.id}"
+                                                   placeholder="">
                                         </div>
                                         <div class="form-group" style="float: left">
-                                            <label for="buildService" style="line-height: 200%">服务</label>
+                                            <label for="buildService${view.key.id}" style="line-height: 200%">服务</label>
                                         </div>
 
                                         <div class="form-group" style="float: left;margin-right: 10px">
                                             <select data-live-search="true" class="form-control selectpicker"
-                                                    id="buildService" onchange="serviceSelectChange()">
-                                                <c:forEach var="task" items="${view.value}" varStatus="vs">
+                                                    id="buildService${view.key.id}" data-index="${view.key.id}"
+                                                    onchange="serviceSelectChange(this)">
+                                                <c:forEach var="s" items="${services}" varStatus="vs">
                                                     <option
                                                             <c:choose>
                                                                 <c:when test="${vs.first}">selected</c:when>
-                                                            </c:choose> value="${task.id}">${task.name}</option>
+                                                            </c:choose> value="${s.id}">${s.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -83,13 +84,13 @@
                                                     <th>分支</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody id="dependsService">
+                                                <tbody id="dependsService${view.key.id}">
 
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="saveBuildTask(${view.key.id})"
+                                    <button type="button" onclick="saveBuildTask('${view.key.id}')"
                                             class="btn btn-success">保存
                                     </button>
                                 </div>
@@ -110,11 +111,12 @@
                             <c:forEach var="task" items="${view.value}" varStatus="vs">
                                 <tr>
                                     <th scope="row">${vs.index+1}</th>
-                                    <td>build-${task.name}-${view.key.name}</td>
-                                    <td>${task.name}</td>
+                                    <td>${task.taskName}</td>
+                                    <td>${task.serviceName}</td>
                                     <td>
                                         <div class="advance-format-item">
-                                            <p class="advance-format-title" onclick="toggleBlock(this)">master</p>
+                                            <p class="advance-format-title"
+                                               onclick="toggleBlock(this)">${task.branch}</p>
                                             <div class="advance-format-content">
                                                 <ul>
                                                     <li><span>orderService</span>:<input type="text" value=""></li>
@@ -126,7 +128,7 @@
                                         </div>
                                     </td>
                                     <td>2018-09-20</td>
-                                    <td><a>构建</a></td>
+                                    <td><a href="javascript:void(0)" onclick="execBuildService(${task.id})">构建</a></td>
                                 </tr>
                             </c:forEach>
                             </tbody>
