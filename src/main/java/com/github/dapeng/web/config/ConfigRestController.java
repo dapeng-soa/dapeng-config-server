@@ -1,5 +1,6 @@
 package com.github.dapeng.web.config;
 
+import com.github.dapeng.common.ConfigStatus;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ConfigInfoDto;
 import com.github.dapeng.dto.RealConfig;
@@ -11,7 +12,10 @@ import com.github.dapeng.openapi.utils.ZkUtil;
 import com.github.dapeng.repository.config.ConfigInfoRepository;
 import com.github.dapeng.repository.config.ConfigPublishRepository;
 import com.github.dapeng.repository.config.ZkNodeRepository;
-import com.github.dapeng.util.*;
+import com.github.dapeng.util.CheckConfigUtil;
+import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.NullUtil;
+import com.github.dapeng.util.VersionUtil;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +26,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import com.github.dapeng.common.ConfigStatus;
-import com.github.dapeng.common.Commons;
 
 import java.util.List;
+
+import static com.github.dapeng.common.Commons.*;
 
 /**
  * @author with struy.
@@ -57,7 +61,7 @@ public class ConfigRestController {
     public ResponseEntity<?> addConfig(@RequestBody ConfigInfoDto configInfoDto) {
 
         if (configInfoDto.getServiceName().isEmpty()) return ResponseEntity
-                .ok(Resp.of(Commons.ERROR_CODE, Commons.SERVICE_ISEMPTY_MSG));
+                .ok(Resp.of(ERROR_CODE, SERVICE_ISEMPTY_MSG));
         try {
             checkGrammar(configInfoDto);
             boolean hasService = repository.existsConfigInfoByServiceNameAndStatusIsNot(
@@ -65,16 +69,16 @@ public class ConfigRestController {
             // 如果存在此服务的配置
             if (hasService) {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SERVICE_ISEXISTS_MSG));
+                        .ok(Resp.of(ERROR_CODE, SERVICE_ISEXISTS_MSG));
             }
             // 状态应暂时默认为通过(后期添加审核流程)正常情况下应当是新建
             saveNewConfig(configInfoDto, ConfigStatus.PASS.key());
             return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
+                    .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
         } catch (Exception e) {
             LOGGER.error("添加服务配置出错::", e);
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, e.getMessage()));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
 
     }
@@ -90,7 +94,7 @@ public class ConfigRestController {
     public ResponseEntity<?> checkServiceExists(@PathVariable String serviceName) {
         boolean serviceIsExits = repository.existsConfigInfoByServiceNameAndStatusIsNot(serviceName, ConfigStatus.FAILURE.key());
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, serviceIsExits));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, serviceIsExits));
     }
 
     /**
@@ -108,15 +112,15 @@ public class ConfigRestController {
                 info.setUpdatedAt(DateUtil.now());
                 info.setStatus(ConfigStatus.FAILURE.key());
                 return ResponseEntity
-                        .ok(Resp.of(Commons.SUCCESS_CODE, Commons.DEL_SUCCESS_MSG));
+                        .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
             } else {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG));
+                        .ok(Resp.of(ERROR_CODE, DATA_NOTFOUND_MSG));
             }
         } catch (Exception e) {
             LOGGER.error("删除配置失败::", e);
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.DEL_ERROR_MSG));
+                    .ok(Resp.of(ERROR_CODE, DEL_ERROR_MSG));
         }
     }
 
@@ -143,15 +147,15 @@ public class ConfigRestController {
                 info.setFreqConfig(infoDto.getFreqConfig());
                 repository.save(info);
                 return ResponseEntity
-                        .ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG));
+                        .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
             } else {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG));
+                        .ok(Resp.of(ERROR_CODE, DATA_NOTFOUND_MSG));
             }
         } catch (Exception e) {
             LOGGER.error("修改配置出错:", e);
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, e.getMessage()));
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 
@@ -163,10 +167,10 @@ public class ConfigRestController {
         ConfigInfo configInfo = repository.getOne(id);
         if (null != configInfo) {
             return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, configInfo));
+                    .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, configInfo));
         } else {
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG));
+                    .ok(Resp.of(ERROR_CODE, DATA_NOTFOUND_MSG));
         }
     }
 
@@ -189,7 +193,7 @@ public class ConfigRestController {
 
         Page<ConfigInfo> infos = repository.findAllByStatusIsNotAndServiceNameLike(ConfigStatus.FAILURE.key(), '%' + search + '%', pageRequest);
         return ResponseEntity
-                .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, infos));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, infos));
     }
 
     /**
@@ -207,9 +211,9 @@ public class ConfigRestController {
             list.forEach(zkNode -> {
                 publish(zkNode.getZkHost(), id);
             });
-            return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_ERRO_MSG));
+            return ResponseEntity.ok(Resp.of(SUCCESS_CODE, COMMON_ERRO_MSG));
         } else {
-            return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, Commons.COMMON_ERRO_MSG));
+            return ResponseEntity.ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
         }
     }
 
@@ -226,10 +230,10 @@ public class ConfigRestController {
         if (!NullUtil.isEmpty(info)) {
             List<ConfigPublishHistory> publishHistories = publishRepository.findAllByServiceName(info.getServiceName());
             return ResponseEntity
-                    .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, publishHistories));
+                    .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, publishHistories));
         } else {
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG));
+                    .ok(Resp.of(ERROR_CODE, DATA_NOTFOUND_MSG));
         }
     }
 
@@ -240,7 +244,7 @@ public class ConfigRestController {
     @Deprecated
     public ResponseEntity<?> rollbackConfig(@PathVariable Long id) {
         // 回滚：：==> 重置为发布状态 ==> 更新
-        return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.ROLLBACK_SUCCESS_MSG));
+        return ResponseEntity.ok(Resp.of(SUCCESS_CODE, ROLLBACK_SUCCESS_MSG));
     }
 
     /**
@@ -256,15 +260,15 @@ public class ConfigRestController {
             try {
                 RealConfig realConfig = proccessSysConfig(node.getZkHost(), serviceName);
                 return ResponseEntity
-                        .ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, realConfig));
+                        .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, realConfig));
             } catch (Exception e) {
                 LOGGER.error("同步服务配置出错::", e);
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.SYS_CONFIG_ERROR));
+                        .ok(Resp.of(ERROR_CODE, SYS_CONFIG_ERROR));
             }
         } else {
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.SYS_CONFIG_ERROR));
+                    .ok(Resp.of(ERROR_CODE, SYS_CONFIG_ERROR));
         }
     }
 
@@ -280,35 +284,36 @@ public class ConfigRestController {
         if (null != config) {
             if (config.getStatus() == ConfigStatus.PUBLISHED.key()) {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.CONFIG_PUBLISHED_MSG));
+                        .ok(Resp.of(ERROR_CODE, CONFIG_PUBLISHED_MSG));
             } else if (config.getStatus() == ConfigStatus.FAILURE.key()) {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG));
+                        .ok(Resp.of(ERROR_CODE, DATA_NOTFOUND_MSG));
             }
-
-            // 修改当前状态
-            config.setStatus(ConfigStatus.PUBLISHED.key());
-            repository.save(config);
-
-            ConfigInfoDto cid = new ConfigInfoDto();
-            cid.setServiceName(config.getServiceName());
-            cid.setFreqConfig(config.getFreqConfig());
-            cid.setLoadbalanceConfig(config.getLoadbalanceConfig());
-            cid.setTimeoutConfig(config.getTimeoutConfig());
-            cid.setRouterConfig(config.getRouterConfig());
-            cid.setRemark(config.getRemark());
-
             try {
+
+                ConfigInfoDto cid = new ConfigInfoDto();
+                cid.setServiceName(config.getServiceName());
+                cid.setFreqConfig(config.getFreqConfig());
+                cid.setLoadbalanceConfig(config.getLoadbalanceConfig());
+                cid.setTimeoutConfig(config.getTimeoutConfig());
+                cid.setRouterConfig(config.getRouterConfig());
+                cid.setRemark(config.getRemark());
+
                 processPublish(host, cid);
+
+                // 修改当前状态
+                config.setStatus(ConfigStatus.PUBLISHED.key());
+                config.setUpdatedAt(DateUtil.now());
+                repository.save(config);
                 return ResponseEntity
-                        .ok(Resp.of(Commons.SUCCESS_CODE, Commons.PUBLISH_SUCCESS_MSG));
+                        .ok(Resp.of(SUCCESS_CODE, PUBLISH_SUCCESS_MSG));
             } catch (Exception e) {
                 return ResponseEntity
-                        .ok(Resp.of(Commons.ERROR_CODE, e.getMessage()));
+                        .ok(Resp.of(ERROR_CODE, e.getMessage()));
             }
         } else {
             return ResponseEntity
-                    .ok(Resp.of(Commons.ERROR_CODE, Commons.DATA_NOTFOUND_MSG));
+                    .ok(Resp.of(ERROR_CODE, DATA_NOTFOUND_MSG));
         }
     }
 
@@ -398,6 +403,18 @@ public class ConfigRestController {
      */
     private void processPublish(String host, ConfigInfoDto cid) throws Exception {
         ZooKeeper zk = ZkUtil.createZkByHost(host);
+        String service = cid.getServiceName();
+        // 超时，负载均衡 针对服务的配置，全局的配置在 /soa/config/services 节点
+        ZkUtil.createData(zk, Constants.CONFIG_SERVICE_PATH + "/" + service, cid.getTimeoutConfig() + cid.getLoadbalanceConfig());
+        LOGGER.info("发布超时，负载均衡配置成功");
+        // 限流
+        ZkUtil.createData(zk, Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
+        LOGGER.info("发布限流配置成功");
+        // 路由
+        ZkUtil.createData(zk, Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
+        LOGGER.info("发布路由配置成功");
+        ZkUtil.closeZk(zk);
+
         ConfigPublishHistory history = new ConfigPublishHistory();
         history.setVersion(VersionUtil.version());
         history.setRemark("publish to [" + host + "]");
@@ -409,13 +426,5 @@ public class ConfigRestController {
         history.setPublishedAt(DateUtil.now());
         history.setPublishedBy(0);
         publishRepository.save(history);
-        String service = cid.getServiceName();
-        // 超时，负载均衡 针对服务的配置，全局的配置在 /soa/config/services 节点
-        ZkUtil.createData(zk, Constants.CONFIG_SERVICE_PATH + "/" + service, cid.getTimeoutConfig() + cid.getLoadbalanceConfig());
-        // 路由
-        ZkUtil.createData(zk, Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
-        // 限流
-        ZkUtil.createData(zk, Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
-        ZkUtil.closeZk(zk);
     }
 }
