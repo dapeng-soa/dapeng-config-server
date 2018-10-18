@@ -18,8 +18,7 @@
 <div class="container">
     <div class="jumbotron">
         <h1>服务器内部出现错误: ${error}</h1>
-        <p>
-        <p>${message},http status: ${status},request path: ${path}</p></p>
+        <p>${message},http status: ${status},request path: ${path}</p>
         <p><a class="btn btn-primary btn-lg" href="/me" role="button">Learn more</a></p>
     </div>
 </div>
