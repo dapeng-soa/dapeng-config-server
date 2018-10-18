@@ -205,15 +205,17 @@ public class DeployExecRestController {
         // 检查时间
         List<TSet> setList = setRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getSetId());
         List<THost> hosts = hostRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getHostId());
+        List<THost> hosts1 = hostRepository.findTop1ByOrderByUpdatedAtDesc();
         List<TService> serviceList = serviceRepository.findTop1ByIdOrderByUpdatedAtDesc(u.getServiceId());
         List<TSetServiceEnv> subEnvs = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(u.getSetId(), u.getServiceId());
         Long setUpdateAt = !isEmpty(setList) ? setList.get(0).getUpdatedAt().getTime() : 0;
         Long hostUpdateAt = !isEmpty(hosts) ? hosts.get(0).getUpdatedAt().getTime() : 0;
+        Long hostsUpdateAt = !isEmpty(hosts1) ? hosts1.get(0).getUpdatedAt().getTime() : 0;
         Long serviceUpdateAt = !isEmpty(serviceList) ? serviceList.get(0).getUpdatedAt().getTime() : 0;
         Long subEnvUpdateAt = !isEmpty(subEnvs) ? subEnvs.get(0).getUpdatedAt().getTime() : 0;
         Long unitUpdateAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
         Long filesUpdateAt = getFilesUpdateAt(u);
-        Long[] times = {setUpdateAt, hostUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, filesUpdateAt, unitUpdateAt};
+        Long[] times = {setUpdateAt, hostUpdateAt, hostsUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, filesUpdateAt, unitUpdateAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
     }
 

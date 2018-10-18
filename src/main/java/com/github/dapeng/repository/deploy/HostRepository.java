@@ -12,24 +12,34 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public interface HostRepository extends JpaRepository<THost,Long>,JpaSpecificationExecutor<THost> {
+public interface HostRepository extends JpaRepository<THost, Long>, JpaSpecificationExecutor<THost> {
 
     /**
      * 通过setId查找节点
+     *
      * @param setId
      * @return
      */
     List<THost> findBySetId(long setId);
 
     /**
-     * 查询最新一条记录
+     * 根据主机id查询最新一条记录
+     *
      * @param id
      * @return
      */
     List<THost> findTop1ByIdOrderByUpdatedAtDesc(Long id);
 
     /**
+     * 查询最新一条记录
+     *
+     * @return
+     */
+    List<THost> findTop1ByOrderByUpdatedAtDesc();
+
+    /**
      * 根据名称查查找
+     *
      * @param name
      * @return
      */
