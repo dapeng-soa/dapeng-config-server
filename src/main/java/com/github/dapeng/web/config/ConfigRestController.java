@@ -211,7 +211,7 @@ public class ConfigRestController {
             list.forEach(zkNode -> {
                 publish(zkNode.getZkHost(), id);
             });
-            return ResponseEntity.ok(Resp.of(SUCCESS_CODE, COMMON_ERRO_MSG));
+            return ResponseEntity.ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } else {
             return ResponseEntity.ok(Resp.of(ERROR_CODE, COMMON_ERRO_MSG));
         }
