@@ -48,15 +48,23 @@ public class PageController {
         return "redirect:me";
     }
 
+    @GetMapping("/maple")
+    public String maple(Model model) {
+        model.addAttribute("tagName", "index");
+        return "maple";
+    }
+
+
+
     /**
      * 登录
      *
      * @return
      */
-    @GetMapping(value = "/error")
+   /* @GetMapping(value = "/error")
     public String error() {
         return "redirect:login";
-    }
+    }*/
 
     /**
      * 登出

@@ -6,8 +6,8 @@ import scala.io.Source
 
 object DependencyTest {
 
-  val NonOperationPattern= """(.*/(.*?)\.git)@@(.*)""".r
-  val OperationPattern= """(.*/(.*?)\.git)@@(.*);(.*)""".r
+  val NonOperationPattern = """(.*/(.*?)\.git)@@(.*)""".r
+  val OperationPattern = """(.*/(.*?)\.git)@@(.*);(.*)""".r
 
   def main(args: Array[String]): Unit = {
     val sb = new StringBuilder(64)
@@ -31,10 +31,9 @@ object DependencyTest {
     labelValue match {
       case OperationPattern(gitUrl, projectName, branch, operation) => (gitUrl, projectName, branch, operation)
       case NonOperationPattern(gitUrl, projectName, branch) => (gitUrl, projectName, branch, "")
-      case _ => ("","","","")
+      case _ => ("", "", "", "")
     }
   }
-
 
 
   def getBuildServices(serviceYmlFile: String, services: mutable.ListBuffer[YamlService]): List[YamlService] = {
@@ -48,7 +47,7 @@ object DependencyTest {
       }
       services.toList
     } else {
-      dependencies.flatMap( d => {
+      dependencies.flatMap(d => {
         val (_, _, serviceName, _) = getLabelDetail(d)
         val dependencyService = getServiceYmlByName(serviceName)
         val ymlService = getSourceService(dependencyService)
@@ -56,7 +55,7 @@ object DependencyTest {
           services.toList
         } else {
           services.append(ymlService)
-          getBuildServices(dependencyService,services)
+          getBuildServices(dependencyService, services)
         }
       })
     }
@@ -70,7 +69,6 @@ object DependencyTest {
     val (gitURL, gitName, serviceName, buildOperation) = getLabelDetail(source)
     YamlService(gitURL, gitName, serviceName, buildOperation)
   }
-
 
 
   def getServiceYmlByName(serviceName: String) = {
@@ -104,7 +102,6 @@ object DependencyTest {
     }
 
   }
-
 
 
 }
