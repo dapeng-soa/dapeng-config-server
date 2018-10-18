@@ -275,7 +275,7 @@ public class DeployExecRestController {
             if (rmPath.startsWith("/")) {
                 rmPath = rmPath.replaceFirst("/", "");
             }
-            sb.append("/data/configs/")
+            sb.append("./configs/")
                     .append(rmPath)
                     .append("-")
                     .append(f.getFileTag())
@@ -304,7 +304,7 @@ public class DeployExecRestController {
                 if (rmPath.startsWith("/")) {
                     rmPath = rmPath.replaceFirst("/", "");
                 }
-                sb.append("/data/configs/")
+                sb.append("./configs/")
                         .append(rmPath)
                         .append("-")
                         .append(file.getFileTag())
