@@ -14,10 +14,13 @@
     <jsp:include page="../core/resource.jsp"/>
 </head>
 <body>
-<div class="container">
-    <div class="page-header">
-        <h1>系统错误</h1>
+<div class="container" style="margin-top: 40px">
+    <div class="jumbotron">
+        <h1>服务器内部出现错误: ${error}</h1>
+        <p>${message},http status: ${status},request path: ${path}</p>
+        <p><a class="btn btn-primary btn-lg" href="/" role="button">Learn more</a></p>
     </div>
 </div>
+<jsp:include page="../core/footer.jsp"/>
 </body>
 </html>

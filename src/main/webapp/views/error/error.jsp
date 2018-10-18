@@ -16,7 +16,7 @@
 <body>
 <div class="container" style="margin-top: 40px">
     <div class="jumbotron">
-        <h1>404 页面找不到: ${error}</h1>
+        <h1>请求出现未知错误: ${error}</h1>
         <p>${message},http status: ${status},request path: ${path}</p>
         <p><a class="btn btn-primary btn-lg" href="/" role="button">Learn more</a></p>
     </div>
