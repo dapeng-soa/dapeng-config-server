@@ -7,12 +7,11 @@
     <jsp:include page="../core/resource.jsp"/>
 </head>
 <body>
-<jsp:include page="../core/sidebar.jsp"/>
-<div class="container">
+<div class="container" style="margin-top: 40px">
     <div class="jumbotron">
         <h1>操作权限不足: ${error}</h1>
         <p><p>${message},http status: ${status},request path: ${path}</p></p>
-        <p><a class="btn btn-primary btn-lg" href="/me" role="button">Learn more</a></p>
+        <p><a class="btn btn-primary btn-lg" href="/" role="button">Learn more</a></p>
     </div>
 </div>
 

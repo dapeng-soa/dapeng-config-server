@@ -14,12 +14,11 @@
     <jsp:include page="../core/resource.jsp"/>
 </head>
 <body>
-<jsp:include page="../core/sidebar.jsp"/>
-<div class="container">
+<div class="container" style="margin-top: 40px">
     <div class="jumbotron">
         <h1>请求出现未知错误: ${error}</h1>
         <p>${message},http status: ${status},request path: ${path}</p>
-        <p><a class="btn btn-primary btn-lg" href="/me" role="button">Learn more</a></p>
+        <p><a class="btn btn-primary btn-lg" href="/" role="button">Learn more</a></p>
     </div>
 </div>
 <jsp:include page="../core/footer.jsp"/>
