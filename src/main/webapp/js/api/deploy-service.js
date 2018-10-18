@@ -18,7 +18,7 @@ function InitDeployServices() {
         };
     };
     table.params = function (ps) {
-        ps.sort = "name";
+        //ps.sort = "name";
         return ps;
     };
     table.init();

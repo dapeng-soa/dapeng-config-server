@@ -85,7 +85,7 @@ object BuildServerUtil {
 
   def getSourceService(serviceYmlFile: String): DependServiceVo = {
     val content = Source.fromString(serviceYmlFile).getLines().toList
-    val source = content.filter(_.trim.startsWith(SOURCE_SIGN))(0)
+    val source = content.filter(_.trim.startsWith(SOURCE_SIGN))(0).split("=")(1)
 
     val (gitURL, gitName, serviceName, buildOperation) = getLabelDetail(source)
     val serviceVo = new DependServiceVo()

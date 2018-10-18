@@ -12,7 +12,7 @@ InitWhiteList = function () {
         if (res.code === SUCCESS_CODE) {
             var html = "";
             for (var i = 0; i < res.context.length; i++) {
-                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>';
+                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '(' + res.context[i].remark + ')</option>';
             }
             $("#whiteNodeSelect").html(html);
             refreshWhiteList($("#whiteNodeSelect").find("option:selected").val());
@@ -50,7 +50,7 @@ nodeChanged = function (obj) {
  */
 addWhiteItem = function () {
     var text = $("#white-list-text").val();
-    if (text === "" || text === undefined || text.trim() === ""){
+    if (text === "" || text === undefined || text.trim() === "") {
         layer.msg("请填写白名单");
         return;
     }
@@ -60,7 +60,7 @@ addWhiteItem = function () {
             var html = "<select style='width: 80%;margin: 0 auto' id='nodeSelect' class='form-control'>" +
                 "<option value='-1'>全部</option>";
             for (var i = 0; i < res.context.length; i++) {
-                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>';
+                html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '(' + res.context[i].remark + ')</option>';
             }
             html += '</select>';
             bodyAbs();
@@ -82,7 +82,7 @@ addWhiteItem = function () {
             });
             rmBodyAbs();
         }
-    },"json");
+    }, "json");
 
 };
 

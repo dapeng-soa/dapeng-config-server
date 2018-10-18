@@ -81,6 +81,9 @@ public class BuildExecRestController {
             buildVo.setBuildServerIp(IPUtils.transferIp(host.getHost()));
             List<DependServiceVo> serviceVoList = new ArrayList<>();
             List<TBuildDepends> depends = buildDependsRepository.findByTaskId(taskId);
+            if (isEmpty(depends)) {
+                throw new Exception("项目不支持构建");
+            }
             depends.forEach(x -> {
                 DependServiceVo vo = new DependServiceVo();
                 vo.setServiceName(x.getServiceName());

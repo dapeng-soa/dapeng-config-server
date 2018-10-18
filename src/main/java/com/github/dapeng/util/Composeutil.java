@@ -296,8 +296,8 @@ public class Composeutil {
     public static String processComposeContext(DockerService dockerService, String mtu) {
         // 时间应当查询一个最后更新时间发送
         DockerYaml dockerYaml = new DockerYaml();
+        dockerYaml.setVersion(DEFAULT_VERSION);
         if (!mtu.equals(NETWORK_MTU_VAL)) {
-            dockerYaml.setVersion(DEFAULT_VERSION);
             Map<String, Network> networks = new HashMap<>(1);
             networks.put(DEFAULT_NETWORK, new Network(mtu));
             dockerYaml.setNetworks(networks);
