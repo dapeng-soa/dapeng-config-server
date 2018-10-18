@@ -257,7 +257,7 @@ CREATE TABLE `t_config_files` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_config_file_name` (`file_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='服务配置文件表，包含配置文件内容'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='服务配置文件表，包含配置文件内容';
 
 DROP TABLE IF EXISTS `t_service_files`;
 CREATE TABLE `t_service_files` (
@@ -270,7 +270,7 @@ CREATE TABLE `t_service_files` (
   `created_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT '添加时间',
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='服务配置文件表'
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='服务配置文件表';
 
 DROP TABLE IF EXISTS `t_files_unit`;
 CREATE TABLE `t_files_unit` (
@@ -279,7 +279,7 @@ CREATE TABLE `t_files_unit` (
   `unit_id` int(11) NOT NULL DEFAULT 0 COMMENT '部署单元id',
   `create_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '添加关联时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='t_service_files 文件表与部署单元关联表'
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='t_service_files 文件表与部署单元关联表';
 
 DROP TABLE IF EXISTS `t_op_log`;
 CREATE TABLE `t_op_log` (
@@ -291,7 +291,7 @@ CREATE TABLE `t_op_log` (
   `result_msg` varchar(127) NOT NULL DEFAULT '' COMMENT '结果消息',
   `oper_time` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '操作时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='操作记录表'
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='操作记录表';
 
 
 SET FOREIGN_KEY_CHECKS = 1;
