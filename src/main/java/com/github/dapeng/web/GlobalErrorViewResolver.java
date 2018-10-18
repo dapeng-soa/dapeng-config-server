@@ -24,7 +24,6 @@ public class GlobalErrorViewResolver extends DefaultErrorViewResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalErrorViewResolver.class);
 
     private ApplicationContext applicationContext;
-    private ResourceProperties resourceProperties;
 
     /**
      * Create a new {@link DefaultErrorViewResolver} instance.
@@ -36,7 +35,6 @@ public class GlobalErrorViewResolver extends DefaultErrorViewResolver {
     public GlobalErrorViewResolver(ApplicationContext applicationContext, ResourceProperties resourceProperties) {
         super(applicationContext, resourceProperties);
         this.applicationContext = applicationContext;
-        this.resourceProperties = resourceProperties;
     }
 
 
