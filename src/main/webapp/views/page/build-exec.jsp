@@ -14,6 +14,7 @@
     <script src="${basePath}/js/api/build-exec.js"></script>
 </head>
 <body>
+<jsp:include page="../core/console.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
 

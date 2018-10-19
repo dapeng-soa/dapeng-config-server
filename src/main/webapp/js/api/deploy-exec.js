@@ -23,7 +23,7 @@ $(document).ready(function () {
     socket.on(NODE_EVENT, function (data) {
         if (data!==""){
             var html = ansi.ansi_to_html(data);
-            deploy.consoleView(html);
+            $$.consoleView(html);
         }
     });
     /**
@@ -48,7 +48,7 @@ $(document).ready(function () {
         if (data !== "") {
             openConloseView();
             var html = ansi.ansi_to_html(data);
-            deploy.consoleView(html);
+            $$.consoleView(html);
         }
         if (data === "[end]"){
             setTimeout(function () {
@@ -64,7 +64,7 @@ $(document).ready(function () {
         if (data !== "") {
             openConloseView();
             var html = ansi.ansi_to_html(data);
-            deploy.consoleView(html);
+            $$.consoleView(html);
         }
         if (data === "[end]"){
             setTimeout(function () {
@@ -80,7 +80,7 @@ $(document).ready(function () {
         if (data !== "") {
             openConloseView();
             var html = ansi.ansi_to_html(data);
-            deploy.consoleView(html);
+            $$.consoleView(html);
         }
         if (data === "[end]"){
             setTimeout(function () {
@@ -96,7 +96,7 @@ $(document).ready(function () {
         if (data!==""){
             openConloseView();
             var html = ansi.ansi_to_html(data);
-            deploy.consoleView(html);
+            $$.consoleView(html);
         }
     });
     /**

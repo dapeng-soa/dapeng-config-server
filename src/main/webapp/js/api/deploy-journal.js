@@ -24,7 +24,7 @@ $(document).ready(function () {
      */
     socket.on(DEPLOY_RESP, function (data) {
         var html = ansi.ansi_to_html(data);
-        deploy.consoleView(html);
+        $$.consoleView(html);
     });
 
     /**
@@ -33,7 +33,7 @@ $(document).ready(function () {
     socket.on(ERROR_EVENT, function (data) {
         openConloseView();
         var html = ansi.ansi_to_html(data);
-        deploy.consoleView(html);
+        $$.consoleView(html);
     });
 
     /**

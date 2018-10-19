@@ -336,7 +336,8 @@ public class Composeutil {
     private static Map<String, String> ofEnv(String s) {
         Map<String, String> envMap = new HashMap<>(16);
         ofList(s).forEach(s1 -> {
-            if (!isEmpty(s1) && s1.contains(":") || s1.contains("=")) {
+            boolean flag = (!isEmpty(s1) && !s1.startsWith("#")) && (s1.contains(":") || s1.contains("="));
+            if (flag) {
                 String[] s2 = s1.split("[:=]", 2);
                 envMap.put(s2[0].trim(), s2[1].trim());
             }

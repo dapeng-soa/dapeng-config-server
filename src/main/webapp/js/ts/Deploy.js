@@ -269,7 +269,7 @@ var api;
             var c = this;
             var realDeployTime = c.el("" + deployTime).innerHTML;
             var realUpdateTime = c.el("" + updateTime).innerHTML;
-            return "\n                <div class=\"diff-tit\" >\n                <span>\u8FD0\u884C\u914D\u7F6E(\u53EA\u8BFB)[" + realDeployTime + "]</span>\n                <span>\u5F53\u524D\u7248\u672C(\u53EA\u8BFB)[" + realUpdateTime + "]</span>\n                </div>\n                <div id=\"mergely\" style=\"margin:20px 0;\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                <span class=\"input-group-btn panel-button-group text-center\">\n                " + (type == undefined || type != c.view ? "\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"execServiceUpdate(" + unitId + ")\">\u786E\u8BA4\u5347\u7EA7</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"cancelServiceUpdate()\">\u53D6\u6D88\u5347\u7EA7</button>\n                        " : "") + "\n                <button type=\"button\" class=\"btn btn-info\" onclick=\"downloadYaml(" + unitId + ")\">\u4E0B\u8F7D\u5F53\u524D\u914D\u7F6E</button>\n                 </span>\n                </div>\n            ";
+            return "\n                <div class=\"diff-tit\" >\n                <span>\u8FD0\u884C\u914D\u7F6E(\u53EA\u8BFB)[" + realDeployTime + "]</span>\n                <span>\u5F53\u524D\u7248\u672C(\u53EA\u8BFB)[" + realUpdateTime + "]</span>\n                </div>\n                <div id=\"mergely\" style=\"margin:30px 0;\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                <span class=\"input-group-btn panel-button-group text-center\">\n                " + (type == undefined || type != c.view ? "\n                        <button type=\"button\" class=\"btn btn-success\" onclick=\"execServiceUpdate(" + unitId + ")\">\u786E\u8BA4\u5347\u7EA7</button>\n                        <button type=\"button\" class=\"btn btn-danger\" onclick=\"cancelServiceUpdate()\">\u53D6\u6D88\u5347\u7EA7</button>\n                        " : "") + "\n                <button type=\"button\" class=\"btn btn-info\" onclick=\"downloadYaml(" + unitId + ")\">\u4E0B\u8F7D\u5F53\u524D\u914D\u7F6E</button>\n                 </span>\n                </div>\n            ";
         };
         /*
         服务配置预览
@@ -288,18 +288,6 @@ var api;
 */
         Deploy.prototype.hostCnfigView = function (data) {
             return "\n<span style=\"color: #aa0e0e\">[" + data.name + "\u914D\u7F6E:]</span>\n\n<span style=\"color: #aa0e0e\">[ip]</span>\n" + data.ip + "\n<span style=\"color: #aa0e0e\">[env]</span>\n" + data.env + "\n<span style=\"color: #aa0e0e\">[remark]</span>\n" + data.remark + "\n<span style=\"color: #aa0e0e\">[\u662F\u5426\u5916\u90E8\u673A\u5668]</span>\n" + (data.extra == 1 ? '否' : '是') + "\n            ";
-        };
-        /**
-         * 控制台打印
-         * @param {string} row
-         * @param {string} lv
-         */
-        Deploy.prototype.consoleView = function (row, lv) {
-            var c = this;
-            var rowStr = "\n            <p><span style=\"color:#00bb00\">[" + new Date().toLocaleTimeString() + "]#</span> " + row + "</p>\n            ";
-            var ob = $("#consoleView");
-            ob.append(rowStr);
-            document.getElementById("consoleView").scrollTop = document.getElementById("consoleView").scrollHeight;
         };
         Deploy.prototype.unix2Time = function (unix) {
             var unixTimestamp = new Date(unix * 1000);

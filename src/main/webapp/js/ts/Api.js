@@ -29,6 +29,18 @@ var api;
             $.ajax(settings)
                 .done(success);
         };
+        /**
+         * 控制台打印
+         * @param {string} row
+         * @param {string} lv
+         */
+        Api.prototype.consoleView = function (row, lv) {
+            var c = this;
+            var rowStr = "\n            <p><span style=\"color:#00bb00\">[" + new Date().toLocaleTimeString() + "]#</span> " + row + "</p>\n            ";
+            var ob = $("#consoleView");
+            ob.append(rowStr);
+            document.getElementById("consoleView").scrollTop = document.getElementById("consoleView").scrollHeight;
+        };
         return Api;
     }());
     api.Api = Api;

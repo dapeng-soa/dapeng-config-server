@@ -950,7 +950,7 @@ restart: on-failure:3
                 <span>运行配置(只读)[${realDeployTime}]</span>
                 <span>当前版本(只读)[${realUpdateTime}]</span>
                 </div>
-                <div id="mergely" style="margin:20px 0;">
+                <div id="mergely" style="margin:30px 0;">
                 </div>
                 <div class="fixed-footer-btn" >
                 <span class="input-group-btn panel-button-group text-center">
@@ -1021,21 +1021,6 @@ ${data.remark}
 <span style="color: #aa0e0e">[是否外部机器]</span>
 ${data.extra == 1 ? '否' : '是'}
             `
-        }
-
-        /**
-         * 控制台打印
-         * @param {string} row
-         * @param {string} lv
-         */
-        public consoleView(row: string, lv?: string) {
-            let c = this;
-            let rowStr = `
-            <p><span style="color:#00bb00">[${new Date().toLocaleTimeString()}]#</span> ${row}</p>
-            `;
-            let ob = $("#consoleView");
-            ob.append(rowStr);
-            document.getElementById("consoleView").scrollTop = document.getElementById("consoleView").scrollHeight
         }
 
         public unix2Time(unix: any) {

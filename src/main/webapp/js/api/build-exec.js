@@ -1,6 +1,7 @@
 var $$ = new api.Api();
 var build = new api.Build();
 var socket = {};
+var ansi = new AnsiUp;
 
 $(document).ready(function () {
     socket = io(socketUrl);
@@ -14,13 +15,31 @@ $(document).ready(function () {
         }
     });
     socket.on(NODE_EVENT, function (data) {
-        console.log(data)
+        if (data !== "") {
+            openConloseView();
+            var html = ansi.ansi_to_html(data);
+            $$.consoleView(html);
+        }
+        if (data === "[end]"){
+            setTimeout(function () {
+                closeConloseView()
+            },2000);
+        }
     });
     /**
      * 错误返回
      */
     socket.on(ERROR_EVENT, function (data) {
-        console.log(data)
+        if (data !== "") {
+            openConloseView();
+            var html = ansi.ansi_to_html(data);
+            $$.consoleView(html);
+        }
+        if (data === "[end]"){
+            setTimeout(function () {
+                closeConloseView()
+            },2000);
+        }
     });
 
     socket.on(SOC_CDISCONNECT, function () {

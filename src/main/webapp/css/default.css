@@ -387,7 +387,7 @@ table {
     border-top: 1px solid #ccc;
     left: 10px;
     right: 10px;
-    padding: 10px;
+    /*padding: 10px;*/
     z-index: 1400;
 }
 
