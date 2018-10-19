@@ -211,8 +211,13 @@ public class DeploySetRestController {
                     envList.add(se);
                 } else {
                     TSetServiceEnv se = envRepository.findOne(x.getId());
-                    se.setEnv(String.valueOf(x.getEnv()));
-                    envList.add(se);
+                    if (!isEmpty(se)) {
+                        if (!se.getEnv().equals(x.getEnv())) {
+                            se.setUpdatedAt(DateUtil.now());
+                        }
+                        se.setEnv(String.valueOf(x.getEnv()));
+                        envList.add(se);
+                    }
                 }
             });
             if (!flag.get()) {
