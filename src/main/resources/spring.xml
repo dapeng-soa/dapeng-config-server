@@ -96,7 +96,7 @@
             <aop:around method="record" pointcut="(execution(* com.github.dapeng.web..*.add*(..))
                                               or   execution(* com.github.dapeng.web..*.edit*(..))
                                               or   execution(* com.github.dapeng.web..*.del*(..)))
-                                            and !bean(pageController)"/>
+                                            and !bean(pageController) and !bean(apikeyRestController)"/>
         </aop:aspect>
     </aop:config>
 

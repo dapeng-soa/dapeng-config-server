@@ -62,7 +62,11 @@ public class LogAspect {
             return null;
         } finally {
             // 保存操作日志
-            logRepository.save(log);
+            try {
+                logRepository.save(log);
+            } catch (Exception e) {
+                LOGGER.error("save log error{}", log, e);
+            }
         }
     }
 }
