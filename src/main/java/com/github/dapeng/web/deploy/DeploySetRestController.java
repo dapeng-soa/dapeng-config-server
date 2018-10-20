@@ -110,7 +110,7 @@ public class DeploySetRestController {
             set.setName(setDto.getName());
             set.setRemark(setDto.getRemark());
             set.setEnv(setDto.getEnv());
-            set.setNetworkMtu(setDto.getNetworkMtu());
+            set.setNetworkMtu(isEmpty(setDto.getNetworkMtu()) ? "1500" : setDto.getNetworkMtu());
             set.setUpdatedAt(DateUtil.now());
             set.setCreatedAt(DateUtil.now());
             setRepository.save(set);
@@ -166,7 +166,7 @@ public class DeploySetRestController {
             set.setName(setDto.getName());
             set.setRemark(setDto.getRemark());
             set.setEnv(setDto.getEnv());
-            set.setNetworkMtu(setDto.getNetworkMtu());
+            set.setNetworkMtu(isEmpty(setDto.getNetworkMtu()) ? "1500" : setDto.getNetworkMtu());
             set.setUpdatedAt(DateUtil.now());
             setRepository.save(set);
             LOGGER.info("update deploy-set name [{}]", setDto.getName());
