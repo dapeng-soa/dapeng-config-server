@@ -25,6 +25,8 @@ window.GET_YAML_FILE = "getYamlFile";
 window.GET_YAML_FILE_RESP = "getYamlFileResp";
 window.GET_REGED_AGENTS = "getRegedAgents";
 window.BUILD = "build";
+window.BUILD_RESP = "buildResp";
+window.BUILDING="building"; // 构建中的
 window.GET_REGED_AGENTS_RESP = "getRegedAgentsResp";
 window.ERROR_EVENT = "errorEvent";
 // 常用状态
@@ -61,6 +63,9 @@ layui.use('layer', function () {
 // 刷新页面
 window.refresh = function () {
     window.location.reload();
+};
+window.backPrePage = function () {
+  window.history.back();
 };
 
 // 自定义手风琴

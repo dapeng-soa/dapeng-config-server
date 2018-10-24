@@ -65,18 +65,18 @@ public class ServiceMonitorController {
         List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         List<Map<String, Object>> resultList = resultList(monitorList);
-        return resultList.stream().sorted((x,y)->{
-            HashMap xnode = (HashMap)x.get("node");
-            HashMap ynode = (HashMap)y.get("node");
-            if(Integer.parseInt(xnode.get("nodeCount").toString())==Integer.parseInt(ynode.get("nodeCount").toString())){
-                HashMap xtask = (HashMap)x.get("tasks");
-                HashMap ytask = (HashMap)y.get("tasks");
-                if(Integer.parseInt(xtask.get("waitingQueue").toString())==Integer.parseInt(ytask.get("waitingQueue").toString())){
-                    return Integer.parseInt(ytask.get("total").toString())-Integer.parseInt(xtask.get("total").toString());
+        return resultList.stream().sorted((x, y) -> {
+            HashMap xnode = (HashMap) x.get("node");
+            HashMap ynode = (HashMap) y.get("node");
+            if (Integer.parseInt(xnode.get("nodeCount").toString()) == Integer.parseInt(ynode.get("nodeCount").toString())) {
+                HashMap xtask = (HashMap) x.get("tasks");
+                HashMap ytask = (HashMap) y.get("tasks");
+                if (Integer.parseInt(xtask.get("waitingQueue").toString()) == Integer.parseInt(ytask.get("waitingQueue").toString())) {
+                    return Integer.parseInt(ytask.get("total").toString()) - Integer.parseInt(xtask.get("total").toString());
                 }
-                return Integer.parseInt(xtask.get("waitingQueue").toString())-Integer.parseInt(ytask.get("waitingQueue").toString());
+                return Integer.parseInt(xtask.get("waitingQueue").toString()) - Integer.parseInt(ytask.get("waitingQueue").toString());
             }
-            return Integer.parseInt(xnode.get("nodeCount").toString())-Integer.parseInt(ynode.get("nodeCount").toString()) ;
+            return Integer.parseInt(xnode.get("nodeCount").toString()) - Integer.parseInt(ynode.get("nodeCount").toString());
         }).collect(Collectors.toList());
     }
 
@@ -144,16 +144,16 @@ public class ServiceMonitorController {
             for (int i = 0; i < k; i++) {
                 try {
                     String takeStr = completionService.take().get();
-                    if(StringUtils.isNotBlank(takeStr)){
+                    if (StringUtils.isNotBlank(takeStr)) {
                         try {
                             JsonObject asJsonObject = new JsonParser().parse(takeStr).getAsJsonObject();
                             jsonObjectList.add(asJsonObject);
                         } catch (JsonSyntaxException e) {
-                            LOGGER.error("echo返回不是json串",e);
+                            LOGGER.error("echo返回不是json串", e);
                         }
                     }
                 } catch (InterruptedException e) {
-                    LOGGER.error("获取服务echo信息出现异常",e);
+                    LOGGER.error("获取服务echo信息出现异常", e);
                     //e.printStackTrace();
                 }
             }
@@ -165,8 +165,8 @@ public class ServiceMonitorController {
                     Map<String, Map> valueMap = new HashMap<>(16);
                     Map<String, Object> nodeMap = new HashMap(4);
                     valueMap.put("serviceInfo", gson.fromJson(gson.toJson(object), Map.class));
-                    nodeMap.put("nodeCount",0);
-                    valueMap.put("node",nodeMap);
+                    nodeMap.put("nodeCount", 0);
+                    valueMap.put("node", nodeMap);
                     resultMap.put(serviceName, valueMap);
                 } else {
                     serviceName = object.get("service").getAsString();
@@ -176,18 +176,18 @@ public class ServiceMonitorController {
                     JsonObject flowsObject = object.get("flows").getAsJsonObject();
                     //相同节点数累加
                     if (resultMap.containsKey(serviceName)) {
-                        Map instanceMap = (Map)resultMap.get(serviceName);
+                        Map instanceMap = (Map) resultMap.get(serviceName);
                         Map tasksMap = (Map) instanceMap.get("tasks");
                         Map flowsMap = (Map) instanceMap.get("flows");
                         Map GcMap = (Map) instanceMap.get("gcInfos");
-                        Map nodeMap =(Map) instanceMap.get("node");
+                        Map nodeMap = (Map) instanceMap.get("node");
                         tasksMap.put("waitingQueue", getJsonObjectByKey(taskInfoObject, "waitingQueue") + Integer.parseInt(tasksMap.get("waitingQueue").toString()));
                         tasksMap.put("total", getJsonObjectByKey(taskInfoObject, "total") + Integer.parseInt(tasksMap.get("total").toString()));
                         tasksMap.put("succeed", getJsonObjectByKey(taskInfoObject, "succeed") + Integer.parseInt(tasksMap.get("succeed").toString()));
-                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + (flowsMap.containsKey("max")?Integer.parseInt(flowsMap.get("max").toString()):0));
-                        flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + (flowsMap.containsKey("min")?Integer.parseInt(flowsMap.get("min").toString()):0));
-                        flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + (flowsMap.containsKey("avg")?Integer.parseInt(flowsMap.get("avg").toString()):0));
-                        nodeMap.put("nodeCount",Integer.parseInt(nodeMap.get("nodeCount").toString())+1);
+                        flowsMap.put("max", getJsonObjectByKey(flowsObject, "max") + (flowsMap.containsKey("max") ? Integer.parseInt(flowsMap.get("max").toString()) : 0));
+                        flowsMap.put("min", getJsonObjectByKey(flowsObject, "min") + (flowsMap.containsKey("min") ? Integer.parseInt(flowsMap.get("min").toString()) : 0));
+                        flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg") + (flowsMap.containsKey("avg") ? Integer.parseInt(flowsMap.get("avg").toString()) : 0));
+                        nodeMap.put("nodeCount", Integer.parseInt(nodeMap.get("nodeCount").toString()) + 1);
                     } else {
                         Map<String, Map> valueMap = new HashMap<>(16);
                         Map<String, Object> tasksMap = new HashMap(16);
@@ -200,11 +200,11 @@ public class ServiceMonitorController {
                         flowsMap.put("min", getJsonObjectByKey(flowsObject, "min"));
                         flowsMap.put("avg", getJsonObjectByKey(flowsObject, "avg"));
                         flowsMap.put("max", getJsonObjectByKey(flowsObject, "max"));
-                        nodeMap.put("nodeCount",1);
+                        nodeMap.put("nodeCount", 1);
                         valueMap.put("tasks", tasksMap);
                         valueMap.put("gcInfos", GcMap);
-                        valueMap.put("flows",flowsMap);
-                        valueMap.put("node",nodeMap);
+                        valueMap.put("flows", flowsMap);
+                        valueMap.put("node", nodeMap);
                         resultMap.put(serviceName, valueMap);
                         Map<String, Object> tmpMap = (Map) resultMap.get(serviceName);
                         String tmpJson = gson.toJson(serviceObject);
@@ -227,7 +227,7 @@ public class ServiceMonitorController {
             }
             return resList;
         } catch (Exception e) {
-            LOGGER.error("拼装健康度信息出现异常",e);
+            LOGGER.error("拼装健康度信息出现异常", e);
         }
         return resList;
     }
@@ -283,8 +283,8 @@ public class ServiceMonitorController {
                     hosts.setIp(realIp);
                     hosts.setPort(port);
                     hostsList.add(hosts);
-                    zkNodeList.stream().forEach(x -> {
-                        if (x.indexOf(Joiner.on(":").join(realIp, hosts.getPort())) != -1) {
+                    zkNodeList.forEach(x -> {
+                        if (x.contains(Joiner.on(":").join(realIp, hosts.getPort()))) {
                             Subservices subservices = new Subservices();
                             subservices.setName(x.split(":")[0]);
                             subservices.setVersion(x.split(":")[3]);
@@ -298,7 +298,7 @@ public class ServiceMonitorController {
                 dataList.add(smvo);
             }
         } catch (Exception e1) {
-            LOGGER.error("拼装服务信息出现异常",e1);
+            LOGGER.error("拼装服务信息出现异常", e1);
         }
         return dataList;
     }
@@ -324,7 +324,7 @@ public class ServiceMonitorController {
             ZkUtil.closeZk(zkByHost);
             return zkNodeList;
         } catch (Exception e) {
-            LOGGER.error("获取zk连接信息出现异常",e);
+            LOGGER.error("获取zk连接信息出现异常", e);
         } finally {
             ZkUtil.closeZk(zkByHost);
         }

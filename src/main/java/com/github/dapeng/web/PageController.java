@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
@@ -64,7 +65,6 @@ public class PageController {
         model.addAttribute("tagName", "index");
         return "maple";
     }
-
 
 
     /**
@@ -340,5 +340,14 @@ public class PageController {
         model.addAttribute("tagName", "build-host");
         model.addAttribute("sideName", "build-host");
         return "page/build-host";
+    }
+
+    @GetMapping(value = "/build/console/{id}")
+    public String buildConsole(Model model, @PathVariable Long id) {
+        model.addAttribute("tagName", "build-exec");
+        model.addAttribute("sideName", "build-exec");
+        // 返回任务信息
+        // 返回本次历史信息
+        return "page/build-console";
     }
 }

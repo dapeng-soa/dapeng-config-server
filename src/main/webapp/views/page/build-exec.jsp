@@ -14,7 +14,6 @@
     <script src="${basePath}/js/api/build-exec.js"></script>
 </head>
 <body>
-<jsp:include page="../core/console.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
 
@@ -97,43 +96,83 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-hover table-striped">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>任务名</th>
-                                <th>服务</th>
-                                <th>构建分支</th>
-                                <th>最后构建</th>
-                                <th>操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <c:forEach var="task" items="${view.value}" varStatus="vs">
-                                <tr>
-                                    <th scope="row">${vs.index+1}</th>
-                                    <td>${task.taskName}</td>
-                                    <td>${task.serviceName}</td>
-                                    <td>
-                                        <div class="advance-format-item">
-                                            <p class="advance-format-title"
-                                               onclick="toggleBlock(this)">${task.branch}</p>
-                                            <div class="advance-format-content">
-                                                <ul>
-                                                    <li><span>orderService</span>:<input type="text" value=""></li>
-                                                    <li><span>orderService</span>:<input type="text" value=""></li>
-                                                    <li><span>orderService</span>:<input type="text" value=""></li>
-                                                    <li><span>orderService</span>:<input type="text" value=""></li>
-                                                </ul>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <table class="table table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>任务名</th>
+                                        <th>服务</th>
+                                        <th>构建分支</th>
+                                        <th>最后构建</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="task" items="${view.value}" varStatus="vs">
+                                        <tr>
+                                            <th scope="row">${vs.index+1}</th>
+                                            <td>${task.taskName}</td>
+                                            <td><a href="#">${task.serviceName}</a></td>
+                                            <td>
+                                                <div class="advance-format-item">
+                                                    <p class="advance-format-title"
+                                                       onclick="toggleBlock(this)">${task.branch}</p>
+                                                    <div class="advance-format-content">
+                                                        <ul>
+                                                            <li><span>orderService</span>:<input type="text" value="">
+                                                            </li>
+                                                            <li><span>orderService</span>:<input type="text" value="">
+                                                            </li>
+                                                            <li><span>orderService</span>:<input type="text" value="">
+                                                            </li>
+                                                            <li><span>orderService</span>:<input type="text" value="">
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>2018-09-20</td>
+                                            <td><a href="javascript:void(0)" onclick="execBuildService(${task.id})"><i
+                                                    class="fa fa-play-circle" aria-hidden="true"></i></a></td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-3">
+                                <p class="text-center">构建历史</p>
+                                    <%--构建历史查一下数据库,点击构建历史可以进入到控制台输出--%>
+                                <div class="list-group">
+                                    <a href="${basePath}/build/console/1" class="list-group-item">
+                                        <p><i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
+                                            <span class="build-number">#5</span> <span class="build-date">2018-10-24 14:41:19</span>
+                                        </p>
+                                        <p>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                                 aria-valuenow="60"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                                <span class="sr-only">60% Complete</span>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td>2018-09-20</td>
-                                    <td><a href="javascript:void(0)" onclick="execBuildService(${task.id})">构建</a></td>
-                                </tr>
-                            </c:forEach>
-                            </tbody>
-                        </table>
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
+                                        <span class="build-number">#4</span> <span class="build-date">2018-10-24 14:41:19</span></a>
+                                    <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
+                                                                           aria-hidden="true"></i>
+                                        <span class="build-number">#3</span> <span class="build-date"> 2018-10-24 14:41:19</span></a>
+                                    <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
+                                                                           aria-hidden="true"></i>
+                                        <span class="build-number">#2</span> <span class="build-date">2018-10-24 14:41:19</span></a>
+                                    <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
+                                                                           aria-hidden="true"></i>
+                                        <span class="build-number">#1</span> <span class="build-date">2018-10-24 14:41:19</span></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </c:forEach>

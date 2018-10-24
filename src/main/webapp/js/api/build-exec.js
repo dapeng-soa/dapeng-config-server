@@ -14,32 +14,24 @@ $(document).ready(function () {
             showMessage(SUCCESS, "已建立与服务器的连接", "连接成功");
         }
     });
-    socket.on(NODE_EVENT, function (data) {
-        if (data !== "") {
-            openConloseView();
-            var html = ansi.ansi_to_html(data);
-            $$.consoleView(html);
-        }
-        if (data === "[end]"){
-            setTimeout(function () {
-                closeConloseView()
-            },2000);
-        }
+
+    socket.on(BUILD_RESP, function (data) {
+        console.log(data);
     });
+
+    socket.on(BUILDING, function (data) {
+        console.log(data);
+    });
+
+    socket.on(NODE_EVENT, function (data) {
+        console.log(data);
+    });
+
     /**
      * 错误返回
      */
     socket.on(ERROR_EVENT, function (data) {
-        if (data !== "") {
-            openConloseView();
-            var html = ansi.ansi_to_html(data);
-            $$.consoleView(html);
-        }
-        if (data === "[end]"){
-            setTimeout(function () {
-                closeConloseView()
-            },2000);
-        }
+        console.log(data);
     });
 
     socket.on(SOC_CDISCONNECT, function () {

@@ -493,3 +493,11 @@ table {
     height: 42px;
     z-index: 1;
 }
+
+/**
+进度条
+ */
+.progress {
+    height: 10px !important;
+    margin-bottom: 0 !important;
+}
