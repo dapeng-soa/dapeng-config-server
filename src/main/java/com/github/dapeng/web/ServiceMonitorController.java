@@ -276,7 +276,8 @@ public class ServiceMonitorController {
                 String port = null;
                 if (m.find()) {
                     port = m.group(1);
-                }else{
+                }
+                if(port==null){
                     continue;
                 }
                 for (String ip : ipArrs) {
