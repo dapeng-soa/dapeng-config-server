@@ -266,6 +266,7 @@ public class ServiceMonitorController {
         List<ServiceGroupVo> dataList = new ArrayList<>();
         try {
             List<String> zkNodeList = cacheZkNodeList();
+            LOGGER.info("zkNode list=================" +zkNodeList.size());
             for (int i = 0; i < baseServiceList.size(); i++) {
                 ServiceGroupVo smvo = new ServiceGroupVo();
                 ServiceMonitorVo smv = baseServiceList.get(i);
@@ -280,6 +281,7 @@ public class ServiceMonitorController {
                 for (String ip : ipArrs) {
                     MonitorHosts hosts = new MonitorHosts();
                     String realIp = IPUtils.transferIp(Integer.parseInt(ip));
+                    LOGGER.info("realIp===========:"+realIp);
                     hosts.setIp(realIp);
                     hosts.setPort(port);
                     hostsList.add(hosts);
