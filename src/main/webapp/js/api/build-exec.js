@@ -90,8 +90,8 @@ var serviceSelectChange = function (obj) {
 };
 
 var execBuildService = function (taskId) {
-    var url = basePath + "/api/build/task/" + taskId;
-    $$.$get(url, function (res) {
+    var url = basePath + "/api/build/exec-build/" + taskId;
+    $$.post(url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {
             socket.emit(BUILD, JSON.stringify(res.context));
             layer.msg("正在构建");

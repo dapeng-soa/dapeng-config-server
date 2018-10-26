@@ -7,10 +7,12 @@ import com.github.dapeng.dto.DependsServiceDto;
 import com.github.dapeng.entity.build.TBuildDepends;
 import com.github.dapeng.entity.build.TBuildHost;
 import com.github.dapeng.entity.build.TBuildTask;
+import com.github.dapeng.entity.build.TServiceBuildRecords;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.build.BuildDependsRepository;
 import com.github.dapeng.repository.build.BuildHostRepository;
 import com.github.dapeng.repository.build.BuildTaskRepository;
+import com.github.dapeng.repository.build.ServiceBuildRecordsRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.socket.entity.BuildVo;
 import com.github.dapeng.socket.entity.DependServiceVo;
@@ -35,7 +37,6 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 
 @RestController
 @RequestMapping("/api")
-@Transactional(rollbackFor = Throwable.class)
 public class BuildExecRestController {
 
     @Autowired
@@ -49,6 +50,9 @@ public class BuildExecRestController {
 
     @Autowired
     BuildHostRepository buildHostRepository;
+
+    @Autowired
+    ServiceBuildRecordsRepository buildRecordsRepository;
 
     @GetMapping("/build/depends/{serviceId}")
     public ResponseEntity getDepends(@PathVariable Long serviceId) {
@@ -66,8 +70,9 @@ public class BuildExecRestController {
         }
     }
 
-    @GetMapping("/build/task/{taskId}")
-    public ResponseEntity getTaskById(@PathVariable Long taskId) {
+    @PostMapping("/build/exec-build/{taskId}")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity execBuild(@PathVariable Long taskId) {
         try {
             BuildVo buildVo = new BuildVo();
             TBuildTask task = buildTaskRepository.findOne(taskId);
@@ -78,7 +83,11 @@ public class BuildExecRestController {
             if (isEmpty(host)) {
                 throw new Exception("找不到构建主机");
             }
-            buildVo.setBuildServerIp(IPUtils.transferIp(host.getHost()));
+            TService service = serviceRepository.findOne(task.getServiceId());
+            if (isEmpty(service)) {
+                throw new Exception("找不到这个服务");
+            }
+
             List<DependServiceVo> serviceVoList = new ArrayList<>();
             List<TBuildDepends> depends = buildDependsRepository.findByTaskId(taskId);
             if (isEmpty(depends)) {
@@ -94,6 +103,22 @@ public class BuildExecRestController {
                 serviceVoList.add(vo);
             });
             buildVo.setBuildServices(serviceVoList);
+
+            // 存储一条记录
+            TServiceBuildRecords records = new TServiceBuildRecords();
+            records.setAgentHost(IPUtils.transferIp(host.getHost()));
+            records.setBuildService(service.getName());
+            records.setTaskId(taskId);
+            records.setCreatedAt(DateUtil.now());
+            records.setUpdatedAt(DateUtil.now());
+            records.setBuildLog("");
+            buildRecordsRepository.save(records);
+
+            buildVo.setAgentHost(records.getAgentHost());
+            buildVo.setBuildService(records.getBuildService());
+            buildVo.setTaskId(records.getTaskId());
+            buildVo.setId(records.getId());
+
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildVo));
         } catch (Exception e) {
