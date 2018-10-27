@@ -26,5 +26,5 @@ public interface ServiceBuildRecordsRepository extends JpaRepository<TServiceBui
      * @param host
      * @return
      */
-    List<TServiceBuildRecords> findByAgentHost(String host);
+    List<TServiceBuildRecords> findByAgentHostOrderByCreatedAtDesc(String host);
 }

@@ -140,7 +140,7 @@ public class BuildExecRestController {
             if (isEmpty(one)) {
                 throw new Exception("找不到该构建主机");
             }
-            List<TServiceBuildRecords> records = buildRecordsRepository.findByAgentHost(IPUtils.transferIp(one.getHost()));
+            List<TServiceBuildRecords> records = buildRecordsRepository.findByAgentHostOrderByCreatedAtDesc(IPUtils.transferIp(one.getHost()));
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
         } catch (Exception e) {
