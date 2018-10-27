@@ -87,7 +87,13 @@ public class BuildExecRestController {
             if (isEmpty(service)) {
                 throw new Exception("找不到这个服务");
             }
-
+            List<Long> list = new ArrayList<>();
+            list.add(0L);
+            list.add(1L);
+            List<TServiceBuildRecords> buildRecords = buildRecordsRepository.findByAgentHostAndStatusIn(IPUtils.transferIp(host.getHost()), list);
+            if (!isEmpty(buildRecords)) {
+                throw new Exception("存在正在构建的服务，请等待构建完成");
+            }
             List<DependServiceVo> serviceVoList = new ArrayList<>();
             List<TBuildDepends> depends = buildDependsRepository.findByTaskId(taskId);
             if (isEmpty(depends)) {
@@ -125,7 +131,22 @@ public class BuildExecRestController {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
+    }
 
+    @GetMapping("/build/get-building-list")
+    public ResponseEntity getBuildingList(@RequestParam Long hostId) {
+        try {
+            TBuildHost one = buildHostRepository.findOne(hostId);
+            if (isEmpty(one)) {
+                throw new Exception("找不到该构建主机");
+            }
+            List<TServiceBuildRecords> records = buildRecordsRepository.findByAgentHost(IPUtils.transferIp(one.getHost()));
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
     }
 
     @PostMapping("/build/add-build-task")

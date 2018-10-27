@@ -88,5 +88,30 @@ module api {
             }
             return options;
         }
+
+        public buildingListContext(records: any) {
+            let items = "";
+            let size = records.length;
+            for (let i in records) {
+                items += `
+                <a href="${window.basePath}/build/console/${records[i].id}" class="list-group-item">
+                    <p>
+                    <i class="fa fa-heart-o ${(records[i].status == 0 || records[i].status == 1) ? "text-danger" : "text-primary"} " aria-hidden="true"></i>
+                    <span class="build-number">#${size--}</span> <span class="build-date">${records[i].createdAt}</span>
+                    </p>
+                    ${(records[i].status == 0 || records[i].status == 1) ? `
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar"
+                             aria-valuenow="40"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 40%;">
+                            <span class="sr-only">40%</span>
+                        </div>
+                    </div>
+                    ` : ""}
+                </a>    
+                `;
+            }
+            return items;
+        }
     }
 }

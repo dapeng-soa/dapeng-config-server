@@ -1,5 +1,6 @@
 package com.github.dapeng.entity.build;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -23,10 +24,12 @@ public class TServiceBuildRecords {
     @Column(name = "build_log")
     private String buildLog;
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private java.sql.Timestamp createdAt;
     @Column(name = "created_by")
     private long createdBy;
     @Column(name = "updated_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private java.sql.Timestamp updatedAt;
 
 

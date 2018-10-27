@@ -29,6 +29,14 @@ var api;
             }
             return options;
         };
+        Build.prototype.buildingListContext = function (records) {
+            var items = "";
+            var size = records.length;
+            for (var i in records) {
+                items += "\n                <a href=\"" + window.basePath + "/build/console/" + records[i].id + "\" class=\"list-group-item\">\n                    <p>\n                    <i class=\"fa fa-heart-o " + ((records[i].status == 0 || records[i].status == 1) ? "text-danger" : "text-primary") + " \" aria-hidden=\"true\"></i>\n                    <span class=\"build-number\">#" + size-- + "</span> <span class=\"build-date\">" + records[i].createdAt + "</span>\n                    </p>\n                    " + ((records[i].status == 0 || records[i].status == 1) ? "\n                    <div class=\"progress\">\n                        <div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\"\n                             aria-valuenow=\"40\"\n                             aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: 40%;\">\n                            <span class=\"sr-only\">40%</span>\n                        </div>\n                    </div>\n                    " : "") + "\n                </a>    \n                ";
+            }
+            return items;
+        };
         return Build;
     }());
     api.Build = Build;

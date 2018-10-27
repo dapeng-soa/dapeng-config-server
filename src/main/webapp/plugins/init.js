@@ -26,7 +26,10 @@ window.GET_YAML_FILE_RESP = "getYamlFileResp";
 window.GET_REGED_AGENTS = "getRegedAgents";
 window.BUILD = "build";
 window.BUILD_RESP = "buildResp";
-window.BUILDING="building"; // 构建中的
+window.BUILDING = "building"; // 构建中的
+window.BUILDING_LIST = "buildingList";
+window.GET_BUILD_PROGRESSIVE = "getBuildProgressive";
+window.GET_BUILD_PROGRESSIVE_RESP = "getBuildProgressiveResp";
 window.GET_REGED_AGENTS_RESP = "getRegedAgentsResp";
 window.ERROR_EVENT = "errorEvent";
 // 常用状态
@@ -65,7 +68,7 @@ window.refresh = function () {
     window.location.reload();
 };
 window.backPrePage = function () {
-  window.history.back();
+    window.history.back();
 };
 
 // 自定义手风琴

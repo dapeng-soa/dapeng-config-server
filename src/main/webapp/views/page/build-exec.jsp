@@ -12,6 +12,14 @@
     <jsp:include page="../core/resource.jsp"/>
     <script src="${basePath}/js/ts/Build.js"></script>
     <script src="${basePath}/js/api/build-exec.js"></script>
+    <script>
+        $(document).ready(function () {
+            getBuildListReq(${current.id});
+            setInterval(function () {
+                getBuildListReq(${current.id});
+            }, 4000);
+        })
+    </script>
 </head>
 <body>
 <jsp:include page="../core/sidebar.jsp"/>
@@ -144,32 +152,32 @@
                             <div class="col-sm-3">
                                 <p class="text-center">构建历史</p>
                                     <%--构建历史查一下数据库,点击构建历史可以进入到控制台输出--%>
-                                <div class="list-group">
-                                    <a href="${basePath}/build/console/1" class="list-group-item">
-                                        <p><i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
-                                            <span class="build-number">#5</span> <span class="build-date">2018-10-24 14:41:19</span>
-                                        </p>
-                                        <p>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                                 aria-valuenow="60"
-                                                 aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                                                <span class="sr-only">60% Complete</span>
+                                <div class="list-group" id="buildingList${current.id}">
+                                        <%--<a href="${basePath}/build/console/1" class="list-group-item">
+                                            <p><i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
+                                                <span class="build-number">#5</span> <span class="build-date">2018-10-24 14:41:19</span>
+                                            </p>
+                                            <p>
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                                     aria-valuenow="60"
+                                                     aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                                    <span class="sr-only">60% Complete</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                    <a href="#" class="list-group-item">
-                                        <i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
-                                        <span class="build-number">#4</span> <span class="build-date">2018-10-24 14:41:19</span></a>
-                                    <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
-                                                                           aria-hidden="true"></i>
-                                        <span class="build-number">#3</span> <span class="build-date"> 2018-10-24 14:41:19</span></a>
-                                    <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
-                                                                           aria-hidden="true"></i>
-                                        <span class="build-number">#2</span> <span class="build-date">2018-10-24 14:41:19</span></a>
-                                    <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
-                                                                           aria-hidden="true"></i>
-                                        <span class="build-number">#1</span> <span class="build-date">2018-10-24 14:41:19</span></a>
+                                        </a>
+                                        <a href="#" class="list-group-item">
+                                            <i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
+                                            <span class="build-number">#4</span> <span class="build-date">2018-10-24 14:41:19</span></a>
+                                        <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
+                                                                               aria-hidden="true"></i>
+                                            <span class="build-number">#3</span> <span class="build-date"> 2018-10-24 14:41:19</span></a>
+                                        <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
+                                                                               aria-hidden="true"></i>
+                                            <span class="build-number">#2</span> <span class="build-date">2018-10-24 14:41:19</span></a>
+                                        <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
+                                                                               aria-hidden="true"></i>
+                                            <span class="build-number">#1</span> <span class="build-date">2018-10-24 14:41:19</span></a>--%>
                                 </div>
                             </div>
                         </div>

@@ -346,8 +346,7 @@ public class PageController {
     public String buildConsole(Model model, @PathVariable Long id) {
         model.addAttribute("tagName", "build-exec");
         model.addAttribute("sideName", "build-exec");
-        // 返回任务信息
-        // 返回本次历史信息
+        model.addAttribute("currentId", id);
         return "page/build-console";
     }
 }

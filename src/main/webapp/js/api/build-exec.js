@@ -100,3 +100,15 @@ var execBuildService = function (taskId) {
         }
     })
 };
+
+var getBuildListReq = function (hostId) {
+    var url = basePath + "/api/build/get-building-list";
+    $.get(url, {hostId: hostId}, function (res) {
+        getBuildingListHtml(hostId, res.context);
+    }, "json")
+};
+
+var getBuildingListHtml = function (elId, records) {
+    var context = build.buildingListContext(records);
+    $("#buildingList" + elId).html(context);
+};
