@@ -91,7 +91,11 @@ module api {
 
         public buildingListContext(records: any) {
             let items = "";
-            let size = records.length;
+
+            let size = 0;
+            if (records !== null || records !== undefined){
+                size = records.length
+            }
             for (let i in records) {
                 items += `
                 <a href="${window.basePath}/build/console/${records[i].id}" class="list-group-item">
