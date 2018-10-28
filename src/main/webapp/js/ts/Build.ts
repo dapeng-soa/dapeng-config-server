@@ -93,7 +93,7 @@ module api {
             let items = "";
 
             let size = 0;
-            if (records !== null || records !== undefined){
+            if (records !== null && records !== undefined){
                 size = records.length
             }
             for (let i in records) {

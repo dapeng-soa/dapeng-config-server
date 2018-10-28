@@ -32,7 +32,7 @@ var api;
         Build.prototype.buildingListContext = function (records) {
             var items = "";
             var size = 0;
-            if (records !== null || records !== undefined) {
+            if (records !== null && records !== undefined) {
                 size = records.length;
             }
             for (var i in records) {
