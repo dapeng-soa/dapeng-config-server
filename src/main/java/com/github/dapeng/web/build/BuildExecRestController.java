@@ -160,6 +160,7 @@ public class BuildExecRestController {
             task.setHostId(dto.getHostId());
             task.setServiceId(dto.getServiceId());
             task.setCreatedAt(DateUtil.now());
+            task.setUpdatedAt(DateUtil.now());
             if (isEmpty(dto.getTaskName())) {
                 dto.setTaskName("build-" + host.getName() + "-" + service1.getName());
             }
