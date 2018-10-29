@@ -187,7 +187,7 @@ public class ConfigRestController {
                                        @RequestParam(required = false) String order,
                                        @RequestParam(required = false) String search) {
         PageRequest pageRequest = new PageRequest
-                (offset, limit,
+                (offset / limit, limit,
                         new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
                                 null == sort ? "updatedAt" : sort));
 
