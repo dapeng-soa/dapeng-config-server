@@ -113,7 +113,7 @@
                                         <th>任务名</th>
                                         <th>服务</th>
                                         <th>构建分支</th>
-                                        <th>最后构建</th>
+                                        <th>添加时间</th>
                                         <th>操作</th>
                                     </tr>
                                     </thead>
@@ -129,19 +129,17 @@
                                                        onclick="toggleBlock(this)">${task.branch}</p>
                                                     <div class="advance-format-content">
                                                         <ul>
-                                                            <li><span>orderService</span>:<input type="text" value="">
-                                                            </li>
-                                                            <li><span>orderService</span>:<input type="text" value="">
-                                                            </li>
-                                                            <li><span>orderService</span>:<input type="text" value="">
-                                                            </li>
-                                                            <li><span>orderService</span>:<input type="text" value="">
-                                                            </li>
+                                                            <c:forEach var="depend" items="${task.depends}"
+                                                                       varStatus="vs">
+                                                                <li>
+                                                                    <span>${depend.serviceName}</span> => <span>${depend.branchName}</span>
+                                                                </li>
+                                                            </c:forEach>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>2018-09-20</td>
+                                            <td>${task.updatedAt}</td>
                                             <td><a href="javascript:void(0)" onclick="execBuildService(${task.id})"><i
                                                     class="fa fa-play-circle" aria-hidden="true"></i></a></td>
                                         </tr>
@@ -153,31 +151,7 @@
                                 <p class="text-center">构建历史</p>
                                     <%--构建历史查一下数据库,点击构建历史可以进入到控制台输出--%>
                                 <div class="list-group" id="buildingList${current.id}">
-                                        <%--<a href="${basePath}/build/console/1" class="list-group-item">
-                                            <p><i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
-                                                <span class="build-number">#5</span> <span class="build-date">2018-10-24 14:41:19</span>
-                                            </p>
-                                            <p>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                                     aria-valuenow="60"
-                                                     aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                                                    <span class="sr-only">60% Complete</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-heart-o text-danger" aria-hidden="true"></i>
-                                            <span class="build-number">#4</span> <span class="build-date">2018-10-24 14:41:19</span></a>
-                                        <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
-                                                                               aria-hidden="true"></i>
-                                            <span class="build-number">#3</span> <span class="build-date"> 2018-10-24 14:41:19</span></a>
-                                        <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
-                                                                               aria-hidden="true"></i>
-                                            <span class="build-number">#2</span> <span class="build-date">2018-10-24 14:41:19</span></a>
-                                        <a href="#" class="list-group-item"><i class="fa fa-heart text-primary"
-                                                                               aria-hidden="true"></i>
-                                            <span class="build-number">#1</span> <span class="build-date">2018-10-24 14:41:19</span></a>--%>
+
                                 </div>
                             </div>
                         </div>

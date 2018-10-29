@@ -1,5 +1,6 @@
 package com.github.dapeng.web;
 
+import com.github.dapeng.entity.build.TBuildDepends;
 import com.github.dapeng.entity.build.TBuildHost;
 import com.github.dapeng.entity.build.TBuildTask;
 import com.github.dapeng.entity.deploy.TService;
@@ -321,6 +322,8 @@ public class PageController {
                 vo.setUpdatedAt(y.getUpdatedAt());
                 vo.setHostName(buildHostRepository.findOne(y.getHostId()).getName());
                 vo.setServiceName(serviceRepository.findOne(y.getServiceId()).getName());
+                List<TBuildDepends> depends = buildDependsRepository.findByTaskId(y.getId());
+                vo.setDepends(depends);
                 return vo;
             }).collect(Collectors.toList());
             buildViews.put(x, taskVos);

@@ -1,6 +1,11 @@
 package com.github.dapeng.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.dapeng.entity.build.TBuildDepends;
+
+import java.util.List;
+
 public class BuildTaskVo {
 
     private long id;
@@ -10,8 +15,11 @@ public class BuildTaskVo {
     private String hostName;
     private String branch;
     private String serviceName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private java.sql.Timestamp createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private java.sql.Timestamp updatedAt;
+    private List<TBuildDepends> depends;
 
     public long getId() {
         return id;
@@ -90,5 +98,13 @@ public class BuildTaskVo {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public List<TBuildDepends> getDepends() {
+        return depends;
+    }
+
+    public void setDepends(List<TBuildDepends> depends) {
+        this.depends = depends;
     }
 }
