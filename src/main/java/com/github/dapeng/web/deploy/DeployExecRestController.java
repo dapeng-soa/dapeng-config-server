@@ -7,10 +7,7 @@ import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.socket.entity.VolumesFile;
-import com.github.dapeng.util.Composeutil;
-import com.github.dapeng.util.DateUtil;
-import com.github.dapeng.util.DownloadUtil;
-import com.github.dapeng.util.Tools;
+import com.github.dapeng.util.*;
 import com.github.dapeng.vo.*;
 import com.github.dapeng.vo.compose.DockerService;
 import org.slf4j.Logger;
@@ -369,7 +366,7 @@ public class DeployExecRestController {
         TOperationJournal newJournal = new TOperationJournal();
         newJournal.setOpFlag(4);
         newJournal.setCreatedAt(DateUtil.now());
-        newJournal.setCreatedBy("admin");
+        newJournal.setCreatedBy(SecurityUtil.me());
         newJournal.setDiff("");
         newJournal.setYml(journal.getYml());
         newJournal.setServiceId(journal.getServiceId());
@@ -397,7 +394,7 @@ public class DeployExecRestController {
         journal.setServiceId(unit.getServiceId());
         journal.setYml(yml);
         journal.setCreatedAt(DateUtil.now());
-        journal.setCreatedBy("admin");
+        journal.setCreatedBy(SecurityUtil.me());
         // 升级
         journal.setOpFlag(opFlag);
         journal.setDiff("");
