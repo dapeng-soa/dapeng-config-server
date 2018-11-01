@@ -33,8 +33,7 @@
         }, 3000);
 
         socket.on(GET_BUILD_PROGRESSIVE_RESP, function (data) {
-            console.log(data);
-            var resp = JSON.stringify(data);
+            var resp = JSON.parse(data);
             if (resp.status === 2 || resp.status === 3) {
                 progressiveDto.start = 0;
                 window.clearInterval(timer1);
