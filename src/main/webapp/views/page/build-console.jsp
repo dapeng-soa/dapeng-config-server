@@ -28,13 +28,20 @@
             }
         });
 
-        setInterval(function () {
+        var timer1 = setInterval(function () {
             socket.emit(GET_BUILD_PROGRESSIVE, JSON.stringify(progressiveDto));
         }, 3000);
 
         socket.on(GET_BUILD_PROGRESSIVE_RESP, function (data) {
-            $("#console-Box").append(ansi.ansi_to_html(data));
-            progressiveDto.start = progressiveDto.start + data.length;
+            console.log(data);
+            var resp = JSON.stringify(data);
+            if (resp.status === 2 || resp.status === 3) {
+                progressiveDto.start = 0;
+                window.clearInterval(timer1);
+                $("#console-spinner").hide()
+            }
+            $("#console-Box").append(ansi.ansi_to_html(resp.buildLog));
+            progressiveDto.start = progressiveDto.start + resp.buildLog.length;
         });
     });
 
@@ -58,7 +65,7 @@
         </div>
     </div>
     <pre id="console-Box" style="background: #FFF"></pre>
-    <i class="fa fa-spinner icon-spin" aria-hidden="true"></i>
+    <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
 </div>
 </body>
 </html>
