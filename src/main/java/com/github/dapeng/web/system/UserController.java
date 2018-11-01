@@ -41,6 +41,7 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 
 @Controller
 @RequestMapping("/api")
+@Transactional(rollbackFor = Exception.class)
 public class UserController {
 
     Logger LOGGER = LoggerFactory.getLogger(UserController.class);
@@ -329,7 +330,6 @@ public class UserController {
      * @return
      */
     @PostMapping("/system-user/unlink-role")
-    @Transactional(rollbackFor = Throwable.class)
     public ResponseEntity execUnlinkRole(@RequestBody RoleUserDto dto) {
         try {
             SecurityUtil.checkAdmin();

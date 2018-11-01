@@ -39,6 +39,15 @@ window.WARN = "warn";
 window.ERROR = "error";
 window.INFO = "info";
 
+// 常用标签颜色
+window.LABEL_COLORS = ["label label-default", "label label-primary", "label label-success", "label label-info", "label label-warning", "label label-danger"];
+/**
+ * @return {string}
+ */
+window.RANDOM_LABEL = function () {
+    return LABEL_COLORS[Math.floor(Math.random() * (LABEL_COLORS.length))]
+};
+
 // 常用视图
 window.VIEW = "view";
 window.ADD = "add";

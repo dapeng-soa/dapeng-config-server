@@ -856,8 +856,8 @@ restart: on-failure:3
             for (let em of sub) {
                 let IdPrefix = viewType == dep.serviceView ? em.hostIp + obj.serviceName : obj.hostIp + em.serviceName;
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
-                            <div class="col-sm-3 col-xs-12">
-                                <p style="font-size: 20px">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
+                            <div class="col-sm-4 col-xs-12">
+                                <p style="font-size: 18px;word-wrap: break-word;">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
                                 ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
                                 <p>Tag：<span id="${IdPrefix}-ImageTag">none</span></p>
                             </div>
@@ -867,7 +867,7 @@ restart: on-failure:3
                                 <p>服务状态：<span id="${IdPrefix}-serviceStatus">${dep.realStatus(em.serviceStatus)}</span></p>
                                 <p>需要更新：<span id="${IdPrefix}-needUpdate">${dep.updateStatus(em.needUpdate)}</span></p>
                                 </div>
-                                <div class="col-sm-3 col-xs-12">
+                                <div class="col-sm-2 col-xs-12">
                                     <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId})">升级</a></p>
                                 <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
                                 <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>

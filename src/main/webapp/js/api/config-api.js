@@ -1,7 +1,10 @@
 $(document).ready(function () {
     InitMainTable();
+    initSelectTags();
 });
 var config = new api.Config();
+var bsTable = {};
+var $$ = new api.Api();
 
 function InitMainTable() {
     var queryUrl = basePath + '/api/configs';
@@ -9,13 +12,18 @@ function InitMainTable() {
     table.onDblClickRow = function (row) {
         viewOrEditByID(row.id, VIEW)
     };
-    table.responseHandler= function (res) {     //格式化返回数据
+    table.params = function (ps) {
+        ps.tag = $("#configServiceTags").find("option:selected").val();
+        return ps;
+    };
+    table.responseHandler = function (res) {     //格式化返回数据
         return {
             total: res.context.totalElements,
             rows: res.context.content
         };
     };
     table.init();
+    bsTable = table;
 }
 
 setColumns = function () {
@@ -30,6 +38,10 @@ setColumns = function () {
         field: 'serviceName',
         title: '服务名',
         sortable: true
+    }, {
+        field: 'tags',
+        title: 'tags',
+        formatter: tagsFormatter
     }, {
         field: 'status',
         title: '状态',
@@ -56,6 +68,35 @@ setColumns = function () {
         valign: 'middle',
         formatter: actionFormatter
     }];
+};
+
+var initSelectTags = function () {
+    var url = basePath + "/api/config/service-tags";
+    $$.$get(url, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var tags = res.context;
+            var ops = "<option value=''>请选择</option>";
+            for (var i in tags) {
+                ops += "<option value='" + tags[i] + "'>" + tags[i] + "</option>"
+            }
+            $("#configServiceTags").html(ops).selectpicker('refresh');
+        }
+    });
+
+};
+
+execTagChanged = function (obj) {
+    bsTable.refresh();
+};
+
+tagsFormatter = function (value) {
+    var tags = value.split(",");
+    var res = "";
+    for (var i in tags) {
+        var lable = RANDOM_LABEL();
+        res += '<span class="' + lable + '">' + tags[i] + '</span> ';
+    }
+    return res;
 };
 
 
@@ -98,7 +139,7 @@ saveconfig = function () {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -123,8 +164,9 @@ delConfig = function (id) {
         $.ajax(settings).done(function (res) {
             layer.msg(res.msg);
             if (res.code === SUCCESS_CODE) {
-                refresh();
+                closeModel();
             }
+            rmBodyAbs();
         });
     }, function () {
         layer.msg("未做任何变更");
@@ -148,7 +190,7 @@ editedConfig = function (id) {
     $.ajax(settings).done(function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     });
 };
@@ -248,7 +290,7 @@ processPublishConfig = function (id, cid) {
     }, function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            closeModel();
         }
     }, "json")
 };
@@ -265,6 +307,7 @@ viewOrEditByID = function (id, viewOrEdit) {
         var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
         initModelContext(context, viewOrEdit === "view" ? refresh : function () {
         });
+        initTags(data.tags);
     }, "json")
 };
 
@@ -330,7 +373,7 @@ rollback = function (id) {
     var url = basePath + "/api/config/rollback/" + id;
     $.post(url, function (res) {
         layer.msg(res.msg);
-        refresh();
+        closeModel();
     }, "json")
 };
 
@@ -345,8 +388,11 @@ processConfigData = function () {
     var routerConfig = $("#router-config-area").val();
     var freqConfig = $("#freq-config-area").val();
     var remark = $("#remark-area").val();
+    var t = $("input[data-role='tagsinput']#serviceTags");
+    var tags = t.val();
     return {
         serviceName: serviceName,
+        tags: tags,
         timeoutConfig: timeoutConfig,
         loadbalanceConfig: loadbalanceConfig,
         routerConfig: routerConfig,
@@ -377,6 +423,18 @@ openAddConfig = function () {
     var context = config.exportAddConfigContext("add");
     // 初始化弹窗
     initModelContext(context, refresh);
+    initTags();
+};
+
+var initTags = function (data) {
+    var t = $("input[data-role='tagsinput']");
+    t.tagsinput({
+        tagClass: function () {
+            return RANDOM_LABEL;
+        }
+    });
+    t.tagsinput('refresh');
+    t.tagsinput('add', data);
 };
 
 

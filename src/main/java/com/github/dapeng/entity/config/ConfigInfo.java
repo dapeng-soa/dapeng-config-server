@@ -71,6 +71,25 @@ public class ConfigInfo {
     @Column(name = "remark")
     private String remark;
 
+    @Column(name = "tags")
+    private String tags;
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
     public long getId() {
         return id;
     }

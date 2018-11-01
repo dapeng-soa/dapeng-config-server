@@ -28,7 +28,7 @@ import static com.github.dapeng.common.Commons.EXTRA_DATASOURCE;
  * email :yq1724555319@gmail.com
  */
 @RestController
-@Transactional(rollbackFor = Throwable.class)
+@Transactional(rollbackFor = Exception.class)
 @RequestMapping("/api")
 public class ApikeyRestController {
     @Autowired

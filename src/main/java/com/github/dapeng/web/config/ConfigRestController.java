@@ -27,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.dapeng.common.Commons.*;
@@ -38,7 +39,7 @@ import static com.github.dapeng.common.Commons.*;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional(rollbackFor = Throwable.class)
+@Transactional(rollbackFor = Exception.class)
 public class ConfigRestController {
     private static Logger LOGGER = LoggerFactory.getLogger(ConfigRestController.class);
 
@@ -98,6 +99,27 @@ public class ConfigRestController {
     }
 
     /**
+     * 获取tags
+     *
+     * @return
+     */
+    @GetMapping(value = "/config/service-tags")
+    public ResponseEntity configServiceTags() {
+        List<ConfigInfo> list = repository.findAll();
+        List<String> tags = new ArrayList<>();
+        list.forEach(x -> {
+            String[] ts = x.getTags().split(",");
+            for (String t : ts) {
+                if (!NullUtil.isEmpty(t)) {
+                    tags.add(t);
+                }
+            }
+        });
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, tags));
+    }
+
+    /**
      * 删除配置信息
      *
      * @param id
@@ -139,6 +161,7 @@ public class ConfigRestController {
             if (null != info) {
                 info.setStatus(ConfigStatus.PASS.key());
                 info.setUpdatedBy(0);
+                info.setTags(infoDto.getTags());
                 info.setUpdatedAt(DateUtil.now());
                 info.setRemark(infoDto.getRemark());
                 info.setTimeoutConfig(infoDto.getTimeoutConfig());
@@ -185,13 +208,14 @@ public class ConfigRestController {
                                        @RequestParam int limit,
                                        @RequestParam(required = false) String sort,
                                        @RequestParam(required = false) String order,
-                                       @RequestParam(required = false) String search) {
+                                       @RequestParam(required = false, defaultValue = "") String search,
+                                       @RequestParam(required = false, defaultValue = "") String tag) {
         PageRequest pageRequest = new PageRequest
                 (offset / limit, limit,
                         new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
                                 null == sort ? "updatedAt" : sort));
 
-        Page<ConfigInfo> infos = repository.findAllByStatusIsNotAndServiceNameLike(ConfigStatus.FAILURE.key(), '%' + search + '%', pageRequest);
+        Page<ConfigInfo> infos = repository.findAllByStatusIsNotAndServiceNameLikeAndTagsLike(ConfigStatus.FAILURE.key(), '%' + search + '%', '%' + tag + '%', pageRequest);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, infos));
     }
@@ -330,6 +354,7 @@ public class ConfigRestController {
         configInfo.setUpdatedAt(DateUtil.now());
         configInfo.setCreatedBy(0);
         configInfo.setUpdatedBy(0);
+        configInfo.setTags(configInfoDto.getTags());
         configInfo.setStatus(status);
         configInfo.setRemark(configInfoDto.getRemark());
         configInfo.setFreqConfig(configInfoDto.getFreqConfig());

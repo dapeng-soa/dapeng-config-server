@@ -501,3 +501,7 @@ table {
     height: 10px !important;
     margin-bottom: 0 !important;
 }
+
+.bootstrap-tagsinput{
+    width: 100%;
+}

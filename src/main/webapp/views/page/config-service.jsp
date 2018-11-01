@@ -25,7 +25,13 @@
                 </span>
             </div>
         </div>
+        <div id="config-tableToolbar">
+            <span>tags过滤： <span style="display: inline-block;width: 120px">
+                <select class="form-control selectpicker" data-live-search="true"  onchange="execTagChanged(this)" id="configServiceTags" >
 
+            </select>
+            </span></span>
+        </div>
         <table id="config-table"></table>
         <jsp:include page="../core/footer.jsp"/>
     </div>

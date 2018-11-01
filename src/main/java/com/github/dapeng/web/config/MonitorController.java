@@ -38,7 +38,7 @@ import static com.github.dapeng.openapi.utils.Constants.SERVICE_RUNTIME_PATH;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional(rollbackFor = Throwable.class)
+@Transactional(rollbackFor = Exception.class)
 public class MonitorController {
 
     private static final Logger logger = LoggerFactory.getLogger(MonitorController.class);

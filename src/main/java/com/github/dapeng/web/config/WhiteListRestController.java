@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 @RestController
-@Transactional(rollbackFor = Throwable.class)
+@Transactional(rollbackFor = Exception.class)
 @RequestMapping("/api")
 public class WhiteListRestController {
 

@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api")
-@Transactional(rollbackFor = Throwable.class)
+@Transactional(rollbackFor = Exception.class)
 public class ClustersRestController {
 
     @Autowired

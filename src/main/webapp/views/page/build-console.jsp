@@ -14,6 +14,7 @@
 <script>
     var socket = {};
     var progressiveDto = {id:${currentId}, start: 0};
+    var ansi = new AnsiUp;
     $(document).ready(function () {
         socket = io(socketUrl);
         socket.on(SOC_CONNECT, function () {
@@ -29,10 +30,10 @@
 
         setInterval(function () {
             socket.emit(GET_BUILD_PROGRESSIVE, JSON.stringify(progressiveDto));
-        }, 4000);
+        }, 3000);
 
         socket.on(GET_BUILD_PROGRESSIVE_RESP, function (data) {
-            $("#console-Box").append(data);
+            $("#console-Box").append(ansi.ansi_to_html(data));
             progressiveDto.start = progressiveDto.start + data.length;
         });
     });

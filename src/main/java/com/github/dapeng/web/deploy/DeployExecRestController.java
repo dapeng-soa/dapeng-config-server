@@ -37,7 +37,7 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional(rollbackFor = Throwable.class)
+@Transactional(rollbackFor = Exception.class)
 public class DeployExecRestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployExecRestController.class);

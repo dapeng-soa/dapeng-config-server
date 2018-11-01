@@ -37,6 +37,7 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
 
 @RestController
 @RequestMapping("/api")
+@Transactional(rollbackFor = Exception.class)
 public class BuildExecRestController {
 
     @Autowired

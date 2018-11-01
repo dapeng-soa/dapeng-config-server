@@ -53,7 +53,7 @@
 <!-- Requires CodeMirror -->
 <script type="text/javascript" src="${basePath}/plugins/codemirror/codemirror.min.js"></script>
 <script type="text/javascript" src="${basePath}/plugins/codemirror/searchcursor.min.js"></script>
-<link type="text/css" rel="stylesheet" href="${basePath}/plugins/codemirror/codemirror.min.css" />
+<link type="text/css" rel="stylesheet" href="${basePath}/plugins/codemirror/codemirror.min.css"/>
 
 <%--mergely diff--%>
 <script src="${basePath}/plugins/mergely/mergely.js"></script>
@@ -62,6 +62,10 @@
 <%--xterm--%>
 <script src="${basePath}/plugins/xterm/xterm.min.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/xterm/xterm.min.css">
+
+<%--tagsinput--%>
+<script src="${basePath}/plugins/tagsinput/bootstrap-tagsinput.min.js"></script>
+<link rel="stylesheet" href="${basePath}/plugins/tagsinput/bootstrap-tagsinput.css">
 
 <script src="${basePath}/js/ts/Config.js"></script>
 <script src="${basePath}/js/ts/Deploy.js"></script>

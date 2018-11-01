@@ -1,7 +1,6 @@
 var $$ = new api.Api();
 var build = new api.Build();
 var socket = {};
-var ansi = new AnsiUp;
 
 $(document).ready(function () {
     socket = io(socketUrl);
@@ -13,25 +12,6 @@ $(document).ready(function () {
             socket.emit(WEB_REG, SOCKET_REG_INFO);
             showMessage(SUCCESS, "已建立与服务器的连接", "连接成功");
         }
-    });
-
-    socket.on(BUILD_RESP, function (data) {
-        console.log(data);
-    });
-
-    socket.on(BUILDING, function (data) {
-        console.log(data);
-    });
-
-    socket.on(NODE_EVENT, function (data) {
-        console.log(data);
-    });
-
-    /**
-     * 错误返回
-     */
-    socket.on(ERROR_EVENT, function (data) {
-        console.log(data);
     });
 
     socket.on(SOC_CDISCONNECT, function () {

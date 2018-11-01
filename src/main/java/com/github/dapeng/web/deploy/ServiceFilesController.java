@@ -34,6 +34,7 @@ import static com.github.dapeng.util.NullUtil.isEmpty;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional(rollbackFor = Exception.class)
 public class ServiceFilesController {
 
     @Autowired
@@ -109,7 +110,6 @@ public class ServiceFilesController {
     }
 
     @PostMapping("/deploy-file/edit/{id}")
-    @Transactional(rollbackFor = Throwable.class)
     public ResponseEntity editServiceFile(@PathVariable Long id,
                                           @RequestBody TServiceFiles file) {
         try {

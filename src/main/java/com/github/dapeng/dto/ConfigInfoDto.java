@@ -11,6 +11,11 @@ public class ConfigInfoDto {
      * 服务全限定名
      */
     private String serviceName = "";
+
+    /**
+     * 标签
+     */
+    private String tags = "";
     /**
      * 超时配置
      */
@@ -76,6 +81,14 @@ public class ConfigInfoDto {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     @Override

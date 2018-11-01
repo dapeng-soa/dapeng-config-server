@@ -26,7 +26,7 @@ public interface ConfigInfoRepository extends JpaRepository<ConfigInfo, Long>, J
      * @param pageable
      * @return
      */
-    Page<ConfigInfo> findAllByStatusIsNotAndServiceNameLike(int status, String serviceName, Pageable pageable);
+    Page<ConfigInfo> findAllByStatusIsNotAndServiceNameLikeAndTagsLike(int status, String serviceName, String tag,Pageable pageable);
 
     /**
      * 通过配置名称查找

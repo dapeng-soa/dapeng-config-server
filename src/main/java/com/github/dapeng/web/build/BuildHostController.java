@@ -29,7 +29,7 @@ import static com.github.dapeng.common.Commons.*;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional(rollbackFor = Throwable.class)
+@Transactional(rollbackFor = Exception.class)
 public class BuildHostController {
     @Autowired
     BuildHostRepository buildHostRepository;

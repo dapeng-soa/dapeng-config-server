@@ -30,17 +30,19 @@ module api {
                 ` : ""} 
                
               
-                    <div class="form-group">${
-                `
+                  <div class="form-group">
                     <label class="col-sm-2 control-label">${type == c.add ? "服务名(全限定名):" : "服务名:"}</label>
                         <div class="col-sm-9">
                             <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" id="service-name" value="${type != c.add ? data.serviceName : ""}"/>
-                   
-                        </div>`
-                }
+                        </div>
                     </div>
-                    ${type != c.real ?
-                `
+                    <div class="form-group">
+                     <label class="col-sm-2 control-label">标签:</label>
+                        <div class="col-sm-9">
+                            <input type="text" ${type == c.view ? "disabled" : ""} data-role="tagsinput" class="form-control" id="serviceTags" value="${type != c.add ? data.tags : ""}"/>
+                        </div>
+                    </div>
+                    ${type != c.real ? `
                 <div class="form-group">
                         <label class="col-sm-2 control-label">超时配置:</label>
                         <!--超时配置-->
