@@ -177,7 +177,7 @@ button[type="button"][name="toggle"]:before {
 /*============================媒体查询适应侧边栏*/
 @media screen and (max-width: 1024px) {
     .sidebar-left {
-        left: -235px !important;
+        /*left: -235px !important;*/
         overflow-y: initial !important;
         overflow-x: initial !important;
     }
@@ -298,8 +298,8 @@ table {
     font-size: 22px;
     position: absolute;
     z-index: 1400;
-    right: -30px;
-    top: -10px;
+    right: -5px;
+    /*top: -10px;*/
     text-align: center;
     text-decoration: none;
 }
