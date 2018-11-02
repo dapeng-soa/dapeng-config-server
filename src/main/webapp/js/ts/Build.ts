@@ -100,7 +100,7 @@ module api {
                 items += `
                 <a href="${window.basePath}/build/console/${records[i].id}" class="list-group-item">
                     <p>
-                    <i class="fa fa-heart-o ${(records[i].status == 0 || records[i].status == 1) ? "text-danger" : "text-primary"} " aria-hidden="true"></i>
+                    <i class="fa ${(records[i].status == 0 || records[i].status == 1) ? "text-danger fa-heart-o" : "text-primary fa-heart"} " aria-hidden="true"></i>
                     <span class="build-number">#${size--}</span> <span class="build-date">${records[i].createdAt}</span>
                     </p>
                     ${(records[i].status == 0 || records[i].status == 1) ? `

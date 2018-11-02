@@ -13,7 +13,7 @@
 </head>
 <script>
     var socket = {};
-    var progressiveDto = {id:${currentId}, start: 0};
+    var progressiveDto = {id:${currentConsole.id}, start: 0};
     var ansi = new AnsiUp;
     $(document).ready(function () {
         socket = io(socketUrl);
@@ -35,17 +35,19 @@
         socket.on(GET_BUILD_PROGRESSIVE_RESP, function (data) {
             var resp = JSON.parse(data);
             if (resp.status === 2 || resp.status === 3) {
-                progressiveDto.start = 0;
                 window.clearInterval(timer1);
-                $("#console-spinner").hide()
+                $("#console-spinner").hide();
+                if (resp.status === 2) {
+                    $("#buildStatus i").addClass("text-primary");
+                } else if (resp.status === 3) {
+                    $("#buildStatus i").addClass("text-danger");
+                }
             }
             $("#console-Box").append(ansi.ansi_to_html(resp.buildLog));
+            document.getElementById("console-Box").scrollTop = document.getElementById("console-Box").scrollHeight;
             progressiveDto.start = progressiveDto.start + resp.buildLog.length;
         });
     });
-
-    // 获取返回
-
 </script>
 <body>
 <jsp:include page="../core/sidebar.jsp"/>
@@ -63,6 +65,7 @@
             </div>
         </div>
     </div>
+    <p style="font-size: 16px" id="buildStatus"><i class="fa fa-heart"></i></p>
     <pre id="console-Box" style="background: #FFF"></pre>
     <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
 </div>

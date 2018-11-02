@@ -3,10 +3,12 @@ package com.github.dapeng.web;
 import com.github.dapeng.entity.build.TBuildDepends;
 import com.github.dapeng.entity.build.TBuildHost;
 import com.github.dapeng.entity.build.TBuildTask;
+import com.github.dapeng.entity.build.TServiceBuildRecords;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.build.BuildDependsRepository;
 import com.github.dapeng.repository.build.BuildHostRepository;
 import com.github.dapeng.repository.build.BuildTaskRepository;
+import com.github.dapeng.repository.build.ServiceBuildRecordsRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.util.SecurityUtil;
 import com.github.dapeng.vo.BuildTaskVo;
@@ -49,6 +51,9 @@ public class PageController {
 
     @Autowired
     BuildDependsRepository buildDependsRepository;
+
+    @Autowired
+    ServiceBuildRecordsRepository buildRecordsRepository;
 
     /**
      * 首页
@@ -349,7 +354,8 @@ public class PageController {
     public String buildConsole(Model model, @PathVariable Long id) {
         model.addAttribute("tagName", "build-exec");
         model.addAttribute("sideName", "build-exec");
-        model.addAttribute("currentId", id);
+        TServiceBuildRecords one = buildRecordsRepository.findOne(id);
+        model.addAttribute("currentConsole", one);
         return "page/build-console";
     }
 }
