@@ -27,8 +27,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.github.dapeng.common.Commons.*;
 
@@ -106,7 +107,7 @@ public class ConfigRestController {
     @GetMapping(value = "/config/service-tags")
     public ResponseEntity configServiceTags() {
         List<ConfigInfo> list = repository.findAll();
-        List<String> tags = new ArrayList<>();
+        Set<String> tags = new HashSet<>();
         list.forEach(x -> {
             String[] ts = x.getTags().split(",");
             for (String t : ts) {

@@ -93,7 +93,7 @@ tagsFormatter = function (value) {
     var tags = value.split(",");
     var res = "";
     for (var i in tags) {
-        var lable = RANDOM_LABEL();
+        var lable = SUCCESS_LABEL;
         res += '<span class="' + lable + '">' + tags[i] + '</span> ';
     }
     return res;
@@ -305,7 +305,9 @@ viewOrEditByID = function (id, viewOrEdit) {
     $.get(url, function (res) {
         // 导出弹窗内容模版
         var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
-        initModelContext(context, viewOrEdit === "view" ? refresh : function () {
+        initModelContext(context, function () {
+            bsTable.refresh();
+            initSelectTags();
         });
         initTags(data.tags);
     }, "json")
@@ -361,6 +363,7 @@ processSysRealConfig = function (cid, service) {
         realdata.serviceName = service;
         var context = config.exportAddConfigContext("real", biz = "", data = realdata);
         initModelContext(context, function () {
+            bsTable.refresh();
         });
     }, "json");
 };
@@ -422,7 +425,10 @@ openAddConfig = function () {
     // 导出弹窗内容模版
     var context = config.exportAddConfigContext("add");
     // 初始化弹窗
-    initModelContext(context, refresh);
+    initModelContext(context, function () {
+        bsTable.refresh();
+        initSelectTags();
+    });
     initTags();
 };
 
@@ -430,7 +436,7 @@ var initTags = function (data) {
     var t = $("input[data-role='tagsinput']");
     t.tagsinput({
         tagClass: function () {
-            return RANDOM_LABEL;
+            return SUCCESS_LABEL;
         }
     });
     t.tagsinput('refresh');
@@ -443,5 +449,7 @@ openPublishHistory = function (serviceName) {
     // 导出弹窗内容模版
     var context = config.exportPublishHistoryContext(serviceName);
     // 初始化弹窗
-    initModelContext(context, refresh);
+    initModelContext(context, function () {
+        bsTable.refresh();
+    });
 };

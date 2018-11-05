@@ -48,6 +48,9 @@ window.RANDOM_LABEL = function () {
     return LABEL_COLORS[Math.floor(Math.random() * (LABEL_COLORS.length))]
 };
 
+window.PRIMARY_LABEL = "label label-primary";
+window.SUCCESS_LABEL = "label label-success";
+
 // 常用视图
 window.VIEW = "view";
 window.ADD = "add";
