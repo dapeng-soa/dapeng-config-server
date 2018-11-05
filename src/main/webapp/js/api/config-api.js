@@ -166,7 +166,7 @@ delConfig = function (id) {
         $.ajax(settings).done(function (res) {
             layer.msg(res.msg);
             if (res.code === SUCCESS_CODE) {
-                closeModel();
+                refresh();
             }
             rmBodyAbs();
         });
@@ -378,7 +378,7 @@ rollback = function (id) {
     var url = basePath + "/api/config/rollback/" + id;
     $.post(url, function (res) {
         layer.msg(res.msg);
-        closeModel();
+        refresh();
     }, "json")
 };
 
