@@ -55,6 +55,7 @@ public class DeployHostRestController {
                                          @RequestParam(required = false) String sort,
                                          @RequestParam(required = false, defaultValue = "desc") String order,
                                          @RequestParam(required = false, defaultValue = "") String search,
+                                         @RequestParam(required = false, defaultValue = "2") Long extra,
                                          @RequestParam(required = false, defaultValue = "0") Long setId) {
         PageRequest pageRequest = new PageRequest
                 (offset / limit, limit,
@@ -64,9 +65,13 @@ public class DeployHostRestController {
             Path<String> name = root.get("name");
             Path<String> remark = root.get("remark");
             Path<Long> setId1 = root.get("setId");
+            Path<Long> extra1 = root.get("extra");
             List<Predicate> ps = new ArrayList<>();
             if (!isEmpty(setId)) {
                 ps.add(cb.equal(setId1, setId));
+            }
+            if (2 != extra) {
+                ps.add(cb.equal(extra1, extra));
             }
             ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%")));
             query.where(ps.toArray(new Predicate[ps.size()]));

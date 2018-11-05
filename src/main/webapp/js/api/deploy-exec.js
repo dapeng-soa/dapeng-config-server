@@ -189,7 +189,7 @@ initHostList = function () {
     var setSelected = $("#setSelect").find("option:selected").val();
     var curl = basePath + "/api/deploy-hosts/" + setSelected;
     if (Number(setSelected) === 0) {
-        curl = basePath + "/api/deploy-hosts?sort=name&order=asc"
+        curl = basePath + "/api/deploy-hosts?sort=name&order=asc&extra=1"
     }
     var ss = new BzSelect(curl, "hostSelect", "id", "name");
     ss.responseHandler = function (res) {
