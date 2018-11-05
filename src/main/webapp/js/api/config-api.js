@@ -41,6 +41,8 @@ setColumns = function () {
     }, {
         field: 'tags',
         title: 'tags',
+        align: 'center',
+        valign: 'middle',
         formatter: tagsFormatter
     }, {
         field: 'status',
@@ -290,7 +292,7 @@ processPublishConfig = function (id, cid) {
     }, function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            closeModel();
+            refresh();
         }
     }, "json")
 };
