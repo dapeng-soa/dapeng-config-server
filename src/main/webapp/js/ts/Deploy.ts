@@ -1040,7 +1040,7 @@ ${data.extra == 1 ? '否' : '是'}
             return `
            <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加节点" : (type == c.edit ? "修改节点" : (type == c.view ? "节点详情" : ""))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加文件" : (type == c.edit ? "修改文件" : (type == c.view ? "文件详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
