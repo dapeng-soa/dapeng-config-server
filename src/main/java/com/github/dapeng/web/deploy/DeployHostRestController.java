@@ -5,10 +5,12 @@ import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.dto.HostDto;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TSet;
+import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.SetRepository;
-import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.Check;
+import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.NullUtil;
 import com.github.dapeng.vo.HostVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -46,6 +50,9 @@ public class DeployHostRestController {
     @Autowired
     SetRepository setRepository;
 
+    @Autowired
+    DeployUnitRepository unitRepository;
+
     /**
      * @return
      */
@@ -56,7 +63,8 @@ public class DeployHostRestController {
                                          @RequestParam(required = false, defaultValue = "desc") String order,
                                          @RequestParam(required = false, defaultValue = "") String search,
                                          @RequestParam(required = false, defaultValue = "2") Long extra,
-                                         @RequestParam(required = false, defaultValue = "0") Long setId) {
+                                         @RequestParam(required = false, defaultValue = "0") Long setId,
+                                         @RequestParam(required = false, defaultValue = "") String tag) {
         PageRequest pageRequest = new PageRequest
                 (offset / limit, limit,
                         new Sort("desc".toUpperCase().equals(order.toUpperCase()) ? Sort.Direction.DESC : Sort.Direction.ASC,
@@ -66,6 +74,7 @@ public class DeployHostRestController {
             Path<String> remark = root.get("remark");
             Path<Long> setId1 = root.get("setId");
             Path<Long> extra1 = root.get("extra");
+            Path<String> labels = root.get("labels");
             List<Predicate> ps = new ArrayList<>();
             if (!isEmpty(setId)) {
                 ps.add(cb.equal(setId1, setId));
@@ -74,6 +83,7 @@ public class DeployHostRestController {
                 ps.add(cb.equal(extra1, extra));
             }
             ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%")));
+            ps.add(cb.like(labels, "%" + tag + "%"));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
         }, pageRequest);
@@ -97,6 +107,27 @@ public class DeployHostRestController {
         hostVo.setLabels(x.getLabels());
         hostVo.setRemark(x.getRemark());
         return hostVo;
+    }
+
+    /**
+     * 获取tags
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy-host/host-tags")
+    public ResponseEntity deployHostTags() {
+        List<THost> services = hostRepository.findAll();
+        Set<String> tags = new HashSet<>();
+        services.forEach(x -> {
+            String[] ts = x.getLabels().split(",");
+            for (String t : ts) {
+                if (!NullUtil.isEmpty(t)) {
+                    tags.add(t);
+                }
+            }
+        });
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, tags));
     }
 
     /**
@@ -210,9 +241,18 @@ public class DeployHostRestController {
      */
     @PostMapping("/deploy-host/del/{id}")
     public ResponseEntity delDeployHost(@PathVariable long id) {
-        hostRepository.delete(id);
-        return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+        try {
+            boolean b = unitRepository.existsAllByHostId(id);
+            if (b) {
+                throw new Exception("不能删除,此主机存在部署单元");
+            }
+            hostRepository.delete(id);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
     }
 
 }

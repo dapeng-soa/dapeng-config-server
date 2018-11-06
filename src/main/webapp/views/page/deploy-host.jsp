@@ -26,6 +26,11 @@
         </div>
 
         <div id="deploy-host-tableToolbar">
+            <span>tags过滤： <span style="display: inline-block;width: 120px">
+                <select class="form-control selectpicker" data-live-search="true"  onchange="execHostTagChanged(this)" id="deployHostTags" >
+
+            </select>
+            </span></span>
             <span>环境集： <span style="display: inline-block;width: 120px">
                 <select data-live-search="true" class="selectpicker form-control"  onchange="viewSetChanged()"
                         id="setSelectView">

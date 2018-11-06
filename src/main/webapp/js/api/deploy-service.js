@@ -1,8 +1,10 @@
 $(document).ready(function () {
     InitDeployServices();
+    initDeploySelectTags();
 });
 var deploy = new api.Deploy();
 var bsTable = {};
+var $$ = new api.Api();
 
 function InitDeployServices() {
     //记录页面bootstrap-table全局变量$table，方便应用
@@ -18,7 +20,7 @@ function InitDeployServices() {
         };
     };
     table.params = function (ps) {
-        //ps.sort = "name";
+        ps.tag = $("#deployServiceTags").find("option:selected").val();
         return ps;
     };
     table.init();
@@ -44,7 +46,10 @@ setColumns = function () {
     }, {
         field: 'labels',
         title: '标签',
-        sortable: true
+        sortable: true,
+        align: 'center',
+        valign: 'middle',
+        formatter: tagsFormatter
     }, {
         field: 'remark',
         title: '备注',
@@ -81,8 +86,10 @@ openAddDeployServiceModle = function () {
     // 初始化弹窗
     initModelContext(context, function () {
         bsTable.refresh();
+        initDeploySelectTags();
     });
     addCopyServiceSelectInit();
+    initTags();
 };
 
 /**
@@ -156,7 +163,9 @@ viewDeployServiceOrEditByID = function (id, op) {
         // 初始化弹窗
         initModelContext(context, function () {
             bsTable.refresh();
+            initDeploySelectTags();
         });
+        initTags(res.context.labels);
     }, "json");
 };
 
@@ -182,8 +191,47 @@ editedDeployService = function (id) {
     });
 };
 
-delDeployService = function () {
-    layer.msg("暂无权限")
+delDeployService = function (id, name) {
+    bodyAbs();
+    layer.confirm('删除服务' + name + '？', {
+        btn: ['删除', '取消']
+    }, function () {
+        var url = basePath + "/api/deploy-service/del/" + id;
+        var settings = {
+            type: "post",
+            url: url,
+            dataType: "json",
+            contentType: "application/json"
+        };
+        $.ajax(settings).done(function (res) {
+            layer.msg(res.msg);
+            if (res.code === SUCCESS_CODE) {
+                refresh();
+            }
+            rmBodyAbs();
+        });
+    }, function () {
+        layer.msg("未做任何变更");
+        rmBodyAbs();
+    });
+};
+
+var initDeploySelectTags = function () {
+    var url = basePath + "/api/deploy-service/service-tags";
+    $$.$get(url, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var tags = res.context;
+            var ops = "<option value=''>请选择</option>";
+            for (var i in tags) {
+                ops += "<option value='" + tags[i] + "'>" + tags[i] + "</option>"
+            }
+            $("#deployServiceTags").html(ops).selectpicker('refresh');
+        }
+    });
+};
+
+var execServiceTagChanged = function () {
+    bsTable.refresh();
 };
 
 addCopyServiceSelectInit = function () {

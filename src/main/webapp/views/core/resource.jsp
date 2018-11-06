@@ -22,8 +22,6 @@
 <link rel="stylesheet" href="${basePath}/css/default.css" type="text/css"/>
 <!-- 新 Bootstrap 核心 CSS 文件 -->
 <link rel="stylesheet" href="${basePath}/css/bootstrap/3.3.5/bootstrap.min.css">
-<!-- 可选的Bootstrap主题文件（一般不用引bootstrap-theme.min.css入） -->
-<link rel="stylesheet" href="${basePath}/css/bootstrap/3.3.5/bootstrap-theme.min.css">
 <link rel="stylesheet" href="${basePath}/css/model/scroll-top.css" type="text/css"/>
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 <script src="${basePath}/js/jquery/1.11.3/jquery.min.js"></script>

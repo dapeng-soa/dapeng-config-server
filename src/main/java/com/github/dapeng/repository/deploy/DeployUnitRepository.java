@@ -12,13 +12,17 @@ import java.util.List;
  * email :yq1724555319@gmail.com
  */
 
-public interface DeployUnitRepository extends JpaRepository<TDeployUnit,Long>,JpaSpecificationExecutor<TDeployUnit> {
+public interface DeployUnitRepository extends JpaRepository<TDeployUnit, Long>, JpaSpecificationExecutor<TDeployUnit> {
 
     List<TDeployUnit> findAllBySetId(long setId);
 
-    List<TDeployUnit> findAllBySetIdAndServiceId(long setId,long serviceId);
+    List<TDeployUnit> findAllBySetIdAndServiceId(long setId, long serviceId);
 
-    List<TDeployUnit> findAllBySetIdAndHostId(long setId,long hostId);
+    List<TDeployUnit> findAllBySetIdAndHostId(long setId, long hostId);
+
+    boolean existsAllByHostId(long hostId);
+
+    boolean existsAllByServiceId(long serviceId);
 
     List<TDeployUnit> findTop1ByIdOrderByUpdatedAtDesc(Long id);
 }

@@ -84,22 +84,12 @@ var initSelectTags = function () {
             $("#configServiceTags").html(ops).selectpicker('refresh');
         }
     });
-
 };
 
-execTagChanged = function (obj) {
+var execTagChanged = function (obj) {
     bsTable.refresh();
 };
 
-tagsFormatter = function (value) {
-    var tags = value.split(",");
-    var res = "";
-    for (var i in tags) {
-        var lable = SUCCESS_LABEL;
-        res += '<span class="' + lable + '">' + tags[i] + '</span> ';
-    }
-    return res;
-};
 
 
 // 格式化状态
@@ -393,8 +383,7 @@ processConfigData = function () {
     var routerConfig = $("#router-config-area").val();
     var freqConfig = $("#freq-config-area").val();
     var remark = $("#remark-area").val();
-    var t = $("input[data-role='tagsinput']#serviceTags");
-    var tags = t.val();
+    var tags = $("input[data-role='tagsinput']#serviceTags").val();
     return {
         serviceName: serviceName,
         tags: tags,
@@ -434,16 +423,6 @@ openAddConfig = function () {
     initTags();
 };
 
-var initTags = function (data) {
-    var t = $("input[data-role='tagsinput']");
-    t.tagsinput({
-        tagClass: function () {
-            return SUCCESS_LABEL;
-        }
-    });
-    t.tagsinput('refresh');
-    t.tagsinput('add', data);
-};
 
 
 openPublishHistory = function (serviceName) {

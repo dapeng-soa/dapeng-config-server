@@ -1,9 +1,11 @@
 $(document).ready(function () {
     InitDeployHosts();
     viewInitSetList();
+    initHostSelectTags();
 });
 var deploy = new api.Deploy();
 var bsTable = {};
+var $$ = new api.Api();
 
 function InitDeployHosts() {
     //记录页面bootstrap-table全局变量$table，方便应用
@@ -12,15 +14,16 @@ function InitDeployHosts() {
     table.onDblClickRow = function (row) {
         viewDeployHostOrEditByID(row.id, VIEW)
     };
-    table.responseHandler= function(res){
+    table.responseHandler = function (res) {
         return {
             total: res.context == null ? 0 : res.context.totalElements,
             rows: res.context.content
         };
     };
     table.params = function (ps) {
-        ps.sort = "name";
+        //ps.sort = "name";
         ps.setId = $("#setSelectView").find("option:selected").val();
+        ps.tag = $("#deployHostTags").find("option:selected").val();
         return ps;
     };
     table.init();
@@ -49,17 +52,20 @@ setColumns = function () {
     }, {
         field: 'labels',
         title: '标签',
-        sortable: true
+        sortable: true,
+        align: 'center',
+        valign: 'middle',
+        formatter: tagsFormatter
     }, {
         field: 'extra',
         title: '外部机器',
         formatter: extraFormatter,
         align: 'center',
         valign: 'middle'
-    },{
+    }, {
         field: 'remark',
         title: '备注'
-    },{
+    }, {
         field: 'createdAt',
         title: '添加时间',
         sortable: true
@@ -75,6 +81,24 @@ setColumns = function () {
         valign: 'middle',
         formatter: deployHostActionFormatter
     }]
+};
+
+var execHostTagChanged = function () {
+    bsTable.refresh();
+};
+
+var initHostSelectTags = function () {
+    var url = basePath + "/api/deploy-host/host-tags";
+    $$.$get(url, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var tags = res.context;
+            var ops = "<option value=''>请选择</option>";
+            for (var i in tags) {
+                ops += "<option value='" + tags[i] + "'>" + tags[i] + "</option>"
+            }
+            $("#deployHostTags").html(ops).selectpicker('refresh');
+        }
+    });
 };
 
 extraFormatter = function (value, row, index) {
@@ -99,10 +123,12 @@ openAddDeployHostModle = function () {
     // 导出弹窗内容模版
     var context = deploy.exportAddDeployHostContext("add");
     // 初始化弹窗
-    initModelContext(context, function(){
+    initModelContext(context, function () {
         bsTable.refresh();
+        initHostSelectTags();
     });
     initSetList();
+    initTags();
 };
 
 /**
@@ -173,7 +199,7 @@ processDeployHostData = function () {
         env: env,
         setId: setSelect,
         extra: extraSelect,
-        remark:remark
+        remark: remark
     }
 };
 
@@ -188,10 +214,12 @@ viewDeployHostOrEditByID = function (id, op) {
         // 导出弹窗内容模版
         var context = deploy.exportAddDeployHostContext(op, "", res.context);
         // 初始化弹窗
-        initModelContext(context, function(){
+        initModelContext(context, function () {
             bsTable.refresh();
+            initHostSelectTags();
         });
         initSetList(res.context.setId);
+        initTags(res.context.labels);
     }, "json");
 };
 
@@ -217,8 +245,29 @@ editedDeployHost = function (id) {
     });
 };
 
-delDeployHost = function () {
-    layer.msg("暂无权限")
+delDeployHost = function (id, name) {
+    bodyAbs();
+    layer.confirm('删除节点' + name + '？', {
+        btn: ['删除', '取消']
+    }, function () {
+        var url = basePath + "/api/deploy-host/del/" + id;
+        var settings = {
+            type: "post",
+            url: url,
+            dataType: "json",
+            contentType: "application/json"
+        };
+        $.ajax(settings).done(function (res) {
+            layer.msg(res.msg);
+            if (res.code === SUCCESS_CODE) {
+                refresh();
+            }
+            rmBodyAbs();
+        });
+    }, function () {
+        layer.msg("未做任何变更");
+        rmBodyAbs();
+    });
 };
 
 /**

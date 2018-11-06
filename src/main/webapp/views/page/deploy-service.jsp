@@ -24,7 +24,13 @@
                 </span>
             </div>
         </div>
+        <div id="deploy-service-tableToolbar">
+            <span>tags过滤： <span style="display: inline-block;width: 120px">
+                <select class="form-control selectpicker" data-live-search="true"  onchange="execServiceTagChanged(this)" id="deployServiceTags" >
 
+            </select>
+            </span></span>
+        </div>
         <table id="deploy-service-table">
         </table>
         <jsp:include page="../core/footer.jsp"/>

@@ -3,9 +3,11 @@ package com.github.dapeng.web.deploy;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ServiceDto;
 import com.github.dapeng.entity.deploy.TService;
+import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
-import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.Check;
+import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.NullUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -39,6 +43,9 @@ public class DeployServiceRestController {
     @Autowired
     ServiceRepository serviceRepository;
 
+    @Autowired
+    DeployUnitRepository unitRepository;
+
     /**
      * @return
      */
@@ -47,7 +54,8 @@ public class DeployServiceRestController {
                                             @RequestParam(required = false, defaultValue = "100000") int limit,
                                             @RequestParam(required = false) String sort,
                                             @RequestParam(required = false, defaultValue = "desc") String order,
-                                            @RequestParam(required = false, defaultValue = "") String search) {
+                                            @RequestParam(required = false, defaultValue = "") String search,
+                                            @RequestParam(required = false, defaultValue = "") String tag) {
 
         PageRequest pageRequest = new PageRequest
                 (offset / limit, limit,
@@ -59,7 +67,8 @@ public class DeployServiceRestController {
             Path<String> remark = root.get("remark");
             Path<String> labels = root.get("labels");
             List<Predicate> ps = new ArrayList<>();
-            ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%"), cb.like(image, "%" + search + "%"), cb.like(labels, "%" + search + "%")));
+            ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%"), cb.like(image, "%" + search + "%")));
+            ps.add(cb.like(labels, "%" + tag + "%"));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
         }, pageRequest);
@@ -89,7 +98,7 @@ public class DeployServiceRestController {
             Check.hasChinese(serviceDto.getName(), "服务名");
             Check.hasChinese(serviceDto.getImage(), "镜像名");
             List<TService> tServices = serviceRepository.findByName(serviceDto.getName());
-            if (!isEmpty(tServices)){
+            if (!isEmpty(tServices)) {
                 throw new Exception("已存在同名服务");
             }
             TService service = new TService();
@@ -124,9 +133,40 @@ public class DeployServiceRestController {
      */
     @PostMapping("/deploy-service/del/{id}")
     public ResponseEntity delDeployService(@PathVariable long id) {
-        serviceRepository.delete(id);
+        try {
+            boolean b = unitRepository.existsAllByServiceId(id);
+            if (b) {
+                throw new Exception("不能删除,此服务存在部署单元");
+            }
+            serviceRepository.delete(id);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
+
+    /**
+     * 获取tags
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy-service/service-tags")
+    public ResponseEntity deployServiceTags() {
+        List<TService> services = serviceRepository.findAll();
+        Set<String> tags = new HashSet<>();
+        services.forEach(x -> {
+            String[] ts = x.getLabels().split(",");
+            for (String t : ts) {
+                if (!NullUtil.isEmpty(t)) {
+                    tags.add(t);
+                }
+            }
+        });
         return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, tags));
     }
 
     /**

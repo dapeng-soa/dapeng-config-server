@@ -206,6 +206,28 @@ window.selectRefresh = function () {
 window.indexFormatter = function (value, row, index) {
     return index + 1;
 };
+// table
+//
+window.tagsFormatter = function (value, row, index) {
+    var tags = value.split(",");
+    var res = "";
+    for (var i in tags) {
+        var lable = SUCCESS_LABEL;
+        res += '<span class="' + lable + '">' + tags[i] + '</span> ';
+    }
+    return res;
+};
+
+window.initTags = function (data) {
+    var t = $("input[data-role='tagsinput']");
+    t.tagsinput({
+        tagClass: function () {
+            return SUCCESS_LABEL;
+        }
+    });
+    t.tagsinput('refresh');
+    t.tagsinput('add', data);
+};
 
 (function () {
     var BSTable = function (bstableId, url, columns) {

@@ -269,7 +269,7 @@ dapengsoa/redis-wzx:3.2.3.1(错误,无需填写镜像TAG)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">标签:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control" value="${type != c.add ? data.labels : ""}">
+                                <input type="text" ${type == c.view ? "disabled" : ""} data-role="tagsinput" id="labels" class="col-sm-2 form-control" value="${type != c.add ? data.labels : ""}">
                             </div>
                         </div>
                         
@@ -431,7 +431,7 @@ host1 192.168.0.666
                         <div class="form-group">
                             <label class="col-sm-2 control-label">标签:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="labels" class="col-sm-2 form-control" value="${type != c.add ? data.labels : ""}">
+                                <input type="text" ${type == c.view ? "disabled" : ""} data-role="tagsinput" id="labels" class="col-sm-2 form-control" value="${type != c.add ? data.labels : ""}">
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -725,7 +725,7 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeployHostOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeployHostOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <a href="javascript:void(0)" title="删除"  onclick="delDeployHost(${value})"><span class="glyphicon glyphicon-remove"></span></a>
+            <a href="javascript:void(0)" title="删除"  onclick="delDeployHost(${value},'${row.name}')"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
         }
 
@@ -738,7 +738,7 @@ restart: on-failure:3
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewDeployServiceOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewDeployServiceOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
-            <a href="javascript:void(0)" title="删除"  onclick="delDeployService(${value})"><span class="glyphicon glyphicon-remove"></span></a>
+            <a href="javascript:void(0)" title="删除"  onclick="delDeployService(${value},'${row.name}')"><span class="glyphicon glyphicon-remove"></span></a>
             </span>`;
         }
 
