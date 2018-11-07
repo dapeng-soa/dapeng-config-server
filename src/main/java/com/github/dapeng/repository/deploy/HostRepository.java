@@ -24,6 +24,8 @@ public interface HostRepository extends JpaRepository<THost, Long>, JpaSpecifica
 
     List<THost> findBySetIdAndDeleted(long setId,int deleted);
 
+    List<THost> findBySetIdAndDeletedAndExtra(long setId,int deleted,long extra);
+
     /**
      * 根据主机id查询最新一条记录
      *

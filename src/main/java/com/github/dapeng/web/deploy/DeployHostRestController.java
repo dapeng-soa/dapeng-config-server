@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -138,8 +139,13 @@ public class DeployHostRestController {
      * @return
      */
     @GetMapping("/deploy-hosts/{setId}")
-    public ResponseEntity<?> deployHostsBySetId(@PathVariable long setId) {
+    public ResponseEntity<?> deployHostsBySetId(@PathVariable long setId,
+                                                @RequestParam(required = false, defaultValue = "2") long extra) {
+
         List<THost> hosts = hostRepository.findBySetIdAndDeleted(setId, NORMAL_STATUS);
+        if (2 != extra) {
+            hosts = hosts.stream().filter(x -> x.getExtra() == extra).collect(Collectors.toList());
+        }
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hosts));
     }

@@ -187,7 +187,7 @@ initServiceList = function () {
 
 initHostList = function () {
     var setSelected = $("#setSelect").find("option:selected").val();
-    var curl = basePath + "/api/deploy-hosts/" + setSelected;
+    var curl = basePath + "/api/deploy-hosts/" + setSelected +"?&extra=1";
     if (Number(setSelected) === 0) {
         curl = basePath + "/api/deploy-hosts?sort=name&order=asc&extra=1"
     }
