@@ -175,7 +175,7 @@ var initViewSetSelect = function () {
 };
 
 var initViewHostSelect = function () {
-    var curl = basePath + "/api/deploy-hosts?sort=name&order=asc";
+    var curl = basePath + "/api/deploy-hosts?sort=name&order=asc&extra=1";
     var ss = new BzSelect(curl, "hostSelectView", "id", "name");
     ss.responseHandler = function (res) {
         return res.context.content
