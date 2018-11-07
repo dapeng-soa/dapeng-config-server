@@ -68,8 +68,10 @@ public class DeploySetRestController {
         Page<TSet> page = setRepository.findAll((root, query, cb) -> {
             Path<String> name = root.get("name");
             Path<String> remark = root.get("remark");
+            Path<Integer> deleted = root.get("deleted");
             List<Predicate> ps = new ArrayList<>();
             ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%")));
+            ps.add(cb.equal(deleted, NORMAL_STATUS));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
         }, pageRequest);
@@ -139,7 +141,11 @@ public class DeploySetRestController {
             if (!isEmpty(deployUnits)) {
                 throw new Exception("不能删除,此环境集下仍有绑定的部署单元");
             }
-            setRepository.delete(id);
+            TSet set = setRepository.findOne(id);
+            if (isEmpty(set)) {
+                throw new Exception("找不到此环境集");
+            }
+            set.setDeleted(DELETED_STATUS);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
         } catch (Exception e) {

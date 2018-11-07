@@ -33,6 +33,16 @@ public class THost {
   private java.sql.Timestamp updatedAt;
   @Column(name = "remark")
   private String remark;
+  @Column(name = "deleted")
+  private int deleted;
+
+  public int getDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(int deleted) {
+    this.deleted = deleted;
+  }
 
 
   public long getId() {

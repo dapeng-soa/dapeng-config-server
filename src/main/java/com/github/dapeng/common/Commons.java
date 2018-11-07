@@ -33,6 +33,10 @@ public class Commons {
     public static final int ERROR_CODE = 4004;
     public static final int DEF_PWD_LENGTH = 12;
 
+    // 数据状态
+    public static final int NORMAL_STATUS = 0;
+    public static final int DELETED_STATUS = 1;
+
     public static final String INFLUXDB_USERNAME = "influxdb_username";
     public static final String INFLUXDB_PASSWORD = "influxdb_password";
     public static final String INFLUXDB_OPENURL = "influxdb_openurl";

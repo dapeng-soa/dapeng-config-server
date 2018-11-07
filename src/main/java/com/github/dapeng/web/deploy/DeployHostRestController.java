@@ -75,6 +75,7 @@ public class DeployHostRestController {
             Path<Long> setId1 = root.get("setId");
             Path<Long> extra1 = root.get("extra");
             Path<String> labels = root.get("labels");
+            Path<Integer> deleted = root.get("deleted");
             List<Predicate> ps = new ArrayList<>();
             if (!isEmpty(setId)) {
                 ps.add(cb.equal(setId1, setId));
@@ -84,6 +85,7 @@ public class DeployHostRestController {
             }
             ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%")));
             ps.add(cb.like(labels, "%" + tag + "%"));
+            ps.add(cb.equal(deleted, NORMAL_STATUS));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
         }, pageRequest);
@@ -137,7 +139,7 @@ public class DeployHostRestController {
      */
     @GetMapping("/deploy-hosts/{setId}")
     public ResponseEntity<?> deployHostsBySetId(@PathVariable long setId) {
-        List<THost> hosts = hostRepository.findBySetId(setId);
+        List<THost> hosts = hostRepository.findBySetIdAndDeleted(setId, NORMAL_STATUS);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hosts));
     }
@@ -246,7 +248,11 @@ public class DeployHostRestController {
             if (b) {
                 throw new Exception("不能删除,此主机存在部署单元");
             }
-            hostRepository.delete(id);
+            THost host = hostRepository.findOne(id);
+            if (isEmpty(host)) {
+                throw new Exception("主机不存在");
+            }
+            host.setDeleted(DELETED_STATUS);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
         } catch (Exception e) {

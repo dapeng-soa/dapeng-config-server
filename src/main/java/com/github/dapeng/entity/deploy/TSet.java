@@ -28,6 +28,16 @@ public class TSet {
     private String remark;
     @Column(name = "network_mtu")
     private String networkMtu;
+    @Column(name = "deleted")
+    private int deleted;
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
+    }
 
     public long getId() {
         return id;

@@ -779,12 +779,17 @@ restart: on-failure:3
         }
 
 
-        public exportModifyBatchTagContent(eid: string) {
+        public exportModifyBatchTagContent(publishId, eid) {
             return `
+            <div style="padding: 0 5px">
                 <div class="form-group" style="margin-top: 20px">
-                        <div class="col-sm-12">
-                            <input type="text"  id="${eid}" class="form-control" />
-                        </div>
+                        <label for="${publishId}">发布Tag:</label>
+                        <input type="text"  id="${publishId}" class="form-control" />
+                 </div>
+                <div class="form-group">
+                        <label for="${eid}">镜像Tag:</label>
+                        <input type="text"  id="${eid}" class="form-control" />
+                 </div>
                  </div>
             `
         }

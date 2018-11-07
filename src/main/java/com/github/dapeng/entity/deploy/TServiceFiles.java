@@ -30,6 +30,16 @@ public class TServiceFiles {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     @Column(name = "updated_at")
     private java.sql.Timestamp updatedAt;
+    @Column(name = "deleted")
+    private int deleted;
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
+    }
 
     public long getId() {
         return id;

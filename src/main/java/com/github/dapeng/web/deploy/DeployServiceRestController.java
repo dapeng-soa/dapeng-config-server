@@ -66,9 +66,11 @@ public class DeployServiceRestController {
             Path<String> image = root.get("image");
             Path<String> remark = root.get("remark");
             Path<String> labels = root.get("labels");
+            Path<Integer> deleted = root.get("deleted");
             List<Predicate> ps = new ArrayList<>();
             ps.add(cb.or(cb.like(name, "%" + search + "%"), cb.like(remark, "%" + search + "%"), cb.like(image, "%" + search + "%")));
             ps.add(cb.like(labels, "%" + tag + "%"));
+            ps.add(cb.equal(deleted, NORMAL_STATUS));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
         }, pageRequest);
@@ -138,7 +140,11 @@ public class DeployServiceRestController {
             if (b) {
                 throw new Exception("不能删除,此服务存在部署单元");
             }
-            serviceRepository.delete(id);
+            TService service = serviceRepository.findOne(id);
+            if (isEmpty(service)) {
+                throw new Exception("找不到此服务");
+            }
+            service.setDeleted(DELETED_STATUS);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
         } catch (Exception e) {

@@ -90,17 +90,19 @@ modifyBatchTag = function () {
         });
         bodyAbs();
         var modifyBatchTagInputId = "modifyBatchTagInputId";
+        var modifyBatchPublishTagInputId = "modifyBatchPublishTagInputId";
         layer.open({
             type: 1,
-            title: '填写新的镜像tag',
+            title: '填写新的发布/镜像tag',
             area: ['300px', 'auto'],
-            content: deploy.exportModifyBatchTagContent("modifyBatchTagInputId"),
+            content: deploy.exportModifyBatchTagContent(modifyBatchPublishTagInputId, modifyBatchTagInputId),
             btn: ['修改', '取消'],
             yes: function (index, layero) {
                 var tag = $("#" + modifyBatchTagInputId).val();
+                var publishTag = $("#" + modifyBatchPublishTagInputId).val();
                 if (tag !== undefined && tag !== "") {
                     var url = basePath + "/api/deploy-unit/modify-batch";
-                    var p = JSON.stringify({tag: tag, ids: ids});
+                    var p = JSON.stringify({tag: tag, publishTag: publishTag, ids: ids});
 
                     var settings = {
                         type: "post",
@@ -114,7 +116,7 @@ modifyBatchTag = function () {
                             showMessage(SUCCESS, res.msg, "修改成功");
                             bsTable.refresh();
                             layer.close(index);
-                        }else {
+                        } else {
                             showMessage(ERROR, res.msg, "修改失败");
                         }
                     });

@@ -1,7 +1,10 @@
 package com.github.dapeng.web.deploy;
 
 import com.github.dapeng.common.Resp;
+import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TOperationJournal;
+import com.github.dapeng.entity.deploy.TService;
+import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.deploy.DeployOpJournalRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
@@ -97,14 +100,17 @@ public class DeployOpJournalController {
     }
 
     private DeployJournalVo toVo(TOperationJournal u) {
+        TSet set = setRepository.findOne(u.getSetId());
+        THost host = hostRepository.findOne(u.getHostId());
+        TService service = serviceRepository.findOne(u.getServiceId());
         DeployJournalVo vo = new DeployJournalVo();
         vo.setId(u.getId());
         vo.setSetId(u.getSetId());
-        vo.setSetName(setRepository.getOne(u.getSetId()).getName());
+        vo.setSetName(isEmpty(set) ? "notFound" : set.getName());
         vo.setHostId(u.getHostId());
-        vo.setHostName(hostRepository.getOne(u.getHostId()).getName());
+        vo.setHostName(isEmpty(host) ? "notFound" : host.getName());
         vo.setServiceId(u.getServiceId());
-        vo.setServiceName(serviceRepository.getOne(u.getServiceId()).getName());
+        vo.setServiceName(isEmpty(service) ? "notFound" : service.getName());
         vo.setCreatedBy(u.getCreatedBy());
         vo.setCreatedAt(u.getCreatedAt());
         vo.setGitTag(u.getGitTag());

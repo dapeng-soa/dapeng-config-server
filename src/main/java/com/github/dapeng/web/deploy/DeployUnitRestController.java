@@ -4,6 +4,7 @@ import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ModifyBatchTagDto;
 import com.github.dapeng.dto.UnitDto;
 import com.github.dapeng.entity.deploy.TDeployUnit;
+import com.github.dapeng.entity.deploy.TFilesUnit;
 import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.Check;
@@ -75,6 +76,7 @@ public class DeployUnitRestController {
             Path<Long> serviceId1 = root.get("serviceId");
             Path<String> gitTag1 = root.get("gitTag");
             Path<String> imageTag = root.get("imageTag");
+            Path<Integer> deleted = root.get("deleted");
             List<Predicate> ps = new ArrayList<>();
             ps.add(cb.or(cb.like(gitTag1, "%" + search + "%"), cb.like(imageTag, "%" + search + "%")));
             //这里可以设置任意条查询条件
@@ -87,6 +89,7 @@ public class DeployUnitRestController {
             if (!isEmpty(serviceId)) {
                 ps.add(cb.equal(serviceId1, serviceId));
             }
+            ps.add(cb.equal(deleted, NORMAL_STATUS));
             query.where(ps.toArray(new Predicate[ps.size()]));
             //这种方式使用JPA的API设置了查询条件，所以不需要再返回查询条件Predicate给Spring Data Jpa，故最后return null;即可。
             return null;
@@ -231,11 +234,24 @@ public class DeployUnitRestController {
 
     @PostMapping(value = "/deploy-unit/del/{id}")
     public ResponseEntity delDeployUnit(@PathVariable Long id) {
-        TDeployUnit unit = unitRepository.getOne(id);
-        LOGGER.info("del deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
-        unitRepository.delete(unit.getId());
-        return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+        try {
+            List<TFilesUnit> units = filesUnitRepository.findByUnitId(id);
+            if (!isEmpty(units)) {
+                throw new Exception("部署单元存在关联文件,请在文件管理解除关联");
+            }
+            TDeployUnit unit = unitRepository.findOne(id);
+            if (isEmpty(unit)) {
+                throw new Exception("未找到部署单元");
+            }
+            LOGGER.info("del deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
+            // 部署单元还是物理删除
+            unitRepository.delete(id);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
     }
 
     /**
@@ -248,10 +264,14 @@ public class DeployUnitRestController {
     public ResponseEntity modifyDeployUnitTagBatch(@RequestBody ModifyBatchTagDto tagDto) {
         try {
             Check.hasChinese(tagDto.getTag(), "镜像tag");
+            Check.hasChinese(tagDto.getPublishTag(), "发布tag");
             tagDto.getIds().forEach(x -> {
-                TDeployUnit unit = unitRepository.getOne(x);
-                unit.setImageTag(tagDto.getTag());
-                unitRepository.save(unit);
+                TDeployUnit unit = unitRepository.findOne(x);
+                if (!isEmpty(unit)) {
+                    unit.setImageTag(tagDto.getTag());
+                    unit.setGitTag(tagDto.getPublishTag());
+                    unitRepository.save(unit);
+                }
             });
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "批量修改镜像tag成功"));

@@ -11,6 +11,7 @@ import java.util.List;
 public class ModifyBatchTagDto {
     private List<Long> ids;
     private String tag;
+    private String publishTag;
 
     public List<Long> getIds() {
         return ids;
@@ -28,11 +29,11 @@ public class ModifyBatchTagDto {
         this.tag = tag;
     }
 
-    @Override
-    public String toString() {
-        return "ModifyBatchTagDto{" +
-                "ids=" + ids +
-                ", tag='" + tag + '\'' +
-                '}';
+    public String getPublishTag() {
+        return publishTag;
+    }
+
+    public void setPublishTag(String publishTag) {
+        this.publishTag = publishTag;
     }
 }

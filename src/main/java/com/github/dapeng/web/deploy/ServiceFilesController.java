@@ -66,8 +66,10 @@ public class ServiceFilesController {
             Path<String> fileName = root.get("fileName");
             Path<String> fileExtName = root.get("fileExtName");
             Path<String> remark = root.get("remark");
+            Path<Integer> deleted = root.get("deleted");
             List<Predicate> ps = new ArrayList<>();
             ps.add(cb.or(cb.like(fileName, "%" + search + "%"), cb.like(remark, "%" + search + "%"), cb.like(fileExtName, "%" + search + "%")));
+            ps.add(cb.equal(deleted, NORMAL_STATUS));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
         }, pageRequest);
@@ -193,9 +195,13 @@ public class ServiceFilesController {
         try {
             List<TFilesUnit> byFileId = filesUnitRepository.findByFileId(id);
             if (!isEmpty(byFileId)) {
-                throw new Exception("还存在关联的部署单元，不能删除此文件");
+                throw new Exception("还存在关联的部署单元,请先解除关联");
             }
-            serviceFilesRepository.delete(id);
+            TServiceFiles file = serviceFilesRepository.findOne(id);
+            if (isEmpty(file)) {
+                throw new Exception("文件不存在");
+            }
+            file.setDeleted(DELETED_STATUS);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "删除文件成功"));
         } catch (Exception e) {

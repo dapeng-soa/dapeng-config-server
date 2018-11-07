@@ -37,6 +37,16 @@ public class TDeployUnit {
   private String volumes;
   @Column(name = "docker_extras")
   private String dockerExtras;
+  @Column(name = "deleted")
+  private int deleted;
+
+  public int getDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(int deleted) {
+    this.deleted = deleted;
+  }
 
 
   public long getId() {

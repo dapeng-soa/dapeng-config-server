@@ -79,6 +79,7 @@ public class DeployExecRestController {
             Path<Long> setId1 = root.get("setId");
             Path<Long> hostId1 = root.get("hostId");
             Path<Long> serviceId1 = root.get("serviceId");
+            Path<Integer> deleted = root.get("deleted");
             List<Predicate> ps = new ArrayList<>();
             if (!isEmpty(setId)) {
                 ps.add(cb.equal(setId1, setId));
@@ -89,6 +90,7 @@ public class DeployExecRestController {
             if (!isEmpty(serviceId)) {
                 ps.add(cb.equal(serviceId1, serviceId));
             }
+            ps.add(cb.equal(deleted, NORMAL_STATUS));
             query.where(ps.toArray(new Predicate[ps.size()]));
             return null;
         }, new Sort(Sort.Direction.DESC, "updatedAt"));
@@ -486,12 +488,12 @@ public class DeployExecRestController {
     @GetMapping("/deploy-unit/event_rep")
     public ResponseEntity eventRep2(@RequestParam Long hostId,
                                     @RequestParam Long serviceId) {
-        THost host = hostRepository.getOne(hostId);
-        TService service = serviceRepository.getOne(serviceId);
+        THost host = hostRepository.findOne(hostId);
+        TService service = serviceRepository.findOne(serviceId);
         DeployRequest request = new DeployRequest();
-        String ip = IPUtils.transferIp(host.getIp());
+        String ip = isEmpty(host) ? "-" : IPUtils.transferIp(host.getIp());
         request.setIp(ip);
-        request.setServiceName(service.getName());
+        request.setServiceName(isEmpty(service) ? "-" : service.getName());
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, request));
     }
