@@ -270,6 +270,7 @@ public class DeployUnitRestController {
                 if (!isEmpty(unit)) {
                     unit.setImageTag(tagDto.getTag());
                     unit.setGitTag(tagDto.getPublishTag());
+                    unit.setUpdatedAt(DateUtil.now());
                     unitRepository.save(unit);
                 }
             });
