@@ -50,11 +50,6 @@ $(document).ready(function () {
             var html = ansi.ansi_to_html(data);
             $$.consoleView(html);
         }
-        if (data === "[end]"){
-            setTimeout(function () {
-                closeConloseView()
-            },2000);
-        }
     });
 
     /**
@@ -66,11 +61,6 @@ $(document).ready(function () {
             var html = ansi.ansi_to_html(data);
             $$.consoleView(html);
         }
-        if (data === "[end]"){
-            setTimeout(function () {
-                closeConloseView()
-            },2000);
-        }
     });
 
     /**
@@ -81,11 +71,6 @@ $(document).ready(function () {
             openConloseView();
             var html = ansi.ansi_to_html(data);
             $$.consoleView(html);
-        }
-        if (data === "[end]"){
-            setTimeout(function () {
-                closeConloseView()
-            },2000);
         }
     });
 
