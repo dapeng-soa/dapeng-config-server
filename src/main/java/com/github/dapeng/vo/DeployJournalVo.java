@@ -22,6 +22,7 @@ public class DeployJournalVo {
     private String imageTag;
     private String yml;
     private String diff;
+    private long unitId;
     private long opFlag;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
     private java.sql.Timestamp createdAt;
@@ -137,5 +138,13 @@ public class DeployJournalVo {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public long getUnitId() {
+        return unitId;
+    }
+
+    public void setUnitId(long unitId) {
+        this.unitId = unitId;
     }
 }

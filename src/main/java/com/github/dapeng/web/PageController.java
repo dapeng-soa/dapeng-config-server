@@ -208,7 +208,7 @@ public class PageController {
     }
 
     /**
-     * 环境集管理
+     * 文件管理
      *
      * @return
      */
@@ -217,6 +217,18 @@ public class PageController {
         model.addAttribute("tagName", "deploy-files");
         model.addAttribute("sideName", "deploy-files");
         return "page/deploy-files";
+    }
+
+    /**
+     * 网络管理
+     *
+     * @return
+     */
+    @GetMapping(value = "/deploy/network")
+    public String deployNetwork(Model model) {
+        model.addAttribute("tagName", "deploy-network");
+        model.addAttribute("sideName", "deploy-network");
+        return "page/deploy-network";
     }
 
     /**

@@ -28,4 +28,13 @@ public class Check {
         }
     }
 
+    public static void isboolNet(String subnet) throws Exception {
+        String[] split = subnet.split("/");
+        try {
+            isboolIp(split[0]);
+        }catch (Exception e){
+            throw new Exception("掩码格式错误");
+        }
+    }
+
 }

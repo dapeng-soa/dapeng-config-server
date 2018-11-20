@@ -73,12 +73,12 @@ appName:goodsService
                         </div>
                     </div>
                     
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label class="col-sm-2 control-label">NetWork-Mtu:</label>
                         <div class="col-sm-9">
                             <input type="text" ${type == c.view ? "disabled" : ""} id="networkMtu" placeholder="defualt:1500" class="col-sm-2 form-control" value="${type != c.add ? data.networkMtu : ""}">
                         </div>
-                    </div>
+                    </div> -->
                    
                     <div class="form-group">
                         <label class="col-sm-2 control-label">备注:</label>
@@ -592,6 +592,21 @@ appName:goodsService
                         </div>
                         
                         <div class="form-group">
+                            <label class="col-sm-2 control-label">容器名(可选):</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="containerName" class="col-sm-2 form-control" value="${type != c.add ? data.containerName : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+可选的容器名,如果不填写则默认为所选服务名,选择服务之后会自动填充容器名
+                                  </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
                             <label class="col-sm-2 control-label">镜像TAG:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="imageTag" class="col-sm-2 form-control" value="${type != c.add ? data.imageTag : ""}">
@@ -802,7 +817,7 @@ restart: on-failure:3
          */
         public exportDeployJournalYmlContext(value, row) {
             return `<span class="link-button-table">
- ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="yml"  onclick="viewDeployJournalYml(${row.id},${row.hostId},${row.serviceId})"><span class="glyphicon glyphicon-eye-open"></span></a>` : `-`}
+ ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="yml"  onclick="viewDeployJournalYml(${row.id},${row.unitId})"><span class="glyphicon glyphicon-eye-open"></span></a>` : `-`}
 </span>
 `
         }
@@ -859,11 +874,12 @@ restart: on-failure:3
             let dep = this;
             let subView = "";
             for (let em of sub) {
-                let IdPrefix = viewType == dep.serviceView ? em.hostIp + obj.serviceName : obj.hostIp + em.serviceName;
+                let IdPrefix = viewType == dep.serviceView ? em.hostIp + em.containerName : obj.hostIp + em.containerName;
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-4 col-xs-12">
                                 <p style="font-size: 18px;word-wrap: break-word;">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
                                 ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
+                                <p>容器名：<span id="${IdPrefix}-ContainerName">${em.containerName}</span></p>
                                 <p>Tag：<span id="${IdPrefix}-ImageTag">none</span></p>
                             </div>
                             <div class="col-sm-6 col-xs-12">
@@ -1274,5 +1290,139 @@ ${data.extra == 1 ? '否' : '是'}
                `
         }
 
+    }
+
+    export class Network {
+        add: string = "add";
+        view: string = "view";
+        edit: string = "edit";
+        api = new api.Api();
+
+        public exportNetWorkAction(value: string, name: string){
+            return `<span class="link-button-table">
+            <a href="javascript:void(0)" title="详情"  onclick="viewNetworkOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
+            <a href="javascript:void(0)" title="修改"  onclick="viewNetworkOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
+            <a href="javascript:void(0)" title="绑定节点"  onclick="openLinkDeployHosts(${value},'${name}')"><i class="fa fa-link" aria-hidden="true"></i></a>
+            <a href="javascript:void(0)" title="同步网络至绑定节点"  onclick="sysNetworkToHost(${value},'${name}')"><i class="fa fa-plug" aria-hidden="true"></i></a>
+            <a href="javascript:void(0)" title="删除"  onclick="delNetwork(${value})"><span class="glyphicon glyphicon-remove"></span></a>
+            </span>`;
+        }
+
+        public exportAddNetworkContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any){
+
+            let c = this;
+            return `
+           <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">${type == c.add ? "添加网络" : (type == c.edit ? "修改网络" : (type == c.view ? "查看网络" : ""))}</p>
+                    </div>
+                </div>
+                <div class="form-horizontal" style="margin-top: 81px;">
+                    <div class="form-group">
+                            <label class="col-sm-2 control-label">网络名称:</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="networkName" class="col-sm-2 form-control" value="${type != c.add ? data.networkName : ""}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+网络名称,英文
+                                 </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">网桥(driver):</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="driver" class="col-sm-2 form-control" value="${type != c.add ? data.driver : "bridge"}"/>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+默认为：bridge
+                                 </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">网段(subnet):</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="subnet" class="form-control" value="${type != c.add ? data.subnet : ""}"/>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+例如:172.0.0.1/24
+                                 </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">opt(网桥选项)</label>
+                            <div class="col-sm-9">
+                                <textarea ${type == c.view ? "disabled" : ""} id="opt" class="form-control" rows="10">${type != c.add ? data.opt : ""}</textarea>
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+备注:
+网桥可选项可选项:
+com.docker.network.bridge.name=newName
+com.docker.network.bridge.enable_ip_masquerade=true
+com.docker.network.bridge.enable_icc=true
+com.docker.network.bridge.host_binding_ipv4=192.168.10.234
+com.docker.network.driver.mtu=1450
+
+多个配置请换行配置
+
+详见: https://docs.docker.com/engine/reference/commandline/network_create/#bridge-driver-options
+                                 </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        ${type == c.add ? `
+                        <span class="input-group-btn panel-button-group text-center">
+                        <button type="button" class="btn btn-success" onclick="saveNetWork()">保存</button>
+                        <button type="button" class="btn btn-danger" onclick="clearNetWorkInput()">清空</button>
+                        </span>
+                        ` : type == c.edit ? `
+                        <span class="input-group-btn panel-button-group text-center">
+                    <button type="button" class="btn btn-success" onclick="editedNetWork(${data.id})">保存修改</button>
+                    </span>
+                        ` : ""}
+                       
+                </div>
+            
+            `;
+
+        }
+
+        public exportNetLinkHostContext(value: string, name: string){
+            return `
+             <div class="panel-header window-header">
+                    <div class="input-group">
+                        <p class="left-panel-title">关联节点<small>[${name}]</small></p>
+                        <span class="input-group-btn panel-button-group">
+                        </span>
+                    </div>
+                </div>
+                <div style="margin-top: 81px;">
+                <input type="hidden" value="${value}" id="currNetId">
+                <div id="net-host-tableToolbar">
+                    <p>
+                        尝试在右侧搜索框检索主机！
+                    </p>
+                </div>
+                <table id="net-host-table"></table>
+                </div>
+               `;
+        }
     }
 }

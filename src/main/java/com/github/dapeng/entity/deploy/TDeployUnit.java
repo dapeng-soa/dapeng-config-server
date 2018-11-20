@@ -19,6 +19,8 @@ public class TDeployUnit {
   private long hostId;
   @Column(name = "service_id")
   private long serviceId;
+  @Column(name = "container_name")
+  private String containerName;
   @Column(name = "git_tag")
   private String gitTag;
   @Column(name = "image_tag")
@@ -154,6 +156,14 @@ public class TDeployUnit {
 
   public void setDockerExtras(String dockerExtras) {
     this.dockerExtras = dockerExtras;
+  }
+
+  public String getContainerName() {
+    return containerName;
+  }
+
+  public void setContainerName(String containerName) {
+    this.containerName = containerName;
   }
 
   @Override

@@ -105,6 +105,7 @@ public class DeployOpJournalController {
         TService service = serviceRepository.findOne(u.getServiceId());
         DeployJournalVo vo = new DeployJournalVo();
         vo.setId(u.getId());
+        vo.setUnitId(u.getUnitId());
         vo.setSetId(u.getSetId());
         vo.setSetName(isEmpty(set) ? "notFound" : set.getName());
         vo.setHostId(u.getHostId());

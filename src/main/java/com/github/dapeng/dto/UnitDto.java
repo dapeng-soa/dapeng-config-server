@@ -17,6 +17,7 @@ public class UnitDto {
     private String ports = "";
     private String volumes = "";
     private String dockerExtras = "";
+    private String containerName = "";
 
 
     public long getSetId() {
@@ -97,6 +98,14 @@ public class UnitDto {
 
     public void setDockerExtras(String dockerExtras) {
         this.dockerExtras = dockerExtras;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public void setContainerName(String containerName) {
+        this.containerName = containerName;
     }
 
     @Override

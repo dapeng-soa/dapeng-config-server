@@ -56,6 +56,10 @@ public class DeployExecRestController {
     ServiceFilesRepository serviceFilesRepository;
     @Autowired
     FilesUnitRepository filesUnitRepository;
+    @Autowired
+    NetworkHostRepository networkHostRepository;
+    @Autowired
+    NetworkRepository networkRepository;
 
     /**
      * 向agent发送问询指令
@@ -126,6 +130,7 @@ public class DeployExecRestController {
                     subHostVo.setNeedUpdate(true);
                     subHostVo.setConfigUpdateBy(lastUpdateAt(u) / 1000);
                     subHostVo.setDeployTime(0L);
+                    subHostVo.setContainerName(isEmpty(u.getContainerName()) ? tService.getName() : u.getContainerName());
                     subHostVos.add(subHostVo);
                 });
                 deployServiceVo.setDeploySubHostVos(subHostVos);
@@ -164,6 +169,7 @@ public class DeployExecRestController {
                     subServiceVo.setConfigUpdateBy(lastUpdateAt(u) / 1000);
                     subServiceVo.setDeployTime(0L);
                     subServiceVo.setServiceStatus(3);
+                    subServiceVo.setContainerName(isEmpty(u.getContainerName()) ? tService.getName() : u.getContainerName());
                     subServiceVos.add(subServiceVo);
                 });
                 deployHostVo.setDeploySubServiceVos(subServiceVos);
@@ -194,6 +200,26 @@ public class DeployExecRestController {
     }
 
     /**
+     * 获取网络配置的最新时间戳
+     *
+     * @param u
+     * @return
+     */
+    private Long getNetworkUpdateAt(TDeployUnit u) {
+        long hid = u.getHostId();
+        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(hid);
+        List<Long> latest = new ArrayList<>();
+        byHostId.forEach(x -> {
+            latest.add(x.getCreatedAt().getTime());
+            TNetwork network = networkRepository.findOne(x.getNetId());
+            if (!isEmpty(network)) {
+                latest.add(network.getUpdatedAt().getTime());
+            }
+        });
+        return latest.stream().max(Comparator.naturalOrder()).orElse(0L);
+    }
+
+    /**
      * 最后的更新时间
      * // 获取四个配置表最后的更新时间，用于对比是否需要更新
      *
@@ -214,7 +240,8 @@ public class DeployExecRestController {
         Long subEnvUpdateAt = !isEmpty(subEnvs) ? subEnvs.get(0).getUpdatedAt().getTime() : 0;
         Long unitUpdateAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
         Long filesUpdateAt = getFilesUpdateAt(u);
-        Long[] times = {setUpdateAt, hostUpdateAt, hostsUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, filesUpdateAt, unitUpdateAt};
+        Long netUpdatAt = getNetworkUpdateAt(u);
+        Long[] times = {setUpdateAt, hostUpdateAt, hostsUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, filesUpdateAt, netUpdatAt, unitUpdateAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
     }
 
@@ -238,12 +265,20 @@ public class DeployExecRestController {
         List<String> files2Volumes = processFiles2Volumes(unit);
         dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        String composeContext = Composeutil.processComposeContext(dockerService1, set.getNetworkMtu());
+        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(host.getId());
+        String netName = "";
+        if (!isEmpty(byHostId)) {
+            TNetwork network = networkRepository.findOne(byHostId.get(0).getNetId());
+            if (!isEmpty(network)) {
+                netName = network.getNetworkName();
+            }
+        }
+        String composeContext = Composeutil.processComposeContext(dockerService1, netName);
 
         String ip = IPUtils.transferIp(host.getIp());
         DeployVo dockerVo = new DeployVo();
         dockerVo.setLastModifyTime(lastUpdateAt(unit));
-        dockerVo.setServiceName(service.getName());
+        dockerVo.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         dockerVo.setFileContent(composeContext);
         dockerVo.setIp(ip);
         dockerVo.setVolumesFiles(processVolumesFile(unit));
@@ -354,18 +389,23 @@ public class DeployExecRestController {
      */
     @RequestMapping("/deploy/rollbackRealService")
     public ResponseEntity rollbackRealService(@RequestParam Long jid) {
-        TOperationJournal journal = journalRepository.getOne(jid);
-        THost host = hostRepository.getOne(journal.getHostId());
-        TService service = serviceRepository.getOne(journal.getServiceId());
+        TOperationJournal journal = journalRepository.findOne(jid);
+        TDeployUnit unit = unitRepository.findOne(journal.getUnitId());
+        THost host = hostRepository.findOne(journal.getHostId());
+        TService service = serviceRepository.findOne(journal.getServiceId());
         String ip = IPUtils.transferIp(host.getIp());
         DeployVo dockerVo = new DeployVo();
-        // 回滚的时候,最后更新时间是？
         dockerVo.setLastModifyTime(journal.getCreatedAt().getTime());
-        dockerVo.setServiceName(service.getName());
+        dockerVo.setServiceName(isEmpty(unit) || isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         dockerVo.setFileContent(journal.getYml());
         dockerVo.setIp(ip);
 
         TOperationJournal newJournal = new TOperationJournal();
+        if (isEmpty(unit)) {
+            newJournal.setUnitId(0);
+        } else {
+            newJournal.setUnitId(unit.getId());
+        }
         newJournal.setOpFlag(4);
         newJournal.setCreatedAt(DateUtil.now());
         newJournal.setCreatedBy(SecurityUtil.me());
@@ -378,6 +418,7 @@ public class DeployExecRestController {
         newJournal.setGitTag(journal.getGitTag());
 
         journalRepository.saveAndFlush(newJournal);
+        LOGGER.info(":::rollbackRealService []");
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
     }
@@ -389,6 +430,7 @@ public class DeployExecRestController {
     private TOperationJournal toOperationJournal(TDeployUnit unit, int opFlag, String yml) {
         // 写流水
         TOperationJournal journal = new TOperationJournal();
+        journal.setUnitId(unit.getId());
         journal.setGitTag(unit.getGitTag());
         journal.setImageTag(unit.getImageTag());
         journal.setSetId(unit.getSetId());
@@ -425,10 +467,18 @@ public class DeployExecRestController {
         List<String> files2Volumes = processFiles2Volumes(unit);
         dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        String composeContext = Composeutil.processComposeContext(dockerService1, set.getNetworkMtu());
+        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(host.getId());
+        String netName = "";
+        if (!isEmpty(byHostId)) {
+            TNetwork network = networkRepository.findOne(byHostId.get(0).getNetId());
+            if (!isEmpty(network)) {
+                netName = network.getNetworkName();
+            }
+        }
+        String composeContext = Composeutil.processComposeContext(dockerService1, netName);
 
         DeployVo dockerVo = new DeployVo();
-        dockerVo.setServiceName(service.getName());
+        dockerVo.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         dockerVo.setFileContent(composeContext);
 
         return ResponseEntity
@@ -458,8 +508,16 @@ public class DeployExecRestController {
         List<String> files2Volumes = processFiles2Volumes(unit);
         dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
         dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        String composeContext = Composeutil.processComposeContext(dockerService1, set.getNetworkMtu());
-        String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + service.getName() + ".yml";
+        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(host.getId());
+        String netName = "";
+        if (!isEmpty(byHostId)) {
+            TNetwork network = networkRepository.findOne(byHostId.get(0).getNetId());
+            if (!isEmpty(network)) {
+                netName = network.getNetworkName();
+            }
+        }
+        String composeContext = Composeutil.processComposeContext(dockerService1, netName);
+        String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + (isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName()) + ".yml";
         // 将内容写入文件
         Tools.writeStringToFile(path, composeContext);
         // 下载
@@ -506,7 +564,7 @@ public class DeployExecRestController {
         DeployRequest request = new DeployRequest();
         String ip = IPUtils.transferIp(host.getIp());
         request.setIp(ip);
-        request.setServiceName(service.getName());
+        request.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         return request;
     }
 }

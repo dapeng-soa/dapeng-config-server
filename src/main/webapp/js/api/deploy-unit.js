@@ -43,6 +43,9 @@ setColumns = function () {
         title: '发布tag',
         sortable: true
     }, {
+        field: 'containerName',
+        title: '容器名'
+    }, {
         field: 'serviceName',
         title: 'service'
     }, {
@@ -187,6 +190,7 @@ processDeployUnitData = function () {
     var setSelect = $("#setSelect").find("option:selected").val();
     var hostSelect = $("#hostSelect").find("option:selected").val();
     var serviceSelect = $("#serviceSelect").find("option:selected").val();
+    var containerName = $("#containerName").val();
     var imageTag = $("#imageTag").val();
     var env = $("#env-area").val();
     var volumes = $("#volumes-area").val();
@@ -201,7 +205,8 @@ processDeployUnitData = function () {
         env: env,
         volumes: volumes,
         ports: ports,
-        dockerExtras: dockerExtras
+        dockerExtras: dockerExtras,
+        containerName: containerName
     }
 };
 
@@ -429,11 +434,15 @@ addUnitHostChanged = function () {
  */
 addUnitServiceChanged = function (obj) {
     var serviceId = $("#serviceSelect").find("option:selected").val();
+    var disabled = $("#serviceSelect").attr("disabled");
     if (serviceId !== '0') {
         var url = basePath + "/api/deploy-service/" + serviceId;
         $.get(url, function (res) {
             if (res.code === SUCCESS_CODE) {
                 $("#serviceEnvView").html(deploy.serviceCnfigView(res.context));
+                if (disabled !== "disabled") {
+                    $("#containerName").val(res.context.name);
+                }
             }
         }, "json");
     } else {

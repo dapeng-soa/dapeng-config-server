@@ -34,10 +34,10 @@ setColumns = function () {
         field: 'name',
         title: '环境集',
         sortable: true
-    }, {
+    },/* {
         field: 'networkMtu',
         title: 'networkMtu'
-    }, {
+    },*/ {
         field: 'remark',
         title: '备注'
     }, {

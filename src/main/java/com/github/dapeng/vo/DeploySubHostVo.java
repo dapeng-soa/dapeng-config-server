@@ -17,6 +17,7 @@ public class DeploySubHostVo {
     private int serviceStatus = 0;
     private Long deployTime;
     private Long configUpdateBy;
+    private String containerName;
 
     public long getSetId() {
         return setId;
@@ -88,5 +89,13 @@ public class DeploySubHostVo {
 
     public void setUnitId(long unitId) {
         this.unitId = unitId;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public void setContainerName(String containerName) {
+        this.containerName = containerName;
     }
 }

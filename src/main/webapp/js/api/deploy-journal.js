@@ -3,6 +3,7 @@ var bsTable = {};
 var socket = {};
 var yaml = "";
 var $$ = new api.Api();
+var ansi = new AnsiUp;
 $(document).ready(function () {
     initDeployJournals();
     initViewSetSelect();
@@ -161,10 +162,10 @@ viewDeployJournal = function (id) {
  * 预览yml
  * @param id
  */
-viewDeployJournalYml = function (id, hostId, serviceId) {
+viewDeployJournalYml = function (id,unitId) {
 
-    var event_url = basePath + "/api/deploy-unit/event_rep";
-    $$.get(event_url, {hostId: hostId, serviceId: serviceId}, function (res) {
+    var event_url = basePath + "/api/deploy-unit/event_rep/"+unitId;
+    $$.get(event_url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {
             yaml = "";
             socket.emit(GET_YAML_FILE, JSON.stringify(res.context));
@@ -179,6 +180,7 @@ viewDeployJournalYml = function (id, hostId, serviceId) {
                     setTimeout(function () {
                         diffTxt(res2.context.yml, yaml)
                     }, 300);
+                    closeConloseView();
                 }
             });
         }
@@ -199,6 +201,7 @@ rollbackDeploy = function (jid, host, service) {
             if (res.code === SUCCESS_CODE) {
                 socket.emit(DEPLOY, JSON.stringify(res.context));
                 layer.msg("操作已发送");
+                openConloseView();
                 rmBodyAbs();
             }
         })

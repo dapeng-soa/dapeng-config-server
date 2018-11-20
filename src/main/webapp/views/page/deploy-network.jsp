@@ -9,27 +9,28 @@
 <html>
 <head>
     <jsp:include page="../core/resource.jsp"/>
-    <script src="${basePath}/js/api/deploy-files.js"></script>
+    <script src="${basePath}/js/api/deploy-network.js"></script>
 </head>
 <body>
+<jsp:include page="../core/console.jsp"/>
 <jsp:include page="../core/model.jsp"/>
 <jsp:include page="../core/sidebar.jsp"/>
 <div class="container-right">
     <div class="container-right-context animated fadeIn">
         <div class="panel-header">
             <div class="input-group">
-                <p class="left-panel-title">文件管理</p>
+                <p class="left-panel-title">网络管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <button type="button" class="btn btn-primary" onclick="openAddServiceFileModle()">新增</button>
+                    <button type="button" class="btn btn-primary" onclick="openAddNetWorkModle()">新增</button>
                 </span>
             </div>
         </div>
-        <div id="deploy-files-tableToolbar">
+        <div id="deploy-network-tableToolbar">
             <p>
-                文件描述了一个或多个容器的VOLUMES信息,当添加一个文件后，都需要与指定的部署单元(容器)进行关联,关联的文件或文件夹最终将作为容器的VOLUMES,点击关联部署单元按钮查看或关联/取消关联部署单元。
+                在这里可以定义网络，并绑定到对应的节点之上,节点上的容器会使用对应的网络
             </p>
         </div>
-        <table id="deploy-files-table">
+        <table id="deploy-network-table">
 
         </table>
     </div>

@@ -314,6 +314,7 @@ public class ServiceFilesController {
         vo.setPorts(u.getPorts());
         vo.setUpdatedAt(u.getUpdatedAt());
         vo.setVolumes(u.getVolumes());
+        vo.setContainerName(u.getContainerName());
         return vo;
     }
 }

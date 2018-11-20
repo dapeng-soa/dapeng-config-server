@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "t_host")
@@ -146,5 +147,29 @@ public class THost {
             ", updatedAt=" + updatedAt +
             ", remark='" + remark + '\'' +
             '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    THost host = (THost) o;
+    return id == host.id &&
+            setId == host.setId &&
+            ip == host.ip &&
+            extra == host.extra &&
+            deleted == host.deleted &&
+            Objects.equals(name, host.name) &&
+            Objects.equals(labels, host.labels) &&
+            Objects.equals(env, host.env) &&
+            Objects.equals(createdAt, host.createdAt) &&
+            Objects.equals(updatedAt, host.updatedAt) &&
+            Objects.equals(remark, host.remark);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(id, name, setId, ip, labels, extra, env, createdAt, updatedAt, remark, deleted);
   }
 }

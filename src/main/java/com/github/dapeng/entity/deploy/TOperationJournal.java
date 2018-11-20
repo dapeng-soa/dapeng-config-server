@@ -29,6 +29,8 @@ public class TOperationJournal {
   private String diff;
   @Column(name = "op_flag")
   private long opFlag;
+  @Column (name = "unit_id")
+  private long unitId;
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
   @Column(name = "created_at")
   private java.sql.Timestamp createdAt;
@@ -132,6 +134,14 @@ public class TOperationJournal {
 
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
+  }
+
+  public long getUnitId() {
+    return unitId;
+  }
+
+  public void setUnitId(long unitId) {
+    this.unitId = unitId;
   }
 
   @Override

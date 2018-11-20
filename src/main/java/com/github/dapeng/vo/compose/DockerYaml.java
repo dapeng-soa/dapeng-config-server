@@ -5,7 +5,7 @@ import java.util.Map;
 public class DockerYaml {
     private String version;
     private Map<String, DockerService> services;
-    private Map<String, Network> networks;
+    private Map<String, NewNetwork> networks;
 
     public void setVersion(String version) {
         this.version = version;
@@ -23,11 +23,11 @@ public class DockerYaml {
         this.services = services;
     }
 
-    public Map<String, Network> getNetworks() {
+    public Map<String, NewNetwork> getNetworks() {
         return networks;
     }
 
-    public void setNetworks(Map<String, Network> networks) {
+    public void setNetworks(Map<String, NewNetwork> networks) {
         this.networks = networks;
     }
 }

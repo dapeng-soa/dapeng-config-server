@@ -11,6 +11,7 @@ public class DeployUnitVo {
   private long setId;
   private long hostId;
   private long serviceId;
+  private String containerName;
   private String setName;
   private String hostName;
   private String serviceName;
@@ -155,5 +156,13 @@ public class DeployUnitVo {
 
   public void setServiceName(String serviceName) {
     this.serviceName = serviceName;
+  }
+
+  public String getContainerName() {
+    return containerName;
+  }
+
+  public void setContainerName(String containerName) {
+    this.containerName = containerName;
   }
 }

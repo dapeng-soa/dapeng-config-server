@@ -5,6 +5,7 @@ import com.github.dapeng.dto.ModifyBatchTagDto;
 import com.github.dapeng.dto.UnitDto;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.TFilesUnit;
+import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.Check;
@@ -23,6 +24,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static com.github.dapeng.common.Commons.*;
@@ -116,6 +118,7 @@ public class DeployUnitRestController {
         vo.setPorts(u.getPorts());
         vo.setUpdatedAt(u.getUpdatedAt());
         vo.setVolumes(u.getVolumes());
+        vo.setContainerName(u.getContainerName());
         return vo;
     }
 
@@ -162,11 +165,23 @@ public class DeployUnitRestController {
                 || isEmpty(unitDto.getGitTag())
                 || isEmpty(unitDto.getImageTag())) {
             return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, SAVE_ERROR_MSG));
+                    .ok(Resp.of(ERROR_CODE, "保存失败，请检查输入项"));
         }
         try {
             Check.hasChinese(unitDto.getGitTag(), "发布tag");
             Check.hasChinese(unitDto.getImageTag(), "镜像tag");
+            // 如果没有容器名，那就直接使用服务名
+            if (isEmpty(unitDto.getContainerName())) {
+                TService service = serviceRepository.findOne(unitDto.getServiceId());
+                if (!isEmpty(service)) {
+                    unitDto.setContainerName(service.getName());
+                }
+            }
+
+            Check.hasChinese(unitDto.getContainerName(), "容器名");
+
+            checkExistContainerName(unitDto, 0);
+
             TDeployUnit unit = new TDeployUnit();
             unit.setGitTag(unitDto.getGitTag());
             unit.setImageTag(unitDto.getImageTag());
@@ -177,6 +192,7 @@ public class DeployUnitRestController {
             unit.setPorts(unitDto.getPorts());
             unit.setVolumes(unitDto.getVolumes());
             unit.setDockerExtras(unitDto.getDockerExtras());
+            unit.setContainerName(unitDto.getContainerName());
             unit.setCreatedAt(DateUtil.now());
             unit.setUpdatedAt(DateUtil.now());
             unitRepository.save(unit);
@@ -187,6 +203,31 @@ public class DeployUnitRestController {
             LOGGER.error("add deploy-unit error hostId [{}] serviceId [{}]", unitDto.getHostId(), unitDto.getServiceId(), e);
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
+    /**
+     * 检查容器名是否已存在
+     */
+    private void checkExistContainerName(UnitDto unitDto, long id) throws Exception {
+        // 容器名已经确定，检查是否存在相同的容器名
+        List<TDeployUnit> units = unitRepository.findAllBySetIdAndHostIdAndIdIsNot(unitDto.getSetId(), unitDto.getHostId(), id);
+        AtomicBoolean existContainerName = new AtomicBoolean(false);
+        units.forEach(x -> {
+            if (!isEmpty(x.getContainerName())) {
+                if (x.getContainerName().equals(unitDto.getContainerName())) {
+                    existContainerName.set(true);
+                }
+            } else {
+                TService service = serviceRepository.findOne(x.getServiceId());
+                if (!isEmpty(service) && service.getName().equals(unitDto.getContainerName())) {
+                    existContainerName.set(true);
+                }
+            }
+        });
+
+        if (existContainerName.get()) {
+            throw new Exception("所选主机上已存在同名容器");
         }
     }
 
@@ -210,6 +251,16 @@ public class DeployUnitRestController {
             }
             Check.hasChinese(unitDto.getGitTag(), "发布tag");
             Check.hasChinese(unitDto.getImageTag(), "镜像tag");
+            if (isEmpty(unitDto.getContainerName())) {
+                TService service = serviceRepository.findOne(unitDto.getServiceId());
+                if (!isEmpty(service)) {
+                    unitDto.setContainerName(service.getName());
+                }
+            }
+            Check.hasChinese(unitDto.getContainerName(), "容器名");
+
+            checkExistContainerName(unitDto, id);
+
             TDeployUnit unit = unitRepository.getOne(id);
             unit.setGitTag(unitDto.getGitTag());
             unit.setImageTag(unitDto.getImageTag());
@@ -220,6 +271,7 @@ public class DeployUnitRestController {
             unit.setPorts(unitDto.getPorts());
             unit.setVolumes(unitDto.getVolumes());
             unit.setDockerExtras(unitDto.getDockerExtras());
+            unit.setContainerName(unitDto.getContainerName());
             unit.setUpdatedAt(DateUtil.now());
             LOGGER.info("update deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
             unitRepository.save(unit);
