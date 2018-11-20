@@ -3,6 +3,7 @@ var net = new api.Network();
 var $$ = new api.Api();
 var bsTable = {};
 var netHostTable = {};
+var ansi = new AnsiUp;
 
 $(document).ready(function () {
     initNetwork();
@@ -14,6 +15,13 @@ $(document).ready(function () {
              */
             socket.emit(WEB_REG, SOCKET_REG_INFO);
             showMessage(SUCCESS, "已建立与socket服务器的连接", "连接成功");
+        }
+    });
+
+    socket.on(SYNC_NETWORK_RESP, function (data) {
+        if (data !== "") {
+            var html = ansi.ansi_to_html(data);
+            $$.consoleView(html);
         }
     });
 
@@ -301,6 +309,7 @@ sysNetworkToHost = function (netId, name) {
             socket.emit(SYNC_NETWORK, JSON.stringify(res.context));
         }, "json");
         rmBodyAbs();
+        openConloseView();
         layer.msg("操作已发送");
     }, function () {
         layer.msg("未做任何改动");

@@ -32,6 +32,7 @@ window.GET_BUILD_PROGRESSIVE = "getBuildProgressive";
 window.GET_BUILD_PROGRESSIVE_RESP = "getBuildProgressiveResp";
 window.GET_REGED_AGENTS_RESP = "getRegedAgentsResp";
 window.SYNC_NETWORK = "syncNetwork";
+window.SYNC_NETWORK_RESP = "syncNetworkResp";
 window.ERROR_EVENT = "errorEvent";
 // 常用状态
 window.SUCCESS = "success";
