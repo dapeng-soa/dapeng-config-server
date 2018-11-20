@@ -817,7 +817,7 @@ restart: on-failure:3
          */
         public exportDeployJournalYmlContext(value, row) {
             return `<span class="link-button-table">
- ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="yml"  onclick="viewDeployJournalYml(${row.id},${row.unitId})"><span class="glyphicon glyphicon-eye-open"></span></a>` : `-`}
+ ${row.opFlag === 1 ? `<a href="javascript:void(0)" title="yml"  onclick="viewDeployJournalYml(${row.id},${row.unitId},${row.hostId},${row.serviceId})"><span class="glyphicon glyphicon-eye-open"></span></a>` : `-`}
 </span>
 `
         }

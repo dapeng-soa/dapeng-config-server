@@ -174,7 +174,7 @@ var api;
          * @returns {string}
          */
         Deploy.prototype.exportDeployJournalYmlContext = function (value, row) {
-            return "<span class=\"link-button-table\">\n " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"yml\"  onclick=\"viewDeployJournalYml(" + row.id + "," + row.unitId + ")\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>" : "-") + "\n</span>\n";
+            return "<span class=\"link-button-table\">\n " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"yml\"  onclick=\"viewDeployJournalYml(" + row.id + "," + row.unitId + "," + row.hostId + "," + row.serviceId + ")\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>" : "-") + "\n</span>\n";
         };
         /**
          * 流水操作

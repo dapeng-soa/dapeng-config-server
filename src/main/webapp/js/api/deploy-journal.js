@@ -162,10 +162,15 @@ viewDeployJournal = function (id) {
  * 预览yml
  * @param id
  */
-viewDeployJournalYml = function (id,unitId) {
+viewDeployJournalYml = function (id, unitId, hostId, serviceId) {
 
-    var event_url = basePath + "/api/deploy-unit/event_rep/"+unitId;
-    $$.get(event_url, {}, function (res) {
+    var event_url = basePath + "/api/deploy-unit/event_rep/" + unitId;
+    var p = {};
+    if (Number(unitId) === 0) {
+        event_url = basePath + "/api/deploy-unit/event_rep";
+        p = {hostId: hostId, serviceId: serviceId}
+    }
+    $$.get(event_url, p, function (res) {
         if (res.code === SUCCESS_CODE) {
             yaml = "";
             socket.emit(GET_YAML_FILE, JSON.stringify(res.context));
