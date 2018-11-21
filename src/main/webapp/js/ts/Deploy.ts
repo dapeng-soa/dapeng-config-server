@@ -917,7 +917,7 @@ restart: on-failure:3
 
             if (configUpdateId != null && deployTimeId != null && serviceStatusId != null && needUpdateId != null) {
                 let realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);
-                let updateStatus = realInfo.time < realConfigupdateby;
+                let updateStatus = realInfo.time === realConfigupdateby;
                 deployTimeId.innerHTML = t.unix2Time(realInfo.time);
                 serviceStatusId.innerHTML = t.realStatus(realInfo.status ? 1 : 2);
                 needUpdateId.innerHTML = t.updateStatus(updateStatus);

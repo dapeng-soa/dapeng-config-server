@@ -224,7 +224,7 @@ var api;
             var imageTag = t.el(realInfo.ip + realInfo.serviceName + "-ImageTag");
             if (configUpdateId != null && deployTimeId != null && serviceStatusId != null && needUpdateId != null) {
                 var realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);
-                var updateStatus = realInfo.time < realConfigupdateby;
+                var updateStatus = realInfo.time === realConfigupdateby;
                 deployTimeId.innerHTML = t.unix2Time(realInfo.time);
                 serviceStatusId.innerHTML = t.realStatus(realInfo.status ? 1 : 2);
                 needUpdateId.innerHTML = t.updateStatus(updateStatus);
