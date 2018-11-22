@@ -334,6 +334,7 @@ initSetList = function (id) {
     ss.responseHandler = function (res) {
         return res.context.content
     };
+    ss.refresh = true;
     ss.init();
 };
 
@@ -360,6 +361,7 @@ initHostList = function (id) {
             return res.context.content
         };
     }
+    ss.refresh = true;
     ss.init();
 };
 
@@ -377,6 +379,7 @@ initServiceList = function (id) {
     ss.responseHandler = function (res) {
         return res.context.content
     };
+    ss.refresh = true;
     ss.init();
 };
 

@@ -281,6 +281,7 @@ initSetList = function (id) {
     ss.responseHandler = function (res) {
         return res.context.content
     };
+    ss.refresh = true;
     ss.init();
 };
 

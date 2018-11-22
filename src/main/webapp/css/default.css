@@ -505,3 +505,11 @@ table {
 .bootstrap-tagsinput{
     width: 100%;
 }
+
+
+/**
+=======================fix css
+ */
+.layui-layer{
+    top: 40% !important;
+}

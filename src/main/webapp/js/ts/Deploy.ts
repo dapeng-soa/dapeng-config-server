@@ -446,7 +446,7 @@ host1 192.168.0.666
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属环境集:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view ? "disabled" : ""} id="setSelect" class="col-sm-2 form-control">
+                               <select ${type == c.view ? "disabled" : ""} id="setSelect" data-live-search="true" class="selectpicker col-sm-2 form-control">
                                  
                                 </select>
                                 <div class="advance-format-item">
@@ -546,7 +546,7 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属环境集:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view || type == c.edit ? "disabled" : ""} id="setSelect" onchange="addUnitSetChanged(this)" class="col-sm-2 form-control ">
+                               <select ${type == c.view || type == c.edit ? "disabled" : ""} id="setSelect" onchange="addUnitSetChanged(this)" data-live-search="true" class="selectpicker col-sm-2 form-control ">
           
                                 </select>
                                 <div class="advance-format-item">
@@ -562,7 +562,7 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属主机:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view || type == c.edit ? "disabled" : ""} onchange="addUnitHostChanged(this)" id="hostSelect" class="col-sm-2 form-control">
+                               <select ${type == c.view || type == c.edit ? "disabled" : ""} onchange="addUnitHostChanged(this)" id="hostSelect" data-live-search="true" class="selectpicker col-sm-2 form-control">
                                 </select>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
@@ -578,7 +578,7 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">所属服务:</label>
                             <div class="col-sm-9">
-                               <select ${type == c.view || type == c.edit ? "disabled" : ""} onchange="addUnitServiceChanged(this)" id="serviceSelect" class="col-sm-2 form-control">
+                               <select ${type == c.view || type == c.edit ? "disabled" : ""} onchange="addUnitServiceChanged(this)" id="serviceSelect" data-live-search="true" class="selectpicker col-sm-2 form-control">
                                 </select>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
