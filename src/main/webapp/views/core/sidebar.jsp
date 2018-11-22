@@ -38,7 +38,8 @@
                 </dl>
             </li>
         </security:authorize>
-        <%--<security:authorize access="hasAnyRole('ADMIN','OPS','DEV')">
+        <c:if test="${build_enable}">
+        <security:authorize access="hasAnyRole('ADMIN','OPS','DEV')">
             <li class="layui-nav-item layui-nav-itemed">
                 <a href="javascript:void(0);"><i class="fa fa-recycle" aria-hidden="true"></i>持续集成</a>
                 <dl class="layui-nav-child">
@@ -50,7 +51,8 @@
                     </dd>
                 </dl>
             </li>
-        </security:authorize>--%>
+        </security:authorize>
+        </c:if>
         <security:authorize access="hasAnyRole('ADMIN','OPS')">
             <li class="layui-nav-item layui-nav-itemed">
                 <a href="javascript:void(0);"><i class="fa fa-paper-plane" aria-hidden="true"></i>发布部署</a>

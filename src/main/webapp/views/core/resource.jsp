@@ -9,6 +9,7 @@
 <%
     request.setAttribute("basePath", request.getContextPath());
     request.setAttribute("socketUrl", System.getenv("deploy_socket_url"));
+    request.setAttribute("build_enable", System.getenv("build_enable"));
 %>
 <title>大鹏配置中心</title>
 <meta charset="utf-8"/>
