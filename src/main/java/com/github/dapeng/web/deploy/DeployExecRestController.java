@@ -8,7 +8,10 @@ import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.socket.entity.VolumesFile;
 import com.github.dapeng.util.*;
-import com.github.dapeng.vo.*;
+import com.github.dapeng.vo.DeployHostVo;
+import com.github.dapeng.vo.DeployServiceVo;
+import com.github.dapeng.vo.DeploySubHostVo;
+import com.github.dapeng.vo.DeploySubServiceVo;
 import com.github.dapeng.vo.compose.DockerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,8 +136,30 @@ public class DeployExecRestController {
                     subHostVo.setContainerName(isEmpty(u.getContainerName()) ? tService.getName() : u.getContainerName());
                     subHostVos.add(subHostVo);
                 });
+                subHostVos.sort((Comparator.comparingLong(DeploySubHostVo::getConfigUpdateBy).reversed()));
                 deployServiceVo.setDeploySubHostVos(subHostVos);
                 serviceVos.add(deployServiceVo);
+                serviceVos.sort((o1, o2) -> {
+                    List<Long> list = new ArrayList<>();
+                    for (DeploySubHostVo x : o1.getDeploySubHostVos()) {
+                        Long configUpdateBy = x.getConfigUpdateBy();
+                        list.add(configUpdateBy);
+                    }
+                    Long o1Max = Collections.max(list);
+                    List<Long> result = new ArrayList<>();
+                    for (DeploySubHostVo x : o2.getDeploySubHostVos()) {
+                        Long configUpdateBy = x.getConfigUpdateBy();
+                        result.add(configUpdateBy);
+                    }
+                    Long o2Max = Collections.max(result);
+                    if (o1Max > o2Max) {
+                        return -1;
+                    }
+                    if (o1Max.equals(o2Max)) {
+                        return 0;
+                    }
+                    return 1;
+                });
             });
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, serviceVos));
@@ -172,8 +197,30 @@ public class DeployExecRestController {
                     subServiceVo.setContainerName(isEmpty(u.getContainerName()) ? tService.getName() : u.getContainerName());
                     subServiceVos.add(subServiceVo);
                 });
+                subServiceVos.sort((Comparator.comparingLong(DeploySubServiceVo::getConfigUpdateBy).reversed()));
                 deployHostVo.setDeploySubServiceVos(subServiceVos);
                 hostVos.add(deployHostVo);
+                hostVos.sort((o1, o2) -> {
+                    List<Long> list = new ArrayList<>();
+                    for (DeploySubServiceVo x : o1.getDeploySubServiceVos()) {
+                        Long configUpdateBy = x.getConfigUpdateBy();
+                        list.add(configUpdateBy);
+                    }
+                    Long o1Max = Collections.max(list);
+                    List<Long> result = new ArrayList<>();
+                    for (DeploySubServiceVo x : o2.getDeploySubServiceVos()) {
+                        Long configUpdateBy = x.getConfigUpdateBy();
+                        result.add(configUpdateBy);
+                    }
+                    Long o2Max = Collections.max(result);
+                    if (o1Max > o2Max) {
+                        return -1;
+                    }
+                    if (o1Max.equals(o2Max)) {
+                        return 0;
+                    }
+                    return 1;
+                });
             });
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, hostVos));
