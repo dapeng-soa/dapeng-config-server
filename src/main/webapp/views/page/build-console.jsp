@@ -39,8 +39,10 @@
                 $("#console-spinner").hide();
                 if (resp.status === 2) {
                     $("#buildStatus i").addClass("text-primary");
+                    $("#buildStatus").append("build success")
                 } else if (resp.status === 3) {
                     $("#buildStatus i").addClass("text-danger");
+                    $("#buildStatus").append("build fail")
                 }
             }
             $("#console-Box").append(ansi.ansi_to_html(resp.buildLog));
@@ -56,7 +58,7 @@
     <div class="container-right-context">
         <div class="panel-header">
             <div class="input-group">
-                <p class="left-panel-title">控制台输出xxx</p>
+                <p class="left-panel-title">控制台输出</p>
                 <span class="input-group-btn panel-button-group">
                     <%--如果是某一个任务历史点击进入则返回上个页面，如果是直接进入则返回任务主页--%>
                    <button type="button" class="btn btn-primary" onclick="backPrePage()"><i class="fa fa-chevron-left"
