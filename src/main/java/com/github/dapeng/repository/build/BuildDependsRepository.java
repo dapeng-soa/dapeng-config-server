@@ -20,4 +20,10 @@ public interface BuildDependsRepository extends JpaRepository<TBuildDepends, Lon
      * @return
      */
     List<TBuildDepends> findByTaskId(Long id);
+
+    /**
+     * 按照任务id删除
+     * @param taskId
+     */
+    void deleteByTaskId(Long taskId);
 }

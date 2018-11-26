@@ -101,7 +101,7 @@ module api {
                 <a href="${window.basePath}/build/console/${records[i].id}" class="list-group-item">
                     <p>
                     <i class="fa ${(records[i].status == 0 || records[i].status == 1 || records[i].status == 3) ? "text-danger fa-heart-o" : "text-primary fa-heart"} " aria-hidden="true"></i>
-                    <span class="build-number">#${size--}</span> <span class="build-date">${records[i].createdAt}</span>
+                    <span class="build-number">#${size--}-${records[i].buildService}</span> <span class="build-date">${records[i].createdAt}</span>
                     </p>
                     ${(records[i].status == 0 || records[i].status == 1) ? `
                     <div class="progress">

@@ -81,6 +81,27 @@ var execBuildService = function (taskId) {
     })
 };
 
+var delBuildTask = function (taskId) {
+    bodyAbs();
+    layer.confirm('确定删除此任务？这将会将关联日志一并清空', {
+        btn: ['确认', '取消']
+    }, function () {
+        var url = basePath + "/api/build/del-build/" + taskId;
+        $$.post(url, {}, function (res) {
+            if (res.code === SUCCESS_CODE) {
+                layer.msg(res.msg);
+                refresh();
+            } else {
+                layer.msg(res.msg);
+            }
+        });
+        rmBodyAbs();
+    }, function () {
+        layer.msg("未做任何改动");
+        rmBodyAbs();
+    });
+};
+
 var getBuildListReq = function (hostId) {
     var url = basePath + "/api/build/get-building-list";
     $.get(url, {hostId: hostId}, function (res) {

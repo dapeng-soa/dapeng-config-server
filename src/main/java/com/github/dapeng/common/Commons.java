@@ -37,6 +37,15 @@ public class Commons {
     public static final int NORMAL_STATUS = 0;
     public static final int DELETED_STATUS = 1;
 
+    /*
+    构建状态【0:初始，1:构建中，2:构建成功，3:构建失败】
+     */
+    public static final long BUILD_INIT = 0;
+    public static final long BUILD_ING = 1;
+    public static final long BUILD_SUCCESS = 2;
+    public static final long BUILD_FAIL = 3;
+
+
     public static final String INFLUXDB_USERNAME = "influxdb_username";
     public static final String INFLUXDB_PASSWORD = "influxdb_password";
     public static final String INFLUXDB_OPENURL = "influxdb_openurl";

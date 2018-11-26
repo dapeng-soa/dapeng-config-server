@@ -132,7 +132,8 @@
                                                             <c:forEach var="depend" items="${task.depends}"
                                                                        varStatus="vs">
                                                                 <li>
-                                                                    <span>${depend.serviceName}</span> => <span>${depend.branchName}</span>
+                                                                    <span>${depend.serviceName}</span> =>
+                                                                    <span>${depend.branchName}</span>
                                                                 </li>
                                                             </c:forEach>
                                                         </ul>
@@ -140,8 +141,14 @@
                                                 </div>
                                             </td>
                                             <td>${task.updatedAt}</td>
-                                            <td><a href="javascript:void(0)" onclick="execBuildService(${task.id})"><i
-                                                    class="fa fa-play-circle" aria-hidden="true"></i></a></td>
+                                            <td><a href="javascript:void(0)" title="开始构建"
+                                                   onclick="execBuildService(${task.id})"><i
+                                                    class="fa fa-play-circle" aria-hidden="true"></i></a>
+                                                <a href="javascript:void(0)" title="删除任务"
+                                                   onclick="delBuildTask(${task.id})"><span
+                                                        class="glyphicon glyphicon-remove"
+                                                        aria-hidden="true"></span></a>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>

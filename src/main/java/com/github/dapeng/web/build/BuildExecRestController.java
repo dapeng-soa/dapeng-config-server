@@ -89,8 +89,8 @@ public class BuildExecRestController {
                 throw new Exception("找不到这个服务");
             }
             List<Long> list = new ArrayList<>();
-            list.add(0L);
-            list.add(1L);
+            list.add(BUILD_INIT);
+            list.add(BUILD_ING);
             List<TServiceBuildRecords> buildRecords = buildRecordsRepository.findByAgentHostAndStatusIn(IPUtils.transferIp(host.getHost()), list);
             if (!isEmpty(buildRecords)) {
                 throw new Exception("存在正在构建的服务，请等待构建完成");
@@ -134,6 +134,7 @@ public class BuildExecRestController {
         }
     }
 
+
     @GetMapping("/build/get-building-list")
     public ResponseEntity getBuildingList(@RequestParam Long hostId) {
         try {
@@ -149,6 +150,19 @@ public class BuildExecRestController {
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
+
+    @GetMapping("/build/building-history-byTask/{taskId}")
+    public ResponseEntity getBuildingHistoryByTask(@PathVariable Long taskId) {
+        try {
+            List<TServiceBuildRecords> records = buildRecordsRepository.findByTaskIdOrderByCreatedAtDesc(taskId);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
 
     @PostMapping("/build/add-build-task")
     public ResponseEntity addBuildTask(@RequestBody BuildTaskDto dto) {
@@ -195,6 +209,27 @@ public class BuildExecRestController {
             buildDependsRepository.save(depends);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "添加成功"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/build/del-build/{taskId}")
+    public ResponseEntity delBuildTask(@PathVariable Long taskId) {
+        try {
+            List<Long> list = new ArrayList<>();
+            list.add(BUILD_INIT);
+            list.add(BUILD_ING);
+            List<TServiceBuildRecords> list1 = buildRecordsRepository.findByTaskIdAndStatusIn(taskId, list);
+            if (!isEmpty(list1)) {
+                throw new Exception("此任务存在未完成的构建流程,请等待构建完成");
+            }
+            buildRecordsRepository.deleteByTaskId(taskId);
+            buildDependsRepository.deleteByTaskId(taskId);
+            buildTaskRepository.delete(taskId);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
         } catch (Exception e) {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));

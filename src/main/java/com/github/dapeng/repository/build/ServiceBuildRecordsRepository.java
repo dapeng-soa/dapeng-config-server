@@ -14,17 +14,40 @@ import java.util.List;
 
 public interface ServiceBuildRecordsRepository extends JpaRepository<TServiceBuildRecords, Long>, JpaSpecificationExecutor<TServiceBuildRecords> {
     /**
-     *  查找一台主机上是否存在未完成的构建
+     * 查找一台主机上是否存在未完成的构建
+     *
      * @param host
      * @param status
      * @return
      */
-    List<TServiceBuildRecords> findByAgentHostAndStatusIn(String host,List<Long> status);
+    List<TServiceBuildRecords> findByAgentHostAndStatusIn(String host, List<Long> status);
 
     /**
-     * 查找构建列表
+     * 根据host查找构建列表
+     *
      * @param host
      * @return
      */
     List<TServiceBuildRecords> findByAgentHostOrderByCreatedAtDesc(String host);
+
+    /**
+     * 根据任务id查找构建列表
+     * @param taskId
+     * @return
+     */
+    List<TServiceBuildRecords> findByTaskIdOrderByCreatedAtDesc(Long taskId);
+
+    /**
+     * 按照任务id和状态查找
+     *
+     * @param taskId
+     * @param status
+     */
+    List<TServiceBuildRecords> findByTaskIdAndStatusIn(Long taskId, List<Long> status);
+
+    /**
+     * 按照任务id删除
+     * @param taskId
+     */
+    void deleteByTaskId(Long taskId);
 }
