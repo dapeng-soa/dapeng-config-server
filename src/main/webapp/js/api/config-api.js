@@ -299,7 +299,7 @@ viewOrEditByID = function (id, viewOrEdit) {
         var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
         initModelContext(context, function () {
             bsTable.refresh();
-            initSelectTags();
+            //initSelectTags();
         });
         initTags(data.tags);
     }, "json")
@@ -418,7 +418,7 @@ openAddConfig = function () {
     // 初始化弹窗
     initModelContext(context, function () {
         bsTable.refresh();
-        initSelectTags();
+        //initSelectTags();
     });
     initTags();
 };

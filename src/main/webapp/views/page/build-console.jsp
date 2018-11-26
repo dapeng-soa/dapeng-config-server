@@ -54,6 +54,7 @@
 <body>
 <jsp:include page="../core/sidebar.jsp"/>
 <jsp:include page="../core/model.jsp"/>
+<jsp:include page="../core/scroll-top.jsp"/>
 <div class="container-right">
     <div class="container-right-context">
         <div class="panel-header">
@@ -67,9 +68,12 @@
             </div>
         </div>
     </div>
-    <p style="font-size: 16px" id="buildStatus"><i class="fa fa-heart"></i></p>
-    <pre id="console-Box" style="background: #FFF"></pre>
-    <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
+    <div style="padding: 15px">
+        <p style="font-size: 16px;padding: 0 0 20px 0;border-bottom: 1px solid #ccc" id="buildStatus"><i
+                class="fa fa-heart"></i></p>
+        <pre id="console-Box" style="background: #FFF;border: none;padding-bottom: 20px;"></pre>
+        <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
+    </div>
 </div>
 </body>
 </html>
