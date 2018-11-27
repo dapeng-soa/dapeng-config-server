@@ -43,7 +43,7 @@ module api {
                             <input type="text" ${type == c.view || type == c.real ? "disabled" : ""} data-role="tagsinput" class="form-control" id="serviceTags" value="${type != c.add && type != c.real ? data.tags : ""}"/>
                         </div>
                     </div>
-                    `:""}
+                    ` : ""}
                     ${type != c.real ? `
                 <div class="form-group">
                         <label class="col-sm-2 control-label">超时配置:</label>
@@ -174,7 +174,7 @@ https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Cookie配置:</label>
                         <div class="col-sm-9">
-                            <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="cookie-config-area" class="form-control" rows="5">${type != c.add ? data.cookieConfig : ""}</textarea>
+                            <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="cookie-config-area" class="form-control" rows="5">${type != c.add ? (data.cookieConfig === null ? "" : data.cookieConfig) : ""}</textarea>
                               <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -266,7 +266,7 @@ cookie配置：
                         <label class="col-sm-2 control-label">ApiKey:</label>
                         <div class="col-sm-9">
                             <input type="text" ${type != c.add ? "disabled" : ""} id="authApikey" class="col-sm-2 form-control" value="${type != c.add ? data.apiKey : ""}"/>
-                            ${type === c.add ? `<a href="#" style="position: absolute;top: 30%;right: 20px;" onclick="genKey(this)" title="生成apikey"><i class="fa fa-key" aria-hidden="true"></i></a>`:``}
+                            ${type === c.add ? `<a href="#" style="position: absolute;top: 30%;right: 20px;" onclick="genKey(this)" title="生成apikey"><i class="fa fa-key" aria-hidden="true"></i></a>` : ``}
                         </div>
                     </div>
                     <div class="form-group">
@@ -362,7 +362,7 @@ cookie配置：
             </span>`
         }
 
-        public exportApiKeySend(){
+        public exportApiKeySend() {
             return `<div class="form-group" style="margin-top: 20px">
                         <div class="col-sm-12">
                             <input type="email"  id="sendKeyEmail" class="form-control" />
