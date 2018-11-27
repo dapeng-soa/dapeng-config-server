@@ -20,6 +20,8 @@ public class RealConfig {
      */
     private String freqConfig = "";
 
+    private String cookieConfig = "";
+
     public String getTimeoutBalanceConfig() {
         return timeoutBalanceConfig;
     }
@@ -42,6 +44,14 @@ public class RealConfig {
 
     public void setFreqConfig(String freqConfig) {
         this.freqConfig = freqConfig;
+    }
+
+    public String getCookieConfig() {
+        return cookieConfig;
+    }
+
+    public void setCookieConfig(String cookieConfig) {
+        this.cookieConfig = cookieConfig;
     }
 
     @Override

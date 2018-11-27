@@ -62,4 +62,6 @@ public class Commons {
     public static final String ROLE_PREFIX = "ROLE_";
     public static final String ADMIN = "ADMIN";
     public static final String SUPER_ROLE = ROLE_PREFIX + ADMIN;
+
+    public static final String CONFIG_COOKIE_PATH = "/soa/config/cookies";
 }

@@ -169,6 +169,7 @@ public class ConfigRestController {
                 info.setLoadbalanceConfig(infoDto.getLoadbalanceConfig());
                 info.setRouterConfig(infoDto.getRouterConfig());
                 info.setFreqConfig(infoDto.getFreqConfig());
+                info.setCookieConfig(infoDto.getCookieConfig());
                 repository.save(info);
                 return ResponseEntity
                         .ok(Resp.of(SUCCESS_CODE, SAVE_SUCCESS_MSG));
@@ -323,6 +324,7 @@ public class ConfigRestController {
                 cid.setTimeoutConfig(config.getTimeoutConfig());
                 cid.setRouterConfig(config.getRouterConfig());
                 cid.setRemark(config.getRemark());
+                cid.setCookieConfig(config.getCookieConfig());
 
                 processPublish(host, cid);
 
@@ -414,9 +416,11 @@ public class ConfigRestController {
         String timeoutBalanceConfig = ZkUtil.getNodeData(zk, Constants.CONFIG_SERVICE_PATH + "/" + service);
         String freqConfig = ZkUtil.getNodeData(zk, Constants.CONFIG_FREQ_PATH + "/" + service);
         String routerConfig = ZkUtil.getNodeData(zk, Constants.CONFIG_ROUTER_PATH + "/" + service);
+        String cookieConfig = ZkUtil.getNodeData(zk, CONFIG_COOKIE_PATH + "/" + service);
         realConfig.setTimeoutBalanceConfig(timeoutBalanceConfig);
         realConfig.setFreqConfig(freqConfig);
         realConfig.setRouterConfig(routerConfig);
+        realConfig.setCookieConfig(cookieConfig);
         ZkUtil.closeZk(zk);
         return realConfig;
     }
@@ -432,13 +436,16 @@ public class ConfigRestController {
         String service = cid.getServiceName();
         // 超时，负载均衡 针对服务的配置，全局的配置在 /soa/config/services 节点
         ZkUtil.createData(zk, Constants.CONFIG_SERVICE_PATH + "/" + service, cid.getTimeoutConfig() + cid.getLoadbalanceConfig());
-        LOGGER.info("发布超时，负载均衡配置成功");
+        LOGGER.info("发布超时，负载均衡配置成功,service:[{}],config:[{}]", service, cid.getTimeoutConfig() + cid.getLoadbalanceConfig());
         // 限流
         ZkUtil.createData(zk, Constants.CONFIG_FREQ_PATH + "/" + service, cid.getFreqConfig());
-        LOGGER.info("发布限流配置成功");
+        LOGGER.info("发布限流配置成功, service:[{}],config:[{}]", service, cid.getFreqConfig());
         // 路由
         ZkUtil.createData(zk, Constants.CONFIG_ROUTER_PATH + "/" + service, cid.getRouterConfig());
-        LOGGER.info("发布路由配置成功");
+        LOGGER.info("发布路由配置成功, service:[{}],config:[{}]", service, cid.getRouterConfig());
+        // cookie
+        ZkUtil.createData(zk, CONFIG_COOKIE_PATH + "/" + service, cid.getCookieConfig());
+        LOGGER.info("发布cookie配置成功, service:[{}],config:[{}]", service, cid.getCookieConfig());
         ZkUtil.closeZk(zk);
 
         ConfigPublishHistory history = new ConfigPublishHistory();
@@ -449,6 +456,7 @@ public class ConfigRestController {
         history.setLoadbalanceConfig(cid.getLoadbalanceConfig());
         history.setRouterConfig(cid.getRouterConfig());
         history.setFreqConfig(cid.getFreqConfig());
+        history.setCookieConfig(cid.getCookieConfig());
         history.setPublishedAt(DateUtil.now());
         history.setPublishedBy(0);
         publishRepository.save(history);

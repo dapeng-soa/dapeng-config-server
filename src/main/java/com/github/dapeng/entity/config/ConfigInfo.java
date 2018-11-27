@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class ConfigInfo {
 
     @Id
-    private long id ;
+    private long id;
     /**
      * 服务全限定名
      */
@@ -40,6 +40,9 @@ public class ConfigInfo {
      */
     @Column(name = "router_config")
     private String routerConfig;
+
+    @Column(name = "cookie_config")
+    private String cookieConfig;
     /**
      * 限流配置
      */
@@ -184,6 +187,14 @@ public class ConfigInfo {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getCookieConfig() {
+        return cookieConfig;
+    }
+
+    public void setCookieConfig(String cookieConfig) {
+        this.cookieConfig = cookieConfig;
     }
 
     @Override

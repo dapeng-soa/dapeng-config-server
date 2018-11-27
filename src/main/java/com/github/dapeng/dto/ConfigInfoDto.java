@@ -33,6 +33,8 @@ public class ConfigInfoDto {
      */
     private String freqConfig = "";
 
+    private String cookieConfig = "";
+
     private String remark = "";
 
     public String getServiceName() {
@@ -89,6 +91,14 @@ public class ConfigInfoDto {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public String getCookieConfig() {
+        return cookieConfig;
+    }
+
+    public void setCookieConfig(String cookieConfig) {
+        this.cookieConfig = cookieConfig;
     }
 
     @Override

@@ -91,7 +91,6 @@ var execTagChanged = function (obj) {
 };
 
 
-
 // 格式化状态
 statusFormatter = function (value) {
     //0:无效,1:新建,2:审核通过,3:已发布
@@ -382,6 +381,7 @@ processConfigData = function () {
     var loadbalanceConfig = $("#loadbalance-config-area").val();
     var routerConfig = $("#router-config-area").val();
     var freqConfig = $("#freq-config-area").val();
+    var cookieConfig = $("#cookie-config-area").val();
     var remark = $("#remark-area").val();
     var tags = $("input[data-role='tagsinput']#serviceTags").val();
     return {
@@ -391,6 +391,7 @@ processConfigData = function () {
         loadbalanceConfig: loadbalanceConfig,
         routerConfig: routerConfig,
         freqConfig: freqConfig,
+        cookieConfig: cookieConfig,
         remark: remark
     };
 };
@@ -422,7 +423,6 @@ openAddConfig = function () {
     });
     initTags();
 };
-
 
 
 openPublishHistory = function (serviceName) {

@@ -44,6 +44,9 @@ public class ConfigPublishHistory {
     @Column(name = "freq_config")
     private String freqConfig;
 
+    @Column(name = "cookie_config")
+    private String cookieConfig;
+
     /**
      * 发布人
      */
@@ -147,6 +150,14 @@ public class ConfigPublishHistory {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getCookieConfig() {
+        return cookieConfig;
+    }
+
+    public void setCookieConfig(String cookieConfig) {
+        this.cookieConfig = cookieConfig;
     }
 
     @Override

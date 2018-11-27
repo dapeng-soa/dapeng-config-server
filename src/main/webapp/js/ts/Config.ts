@@ -36,12 +36,14 @@ module api {
                             <input type="text" ${type != c.add ? "disabled" : ""} class="form-control" id="service-name" value="${type != c.add ? data.serviceName : ""}"/>
                         </div>
                     </div>
+                    ${type != c.add && type != c.real ? `
                     <div class="form-group">
                      <label class="col-sm-2 control-label">标签:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} data-role="tagsinput" class="form-control" id="serviceTags" value="${type != c.add ? data.tags : ""}"/>
+                            <input type="text" ${type == c.view || type == c.real ? "disabled" : ""} data-role="tagsinput" class="form-control" id="serviceTags" value="${type != c.add && type != c.real ? data.tags : ""}"/>
                         </div>
                     </div>
+                    `:""}
                     ${type != c.real ? `
                 <div class="form-group">
                         <label class="col-sm-2 control-label">超时配置:</label>
@@ -163,6 +165,24 @@ max_interval = 86400,80000
 
 详细文档：
 https://github.com/dapeng-soa/dapeng-soa/wiki/DapengFreqControl
+                                  </pre>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Cookie配置:</label>
+                        <div class="col-sm-9">
+                            <textarea ${type == c.view || type == c.real ? "disabled" : ""} id="cookie-config-area" class="form-control" rows="5">${type != c.add ? data.cookieConfig : ""}</textarea>
+                              <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+cookie配置：
+1.cookie配置在/soa/config/cookies/{serviceName}节点data上
+基本规则：express => c"key_str#value_str"
+例如：method match "sayHello" => c"thread-log-level#DEBUG"
                                   </pre>
                                 </div>
                               </div>
