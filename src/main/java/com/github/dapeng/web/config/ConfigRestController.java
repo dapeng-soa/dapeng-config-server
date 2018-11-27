@@ -364,6 +364,7 @@ public class ConfigRestController {
         configInfo.setRouterConfig(configInfoDto.getRouterConfig());
         configInfo.setTimeoutConfig(configInfoDto.getTimeoutConfig());
         configInfo.setLoadbalanceConfig(configInfoDto.getLoadbalanceConfig());
+        configInfo.setCookieConfig(configInfoDto.getCookieConfig());
         repository.saveAndFlush(configInfo);
     }
 

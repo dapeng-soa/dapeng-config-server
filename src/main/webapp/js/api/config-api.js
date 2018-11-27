@@ -219,6 +219,8 @@ processHistoryData = function (data) {
             '<pre>' + (data[i].routerConfig === "" ? "无" : data[i].routerConfig) + '</pre>' +
             '<p>限流配置</p>' +
             '<pre>' + (data[i].freqConfig === "" ? "无" : data[i].freqConfig) + '</pre>' +
+            '<p>Cookie配置</p>' +
+            '<pre>' + (data[i].cookieConfig === "" ? "无" : data[i].cookieConfig) + '</pre>' +
             '</div>' +
             '</div>' +
             '</li>';
