@@ -889,10 +889,11 @@ restart: on-failure:3
                                 <p>需要更新：<span id="${IdPrefix}-needUpdate">${dep.updateStatus(em.needUpdate)}</span></p>
                                 </div>
                                 <div class="col-sm-2 col-xs-12">
-                                    <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId})">升级</a></p>
-                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="stopService(${em.unitId})">停止</a></p>
-                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="restartService(${em.unitId})">重启</a></p>
-                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId},'view')">预览</a></p>
+                                    <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId})" title="升级此容器">升级</a></p>
+                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="stopService(${em.unitId})" title="在此节点停止此容器">停止</a></p>
+                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="restartService(${em.unitId})" title="在此节点重启此容器">重启</a></p>
+                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="serviceYamlPreview('${IdPrefix + "-deployTime"}','${IdPrefix + "-configUpdateTime"}',${em.unitId},'view')" title="预览配置文件差异">预览</a></p>
+                                <p ><a href="javascript:void(0)" style="color: #1E9FFF" onclick="rmServiceContainer(${em.unitId})" title="从对应节点移除此容器">移除</a></p>
                             </div>
                         </div>
             `

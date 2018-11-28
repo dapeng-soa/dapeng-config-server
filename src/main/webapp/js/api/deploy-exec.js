@@ -21,7 +21,7 @@ $(document).ready(function () {
     });
     initSetList();
     socket.on(NODE_EVENT, function (data) {
-        if (data!==""){
+        if (data !== "") {
             var html = ansi.ansi_to_html(data);
             $$.consoleView(html);
         }
@@ -75,10 +75,21 @@ $(document).ready(function () {
     });
 
     /**
+     * 移除容器返回返回
+     */
+    socket.on(RM_CONTAINER_RESP, function (data) {
+        if (data !== "") {
+            openConloseView();
+            var html = ansi.ansi_to_html(data);
+            $$.consoleView(html);
+        }
+    });
+
+    /**
      * 错误返回
      */
     socket.on(ERROR_EVENT, function (data) {
-        if (data!==""){
+        if (data !== "") {
             openConloseView();
             var html = ansi.ansi_to_html(data);
             $$.consoleView(html);
@@ -172,7 +183,7 @@ initServiceList = function () {
 
 initHostList = function () {
     var setSelected = $("#setSelect").find("option:selected").val();
-    var curl = basePath + "/api/deploy-hosts/" + setSelected +"?&extra=1";
+    var curl = basePath + "/api/deploy-hosts/" + setSelected + "?&extra=1";
     if (Number(setSelected) === 0) {
         curl = basePath + "/api/deploy-hosts?sort=name&order=asc&extra=1"
     }
@@ -324,6 +335,30 @@ restartService = function (unitId) {
                 btn: ['重启', '取消']
             }, function () {
                 socket.emit(RESTART, JSON.stringify(res.context));
+                layer.msg("操作已发送");
+                rmBodyAbs();
+            }, function () {
+                layer.msg("操作取消");
+                rmBodyAbs();
+            });
+        }
+    })
+};
+
+
+/**
+ * 移除容器
+ * @param unitId
+ */
+rmServiceContainer = function (unitId) {
+    var url = basePath + "/api/deploy-unit/event_rep/" + unitId;
+    $$.get(url, {}, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            bodyAbs();
+            layer.confirm('移除[' + res.context.ip + ':' + res.context.serviceName + ']容器?', {
+                btn: ['移除', '取消']
+            }, function () {
+                socket.emit(RM_CONTAINER, JSON.stringify(res.context));
                 layer.msg("操作已发送");
                 rmBodyAbs();
             }, function () {
