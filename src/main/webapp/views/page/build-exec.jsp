@@ -121,8 +121,8 @@
                                     <c:forEach var="task" items="${view.value}" varStatus="vs">
                                         <tr>
                                             <th scope="row">${vs.index+1}</th>
-                                            <td>${task.taskName}</td>
-                                            <td><a href="#">${task.serviceName}</a></td>
+                                            <td><a href="#">${task.taskName}</a></td>
+                                            <td>${task.serviceName}</td>
                                             <td>
                                                 <div class="advance-format-item">
                                                     <p class="advance-format-title"

@@ -44,6 +44,9 @@
                     $("#buildStatus i").addClass("text-danger fa fa-frown-o");
                     $("#buildStatus").append("build fail")
                 }
+            }else {
+                $("#buildStatus i").addClass("text-primary fa fa-meh-o");
+                $("#buildStatus").append("build runing")
             }
             $("#console-Box").append(ansi.ansi_to_html(resp.buildLog));
             document.getElementById("console-Box").scrollTop = document.getElementById("console-Box").scrollHeight;
@@ -70,7 +73,7 @@
     </div>
     <div style="padding: 15px">
         <p style="font-size: 16px;padding: 0 0 20px 0;border-bottom: 1px solid #ccc" id="buildStatus"><i
-                class="text-primary fa fa-meh-o"></i></p>
+                class=""></i></p>
         <pre id="console-Box" style="background: #FFF;border: none;padding-bottom: 20px;"></pre>
         <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
     </div>
