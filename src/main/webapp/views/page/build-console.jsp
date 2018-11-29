@@ -38,10 +38,10 @@
                 window.clearInterval(timer1);
                 $("#console-spinner").hide();
                 if (resp.status === 2) {
-                    $("#buildStatus i").addClass("text-primary");
+                    $("#buildStatus i").addClass("text-primary fa fa-smile-o");
                     $("#buildStatus").append("build success")
                 } else if (resp.status === 3) {
-                    $("#buildStatus i").addClass("text-danger");
+                    $("#buildStatus i").addClass("text-danger fa fa-frown-o");
                     $("#buildStatus").append("build fail")
                 }
             }
@@ -70,7 +70,7 @@
     </div>
     <div style="padding: 15px">
         <p style="font-size: 16px;padding: 0 0 20px 0;border-bottom: 1px solid #ccc" id="buildStatus"><i
-                class="fa fa-heart"></i></p>
+                class="text-primary fa fa-meh-o"></i>build runing</p>
         <pre id="console-Box" style="background: #FFF;border: none;padding-bottom: 20px;"></pre>
         <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
     </div>
