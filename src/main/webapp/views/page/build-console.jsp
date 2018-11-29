@@ -70,7 +70,7 @@
     </div>
     <div style="padding: 15px">
         <p style="font-size: 16px;padding: 0 0 20px 0;border-bottom: 1px solid #ccc" id="buildStatus"><i
-                class="text-primary fa fa-meh-o"></i>build runing</p>
+                class="text-primary fa fa-meh-o"></i></p>
         <pre id="console-Box" style="background: #FFF;border: none;padding-bottom: 20px;"></pre>
         <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
     </div>
