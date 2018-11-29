@@ -46,7 +46,7 @@
                 }
             }else {
                 $("#buildStatus i").addClass("text-primary fa fa-meh-o");
-                $("#buildStatus").append("build runing")
+                $("#buildStatus").html("build runing")
             }
             $("#console-Box").append(ansi.ansi_to_html(resp.buildLog));
             document.getElementById("console-Box").scrollTop = document.getElementById("console-Box").scrollHeight;
