@@ -13,12 +13,25 @@
     <script src="${basePath}/js/ts/Build.js"></script>
     <script src="${basePath}/js/api/build-exec.js"></script>
     <script>
+
+        var hostTimer = -1;
+        var taskTimer = -1;
         $(document).ready(function () {
             getBuildListReq(${current.id});
-            setInterval(function () {
+            hostTimer = setInterval(function () {
                 getBuildListReq(${current.id});
             }, 4000);
-        })
+        });
+
+
+        var getTaskBuildList = function (taskId) {
+            window.clearInterval(hostTimer);
+            window.clearInterval(taskTimer);
+            taskTimer = setInterval(function () {
+                getTaskBuildListReq(${current.id}, taskId);
+            }, 4000)
+        }
+
     </script>
 </head>
 <body>
@@ -121,7 +134,8 @@
                                     <c:forEach var="task" items="${view.value}" varStatus="vs">
                                         <tr>
                                             <th scope="row">${vs.index+1}</th>
-                                            <td><a href="#">${task.taskName}</a></td>
+                                            <td><a href="javascript:void(0)"
+                                                   onclick="getTaskBuildList(${task.id})">${task.taskName}</a></td>
                                             <td>${task.serviceName}</td>
                                             <td>
                                                 <div class="advance-format-item">

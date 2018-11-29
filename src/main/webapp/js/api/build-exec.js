@@ -108,6 +108,12 @@ var getBuildListReq = function (hostId) {
         getBuildingListHtml(hostId, res.context);
     }, "json")
 };
+var getTaskBuildListReq = function (hostId, taskId) {
+    var url = basePath + "/api/build/building-history-byTask/" + taskId;
+    $.get(url, {}, function (res) {
+        getBuildingListHtml(hostId, res.context);
+    }, "json")
+};
 
 var getBuildingListHtml = function (elId, records) {
     var context = build.buildingListContext(records);
