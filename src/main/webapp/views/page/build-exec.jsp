@@ -27,6 +27,7 @@
         var getTaskBuildList = function (taskId) {
             window.clearInterval(hostTimer);
             window.clearInterval(taskTimer);
+            getTaskBuildListReq(${current.id}, taskId);
             taskTimer = setInterval(function () {
                 getTaskBuildListReq(${current.id}, taskId);
             }, 4000)
