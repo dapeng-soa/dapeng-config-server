@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -246,9 +246,25 @@ if [ -z "$JSSE_OPTS" ] ; then
 fi
 JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS -Djava.security.egd=file:/dev/./urandom"
 
+PRGNAME=soa-service
+ADATE=`date +%Y%m%d%H%M%S`
+PRGDIR=`pwd`
+LOGDIR=$PRGDIR/logs
+
+JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
+
+if [ "$JAVA_VERSION" \< "11" ]; then
+    GC_OPTS=" -XX:NewRatio=1 -XX:SurvivorRatio=30 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$LOGDIR/$PRGNAME-$ADATE.hprof  -XX:+PrintGCDateStamps -Xloggc:$LOGDIR/gc-$PRGNAME-$ADATE.log -XX:+PrintPromotionFailure -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCDetails -Dlog.dir=$PRGDIR/.. -XX:+UseParallelGC -XX:+UseParallelOldGC"
+else
+    GC_OPTS=" -XX:NewRatio=1 -XX:SurvivorRatio=30 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$LOGDIR/$PRGNAME-$ADATE.hprof -Xloggc:$LOGDIR/gc-$PRGNAME-$ADATE.log -XX:+PrintGCDetails -Dlog.dir=$PRGDIR/.. -XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
+fi
+
 # Register custom URL handlers
 # Do this here so custom URL handles (specifically 'war:...') can be used in the security policy
 JAVA_OPTS="$JAVA_OPTS -Djava.protocol.handler.pkgs=org.apache.catalina.webresources"
+
+JAVA_OPTS="$JAVA_OPTS $GC_OPTS"
+
 
 # Set juli LogManager config file if it is present and an override has not been issued
 if [ -z "$LOGGING_CONFIG" ]; then
