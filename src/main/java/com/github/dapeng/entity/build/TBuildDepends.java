@@ -24,6 +24,8 @@ public class TBuildDepends {
     private String branchName;
     @Column(name = "build_operation")
     private String buildOperation;
+    @Column(name = "images_name")
+    private String imageName;
 
 
     public long getId() {
@@ -88,4 +90,11 @@ public class TBuildDepends {
         this.buildOperation = buildOperation;
     }
 
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
 }

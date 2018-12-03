@@ -107,6 +107,7 @@ public class BuildExecRestController {
                 vo.setBuildOperation(x.getBuildOperation());
                 vo.setGitName(x.getGitName());
                 vo.setGitURL(x.getGitUrl());
+                vo.setImageName(x.getImageName());
                 serviceVoList.add(vo);
             });
             buildVo.setBuildServices(serviceVoList);
@@ -125,6 +126,7 @@ public class BuildExecRestController {
             buildVo.setBuildService(records.getBuildService());
             buildVo.setTaskId(records.getTaskId());
             buildVo.setId(records.getId());
+            buildVo.setImageName(service.getImage());
 
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildVo));
@@ -203,6 +205,7 @@ public class BuildExecRestController {
                 t.setGitName(x.getGitName());
                 t.setGitUrl(x.getGitURL());
                 t.setBuildOperation(x.getBuildOperation());
+                t.setImageName(x.getImageName());
                 depends.add(t);
             });
 

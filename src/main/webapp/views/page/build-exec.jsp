@@ -16,10 +16,11 @@
 
         var hostTimer = -1;
         var taskTimer = -1;
+        var hostId = ${current.id};
         $(document).ready(function () {
-            getBuildListReq(${current.id});
+            getBuildListReq(hostId);
             hostTimer = setInterval(function () {
-                getBuildListReq(${current.id});
+                getBuildListReq(hostId);
             }, 4000);
         });
 
@@ -27,9 +28,9 @@
         var getTaskBuildList = function (taskId) {
             window.clearInterval(hostTimer);
             window.clearInterval(taskTimer);
-            getTaskBuildListReq(${current.id}, taskId);
+            getTaskBuildListReq(hostId, taskId);
             taskTimer = setInterval(function () {
-                getTaskBuildListReq(${current.id}, taskId);
+                getTaskBuildListReq(hostId, taskId);
             }, 4000)
         }
 

@@ -67,6 +67,7 @@ object BuildServerUtil {
         } else {
           val labels = dependencyService.get(0).getComposeLabels
           val ymlService = getSourceService(labels)
+          ymlService.setImageName(dependencyService.get(0).getImage)
           if (services.contains(ymlService)) {
             services.asScala.toList
           } else {
