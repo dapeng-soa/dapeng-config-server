@@ -24,7 +24,7 @@ public class TBuildDepends {
     private String branchName;
     @Column(name = "build_operation")
     private String buildOperation;
-    @Column(name = "images_name")
+    @Column(name = "image_name")
     private String imageName;
 
 
