@@ -62,7 +62,7 @@ public class BuildExecRestController {
             if (isEmpty(service)) {
                 throw new Exception("没有该服务,无法获取依赖关系");
             }
-            List buildServices = BuildServerUtil.getSortedBuildServices(service.getComposeLabels(), new ArrayList());
+            List buildServices = BuildServerUtil.getSortedBuildServices(service.getComposeLabels(), service.getImage(), new ArrayList());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildServices));
         } catch (Exception e) {
@@ -188,7 +188,7 @@ public class BuildExecRestController {
             task.setBranch(dto.getBuildDepends().get(dto.getBuildDepends().size() - 1).getServiceBranch());
             buildTaskRepository.save(task);
             TService service = serviceRepository.getOne(dto.getServiceId());
-            List<DependServiceVo> buildServices = BuildServerUtil.getSortedBuildServices(service.getComposeLabels(), new ArrayList());
+            List<DependServiceVo> buildServices = BuildServerUtil.getSortedBuildServices(service.getComposeLabels(), service.getImage(), new ArrayList());
             dto.getBuildDepends().forEach((DependsServiceDto x) -> {
                 for (DependServiceVo buildService : buildServices) {
                     if (buildService.getServiceName().equals(x.getServiceName())) {

@@ -47,12 +47,14 @@ object BuildServerUtil {
   }
 
 
-  def getBuildServices(serviceYmlFile: String, services: java.util.ArrayList[DependServiceVo]): List[DependServiceVo] = {
+  def getBuildServices(serviceYmlFile: String, imageName: String, services: java.util.ArrayList[DependServiceVo]
+
+                      ): List[DependServiceVo] = {
     val content = Source.fromString(serviceYmlFile).getLines().toList
-    services.add(getSourceService(serviceYmlFile))
+    services.add(getSourceService(serviceYmlFile, imageName))
     val dependencies = content.filter(_.trim.startsWith(DEPENDS_SIGN))
     if (dependencies.isEmpty) {
-      val ymlService = getSourceService(serviceYmlFile)
+      val ymlService = getSourceService(serviceYmlFile, imageName)
       if (!services.contains(ymlService)) {
         services.add(ymlService)
       }
@@ -66,25 +68,25 @@ object BuildServerUtil {
           services.asScala.toList
         } else {
           val labels = dependencyService.get(0).getComposeLabels
-          val ymlService = getSourceService(labels)
-          ymlService.setImageName(dependencyService.get(0).getImage)
+          val depImageName = dependencyService.get(0).getImage
+          val ymlService = getSourceService(labels, depImageName)
           if (services.contains(ymlService)) {
             services.asScala.toList
           } else {
             services.add(ymlService)
-            getBuildServices(labels, services)
+            getBuildServices(labels, depImageName, services)
           }
         }
       })
     }
   }
 
-  def getSortedBuildServices(serviceYmlFile: String, services: java.util.ArrayList[DependServiceVo]): java.util.List[DependServiceVo] = {
-    getBuildServices(serviceYmlFile, services).distinct.reverse.filterNot(_.getServiceName.isEmpty).asJava
+  def getSortedBuildServices(serviceYmlFile: String, imageName: String, services: java.util.ArrayList[DependServiceVo]): java.util.List[DependServiceVo] = {
+    getBuildServices(serviceYmlFile, imageName, services).distinct.reverse.filterNot(_.getServiceName.isEmpty).asJava
   }
 
 
-  def getSourceService(serviceYmlFile: String): DependServiceVo = {
+  def getSourceService(serviceYmlFile: String, imageName: String): DependServiceVo = {
     val content = Source.fromString(serviceYmlFile).getLines().toList
     val source = content.filter(_.trim.startsWith(SOURCE_SIGN))(0).split("=")(1)
 
@@ -94,6 +96,7 @@ object BuildServerUtil {
     serviceVo.setGitName(gitName)
     serviceVo.setServiceName(serviceName)
     serviceVo.setBuildOperation(buildOperation)
+    serviceVo.setImageName(imageName)
     serviceVo
   }
 }
