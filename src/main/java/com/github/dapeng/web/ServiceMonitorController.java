@@ -246,6 +246,7 @@ public class ServiceMonitorController {
                 "select tdu.service_id AS serviceId,ts.name AS serviceName,group_concat(th.ip) AS ipList, ts.env \n" +
                 " from t_deploy_unit tdu left join t_host th on tdu.host_id=th.id\n" +
                 "                                left join t_service ts on tdu.service_id=ts.id\n" +
+                "                                where th.name not in ('demo')" +
                 "                                group by tdu.service_id,ts.name\n");
         nativeQuery.unwrap(SQLQuery.class)
                 .addScalar("serviceId", StandardBasicTypes.LONG)
