@@ -173,7 +173,7 @@
                             <div class="col-sm-3">
                                 <p class="text-center">构建历史</p>
                                     <%--构建历史查一下数据库,点击构建历史可以进入到控制台输出--%>
-                                <div class="list-group" id="buildingList${current.id}">
+                                <div class="list-group" id="buildingList${view.key.id}">
 
                                 </div>
                             </div>
