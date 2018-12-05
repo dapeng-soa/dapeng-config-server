@@ -88,7 +88,7 @@ public class BuildExecRestController {
             if (isEmpty(service)) {
                 throw new Exception("找不到这个服务");
             }
-            TBuildHost host1 = buildHostRepository.findOne(task.getHostId());
+            TBuildHost host1 = buildHostRepository.findOne(task.getDeployHostId());
             if (isEmpty(host1)) {
                 // 没有部署主机？咋办呀妈耶：1.使用当前的构建主机 2.报错
                 host1 = host;
