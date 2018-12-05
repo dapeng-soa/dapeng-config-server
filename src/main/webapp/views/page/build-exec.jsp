@@ -94,6 +94,21 @@
                                                 </c:forEach>
                                             </select>
                                         </div>
+                                        <div class="form-group" style="float: left">
+                                            <label for="deployHost${view.key.id}"
+                                                   style="line-height: 200%">部署节点</label>
+                                        </div>
+                                        <div class="form-group" style="float: left;margin-right: 10px">
+                                            <select data-live-search="true" class="form-control selectpicker"
+                                                    id="deployHost${view.key.id}" data-index="${view.key.id}"
+                                                    onchange="hostSelectChange(this)">
+                                                <c:forEach var="host" items="${buildViews}" varStatus="vs">
+                                                    <option <c:choose>
+                                                        <c:when test="${current.id == host.key.id}">selected</c:when>
+                                                    </c:choose>  value="${host.key.id}">${host.key.name}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div>

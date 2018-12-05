@@ -10,6 +10,7 @@ import java.util.List;
 
 public class BuildTaskDto {
     private Long hostId;
+    private Long deployHostId;
     private Long serviceId;
     private String taskName;
     private List<DependsServiceDto> buildDepends;
@@ -44,5 +45,13 @@ public class BuildTaskDto {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public Long getDeployHostId() {
+        return deployHostId;
+    }
+
+    public void setDeployHostId(Long deployHostId) {
+        this.deployHostId = deployHostId;
     }
 }

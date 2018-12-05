@@ -19,6 +19,8 @@ public class TBuildTask {
     private long serviceId;
     @Column(name = "host_id")
     private long hostId;
+    @Column(name = "deploy_host_id")
+    private long deployHostId;
     @Column(name = "branch")
     private String branch;
     @Column(name = "created_at")
@@ -88,4 +90,11 @@ public class TBuildTask {
         this.updatedAt = updatedAt;
     }
 
+    public long getDeployHostId() {
+        return deployHostId;
+    }
+
+    public void setDeployHostId(long deployHostId) {
+        this.deployHostId = deployHostId;
+    }
 }

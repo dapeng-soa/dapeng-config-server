@@ -26,10 +26,12 @@ $(document).ready(function () {
 // 保存构建任务
 var saveBuildTask = function (hostId) {
     var serviceId = $("#buildService" + hostId).val();
+    var deployHostId = $("#deployHost" + hostId).val();
     var serviceDoms = $("#dependsService" + hostId).find("input[type='hidden'].build-depend-name");
     var buildDependBranchs = $("#dependsService" + hostId).find("input.build-depend-branch");
     var buildService = {
         serviceId: serviceId,
+        deployHostId: deployHostId,
         hostId: hostId,
         taskName: $("#buildTaskName" + hostId).val(),
         buildDepends: []
@@ -100,6 +102,10 @@ var delBuildTask = function (taskId) {
         layer.msg("未做任何改动");
         rmBodyAbs();
     });
+};
+
+var hostSelectChange = function () {
+    console.log("333")
 };
 
 var getBuildListReq = function (hostId) {

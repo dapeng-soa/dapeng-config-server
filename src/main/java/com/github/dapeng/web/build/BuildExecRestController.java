@@ -88,6 +88,11 @@ public class BuildExecRestController {
             if (isEmpty(service)) {
                 throw new Exception("找不到这个服务");
             }
+            TBuildHost host1 = buildHostRepository.findOne(task.getHostId());
+            if (isEmpty(host1)) {
+                // 没有部署主机？咋办呀妈耶：1.使用当前的构建主机 2.报错
+                host1 = host;
+            }
             List<Long> list = new ArrayList<>();
             list.add(BUILD_INIT);
             list.add(BUILD_ING);
@@ -127,6 +132,7 @@ public class BuildExecRestController {
             buildVo.setTaskId(records.getTaskId());
             buildVo.setId(records.getId());
             buildVo.setImageName(service.getImage());
+            buildVo.setDeployHost(IPUtils.transferIp(host1.getHost()));
 
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildVo));
@@ -178,8 +184,13 @@ public class BuildExecRestController {
             task.setServiceId(dto.getServiceId());
             task.setCreatedAt(DateUtil.now());
             task.setUpdatedAt(DateUtil.now());
+            task.setDeployHostId(dto.getDeployHostId());
             if (isEmpty(dto.getTaskName())) {
                 dto.setTaskName("build-" + host.getName() + "-" + service1.getName());
+            }
+            boolean existsByTaskName = buildTaskRepository.existsByTaskName(dto.getTaskName());
+            if (existsByTaskName) {
+                throw new Exception("任务名[" + dto.getTaskName() + "]已经存在了，换个名字再试一次");
             }
             task.setTaskName(dto.getTaskName());
             if (isEmpty(dto.getBuildDepends())) {

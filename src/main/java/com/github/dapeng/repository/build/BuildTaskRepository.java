@@ -20,4 +20,10 @@ public interface BuildTaskRepository extends JpaRepository<TBuildTask, Long>, Jp
      * @return
      */
     List<TBuildTask> findByHostId(Long hostId);
+
+    /**
+     * 检查任务名是否存在
+     * @return
+     */
+    boolean existsByTaskName(String taskName);
 }
