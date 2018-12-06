@@ -65,7 +65,7 @@
                      class="tab-pane fade <c:choose><c:when test="${current.id == view.key.id}">in active</c:when></c:choose>"
                      id="view${vs.index}"
                      aria-labelledby="view${vs.index}Data-tab">
-                    <div>
+                    <div style="margin-top: 40px">
                         <div class="advance-format-item" style="padding-bottom:15px;border-bottom: 1px solid #ccc;">
                             <p class="advance-format-title bg-primary "
                                style="height: 30px;line-height: 200%;padding-left: 10px;" onclick="toggleBlock(this)">
