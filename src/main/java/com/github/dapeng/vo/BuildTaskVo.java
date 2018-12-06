@@ -13,6 +13,7 @@ public class BuildTaskVo {
     private long serviceId;
     private long hostId;
     private String hostName;
+    private String deployHostName;
     private String branch;
     private String serviceName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
@@ -106,5 +107,13 @@ public class BuildTaskVo {
 
     public void setDepends(List<TBuildDepends> depends) {
         this.depends = depends;
+    }
+
+    public String getDeployHostName() {
+        return deployHostName;
+    }
+
+    public void setDeployHostName(String deployHostName) {
+        this.deployHostName = deployHostName;
     }
 }

@@ -330,6 +330,9 @@ public class PageController {
             List<TBuildTask> tasks = buildTaskRepository.findByHostId(id);
             List<BuildTaskVo> taskVos = tasks.stream().map((TBuildTask y) -> {
                 BuildTaskVo vo = new BuildTaskVo();
+                TBuildHost deployHost = buildHostRepository.findOne(y.getDeployHostId());
+                TBuildHost buildHost = buildHostRepository.findOne(y.getHostId());
+                TService service = serviceRepository.findOne(y.getServiceId());
                 vo.setId(y.getId());
                 vo.setHostId(y.getHostId());
                 vo.setServiceId(y.getServiceId());
@@ -337,8 +340,9 @@ public class PageController {
                 vo.setTaskName(y.getTaskName());
                 vo.setCreatedAt(y.getCreatedAt());
                 vo.setUpdatedAt(y.getUpdatedAt());
-                vo.setHostName(buildHostRepository.findOne(y.getHostId()).getName());
-                vo.setServiceName(serviceRepository.findOne(y.getServiceId()).getName());
+                vo.setDeployHostName(null != deployHost ? deployHost.getName() : buildHost.getName());
+                vo.setHostName(buildHost.getName());
+                vo.setServiceName(service.getName());
                 List<TBuildDepends> depends = buildDependsRepository.findByTaskId(y.getId());
                 vo.setDepends(depends);
                 return vo;

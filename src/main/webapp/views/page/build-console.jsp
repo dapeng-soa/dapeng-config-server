@@ -38,21 +38,28 @@
                 window.clearInterval(timer1);
                 $("#console-spinner").hide();
                 if (resp.status === 2) {
+                    $("#buildStatus i").removeClass();
                     $("#buildStatus i").addClass("text-primary fa fa-smile-o");
-                    $("#buildStatus").append("build success")
+                    $("#buildStatus").html("build success")
                 } else if (resp.status === 3) {
+                    $("#buildStatus i").removeClass();
                     $("#buildStatus i").addClass("text-danger fa fa-frown-o");
-                    $("#buildStatus").append("build fail")
+                    $("#buildStatus").html("build fail")
                 }
-            }else {
+            } else {
+                $("#buildStatus i").removeClass();
                 $("#buildStatus i").addClass("text-primary fa fa-meh-o");
                 $("#buildStatus").html("build runing")
             }
             $("#console-Box").append(ansi.ansi_to_html(resp.buildLog));
-            document.getElementById("console-Box").scrollTop = document.getElementById("console-Box").scrollHeight;
+            goBottom();
             progressiveDto.start = progressiveDto.start + resp.buildLog.length;
         });
     });
+
+    function goBottom() {
+        document.body.scrollTop = getScrollHeight();
+    }
 </script>
 <body>
 <jsp:include page="../core/sidebar.jsp"/>
@@ -72,8 +79,9 @@
         </div>
     </div>
     <div style="padding: 15px">
-        <p style="font-size: 16px;padding: 0 0 20px 0;border-bottom: 1px solid #ccc" id="buildStatus"><i
-                class=""></i></p>
+        <a href="javascript:void(0)" onclick="goBottom()"><p
+                style="font-size: 16px;padding: 0 0 20px 0;border-bottom: 1px solid #ccc" id="buildStatus"><i
+                class=""></i></p></a>
         <pre id="console-Box" style="background: #FFF;border: none;padding-bottom: 20px;"></pre>
         <i id="console-spinner" class="fa fa-spinner icon-spin" aria-hidden="true"></i>
     </div>

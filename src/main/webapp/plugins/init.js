@@ -525,3 +525,10 @@ Date.prototype.pattern = function (fmt) {
     }
     return fmt;
 }
+
+/**
+ *文档实际高度
+ */
+window.getScrollHeight = function () {
+    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+};

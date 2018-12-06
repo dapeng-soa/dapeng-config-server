@@ -142,6 +142,7 @@
                                         <th>#</th>
                                         <th>任务名</th>
                                         <th>服务</th>
+                                        <th>部署节点</th>
                                         <th>构建分支</th>
                                         <th>添加时间</th>
                                         <th>操作</th>
@@ -154,6 +155,7 @@
                                             <td><a href="javascript:void(0)"
                                                    onclick="getTaskBuildList(${task.id})">${task.taskName}</a></td>
                                             <td>${task.serviceName}</td>
+                                            <td>${task.deployHostName}</td>
                                             <td>
                                                 <div class="advance-format-item">
                                                     <p class="advance-format-title"
