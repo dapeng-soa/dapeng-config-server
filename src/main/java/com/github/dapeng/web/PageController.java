@@ -320,7 +320,7 @@ public class PageController {
      */
     @GetMapping(value = "/build/exec")
     public String buildExec(Model model, @RequestParam(required = false) Long id) {
-        List<TBuildHost> buildHosts = buildHostRepository.findAll();
+        List<TBuildHost> buildHosts = buildHostRepository.findAllByOrderByName();
         List<TService> services = serviceRepository.findByDeletedIsOrderByName(NORMAL_STATUS);
         TBuildHost one = null;
         if (id != null) {
@@ -351,6 +351,8 @@ public class PageController {
             }).collect(Collectors.toList());
             buildViews.put(x, taskVos);
         });
+
+
 
 
         model.addAttribute("tagName", "build-exec");

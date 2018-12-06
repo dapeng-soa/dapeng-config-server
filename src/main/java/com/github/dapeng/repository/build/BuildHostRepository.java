@@ -4,6 +4,8 @@ import com.github.dapeng.entity.build.TBuildHost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
+
 /**
  * @author with struy.
  * Create by 2018/9/19 17:46
@@ -11,4 +13,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  */
 
 public interface BuildHostRepository extends JpaRepository<TBuildHost,Long>,JpaSpecificationExecutor<TBuildHost> {
+    /**
+     *
+     * @return
+     */
+    List<TBuildHost> findAllByOrderByName();
 }
