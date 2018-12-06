@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.github.dapeng.common.Commons.NORMAL_STATUS;
+
 /**
  * @author with struy.
  * Create by 2018/5/29 14:46
@@ -319,7 +321,7 @@ public class PageController {
     @GetMapping(value = "/build/exec")
     public String buildExec(Model model, @RequestParam(required = false) Long id) {
         List<TBuildHost> buildHosts = buildHostRepository.findAll();
-        List<TService> services = serviceRepository.findAll();
+        List<TService> services = serviceRepository.findByDeletedIsOrderByName(NORMAL_STATUS);
         TBuildHost one = null;
         if (id != null) {
             one = buildHostRepository.getOne(id);

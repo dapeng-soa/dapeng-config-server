@@ -22,4 +22,11 @@ public interface ServiceRepository extends JpaRepository<TService, Long>,JpaSpec
      * @return
      */
     List<TService> findByName(String name);
+
+    /**
+     * 根据指定状态查询
+     * @param status
+     * @return
+     */
+    List<TService> findByDeletedIsOrderByName(Integer status);
 }
