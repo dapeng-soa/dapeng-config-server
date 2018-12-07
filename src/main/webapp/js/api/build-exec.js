@@ -77,7 +77,7 @@ var execBuildService = function (taskId, hostId) {
         if (res.code === SUCCESS_CODE) {
             socket.emit(BUILD, JSON.stringify(res.context));
             layer.msg("正在构建");
-            getTaskBuildListReq(hostId, taskId)
+            getBuildListReq(hostId)
         } else {
             layer.msg(res.msg);
         }
