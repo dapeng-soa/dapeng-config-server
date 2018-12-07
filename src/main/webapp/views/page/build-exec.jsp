@@ -86,11 +86,9 @@
                                             <select data-live-search="true" class="form-control selectpicker"
                                                     id="buildService${view.key.id}" data-index="${view.key.id}"
                                                     onchange="serviceSelectChange(this)">
+                                                <option value="0">请选择</option>
                                                 <c:forEach var="s" items="${services}" varStatus="vs">
-                                                    <option
-                                                            <c:choose>
-                                                                <c:when test="${vs.first}">selected</c:when>
-                                                            </c:choose> value="${s.id}">${s.name}</option>
+                                                    <option value="${s.id}">${s.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -105,7 +103,7 @@
                                                 <c:forEach var="host" items="${buildViews}" varStatus="vs">
                                                     <option <c:choose>
                                                         <c:when test="${current.id == host.key.id}">selected</c:when>
-                                                    </c:choose>  value="${host.key.id}">${host.key.name}</option>
+                                                    </c:choose> value="${host.key.id}">${host.key.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
@@ -175,7 +173,7 @@
                                             </td>
                                             <td>${task.updatedAt}</td>
                                             <td><a href="javascript:void(0)" title="开始构建"
-                                                   onclick="execBuildService(${task.id})"><i
+                                                   onclick="execBuildService(${task.id},${current.id})"><i
                                                     class="fa fa-play-circle" aria-hidden="true"></i></a>
                                                 <a href="javascript:void(0)" title="删除任务"
                                                    onclick="delBuildTask(${task.id})"><span

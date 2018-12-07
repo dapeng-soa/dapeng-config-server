@@ -71,12 +71,13 @@ var serviceSelectChange = function (obj) {
     })
 };
 
-var execBuildService = function (taskId) {
+var execBuildService = function (taskId, hostId) {
     var url = basePath + "/api/build/exec-build/" + taskId;
     $$.post(url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {
             socket.emit(BUILD, JSON.stringify(res.context));
             layer.msg("正在构建");
+            getTaskBuildListReq(hostId, taskId)
         } else {
             layer.msg(res.msg);
         }
