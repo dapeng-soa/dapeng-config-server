@@ -1,14 +1,14 @@
 package com.github.dapeng.web.config;
 
-import com.github.dapeng.common.Resp;
 import com.github.dapeng.common.Commons;
+import com.github.dapeng.common.Resp;
 import com.github.dapeng.entity.config.ZkNode;
 import com.github.dapeng.openapi.utils.Constants;
-import com.github.dapeng.openapi.utils.ZkUtil;
 import com.github.dapeng.repository.config.WhiteListHistoryRepository;
 import com.github.dapeng.repository.config.WhiteListInfoRepository;
 import com.github.dapeng.repository.config.ZkNodeRepository;
 import com.github.dapeng.util.NullUtil;
+import com.github.dapeng.util.ZkUtil;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
