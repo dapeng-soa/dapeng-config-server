@@ -204,7 +204,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.10</version>
                 <configuration>
-                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-config-server:V2.0</imageName>
+                    <imageName>docker.today36524.com.cn:5000/basic/dapeng-config-server:V2.1</imageName>
                     <dockerDirectory>${basedir}/docker</dockerDirectory>
                 </configuration>
                 <executions>
