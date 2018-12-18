@@ -1,17 +1,10 @@
 package com.github.dapeng.web;
 
-import com.github.dapeng.entity.build.TBuildDepends;
-import com.github.dapeng.entity.build.TBuildHost;
-import com.github.dapeng.entity.build.TBuildTask;
 import com.github.dapeng.entity.build.TServiceBuildRecords;
-import com.github.dapeng.entity.deploy.TService;
-import com.github.dapeng.repository.build.BuildDependsRepository;
-import com.github.dapeng.repository.build.BuildHostRepository;
-import com.github.dapeng.repository.build.BuildTaskRepository;
 import com.github.dapeng.repository.build.ServiceBuildRecordsRepository;
+import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
 import com.github.dapeng.util.SecurityUtil;
-import com.github.dapeng.vo.BuildTaskVo;
 import com.github.dapeng.web.system.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,14 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.github.dapeng.common.Commons.NORMAL_STATUS;
 
 /**
  * @author with struy.
@@ -40,19 +25,13 @@ import static com.github.dapeng.common.Commons.NORMAL_STATUS;
 public class PageController {
 
     @Autowired
-    BuildHostRepository buildHostRepository;
-
-    @Autowired
     ServiceRepository serviceRepository;
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    BuildTaskRepository buildTaskRepository;
-
-    @Autowired
-    BuildDependsRepository buildDependsRepository;
+    HostRepository hostRepository;
 
     @Autowired
     ServiceBuildRecordsRepository buildRecordsRepository;
@@ -319,55 +298,10 @@ public class PageController {
      * @return
      */
     @GetMapping(value = "/build/exec")
-    public String buildExec(Model model, @RequestParam(required = false) Long id) {
-        List<TBuildHost> buildHosts = buildHostRepository.findAllByOrderByName();
-        List<TService> services = serviceRepository.findByDeletedIsOrderByName(NORMAL_STATUS);
-        TBuildHost one = null;
-        if (id != null) {
-            one = buildHostRepository.getOne(id);
-        }
-
-        Map<TBuildHost, List<BuildTaskVo>> buildViews = new HashMap<>(16);
-        buildHosts.forEach((TBuildHost x) -> {
-            List<TBuildTask> tasks = buildTaskRepository.findByHostId(id);
-            List<BuildTaskVo> taskVos = tasks.stream().map((TBuildTask y) -> {
-                BuildTaskVo vo = new BuildTaskVo();
-                TBuildHost deployHost = buildHostRepository.findOne(y.getDeployHostId());
-                TBuildHost buildHost = buildHostRepository.findOne(y.getHostId());
-                TService service = serviceRepository.findOne(y.getServiceId());
-                vo.setId(y.getId());
-                vo.setHostId(y.getHostId());
-                vo.setServiceId(y.getServiceId());
-                vo.setBranch(y.getBranch());
-                vo.setTaskName(y.getTaskName());
-                vo.setCreatedAt(y.getCreatedAt());
-                vo.setUpdatedAt(y.getUpdatedAt());
-                vo.setDeployHostName(null != deployHost ? deployHost.getName() : buildHost.getName());
-                vo.setHostName(buildHost.getName());
-                vo.setServiceName(service.getName());
-                List<TBuildDepends> depends = buildDependsRepository.findByTaskId(y.getId());
-                vo.setDepends(depends);
-                return vo;
-            }).collect(Collectors.toList());
-            buildViews.put(x, taskVos);
-        });
-
-
-
-
+    public String buildExec(Model model) {
         model.addAttribute("tagName", "build-exec");
         model.addAttribute("sideName", "build-exec");
-        model.addAttribute("buildViews", buildViews);
-        model.addAttribute("services", services);
-        model.addAttribute("current", one);
         return "page/build-exec";
-    }
-
-    @GetMapping(value = "/build/host")
-    public String buildHost(Model model) {
-        model.addAttribute("tagName", "build-host");
-        model.addAttribute("sideName", "build-host");
-        return "page/build-host";
     }
 
     @GetMapping(value = "/build/console/{id}")

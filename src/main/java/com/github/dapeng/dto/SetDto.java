@@ -12,6 +12,7 @@ public class SetDto {
     private String env = "";
     private String remark = "";
     private String networkMtu = "1500";
+    private Long buildHost;
 
     public String getName() {
         return name;
@@ -44,6 +45,14 @@ public class SetDto {
 
     public void setNetworkMtu(String networkMtu) {
         this.networkMtu = networkMtu;
+    }
+
+    public Long getBuildHost() {
+        return buildHost;
+    }
+
+    public void setBuildHost(Long buildHost) {
+        this.buildHost = buildHost;
     }
 
     @Override

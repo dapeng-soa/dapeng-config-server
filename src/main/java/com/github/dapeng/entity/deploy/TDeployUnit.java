@@ -21,6 +21,8 @@ public class TDeployUnit {
   private long serviceId;
   @Column(name = "container_name")
   private String containerName;
+  @Column(name = "branch")
+  private String branch;
   @Column(name = "git_tag")
   private String gitTag;
   @Column(name = "image_tag")
@@ -164,6 +166,14 @@ public class TDeployUnit {
 
   public void setContainerName(String containerName) {
     this.containerName = containerName;
+  }
+
+  public String getBranch() {
+    return branch;
+  }
+
+  public void setBranch(String branch) {
+    this.branch = branch;
   }
 
   @Override

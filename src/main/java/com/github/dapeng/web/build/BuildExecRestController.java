@@ -2,22 +2,21 @@ package com.github.dapeng.web.build;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.core.helper.IPUtils;
-import com.github.dapeng.dto.BuildTaskDto;
-import com.github.dapeng.dto.DependsServiceDto;
-import com.github.dapeng.entity.build.TBuildDepends;
-import com.github.dapeng.entity.build.TBuildHost;
-import com.github.dapeng.entity.build.TBuildTask;
 import com.github.dapeng.entity.build.TServiceBuildRecords;
+import com.github.dapeng.entity.deploy.TDeployUnit;
+import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
-import com.github.dapeng.repository.build.BuildDependsRepository;
-import com.github.dapeng.repository.build.BuildHostRepository;
-import com.github.dapeng.repository.build.BuildTaskRepository;
+import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.build.ServiceBuildRecordsRepository;
+import com.github.dapeng.repository.deploy.DeployUnitRepository;
+import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
+import com.github.dapeng.repository.deploy.SetRepository;
 import com.github.dapeng.socket.entity.BuildVo;
 import com.github.dapeng.socket.entity.DependServiceVo;
 import com.github.dapeng.util.BuildServerUtil;
 import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.vo.BuildTaskVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,84 +43,71 @@ public class BuildExecRestController {
     ServiceRepository serviceRepository;
 
     @Autowired
-    BuildTaskRepository buildTaskRepository;
-
-    @Autowired
-    BuildDependsRepository buildDependsRepository;
-
-    @Autowired
-    BuildHostRepository buildHostRepository;
-
-    @Autowired
     ServiceBuildRecordsRepository buildRecordsRepository;
 
-    @GetMapping("/build/depends/{serviceId}")
-    public ResponseEntity getDepends(@PathVariable Long serviceId) {
-        try {
-            TService service = serviceRepository.getOne(serviceId);
-            if (isEmpty(service)) {
-                throw new Exception("没有该服务,无法获取依赖关系");
-            }
-            List buildServices = BuildServerUtil.getSortedBuildServices(service.getComposeLabels(), service.getImage(), new ArrayList());
-            return ResponseEntity
-                    .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildServices));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
-        }
-    }
+    @Autowired
+    SetRepository setRepository;
 
-    @PostMapping("/build/exec-build/{taskId}")
+    @Autowired
+    DeployUnitRepository unitRepository;
+
+    @Autowired
+    HostRepository hostRepository;
+
+    /**
+     * 构建主机来自环境集
+     * 部署节点来自部署单元
+     *
+     * @param unitId
+     * @return
+     */
+    @PostMapping("/build/exec-build/{unitId}")
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity execBuild(@PathVariable Long taskId) {
+    public ResponseEntity execBuild(@PathVariable Long unitId) {
         try {
             BuildVo buildVo = new BuildVo();
-            TBuildTask task = buildTaskRepository.findOne(taskId);
-            if (isEmpty(task)) {
-                throw new Exception("找不到构建任务");
+            TDeployUnit unit = unitRepository.findOne(unitId);
+            if (isEmpty(unit)) {
+                throw new Exception("找不到构建任务,请刷新重试");
             }
-            TBuildHost host = buildHostRepository.findOne(task.getHostId());
-            if (isEmpty(host)) {
-                throw new Exception("找不到构建主机");
+            TSet set = setRepository.findOne(unit.getSetId());
+            THost deployHost = hostRepository.findOne(unit.getHostId());
+            TService service = serviceRepository.findOne(unit.getServiceId());
+            if (isEmpty(set)) {
+                throw new Exception("找不到这个环境集(部署单元所属环境集找不到)");
             }
-            TService service = serviceRepository.findOne(task.getServiceId());
+            THost buildHost = hostRepository.findOne(set.getBuildHost());
+            // TODO 没有指定默认使用本机？
+            if (isEmpty(buildHost)) {
+                throw new Exception("找不到构建主机(在所属环境中指定)");
+            }
+            if (isEmpty(deployHost)) {
+                throw new Exception("找不到部署节点(部署单元部署节点不存在)");
+            }
             if (isEmpty(service)) {
-                throw new Exception("找不到这个服务");
+                throw new Exception("找不到当前构建的服务");
             }
-            TBuildHost host1 = buildHostRepository.findOne(task.getDeployHostId());
-            if (isEmpty(host1)) {
-                // 没有部署主机？咋办呀妈耶：1.使用当前的构建主机 2.报错
-                host1 = host;
-            }
+
+            // 当前构建主机是否存在构建？
             List<Long> list = new ArrayList<>();
             list.add(BUILD_INIT);
             list.add(BUILD_ING);
-            List<TServiceBuildRecords> buildRecords = buildRecordsRepository.findByAgentHostAndStatusIn(IPUtils.transferIp(host.getHost()), list);
+            List<TServiceBuildRecords> buildRecords = buildRecordsRepository.findByAgentHostAndStatusIn(IPUtils.transferIp(buildHost.getIp()), list);
             if (!isEmpty(buildRecords)) {
                 throw new Exception("存在正在构建的服务，请等待构建完成");
             }
-            List<DependServiceVo> serviceVoList = new ArrayList<>();
-            List<TBuildDepends> depends = buildDependsRepository.findByTaskId(taskId);
+            // 解析依赖，验证是否可以构建
+            List<DependServiceVo> depends = getServiceBuildDepends(set, service);
             if (isEmpty(depends)) {
                 throw new Exception("项目不支持构建");
             }
-            depends.forEach(x -> {
-                DependServiceVo vo = new DependServiceVo();
-                vo.setServiceName(x.getServiceName());
-                vo.setBranchName(x.getBranchName());
-                vo.setBuildOperation(x.getBuildOperation());
-                vo.setGitName(x.getGitName());
-                vo.setGitURL(x.getGitUrl());
-                vo.setImageName(x.getImageName());
-                serviceVoList.add(vo);
-            });
-            buildVo.setBuildServices(serviceVoList);
+            buildVo.setBuildServices(depends);
 
             // 存储一条记录
             TServiceBuildRecords records = new TServiceBuildRecords();
-            records.setAgentHost(IPUtils.transferIp(host.getHost()));
+            records.setAgentHost(IPUtils.transferIp(buildHost.getIp()));
             records.setBuildService(service.getName());
-            records.setTaskId(taskId);
+            records.setTaskId(unitId);
             records.setCreatedAt(DateUtil.now());
             records.setUpdatedAt(DateUtil.now());
             records.setBuildLog("");
@@ -132,7 +118,7 @@ public class BuildExecRestController {
             buildVo.setTaskId(records.getTaskId());
             buildVo.setId(records.getId());
             buildVo.setImageName(service.getImage());
-            buildVo.setDeployHost(IPUtils.transferIp(host1.getHost()));
+            buildVo.setDeployHost(IPUtils.transferIp(deployHost.getIp()));
 
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildVo));
@@ -143,14 +129,40 @@ public class BuildExecRestController {
     }
 
 
+    /**
+     * 查找构建任务列表，包含正在运行的，和历史的
+     * 1.可根据环境集筛选(一个环境集只有一个构建主机)
+     * 2.可根据服务进行筛选,和其他条件并
+     *
+     * @param serviceId
+     * @param setId
+     * @return
+     */
     @GetMapping("/build/get-building-list")
-    public ResponseEntity getBuildingList(@RequestParam Long hostId) {
+    public ResponseEntity getBuildingList(@RequestParam(required = false) Long serviceId,
+                                          @RequestParam(required = false) Long setId) {
         try {
-            TBuildHost one = buildHostRepository.findOne(hostId);
-            if (isEmpty(one)) {
-                throw new Exception("找不到该构建主机");
+            List<TServiceBuildRecords> records = new ArrayList<>();
+            if (!isEmpty(setId)) {
+                TSet set = setRepository.findOne(setId);
+                if (isEmpty(set)) {
+                    throw new Exception("找不到该构建环境");
+                }
+                THost buildHost = hostRepository.findOne(set.getBuildHost());
+                if (isEmpty(buildHost)) {
+                    throw new Exception("找不到该构建主机");
+                }
+                if (!isEmpty(serviceId)) {
+                    TService service = serviceRepository.findOne(serviceId);
+                    if (!isEmpty(service)) {
+                        records = buildRecordsRepository.findByBuildServiceAndAgentHost(service.getName(), IPUtils.transferIp(buildHost.getIp()));
+                    }
+                } else {
+                    records = buildRecordsRepository.findByAgentHostOrderByCreatedAtDesc(IPUtils.transferIp(buildHost.getIp()));
+                }
+            } else {
+                records = buildRecordsRepository.findAll();
             }
-            List<TServiceBuildRecords> records = buildRecordsRepository.findByAgentHostOrderByCreatedAtDesc(IPUtils.transferIp(one.getHost()));
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
         } catch (Exception e) {
@@ -171,82 +183,81 @@ public class BuildExecRestController {
         }
     }
 
-
-    @PostMapping("/build/add-build-task")
-    public ResponseEntity addBuildTask(@RequestBody BuildTaskDto dto) {
+    /**
+     * 构建任务从部署单元中来
+     * 1.默认查询全部
+     * 2.[1]服务视图，根据环境集和服务id进行查询
+     * 3.[2]主机视图，根据环境集和主机id进行查询
+     *
+     * @return
+     */
+    @GetMapping("/build/build-tasks")
+    public ResponseEntity buildTasks(@RequestParam(required = false) Long setId,
+                                     @RequestParam(required = false) Long serviceId) {
         try {
-            // 检查是否存在
-            // 先存任务
-            TService service1 = serviceRepository.findOne(dto.getServiceId());
-            TBuildHost host = buildHostRepository.findOne(dto.getHostId());
-            TBuildTask task = new TBuildTask();
-            task.setHostId(dto.getHostId());
-            task.setServiceId(dto.getServiceId());
-            task.setCreatedAt(DateUtil.now());
-            task.setUpdatedAt(DateUtil.now());
-            task.setDeployHostId(dto.getDeployHostId());
-            if (isEmpty(dto.getTaskName())) {
-                dto.setTaskName("build-" + host.getName() + "-" + service1.getName());
+            List<BuildTaskVo> buildTaskVos;
+            // 主机视图
+            if (!isEmpty(setId) && !isEmpty(serviceId)) {
+                List<TDeployUnit> units = unitRepository.findAllBySetIdAndServiceId(setId, serviceId);
+                buildTaskVos = toTaskList(units);
+            } else {
+                List<TDeployUnit> units = unitRepository.findAll();
+                buildTaskVos = toTaskList(units);
             }
-            boolean existsByTaskName = buildTaskRepository.existsByTaskName(dto.getTaskName());
-            if (existsByTaskName) {
-                throw new Exception("任务名[" + dto.getTaskName() + "]已经存在了，换个名字再试一次");
-            }
-            task.setTaskName(dto.getTaskName());
-            if (isEmpty(dto.getBuildDepends())) {
-                throw new Exception("项目不支持构建");
-            }
-            task.setBranch(dto.getBuildDepends().get(dto.getBuildDepends().size() - 1).getServiceBranch());
-            buildTaskRepository.save(task);
-            TService service = serviceRepository.getOne(dto.getServiceId());
-            List<DependServiceVo> buildServices = BuildServerUtil.getSortedBuildServices(service.getComposeLabels(), service.getImage(), new ArrayList());
-            dto.getBuildDepends().forEach((DependsServiceDto x) -> {
-                for (DependServiceVo buildService : buildServices) {
-                    if (buildService.getServiceName().equals(x.getServiceName())) {
-                        buildService.setBranchName(x.getServiceBranch());
-                    }
-                }
-            });
-            List<TBuildDepends> depends = new ArrayList<>();
-            buildServices.forEach(x -> {
-                TBuildDepends t = new TBuildDepends();
-                t.setTaskId(task.getId());
-                t.setServiceName(x.getServiceName());
-                t.setBranchName(x.getBranchName());
-                t.setGitName(x.getGitName());
-                t.setGitUrl(x.getGitURL());
-                t.setBuildOperation(x.getBuildOperation());
-                t.setImageName(x.getImageName());
-                depends.add(t);
-            });
-
-            buildDependsRepository.save(depends);
-            return ResponseEntity
-                    .ok(Resp.of(SUCCESS_CODE, "添加成功"));
+            return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildTaskVos));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
         }
     }
 
-    @PostMapping("/build/del-build/{taskId}")
-    public ResponseEntity delBuildTask(@PathVariable Long taskId) {
-        try {
-            List<Long> list = new ArrayList<>();
-            list.add(BUILD_INIT);
-            list.add(BUILD_ING);
-            List<TServiceBuildRecords> list1 = buildRecordsRepository.findByTaskIdAndStatusIn(taskId, list);
-            if (!isEmpty(list1)) {
-                throw new Exception("此任务存在未完成的构建流程,请等待构建完成");
+    private List<BuildTaskVo> toTaskList(List<TDeployUnit> units) {
+        List<BuildTaskVo> buildTaskVos = new ArrayList<>();
+        units.forEach(u -> {
+            BuildTaskVo vo = new BuildTaskVo();
+            // 环境集内包含了构建的主机节点
+            TSet set = setRepository.findOne(u.getSetId());
+            // host是服务的部署节点
+            THost host = hostRepository.findOne(u.getHostId());
+            // 服务用来分析构建的依赖
+            TService service = serviceRepository.findOne(u.getServiceId());
+            if (!isEmpty(set) && !isEmpty(host) && !isEmpty(service)) {
+                THost buildHost = hostRepository.findOne(set.getBuildHost());
+                vo.setId(u.getId());
+                vo.setSetId(set.getId());
+                vo.setSetName(set.getName());
+                vo.setHostId(set.getBuildHost());
+                vo.setHostName(buildHost.getName());
+                vo.setServiceId(u.getServiceId());
+                vo.setServiceName(service.getName());
+                vo.setBranch(u.getBranch());
+                vo.setUpdatedAt(u.getUpdatedAt());
+                vo.setDeployHostName(host.getName());
+                vo.setDepends(getServiceBuildDepends(set, service));
+                // 没有任何依赖则不支持构建，直接过滤掉
+                if (!isEmpty(vo.getDepends())) {
+                    buildTaskVos.add(vo);
+                }
             }
-            buildRecordsRepository.deleteByTaskId(taskId);
-            buildDependsRepository.deleteByTaskId(taskId);
-            buildTaskRepository.delete(taskId);
-            return ResponseEntity
-                    .ok(Resp.of(SUCCESS_CODE, DEL_SUCCESS_MSG));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
-        }
+        });
+        return buildTaskVos;
+    }
+
+    private List<DependServiceVo> getServiceBuildDepends(TSet set, TService service) {
+        List<DependServiceVo> buildServices = BuildServerUtil.getSortedBuildServices(service.getComposeLabels(), service.getImage(), new ArrayList());
+        buildServices.forEach(s -> {
+            //1.查找对应的服务在部署单元填写的分支
+            // 找到则更改依赖服务的分支
+            // 找不到则默认master
+            List<TService> services = serviceRepository.findByName(s.getServiceName());
+            if (!isEmpty(services)) {
+                List<TDeployUnit> units1 = unitRepository.findAllBySetIdAndServiceId(set.getId(), services.get(0).getId());
+                if (!isEmpty(units1)) {
+                    s.setBranchName(units1.get(0).getBranch());
+                }
+            }
+        });
+        return buildServices;
     }
 }

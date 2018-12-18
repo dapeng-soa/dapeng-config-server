@@ -72,13 +72,21 @@ appName:goodsService
                               </div>
                         </div>
                     </div>
-                    
-                    <!--<div class="form-group">
-                        <label class="col-sm-2 control-label">NetWork-Mtu:</label>
+                  ${type !== c.add ? `
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">构建主机:</label>
                         <div class="col-sm-9">
-                            <input type="text" ${type == c.view ? "disabled" : ""} id="networkMtu" placeholder="defualt:1500" class="col-sm-2 form-control" value="${type != c.add ? data.networkMtu : ""}">
+                            <select id="setBuildHost"  data-live-search="true"  class="form-control  selectpicker" ${type === this.view ? "disabled" : ""}></select>
+                            <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                               <pre>
+构建主机:用于持续集成的主机节点
+                                  </pre>    
+                                </div>
+                              </div>
                         </div>
-                    </div> -->
+                    </div>` : ""}
                    
                     <div class="form-group">
                         <label class="col-sm-2 control-label">备注:</label>
@@ -607,6 +615,21 @@ appName:goodsService
                         </div>
                         
                         <div class="form-group">
+                            <label class="col-sm-2 control-label">发布分支(可选):</label>
+                            <div class="col-sm-9">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="serviceBranch" class="col-sm-2 form-control" value="${type != c.add ? data.branch : "master"}">
+                                <div class="advance-format-item">
+                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
+                                <div class="advance-format-content">
+                                  <pre>
+可选的分支名,分支名可以指定在构建时的分支
+                                  </pre>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
                             <label class="col-sm-2 control-label">镜像TAG:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="imageTag" class="col-sm-2 form-control" value="${type != c.add ? data.imageTag : ""}">
@@ -620,6 +643,7 @@ appName:goodsService
                               </div>
                             </div>
                         </div>
+                        
                        
                         <div class="form-group">
                             <label class="col-sm-2 control-label">ENV:</label>
@@ -1299,7 +1323,7 @@ ${data.extra == 1 ? '否' : '是'}
         edit: string = "edit";
         api = new api.Api();
 
-        public exportNetWorkAction(value: string, name: string){
+        public exportNetWorkAction(value: string, name: string) {
             return `<span class="link-button-table">
             <a href="javascript:void(0)" title="详情"  onclick="viewNetworkOrEditByID(${value},'view')"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="javascript:void(0)" title="修改"  onclick="viewNetworkOrEditByID(${value},'edit')"><span class="glyphicon glyphicon-edit"></span></a>
@@ -1309,7 +1333,7 @@ ${data.extra == 1 ? '否' : '是'}
             </span>`;
         }
 
-        public exportAddNetworkContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any){
+        public exportAddNetworkContext(type: string = this.add || this.edit || this.view, biz?: string, data?: any) {
 
             let c = this;
             return `
@@ -1405,7 +1429,7 @@ com.docker.network.driver.mtu=1450
 
         }
 
-        public exportNetLinkHostContext(value: string, name: string){
+        public exportNetLinkHostContext(value: string, name: string) {
             return `
              <div class="panel-header window-header">
                     <div class="input-group">

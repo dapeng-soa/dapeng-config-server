@@ -17,6 +17,7 @@ public class DeployUnitVo {
   private String serviceName;
   private String gitTag;
   private String imageTag;
+  private String branch;
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
   private java.sql.Timestamp createdAt;
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
@@ -164,5 +165,13 @@ public class DeployUnitVo {
 
   public void setContainerName(String containerName) {
     this.containerName = containerName;
+  }
+
+  public String getBranch() {
+    return branch;
+  }
+
+  public void setBranch(String branch) {
+    this.branch = branch;
   }
 }

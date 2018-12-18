@@ -34,7 +34,7 @@ setColumns = function () {
         field: 'name',
         title: '环境集',
         sortable: true
-    },/* {
+    }, /* {
         field: 'networkMtu',
         title: 'networkMtu'
     },*/ {
@@ -195,11 +195,13 @@ processDeploySetData = function () {
     var env = $("#env-area").val();
     var networkMtu = $("#networkMtu").val();
     var remark = $("#remark-area").val();
+    var setBuildHost = $("#setBuildHost").find("option:selected").val();
     return {
         name: name,
         env: env,
         networkMtu: networkMtu,
-        remark: remark
+        remark: remark,
+        buildHost: setBuildHost
     }
 };
 
@@ -217,11 +219,23 @@ viewDeploySetEditByID = function (id, op) {
         initModelContext(context, function () {
             bsTable.refresh()
         });
+        initSetBuildHosts(id,res.context.buildHost);
     }, "json");
 };
 
+initSetBuildHosts = function (setId,selected) {
+    var curl = basePath + "/api/deploy-hosts?sort=name&order=asc&setId=" + setId;
+    var ss = new BzSelect(curl, "setBuildHost", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.v_selected = selected;
+    ss.refresh = true;
+    ss.init();
+};
+
 /**
- * 修改apikey
+ * 修改
  * @param id
  */
 editedDeploySet = function (id) {

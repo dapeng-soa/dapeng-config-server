@@ -45,6 +45,8 @@ public interface ServiceBuildRecordsRepository extends JpaRepository<TServiceBui
      */
     List<TServiceBuildRecords> findByTaskIdAndStatusIn(Long taskId, List<Long> status);
 
+    List<TServiceBuildRecords> findByBuildServiceAndAgentHost(String service,String host);
+
     /**
      * 按照任务id删除
      * @param taskId

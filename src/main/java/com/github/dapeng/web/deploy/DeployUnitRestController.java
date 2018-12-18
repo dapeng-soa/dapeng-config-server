@@ -119,6 +119,7 @@ public class DeployUnitRestController {
         vo.setUpdatedAt(u.getUpdatedAt());
         vo.setVolumes(u.getVolumes());
         vo.setContainerName(u.getContainerName());
+        vo.setBranch(u.getBranch());
         return vo;
     }
 
@@ -189,6 +190,7 @@ public class DeployUnitRestController {
             unit.setServiceId(unitDto.getServiceId());
             unit.setSetId(unitDto.getSetId());
             unit.setEnv(unitDto.getEnv());
+            unit.setBranch(unitDto.getBranch());
             unit.setPorts(unitDto.getPorts());
             unit.setVolumes(unitDto.getVolumes());
             unit.setDockerExtras(unitDto.getDockerExtras());
@@ -272,6 +274,7 @@ public class DeployUnitRestController {
             unit.setVolumes(unitDto.getVolumes());
             unit.setDockerExtras(unitDto.getDockerExtras());
             unit.setContainerName(unitDto.getContainerName());
+            unit.setBranch(unitDto.getBranch());
             unit.setUpdatedAt(DateUtil.now());
             LOGGER.info("update deploy-unit hostId [{}] serviceId [{}]", unit.getHostId(), unit.getServiceId());
             unitRepository.save(unit);

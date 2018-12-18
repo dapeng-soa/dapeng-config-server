@@ -1,6 +1,9 @@
 var $$ = new api.Api();
 var build = new api.Build();
 var socket = {};
+var hostTimer = -1;
+var taskTimer = -1;
+
 
 $(document).ready(function () {
     socket = io(socketUrl);
@@ -21,98 +24,94 @@ $(document).ready(function () {
     socket.on(CONNECT_ERROR, function () {
         showMessage(ERROR, "与服务器建立连接失败", "连接失败");
     });
+
+    initBuildSetList();
+    initBuildServiceList();
+    getBuildTasks();
+
+    getBuildListReq();
+    hostTimer = setInterval(function () {
+        getBuildListReq();
+    }, 4000);
 });
 
-// 保存构建任务
-var saveBuildTask = function (hostId) {
-    var serviceId = $("#buildService" + hostId).val();
-    var deployHostId = $("#deployHost" + hostId).val();
-    var serviceDoms = $("#dependsService" + hostId).find("input[type='hidden'].build-depend-name");
-    var buildDependBranchs = $("#dependsService" + hostId).find("input.build-depend-branch");
-    var buildService = {
-        serviceId: serviceId,
-        deployHostId: deployHostId,
-        hostId: hostId,
-        taskName: $("#buildTaskName" + hostId).val(),
-        buildDepends: []
+/**
+ * 初始化set
+ * @constructor
+ */
+initBuildSetList = function () {
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
+    var ss = new BzSelect(curl, "setSelect", "id", "name");
+    ss.refresh = true;
+    ss.after = function () {
+        execBuildViewTypeChanged(2);
     };
-    if (serviceDoms.length === buildDependBranchs.length) {
-        $.each(serviceDoms, function (index, em) {
-            var service = $(em).val();
-            var branch = $(buildDependBranchs[index]).val();
-            var depend = {
-                serviceName: service,
-                serviceBranch: branch
-            };
-            buildService.buildDepends.push(depend);
-        });
-    }
-
-    var url = basePath + "/api/build/add-build-task";
-    $$.post(url, JSON.stringify(buildService), function (res) {
-        layer.msg(res.msg);
-        if (res.code === SUCCESS_CODE) {
-            refresh();
-        }
-    }, "application/json")
-
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.init();
 };
 
-// 当所选服务变更
-var serviceSelectChange = function (obj) {
-    // test 获取依赖
-    var serviceId = $(obj).val();
-    var index = $(obj).data("index");
-    var url = basePath + "/api/build/depends/" + serviceId;
-    $$.$get(url, function (res) {
-        var depends = res.context;
-        var context = build.buildTaskDependsContext(depends);
-        $("#dependsService" + index).html(context);
+/**
+ * 初始化服务
+ * @constructor
+ */
+initBuildServiceList = function () {
+    var curl = basePath + "/api/deploy-services?sort=name&order=asc";
+    var ss = new BzSelect(curl, "serviceSelect", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context.content
+    };
+    ss.refresh = true;
+    ss.init();
+};
+
+/**
+ * 环境集改变
+ */
+execBuildSetChanged = function () {
+    getBuildTasks();
+};
+// 服务视图服务选择
+execBuildServiceChanged = function () {
+    getBuildTasks();
+};
+
+getBuildTasks = function () {
+    var url = basePath + "/api/build/build-tasks";
+    var setSelected = $("#setSelect").find("option:selected").val();
+    var serviceId = $("#serviceSelect").find("option:selected").val();
+    $$.get(url, {
+        setId: setSelected,
+        serviceId: serviceId
+    }, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            var context = build.buildTasksContext(res.context);
+            $("#buildTaskTable").html(context);
+        }
     })
 };
 
-var execBuildService = function (taskId, hostId) {
+
+var execBuildService = function (taskId) {
     var url = basePath + "/api/build/exec-build/" + taskId;
     $$.post(url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {
             socket.emit(BUILD, JSON.stringify(res.context));
             layer.msg("正在构建");
-            getBuildListReq(hostId)
+            getBuildListReq();
         } else {
             layer.msg(res.msg);
         }
     })
 };
 
-var delBuildTask = function (taskId) {
-    bodyAbs();
-    layer.confirm('确定删除此任务？这将会将关联日志一并清空', {
-        btn: ['确认', '取消']
-    }, function () {
-        var url = basePath + "/api/build/del-build/" + taskId;
-        $$.post(url, {}, function (res) {
-            if (res.code === SUCCESS_CODE) {
-                layer.msg(res.msg);
-                refresh();
-            } else {
-                layer.msg(res.msg);
-            }
-        });
-        rmBodyAbs();
-    }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
-    });
-};
-
-var hostSelectChange = function () {
-    console.log("333")
-};
-
-var getBuildListReq = function (hostId) {
+var getBuildListReq = function () {
     var url = basePath + "/api/build/get-building-list";
-    $.get(url, {hostId: hostId}, function (res) {
-        getBuildingListHtml(hostId, res.context);
+    var setSelected = $("#setSelect").find("option:selected").val();
+    var serviceId = $("#serviceSelect").find("option:selected").val();
+    $.get(url, {setId: setSelected, serviceId: serviceId}, function (res) {
+        getBuildingListHtml(res.context);
     }, "json")
 };
 var getTaskBuildListReq = function (hostId, taskId) {
@@ -122,7 +121,17 @@ var getTaskBuildListReq = function (hostId, taskId) {
     }, "json")
 };
 
-var getBuildingListHtml = function (elId, records) {
+
+var getBuildingListHtml = function (records) {
     var context = build.buildingListContext(records);
-    $("#buildingList" + elId).html(context);
+    $("#buildingList").html(context);
 };
+
+var getTaskBuildList = function (taskId) {
+    window.clearInterval(hostTimer);
+    window.clearInterval(taskTimer);
+    getTaskBuildListReq(hostId, taskId);
+    taskTimer = setInterval(function () {
+        getTaskBuildListReq(hostId, taskId);
+    }, 4000)
+}

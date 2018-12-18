@@ -30,6 +30,8 @@ public class TSet {
     private String networkMtu;
     @Column(name = "deleted")
     private int deleted;
+    @Column(name = "build_host")
+    private long buildHost;
 
     public int getDeleted() {
         return deleted;
@@ -98,6 +100,14 @@ public class TSet {
 
     public void setNetworkMtu(String networkMtu) {
         this.networkMtu = networkMtu;
+    }
+
+    public long getBuildHost() {
+        return buildHost;
+    }
+
+    public void setBuildHost(long buildHost) {
+        this.buildHost = buildHost;
     }
 
     @Override

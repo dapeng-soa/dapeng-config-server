@@ -13,6 +13,7 @@ public class UnitDto {
     private long serviceId;
     private String gitTag;
     private String imageTag;
+    private String branch;
     private String env = "";
     private String ports = "";
     private String volumes = "";
@@ -106,6 +107,14 @@ public class UnitDto {
 
     public void setContainerName(String containerName) {
         this.containerName = containerName;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 
     @Override

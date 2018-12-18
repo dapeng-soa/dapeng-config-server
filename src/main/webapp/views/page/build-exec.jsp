@@ -12,29 +12,6 @@
     <jsp:include page="../core/resource.jsp"/>
     <script src="${basePath}/js/ts/Build.js"></script>
     <script src="${basePath}/js/api/build-exec.js"></script>
-    <script>
-
-        var hostTimer = -1;
-        var taskTimer = -1;
-        var hostId = ${current.id};
-        $(document).ready(function () {
-            getBuildListReq(hostId);
-            hostTimer = setInterval(function () {
-                getBuildListReq(hostId);
-            }, 4000);
-        });
-
-
-        var getTaskBuildList = function (taskId) {
-            window.clearInterval(hostTimer);
-            window.clearInterval(taskTimer);
-            getTaskBuildListReq(hostId, taskId);
-            taskTimer = setInterval(function () {
-                getTaskBuildListReq(hostId, taskId);
-            }, 4000)
-        }
-
-    </script>
 </head>
 <body>
 <jsp:include page="../core/sidebar.jsp"/>
@@ -49,153 +26,46 @@
             </div>
         </div>
     </div>
-    <div>
-        <ul id="serviceGroupTabs" class="nav nav-tabs" role="tablist" style="height: 42px">
-            <c:forEach var="view" items="${buildViews}" varStatus="vs">
-                <li role="presentation"
-                    class="<c:choose><c:when test="${current.id == view.key.id}">in active</c:when></c:choose>"
-                    style="position: relative">
-                    <a class="tab-link" href="${basePath}/build/exec?id=${view.key.id}">${view.key.name}</a>
-                </li>
-            </c:forEach>
-        </ul>
-        <div id="serviceGroupTabContent" class="tab-content">
-            <c:forEach var="view" items="${buildViews}" varStatus="vs">
-                <div role="tabpane1"
-                     class="tab-pane fade <c:choose><c:when test="${current.id == view.key.id}">in active</c:when></c:choose>"
-                     id="view${vs.index}"
-                     aria-labelledby="view${vs.index}Data-tab">
-                    <div style="margin-top: 40px">
-                        <div class="advance-format-item" style="padding-bottom:15px;border-bottom: 1px solid #ccc;">
-                            <p class="advance-format-title bg-primary "
-                               style="height: 30px;line-height: 200%;padding-left: 10px;" onclick="toggleBlock(this)">
-                                <i class="fa fa-plus" aria-hidden="true"></i>新增任务</p>
-                            <div class="advance-format-content" style="padding-top: 15px">
-                                <div style="float: left;width: 100%;">
-                                    <div class="form-inline">
-                                        <div class="form-group" style="float: left;margin-right: 10px">
-                                            <label for="buildTaskName${view.key.id}">任务名</label>
-                                            <input type="text" class="form-control" id="buildTaskName${view.key.id}"
-                                                   placeholder="">
-                                        </div>
-                                        <div class="form-group" style="float: left">
-                                            <label for="buildService${view.key.id}" style="line-height: 200%">服务</label>
-                                        </div>
+    <div style="margin-top: 20px;padding:0 15px">
+        <div class="row" style="padding:0 15px">
+            <span>环境： <span style="display: inline-block;width: 120px">
+                <select id="setSelect" data-live-search="true" onchange="execBuildSetChanged(this)"
+                        class="selectpicker form-control">
 
-                                        <div class="form-group" style="float: left;margin-right: 10px">
-                                            <select data-live-search="true" class="form-control selectpicker"
-                                                    id="buildService${view.key.id}" data-index="${view.key.id}"
-                                                    onchange="serviceSelectChange(this)">
-                                                <option value="0">请选择</option>
-                                                <c:forEach var="s" items="${services}" varStatus="vs">
-                                                    <option value="${s.id}">${s.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
-                                        <div class="form-group" style="float: left">
-                                            <label for="deployHost${view.key.id}"
-                                                   style="line-height: 200%">部署节点</label>
-                                        </div>
-                                        <div class="form-group" style="float: left;margin-right: 10px">
-                                            <select data-live-search="true" class="form-control selectpicker"
-                                                    id="deployHost${view.key.id}" data-index="${view.key.id}"
-                                                    onchange="hostSelectChange(this)">
-                                                <c:forEach var="host" items="${buildViews}" varStatus="vs">
-                                                    <option <c:choose>
-                                                        <c:when test="${current.id == host.key.id}">selected</c:when>
-                                                    </c:choose> value="${host.key.id}">${host.key.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="form-inline">
-                                        <div class="form-group">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>服务</th>
-                                                    <th>分支</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody id="dependsService${view.key.id}">
+                </select>
+            </span></span>
+            <span style="line-height: 250%" id="viewTypeLabel">服务：</span>
+            <div id="viewTypeSelect" style="display: inline-block;width: 120px">
+                <select id="serviceSelect" data-live-search="true" class="selectpicker form-control" onchange="execBuildServiceChanged()" >
+                    </select>
+            </div>
+        </div>
 
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <button type="button" onclick="saveBuildTask('${view.key.id}')"
-                                            class="btn btn-success">保存
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-9">
-                                <table class="table table-hover table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>任务名</th>
-                                        <th>服务</th>
-                                        <th>部署节点</th>
-                                        <th>构建分支</th>
-                                        <th>添加时间</th>
-                                        <th>操作</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="task" items="${view.value}" varStatus="vs">
-                                        <tr>
-                                            <th scope="row">${vs.index+1}</th>
-                                            <td><a href="javascript:void(0)"
-                                                   onclick="getTaskBuildList(${task.id})">${task.taskName}</a></td>
-                                            <td>${task.serviceName}</td>
-                                            <td>${task.deployHostName}</td>
-                                            <td>
-                                                <div class="advance-format-item">
-                                                    <p class="advance-format-title"
-                                                       onclick="toggleBlock(this)">${task.branch}</p>
-                                                    <div class="advance-format-content">
-                                                        <ul>
-                                                            <c:forEach var="depend" items="${task.depends}"
-                                                                       varStatus="vs">
-                                                                <li>
-                                                                    <span>${depend.serviceName}</span> =>
-                                                                    <span>${depend.branchName}</span>
-                                                                </li>
-                                                            </c:forEach>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>${task.updatedAt}</td>
-                                            <td><a href="javascript:void(0)" title="开始构建"
-                                                   onclick="execBuildService(${task.id},${current.id})"><i
-                                                    class="fa fa-play-circle" aria-hidden="true"></i></a>
-                                                <a href="javascript:void(0)" title="删除任务"
-                                                   onclick="delBuildTask(${task.id})"><span
-                                                        class="glyphicon glyphicon-remove"
-                                                        aria-hidden="true"></span></a>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-sm-3">
-                                <p class="text-center">构建历史</p>
-                                    <%--构建历史查一下数据库,点击构建历史可以进入到控制台输出--%>
-                                <div class="list-group" id="buildingList${view.key.id}">
+        <div class="row" style="margin-top: 20px">
+            <div class="col-sm-9">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>环境</th>
+                        <th>服务</th>
+                        <th>部署节点</th>
+                        <th>构建分支</th>
+                        <th>修改时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="buildTaskTable">
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <p class="text-center">构建历史</p>
+                <div class="list-group" id="buildingList">
+
                 </div>
-            </c:forEach>
+            </div>
         </div>
     </div>
 </div>

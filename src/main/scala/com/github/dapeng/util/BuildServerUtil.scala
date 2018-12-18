@@ -50,34 +50,38 @@ object BuildServerUtil {
   def getBuildServices(serviceYmlFile: String, imageName: String, services: java.util.ArrayList[DependServiceVo]
 
                       ): List[DependServiceVo] = {
-    val content = Source.fromString(serviceYmlFile).getLines().toList
-    services.add(getSourceService(serviceYmlFile, imageName))
-    val dependencies = content.filter(_.trim.startsWith(DEPENDS_SIGN))
-    if (dependencies.isEmpty) {
-      val ymlService = getSourceService(serviceYmlFile, imageName)
-      if (!services.contains(ymlService)) {
-        services.add(ymlService)
-      }
+    if ("".equals(serviceYmlFile)) {
       services.asScala.toList
     } else {
-      dependencies.flatMap(d => {
-        val (_, _, serviceName, _) = getLabelDetail(d)
-        val dependencyService = serviceRep.findByName(serviceName)
-        if (dependencyService.size() == 0) {
-          LOGGER.warn(s":::find dependency is [ $d ], but not find Service info -> [ $serviceName ]")
-          services.asScala.toList
-        } else {
-          val labels = dependencyService.get(0).getComposeLabels
-          val depImageName = dependencyService.get(0).getImage
-          val ymlService = getSourceService(labels, depImageName)
-          if (services.contains(ymlService)) {
+      val content = Source.fromString(serviceYmlFile).getLines().toList
+      services.add(getSourceService(serviceYmlFile, imageName))
+      val dependencies = content.filter(_.trim.startsWith(DEPENDS_SIGN))
+      if (dependencies.isEmpty) {
+        val ymlService = getSourceService(serviceYmlFile, imageName)
+        if (!services.contains(ymlService)) {
+          services.add(ymlService)
+        }
+        services.asScala.toList
+      } else {
+        dependencies.flatMap(d => {
+          val (_, _, serviceName, _) = getLabelDetail(d)
+          val dependencyService = serviceRep.findByName(serviceName)
+          if (dependencyService.size() == 0) {
+            LOGGER.warn(s":::find dependency is [ $d ], but not find Service info -> [ $serviceName ]")
             services.asScala.toList
           } else {
-            services.add(ymlService)
-            getBuildServices(labels, depImageName, services)
+            val labels = dependencyService.get(0).getComposeLabels
+            val depImageName = dependencyService.get(0).getImage
+            val ymlService = getSourceService(labels, depImageName)
+            if (services.contains(ymlService)) {
+              services.asScala.toList
+            } else {
+              services.add(ymlService)
+              getBuildServices(labels, depImageName, services)
+            }
           }
-        }
-      })
+        })
+      }
     }
   }
 
@@ -88,9 +92,9 @@ object BuildServerUtil {
 
   def getSourceService(serviceYmlFile: String, imageName: String): DependServiceVo = {
     val content = Source.fromString(serviceYmlFile).getLines().toList
-    val source = content.filter(_.trim.startsWith(SOURCE_SIGN))(0).split("=")(1)
-
-    val (gitURL, gitName, serviceName, buildOperation) = getLabelDetail(source)
+    val source = content.filter(_.trim.startsWith(SOURCE_SIGN)).head.split("=")
+    val url = if (source.size < 2) "" else source(1)
+    val (gitURL, gitName, serviceName, buildOperation) = getLabelDetail(url)
     val serviceVo = new DependServiceVo()
     serviceVo.setGitURL(gitURL)
     serviceVo.setGitName(gitName)

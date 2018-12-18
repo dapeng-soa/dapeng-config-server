@@ -52,6 +52,9 @@ setColumns = function () {
         field: 'imageTag',
         title: '镜像tag'
     }, {
+        field: 'branch',
+        title: '分支'
+    }, {
         field: 'setName',
         title: 'set'
     }, {
@@ -196,6 +199,7 @@ processDeployUnitData = function () {
     var volumes = $("#volumes-area").val();
     var ports = $("#ports-area").val();
     var dockerExtras = $("#dockerExtras-area").val();
+    var branch = $("#serviceBranch").val();
     return {
         gitTag: gitTag,
         setId: setSelect,
@@ -205,6 +209,7 @@ processDeployUnitData = function () {
         env: env,
         volumes: volumes,
         ports: ports,
+        branch: branch,
         dockerExtras: dockerExtras,
         containerName: containerName
     }
@@ -303,7 +308,6 @@ var initViewServiceSelect = function () {
 };
 
 var viewUnitSetChanged = function () {
-    //initViewHostSelect();
     bsTable.refresh();
 };
 var viewUnitHostChanged = function () {

@@ -18,6 +18,8 @@ public interface DeployUnitRepository extends JpaRepository<TDeployUnit, Long>, 
 
     List<TDeployUnit> findAllBySetIdAndServiceId(long setId, long serviceId);
 
+    List<TDeployUnit> findAllBySetIdAndHostId(long setId, long hostId);
+
     List<TDeployUnit> findAllBySetIdAndHostIdAndIdIsNot(long setId, long hostId,long id);
 
     boolean existsAllByHostId(long hostId);
