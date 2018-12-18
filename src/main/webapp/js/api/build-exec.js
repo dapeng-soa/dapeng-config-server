@@ -137,4 +137,4 @@ var getTaskBuildList = function (taskId) {
     taskTimer = setInterval(function () {
         getTaskBuildListReq(taskId);
     }, 4000)
-}
+};

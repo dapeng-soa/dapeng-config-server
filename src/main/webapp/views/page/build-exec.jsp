@@ -36,8 +36,9 @@
             </span></span>
             <span style="line-height: 250%" id="viewTypeLabel">服务：</span>
             <div id="viewTypeSelect" style="display: inline-block;width: 120px">
-                <select id="serviceSelect" data-live-search="true" class="selectpicker form-control" onchange="execBuildServiceChanged()" >
-                    </select>
+                <select id="serviceSelect" data-live-search="true" class="selectpicker form-control"
+                        onchange="execBuildServiceChanged()">
+                </select>
             </div>
         </div>
 
@@ -48,6 +49,7 @@
                     <tr>
                         <th>#</th>
                         <th>环境</th>
+                        <th>构建节点</th>
                         <th>服务</th>
                         <th>部署节点</th>
                         <th>构建分支</th>

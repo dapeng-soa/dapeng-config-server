@@ -146,11 +146,11 @@ public class BuildExecRestController {
             if (!isEmpty(setId)) {
                 TSet set = setRepository.findOne(setId);
                 if (isEmpty(set)) {
-                    throw new Exception("找不到该构建环境");
+                    throw new Exception("找不到构建环境");
                 }
                 THost buildHost = hostRepository.findOne(set.getBuildHost());
                 if (isEmpty(buildHost)) {
-                    throw new Exception("找不到该构建主机");
+                    throw new Exception("找不到构建主机,请在环境集中设置");
                 }
                 if (!isEmpty(serviceId)) {
                     TService service = serviceRepository.findOne(serviceId);
@@ -228,10 +228,14 @@ public class BuildExecRestController {
                 vo.setSetId(set.getId());
                 vo.setSetName(set.getName());
                 vo.setHostId(set.getBuildHost());
-                vo.setHostName(buildHost.getName());
+                if (!isEmpty(buildHost)) {
+                    vo.setHostName(buildHost.getName());
+                } else {
+                    vo.setHostName("[未设置]");
+                }
                 vo.setServiceId(u.getServiceId());
                 vo.setServiceName(service.getName());
-                vo.setBranch(u.getBranch());
+                vo.setBranch(isEmpty(u.getBranch()) ? "master" : u.getBranch());
                 vo.setUpdatedAt(u.getUpdatedAt());
                 vo.setDeployHostName(host.getName());
                 vo.setDepends(getServiceBuildDepends(set, service));
