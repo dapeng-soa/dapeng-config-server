@@ -24,7 +24,7 @@ module api {
                 <tr>
                             <th scope="row">${++i}</th>
                             <td>${task.setName}</td>
-                            <td ><a onclick="getTaskBuildList()">${task.serviceName}</a></td>
+                            <td ><a href="javascript:void(0)" onclick="getTaskBuildList(${task.id})">${task.serviceName}</a></td>
                             <td>${task.deployHostName}</td>
                             <td>
                                 <div class="advance-format-item">

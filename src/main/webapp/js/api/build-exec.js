@@ -28,12 +28,17 @@ $(document).ready(function () {
     initBuildSetList();
     initBuildServiceList();
     getBuildTasks();
+    initTask();
+});
 
+initTask = function () {
+    window.clearInterval(hostTimer);
+    window.clearInterval(taskTimer);
     getBuildListReq();
     hostTimer = setInterval(function () {
         getBuildListReq();
     }, 4000);
-});
+};
 
 /**
  * 初始化set
@@ -43,9 +48,6 @@ initBuildSetList = function () {
     var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
     var ss = new BzSelect(curl, "setSelect", "id", "name");
     ss.refresh = true;
-    ss.after = function () {
-        execBuildViewTypeChanged(2);
-    };
     ss.responseHandler = function (res) {
         return res.context.content
     };
@@ -89,7 +91,8 @@ getBuildTasks = function () {
             var context = build.buildTasksContext(res.context);
             $("#buildTaskTable").html(context);
         }
-    })
+    });
+    initTask();
 };
 
 
@@ -114,10 +117,10 @@ var getBuildListReq = function () {
         getBuildingListHtml(res.context);
     }, "json")
 };
-var getTaskBuildListReq = function (hostId, taskId) {
+var getTaskBuildListReq = function (taskId) {
     var url = basePath + "/api/build/building-history-byTask/" + taskId;
     $.get(url, {}, function (res) {
-        getBuildingListHtml(hostId, res.context);
+        getBuildingListHtml(res.context);
     }, "json")
 };
 
@@ -130,8 +133,8 @@ var getBuildingListHtml = function (records) {
 var getTaskBuildList = function (taskId) {
     window.clearInterval(hostTimer);
     window.clearInterval(taskTimer);
-    getTaskBuildListReq(hostId, taskId);
+    getTaskBuildListReq(taskId);
     taskTimer = setInterval(function () {
-        getTaskBuildListReq(hostId, taskId);
+        getTaskBuildListReq(taskId);
     }, 4000)
 }

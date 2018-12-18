@@ -254,7 +254,8 @@ public class BuildExecRestController {
             if (!isEmpty(services)) {
                 List<TDeployUnit> units1 = unitRepository.findAllBySetIdAndServiceId(set.getId(), services.get(0).getId());
                 if (!isEmpty(units1)) {
-                    s.setBranchName(units1.get(0).getBranch());
+                    String branch = units1.get(0).getBranch();
+                    s.setBranchName(isEmpty(branch) ? "master" : branch);
                 }
             }
         });
