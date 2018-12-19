@@ -1,7 +1,6 @@
 $(document).ready(function () {
     initDeployUnits();
     initViewSetSelect();
-    initViewHostSelect();
     initViewServiceSelect();
 });
 var deploy = new api.Deploy();
@@ -83,6 +82,59 @@ setColumns = function () {
 deployUnitActionFormatter = function (value, row, index) {
     return deploy.exportDeployUnitActionContext(value, row);
 };
+
+modifyBatchBranch = function () {
+    var selected = bsTable.getAllSelections();
+    var ids = [];
+    if (selected.length !== 0) {
+        $.each(selected, function (index, em) {
+            ids.push(em.id);
+        });
+        bodyAbs();
+        var modifyBatchBranchDom = "modifyBatchBranchDom";
+        layer.open({
+            type: 1,
+            title: '填写新的分支名',
+            area: ['300px', 'auto'],
+            content: deploy.exportModifyBatchBranchContent(modifyBatchBranchDom),
+            btn: ['修改', '取消'],
+            yes: function (index, layero) {
+                var branch = $("#" + modifyBatchBranchDom).val();
+                if (branch !== undefined && branch !== "") {
+                    var url = basePath + "/api/deploy-unit/modify-branch";
+                    var p = JSON.stringify({branch: branch, ids: ids});
+
+                    var settings = {
+                        type: "post",
+                        url: url,
+                        data: p,
+                        dataType: "json",
+                        contentType: "application/json"
+                    };
+                    $.ajax(settings).done(function (res) {
+                        if (res.code === SUCCESS_CODE) {
+                            showMessage(SUCCESS, res.msg, "修改成功");
+                            bsTable.refresh();
+                            layer.close(index);
+                        } else {
+                            showMessage(ERROR, res.msg, "修改失败");
+                        }
+                    });
+                } else {
+                    layer.msg("请填写新的分支名！");
+                }
+            }, btn2: function (index, layero) {
+                layer.msg("操作取消");
+            }, cancel: function () {
+                layer.msg("操作取消");
+            }
+        });
+        rmBodyAbs();
+    } else {
+        showMessage(WARN, "未选中任何数据", "警告")
+    }
+};
+
 
 /**
  * 批量修改tag
@@ -288,10 +340,17 @@ var initViewSetSelect = function () {
 };
 
 var initViewHostSelect = function () {
-    var curl = basePath + "/api/deploy-hosts?sort=name&order=asc&extra=1";
+    var setSelected = $("#setSelectView").find("option:selected").val();
+    var curl = basePath + "/api/deploy-hosts/" + setSelected + "?&extra=1";
+    if (Number(setSelected) === 0) {
+        curl = basePath + "/api/deploy-hosts?sort=name&order=asc&extra=1"
+    }
     var ss = new BzSelect(curl, "hostSelectView", "id", "name");
     ss.responseHandler = function (res) {
-        return res.context.content
+        if (Number(setSelected) === 0) {
+            return res.context.content
+        }
+        return res.context
     };
     ss.refresh = true;
     ss.init();
@@ -299,8 +358,20 @@ var initViewHostSelect = function () {
 
 var initViewServiceSelect = function () {
     var curl = basePath + "/api/deploy-services?sort=name&order=asc";
+    var filterUrl = basePath + "/api/deploy-unit/filter-services?";
+    var setSelected = $("#setSelectView").find("option:selected").val();
+    var hostSelected = $("#hostSelectView").find("option:selected").val();
+    if (setSelected !== undefined && Number(setSelected) !== 0) {
+        curl = filterUrl + "setId=" + setSelected;
+        if (hostSelected !== undefined && Number(hostSelected) !== 0) {
+            curl = curl + "&hostId=" + hostSelected;
+        }
+    }
     var ss = new BzSelect(curl, "serviceSelectView", "id", "name");
     ss.responseHandler = function (res) {
+        if (setSelected !== undefined && Number(setSelected) !== 0) {
+            return res.context
+        }
         return res.context.content
     };
     ss.refresh = true;
@@ -308,9 +379,12 @@ var initViewServiceSelect = function () {
 };
 
 var viewUnitSetChanged = function () {
+    initViewHostSelect();
+    initViewServiceSelect();
     bsTable.refresh();
 };
 var viewUnitHostChanged = function () {
+    initViewServiceSelect();
     bsTable.refresh();
 };
 var viewUnitServiceChanged = function () {

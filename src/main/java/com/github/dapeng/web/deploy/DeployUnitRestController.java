@@ -1,14 +1,15 @@
 package com.github.dapeng.web.deploy;
 
 import com.github.dapeng.common.Resp;
+import com.github.dapeng.dto.ModifyBatchBranchDto;
 import com.github.dapeng.dto.ModifyBatchTagDto;
 import com.github.dapeng.dto.UnitDto;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.TFilesUnit;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.deploy.*;
-import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.util.Check;
+import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.vo.DeployUnitVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -133,6 +136,26 @@ public class DeployUnitRestController {
         TDeployUnit unit = unitRepository.findOne(id);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, unit));
+    }
+
+    @GetMapping("/deploy-unit/filter-services")
+    public ResponseEntity filterService(@RequestParam(required = false, defaultValue = "0") Long setId,
+                                        @RequestParam(required = false, defaultValue = "0") Long hostId) {
+        List<TDeployUnit> units;
+        Set<Long> serviceIds = new HashSet<>();
+        if (!isEmpty(setId)) {
+            if (!isEmpty(hostId)) {
+                units = unitRepository.findAllBySetIdAndHostId(setId, hostId);
+            } else {
+                units = unitRepository.findAllBySetId(setId);
+            }
+        } else {
+            units = unitRepository.findAll();
+        }
+        units.forEach(x -> serviceIds.add(x.getServiceId()));
+        List<TService> services = serviceRepository.findAll(serviceIds);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, services));
     }
 
     /**
@@ -320,17 +343,38 @@ public class DeployUnitRestController {
         try {
             Check.hasChinese(tagDto.getTag(), "镜像tag");
             Check.hasChinese(tagDto.getPublishTag(), "发布tag");
-            tagDto.getIds().forEach(x -> {
-                TDeployUnit unit = unitRepository.findOne(x);
-                if (!isEmpty(unit)) {
-                    unit.setImageTag(tagDto.getTag());
-                    unit.setGitTag(tagDto.getPublishTag());
-                    unit.setUpdatedAt(DateUtil.now());
-                    unitRepository.save(unit);
-                }
-            });
+            List<TDeployUnit> units = unitRepository.findAll(tagDto.getIds());
+            for (TDeployUnit unit : units) {
+                unit.setImageTag(tagDto.getTag());
+                unit.setGitTag(tagDto.getPublishTag());
+                unit.setUpdatedAt(DateUtil.now());
+            }
+            unitRepository.save(units);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "批量修改镜像tag成功"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
+    /**
+     * 批量修改分支
+     *
+     * @return
+     */
+    @PostMapping(value = "deploy-unit/modify-branch")
+    public ResponseEntity modifyDeployUnitBranchBatch(@RequestBody ModifyBatchBranchDto dto) {
+        try {
+            Check.hasChinese(dto.getBranch(), "分支");
+            List<TDeployUnit> units = unitRepository.findAll(dto.getIds());
+            for (TDeployUnit unit : units) {
+                unit.setBranch(dto.getBranch());
+                unit.setUpdatedAt(DateUtil.now());
+            }
+            unitRepository.save(units);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, "批量修改分支成功"));
         } catch (Exception e) {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));

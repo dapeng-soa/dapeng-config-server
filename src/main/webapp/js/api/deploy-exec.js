@@ -173,8 +173,16 @@ initSetList = function () {
  */
 initServiceList = function () {
     var curl = basePath + "/api/deploy-services?sort=name&order=asc";
+    var filterUrl = basePath + "/api/deploy-unit/filter-services?";
+    var setSelected = $("#setSelect").find("option:selected").val();
+    if (setSelected !== undefined && Number(setSelected) !== 0) {
+        curl = filterUrl + "setId=" + setSelected;
+    }
     var ss = new BzSelect(curl, "serviceSelect", "id", "name");
     ss.responseHandler = function (res) {
+        if (setSelected !== undefined && Number(setSelected) !== 0) {
+            return res.context
+        }
         return res.context.content
     };
     ss.refresh = true;

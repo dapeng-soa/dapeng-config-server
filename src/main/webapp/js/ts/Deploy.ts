@@ -833,6 +833,17 @@ restart: on-failure:3
             `
         }
 
+        public exportModifyBatchBranchContent(branchDomId) {
+            return `
+            <div style="padding: 0 5px">
+                <div class="form-group" style="margin-top: 20px">
+                        <label for="${branchDomId}">新的分支名:</label>
+                        <input type="text"  id="${branchDomId}" class="form-control" />
+                 </div>
+             </div>
+            `
+        }
+
         /**
          * 查看yml
          * @param value

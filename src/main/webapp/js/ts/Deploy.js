@@ -167,6 +167,9 @@ var api;
         Deploy.prototype.exportModifyBatchTagContent = function (publishId, eid) {
             return "\n            <div style=\"padding: 0 5px\">\n                <div class=\"form-group\" style=\"margin-top: 20px\">\n                        <label for=\"" + publishId + "\">\u53D1\u5E03Tag:</label>\n                        <input type=\"text\"  id=\"" + publishId + "\" class=\"form-control\" />\n                 </div>\n                <div class=\"form-group\">\n                        <label for=\"" + eid + "\">\u955C\u50CFTag:</label>\n                        <input type=\"text\"  id=\"" + eid + "\" class=\"form-control\" />\n                 </div>\n                 </div>\n            ";
         };
+        Deploy.prototype.exportModifyBatchBranchContent = function (branchDomId) {
+            return "\n            <div style=\"padding: 0 5px\">\n                <div class=\"form-group\" style=\"margin-top: 20px\">\n                        <label for=\"" + branchDomId + "\">\u65B0\u7684\u5206\u652F\u540D:</label>\n                        <input type=\"text\"  id=\"" + branchDomId + "\" class=\"form-control\" />\n                 </div>\n             </div>\n            ";
+        };
         /**
          * 查看yml
          * @param value
