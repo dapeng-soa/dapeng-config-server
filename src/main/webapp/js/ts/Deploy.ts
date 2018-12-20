@@ -633,12 +633,16 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">镜像TAG:</label>
                             <div class="col-sm-9">
-                                <input type="text" ${type == c.view ? "disabled" : ""} id="imageTag" class="col-sm-2 form-control" value="${type != c.add ? data.imageTag : ""}">
+                                <input type="text" ${type == c.view ? "disabled" : ""} id="imageTag" class="col-sm-2 form-control" value="${type != c.add ? data.imageTag : "latest"}">
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
                                   <pre>
 本次部署的服务镜像tag,无需填写镜像名
+默认:latest,支持构建的服务在构建时默认会启动latest镜像
+如:
+zookeeper:3.4.11
+这里只需填写3.4.11
                                   </pre>
                                 </div>
                               </div>
