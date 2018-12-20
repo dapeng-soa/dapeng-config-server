@@ -197,9 +197,14 @@ public class BuildExecRestController {
         try {
             List<BuildTaskVo> buildTaskVos;
             // 主机视图
-            if (!isEmpty(setId) && !isEmpty(serviceId)) {
-                List<TDeployUnit> units = unitRepository.findAllBySetIdAndServiceId(setId, serviceId);
-                buildTaskVos = toTaskList(units);
+            if (!isEmpty(setId)) {
+                if (!isEmpty(serviceId)) {
+                    List<TDeployUnit> units = unitRepository.findAllBySetIdAndServiceId(setId, serviceId);
+                    buildTaskVos = toTaskList(units);
+                } else {
+                    List<TDeployUnit> units = unitRepository.findAllBySetId(setId);
+                    buildTaskVos = toTaskList(units);
+                }
             } else {
                 List<TDeployUnit> units = unitRepository.findAll();
                 buildTaskVos = toTaskList(units);
