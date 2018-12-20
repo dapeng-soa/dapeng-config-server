@@ -1,7 +1,6 @@
 package com.github.dapeng.client.netty;
 
 import com.github.dapeng.core.InvocationContextImpl;
-import com.github.dapeng.core.helper.DapengUtil;
 import com.github.dapeng.echo.echo_args;
 import com.github.dapeng.echo.echo_argsSerializer;
 import com.github.dapeng.echo.echo_result;
@@ -37,8 +36,14 @@ public class RequestUtils {
      * @return
      */
     public static String getRemoteServiceMetadata(String remoteIp, Integer remotePort, String serviceName, String version) {
-        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
+//        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
+        InvocationContextImpl invocationContext = (InvocationContextImpl) InvocationContextImpl.Factory.currentInstance();
+        invocationContext.callerMid("callGetMetadata");
+        invocationContext.serviceName(serviceName);
+        invocationContext.versionName(version);
+        invocationContext.methodName(ECHO_METHOD);
         SubPool subPool = SubPoolFactory.getSubPool(remoteIp, remotePort);
+        ClientRefManager.getInstance().registerClient(serviceName, version);
         getServiceMetadata_result result = null;
         try {
             result = subPool.getConnection().send(serviceName, version, METADATA_METHOD,
@@ -63,8 +68,14 @@ public class RequestUtils {
      * @return
      */
     public static String getRemoteServiceEcho(String remoteIp, Integer remotePort, String serviceName, String version) {
-        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
+//        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
+        InvocationContextImpl invocationContext = (InvocationContextImpl) InvocationContextImpl.Factory.currentInstance();
+        invocationContext.callerMid("callEcho");
+        invocationContext.serviceName(serviceName);
+        invocationContext.versionName(version);
+        invocationContext.methodName(ECHO_METHOD);
         SubPool subPool = SubPoolFactory.getSubPool(remoteIp, remotePort);
+        ClientRefManager.getInstance().registerClient(serviceName, version);
         echo_result result = null;
         try {
             result = subPool.getConnection().send(serviceName, version, ECHO_METHOD,
@@ -73,9 +84,17 @@ public class RequestUtils {
                     new echo_resultSerializer(), TIME_OUT);
             return result.getSuccess();
         } catch (Exception e) {
-            logger.error("----- service[{}:{}:{}] get echo failed .. Cause : {}", serviceName, remoteIp, remotePort, e.getMessage());
+            logger.error("----- service[{}:{}:{}] get echo failed .. Cause : {}", serviceName, remoteIp, remotePort, e.getMessage(), e);
             return "";
         }
         //return "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
+    }
+
+    public static void main(String[] arg0) {
+//        JsonPost jsonPost = new JsonPost("com.github.dapeng.task.demo.service.DemoTask2Service", "1.0.0", "echo");
+//        jsonPost.callServiceMethod()
+        System.out.println(getRemoteServiceEcho("192.168.5.96", 9196, "com.github.dapeng.task.demo.service.DemoTask2Service", "1.0.0"));
+        System.out.println(getRemoteServiceEcho("192.168.5.96", 9196, "com.github.dapeng.task.demo.service.DemoTask2Service", "1.0.0"));
+//        System.out.println(getRemoteServiceEcho("192.168.5.184", 9195, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
     }
 }
