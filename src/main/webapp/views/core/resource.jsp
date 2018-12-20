@@ -7,11 +7,22 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
+    request.setAttribute("biz_title", System.getenv("biz_title"));
     request.setAttribute("basePath", request.getContextPath());
     request.setAttribute("socketUrl", System.getenv("deploy_socket_url"));
     request.setAttribute("build_enable", System.getenv("build_enable"));
 %>
+<%
+    if (request.getAttribute("biz_title") == null) {
+%>
 <title>大鹏配置中心</title>
+<%
+} else {
+%>
+<title>${biz_title}</title>
+<%
+    }
+%>
 <meta charset="utf-8"/>
 <meta name="author" content="struy">
 <meta name="description" content="dapeng 配置中心">
