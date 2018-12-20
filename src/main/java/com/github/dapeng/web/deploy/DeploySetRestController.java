@@ -3,10 +3,7 @@ package com.github.dapeng.web.deploy;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.SetDto;
 import com.github.dapeng.entity.deploy.*;
-import com.github.dapeng.repository.deploy.DeployUnitRepository;
-import com.github.dapeng.repository.deploy.HostRepository;
-import com.github.dapeng.repository.deploy.SetRepository;
-import com.github.dapeng.repository.deploy.SetServiceEnvRepository;
+import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.util.DateUtil;
 import com.github.dapeng.vo.DeploySetServiceEnvVo;
 import org.slf4j.Logger;
@@ -22,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.dapeng.common.Commons.*;
@@ -48,6 +47,9 @@ public class DeploySetRestController {
 
     @Autowired
     SetServiceEnvRepository envRepository;
+
+    @Autowired
+    ServiceRepository serviceRepository;
 
     @Autowired
     DeployUnitRepository unitRepository;
@@ -192,6 +194,24 @@ public class DeploySetRestController {
         List<TSetServiceEnv> subEnvs = envRepository.findAllBySetId(sid);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, subEnvs));
+    }
+
+    /**
+     * 查找没有配置环境变量的其他服务
+     *
+     * @param setId
+     * @return
+     */
+    @GetMapping(value = "/deploy-set/filter-services/{setId}")
+    public ResponseEntity filterSubEnvServices(@PathVariable Long setId) {
+        List<TSetServiceEnv> subEnvs = envRepository.findAllBySetId(setId);
+        Set<Long> ids = new HashSet<>();
+        subEnvs.forEach(x -> {
+            ids.add(x.getServiceId());
+        });
+        List<TService> services = serviceRepository.findAllByIdNotIn(ids);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, services));
     }
 
     @PostMapping(value = "deploy-set/sub-env/add")

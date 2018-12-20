@@ -127,7 +127,7 @@ appName:goodsService
                             ${c.viewSubEnv("view", subEnv)}
                             </div>
                             ${type !== c.view ? `
-                        <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addSubFromBySet()"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
+                        <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addSubFromBySet(${setId})"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
                     <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveSubEnvs(${setId})">保存</button>
                     </span>
@@ -179,6 +179,7 @@ appName:goodsService
                     view += c.exportAddSubEnvContext(type, ops, s);
                 }
                 $("#sub-from-container").append(view);
+                $(".selectpicker").selectpicker('refresh');
             }, "json");
             return "";
         }
@@ -205,7 +206,7 @@ appName:goodsService
                     <input type="hidden" class="data-ops-id" value="${subEnv === undefined ? 0 : subEnv.id}">
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <select  class="form-control data-service-select" ${type !== this.add ? "disabled" : ""}>${ops}</select>
+                            <select data-live-search="true"  class="form-control data-service-select selectpicker" ${type !== this.add ? "disabled" : ""}>${ops}</select>
                         </div>
                     </div>   
                     <div class="form-group">

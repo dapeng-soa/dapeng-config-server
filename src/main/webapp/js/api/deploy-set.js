@@ -78,6 +78,7 @@ openAddSubEnvBySetId = function (setId, op) {
             initModelContext(context, function () {
                 bsTable.refresh();
             });
+            $(".selectpicker").selectpicker('refresh');
         }
     }, "json");
 };
@@ -160,14 +161,15 @@ saveDeploySet = function () {
     });
 };
 
-addSubFromBySet = function () {
-    var url = basePath + "/api/deploy-services";
+addSubFromBySet = function (setId) {
+    var url = basePath + "/api/deploy-set/filter-services/" + setId;
     $.get(url, function (res) {
         if (res.code === SUCCESS_CODE) {
-            var ops = res.context.content;
+            var ops = res.context;
             var context = deploy.exportAddSubEnvContext(ADD, ops);
         }
         $("#sub-from-container").append(context);
+        $(".selectpicker").selectpicker('refresh');
         $(".from-group-item-rm").bind("click", function (eo) {
             $(this).parent().remove();
         });
@@ -219,11 +221,11 @@ viewDeploySetEditByID = function (id, op) {
         initModelContext(context, function () {
             bsTable.refresh()
         });
-        initSetBuildHosts(id,res.context.buildHost);
+        initSetBuildHosts(id, res.context.buildHost);
     }, "json");
 };
 
-initSetBuildHosts = function (setId,selected) {
+initSetBuildHosts = function (setId, selected) {
     var curl = basePath + "/api/deploy-hosts?sort=name&order=asc&setId=" + setId;
     var ss = new BzSelect(curl, "setBuildHost", "id", "name");
     ss.responseHandler = function (res) {
