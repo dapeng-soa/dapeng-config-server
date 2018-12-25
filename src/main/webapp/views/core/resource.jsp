@@ -77,6 +77,10 @@
 <script src="${basePath}/plugins/tagsinput/bootstrap-tagsinput.min.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/tagsinput/bootstrap-tagsinput.css">
 
+<!--web-uploader-->
+<link rel="stylesheet" type="text/css" href="${basePath}/plugins/web-uploader/webuploader.css">
+<script type="text/javascript" src="${basePath}/plugins/web-uploader/webuploader.min.js"></script>
+
 <script src="${basePath}/js/ts/Config.js"></script>
 <script src="${basePath}/js/ts/Deploy.js"></script>
 <script src="${basePath}/js/ts/Api.js"></script>

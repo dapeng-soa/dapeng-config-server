@@ -5,7 +5,12 @@ import com.github.dapeng.dto.SetDto;
 import com.github.dapeng.entity.deploy.*;
 import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.DownloadUtil;
+import com.github.dapeng.util.Tools;
+import com.github.dapeng.util.VersionUtil;
 import com.github.dapeng.vo.DeploySetServiceEnvVo;
+import com.github.dapeng.vo.SetSubEnvVo;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +59,9 @@ public class DeploySetRestController {
 
     @Autowired
     DeployUnitRepository unitRepository;
+
+    @Autowired
+    Gson gson;
 
     /**
      * @return 环境集
@@ -91,6 +100,32 @@ public class DeploySetRestController {
         TSet set = setRepository.findOne(id);
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, set));
+    }
+
+    @GetMapping("/deploy-set/download-subenv/{setId}")
+    public ResponseEntity downloadSubEnv(@PathVariable Long setId, HttpServletResponse response) {
+        List<TSetServiceEnv> subEnvs = envRepository.findAllBySetId(setId);
+        List<SetSubEnvVo> vos = new ArrayList<>();
+        TSet set = setRepository.findOne(setId);
+        subEnvs.forEach(s -> {
+            SetSubEnvVo vo = new SetSubEnvVo();
+            TService service = serviceRepository.findOne(s.getServiceId());
+            if (!isEmpty(service)) {
+                vo.setServiceName(service.getName());
+                vo.setEnv(s.getEnv());
+            }
+            vos.add(vo);
+        });
+        String json = gson.toJson(vos);
+        String path = System.getProperty("java.io.tmpdir") + "/" + set.getName() + "_subEnv" + VersionUtil.version() + ".json";
+        Tools.writeStringToFile(path, json);
+        try {
+            DownloadUtil.downLoad(path, response, false);
+        } catch (Exception e) {
+            LOGGER.error("下载出错了");
+        }
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
     }
 
     /**

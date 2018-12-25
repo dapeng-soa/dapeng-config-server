@@ -20,6 +20,9 @@
             <div class="input-group">
                 <p class="left-panel-title">服务管理</p>
                 <span class="input-group-btn panel-button-group">
+                    <span id="thelist"></span>
+                    <button type="button" id="picker" class="btn btn-sm">导入服务</button>
+                    <button type="button" class="btn btn-warning" onclick="exportBatchService()">导出服务</button>
                     <button type="button" class="btn btn-primary" onclick="openAddDeployServiceModle()">新增</button>
                 </span>
             </div>

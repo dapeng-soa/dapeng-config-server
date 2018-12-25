@@ -82,6 +82,14 @@ openAddSubEnvBySetId = function (setId, op) {
         }
     }, "json");
 };
+/**
+ * 导出某个环境的subEnv数据
+ * @param setId
+ */
+exportSubEnvs = function (setId) {
+    window.open(basePath + "/api/deploy-set/download-subenv/" + setId);
+    layer.msg("");
+};
 
 /**
  * 保存环境集中的服务配置

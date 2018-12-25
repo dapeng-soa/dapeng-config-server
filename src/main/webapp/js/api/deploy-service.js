@@ -1,6 +1,7 @@
 $(document).ready(function () {
     InitDeployServices();
     initDeploySelectTags();
+    initUploader();
 });
 var deploy = new api.Deploy();
 var bsTable = {};
@@ -27,10 +28,51 @@ function InitDeployServices() {
     bsTable = table;
 }
 
+initUploader = function () {
+    var uploader = WebUploader.create({
+
+        // swf文件路径
+        swf: '/plugins/web-uploader/Uploader.swf',
+
+        // 文件接收服务端。
+        server: basePath + '/api/deploy-service/import',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#picker',
+
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false
+    });
+    uploader.on('fileQueued', function (file) {
+        uploader.upload();
+    });
+
+    uploader.on('uploadSuccess', function (file, response) {
+        layer.msg(file.name + response.msg);
+        bsTable.refresh();
+    });
+
+    uploader.on('uploadError', function (file, reason) {
+        layer.msg(file.name + "导入失败,错误码" + reason);
+        bsTable.refresh();
+    });
+
+    uploader.on('uploadComplete', function (file) {
+        $('#' + file.id).find('.progress').fadeOut();
+    });
+
+    uploader.on('uploadProgress', function (file, percentage) {
+
+    });
+
+
+};
+
 setColumns = function () {
     return [{
-        checkbox: false,
-        visible: false//是否显示复选框
+        checkbox: true,
+        visible: true//是否显示复选框
     }, {
         field: 'id',
         title: '#',
@@ -77,6 +119,22 @@ setColumns = function () {
  */
 deployServiceActionFormatter = function (value, row, index) {
     return deploy.exportDeployServiceActionContext(value, row);
+};
+
+/**
+ * 批量导出服务
+ */
+exportBatchService = function () {
+    var selected = bsTable.getAllSelections();
+    var ids = [];
+    if (selected.length !== 0) {
+        $.each(selected, function (index, em) {
+            ids.push(em.id);
+        });
+        window.open(basePath + "/api/deploy-service/export/" + JSON.stringify(ids));
+    } else {
+        showMessage(ERROR, "未选中任何数据", "警告")
+    }
 };
 
 

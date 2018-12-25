@@ -564,7 +564,7 @@ public class DeployExecRestController {
             }
         }
         String composeContext = Composeutil.processComposeContext(dockerService1, netName);
-        String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + (isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName()) + ".yml";
+        String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + (isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName()) + VersionUtil.version() + ".yml";
         // 将内容写入文件
         Tools.writeStringToFile(path, composeContext);
         // 下载

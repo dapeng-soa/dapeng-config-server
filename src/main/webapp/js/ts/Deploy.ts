@@ -129,6 +129,7 @@ appName:goodsService
                             ${type !== c.view ? `
                         <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addSubFromBySet(${setId})"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
                     <span class="input-group-btn panel-button-group text-center">
+                  <button type="button" class="btn btn-success" onclick="exportSubEnvs(${setId})">导出</button>  
                     <button type="button" class="btn btn-success" onclick="saveSubEnvs(${setId})">保存</button>
                     </span>
                     ` : ""}
@@ -1398,6 +1399,7 @@ ${data.extra == 1 ? '否' : '是'}
                                 <div class="advance-format-content">
                                   <pre>
 备注:
+B类地址:从172.16.0.0到172.31.255.255
 例如:172.0.0.1/24
                                  </pre>
                                 </div>
