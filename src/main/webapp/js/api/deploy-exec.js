@@ -124,6 +124,7 @@ var getRegAgents = function () {
     var context = deploy.exportAgentsContext();
     initModelContext(context, function () {
     });
+    setTextareaFull();
 };
 /**
  * 同步每个agent上服务时间和服务状态
@@ -278,6 +279,7 @@ serviceYamlPreview = function (deployTime, updateTime, unitId, viewType) {
                     initModelContext(context, function () {
                         //refresh()
                     });
+                    setTextareaFull();
                     setTimeout(function () {
                         diff = diffTxt(res2.context.fileContent, yaml)
                     }, 300);

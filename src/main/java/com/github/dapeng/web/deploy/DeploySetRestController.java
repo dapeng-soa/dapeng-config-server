@@ -10,6 +10,7 @@ import com.github.dapeng.util.Tools;
 import com.github.dapeng.util.VersionUtil;
 import com.github.dapeng.vo.DeploySetServiceEnvVo;
 import com.github.dapeng.vo.SetSubEnvVo;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -29,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.github.dapeng.common.Commons.*;
 import static com.github.dapeng.util.NullUtil.isEmpty;
@@ -102,6 +105,56 @@ public class DeploySetRestController {
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, set));
     }
 
+    @PostMapping("/deploy-set/importSubEnv/{setId}")
+    public ResponseEntity importSubEnv(@RequestParam MultipartFile file, @PathVariable Long setId) {
+        String fileName;
+        if (!file.isEmpty()) {
+            try {
+                AtomicInteger failCounter = new AtomicInteger(0);
+                fileName = file.getOriginalFilename();
+                LOGGER.info("import subEnv by file:::" + fileName);
+                String json = new String(file.getBytes());
+                List<SetSubEnvVo> vos = gson.fromJson(json, new TypeToken<List<SetSubEnvVo>>() {
+                }.getType());
+
+                for (SetSubEnvVo vo : vos) {
+                    if (!isEmpty(vo.getServiceName())) {
+                        // 按照服务名查找是否有匹配服务
+                        List<TService> services = serviceRepository.findByName(vo.getServiceName());
+                        if (!isEmpty(services) && !isEmpty(vo.getSubEnv())) {
+                            long serviceId = services.get(0).getId();
+                            // 已经添加的就不要添加了
+                            Boolean exists = envRepository.existsBySetIdAndServiceId(setId, serviceId);
+                            if (!exists) {
+                                TSetServiceEnv se = new TSetServiceEnv();
+                                se.setEnv(vo.getSubEnv());
+                                se.setServiceId(serviceId);
+                                se.setCreatedAt(DateUtil.now());
+                                se.setSetId(setId);
+                                se.setUpdatedAt(DateUtil.now());
+                                envRepository.save(se);
+                            } else {
+                                failCounter.incrementAndGet();
+                            }
+                        } else {
+                            failCounter.incrementAndGet();
+                        }
+                    } else {
+                        failCounter.incrementAndGet();
+                    }
+                }
+                return ResponseEntity
+                        .ok(Resp.of(SUCCESS_CODE, "导入成功" + (vos.size() - failCounter.get()) + "个，失败" + failCounter.get() + "个"));
+            } catch (Exception e) {
+                return ResponseEntity
+                        .ok(Resp.of(ERROR_CODE, "导入异常,解析文件异常"));
+            }
+        } else {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, "文件为空,导入出错"));
+        }
+    }
+
     @GetMapping("/deploy-set/download-subenv/{setId}")
     public ResponseEntity downloadSubEnv(@PathVariable Long setId, HttpServletResponse response) {
         List<TSetServiceEnv> subEnvs = envRepository.findAllBySetId(setId);
@@ -112,7 +165,7 @@ public class DeploySetRestController {
             TService service = serviceRepository.findOne(s.getServiceId());
             if (!isEmpty(service)) {
                 vo.setServiceName(service.getName());
-                vo.setEnv(s.getEnv());
+                vo.setSubEnv(s.getEnv());
             }
             vos.add(vo);
         });

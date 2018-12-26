@@ -57,10 +57,3 @@ window.initModelContext = function (context, closeCallback) {
     $(".struct-model-context").html(context);
     toggleModel(closeCallback);
 };
-
-window.bodyAbs = function () {
-    $("body").addClass("model-opened");
-};
-window.rmBodyAbs = function () {
-    $("body").removeClass("model-opened");
-};

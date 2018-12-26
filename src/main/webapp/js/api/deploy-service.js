@@ -146,6 +146,7 @@ openAddDeployServiceModle = function () {
         bsTable.refresh();
         initDeploySelectTags();
     });
+    setTextareaFull();
     addCopyServiceSelectInit();
     initTags();
 };
@@ -223,6 +224,7 @@ viewDeployServiceOrEditByID = function (id, op) {
             bsTable.refresh();
             initDeploySelectTags();
         });
+        setTextareaFull();
         initTags(res.context.labels);
     }, "json");
 };

@@ -197,6 +197,7 @@ openAddDeployUnitModle = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
     initSetList();
     initServiceList();
 };
@@ -277,6 +278,7 @@ viewDeployUnitOrEditByID = function (id, op) {
         initModelContext(context, function () {
             bsTable.refresh();
         });
+        setTextareaFull();
         initSetList(res.context.setId);
         initHostList(res.context.hostId);
         initServiceList(res.context.serviceId)

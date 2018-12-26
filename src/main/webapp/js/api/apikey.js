@@ -142,6 +142,7 @@ openAddApiKeyModle = function () {
     var context = config1.exportAddApiKeyContext("add");
     // 初始化弹窗
     initModelContext(context, refresh);
+    setTextareaFull();
 };
 
 /**
@@ -210,6 +211,7 @@ viewApiKeyOrEditByID = function (id, op) {
         var context = config1.exportAddApiKeyContext(op, "", res.context);
         // 初始化弹窗
         initModelContext(context, refresh);
+        setTextareaFull();
     }, "json");
 };
 

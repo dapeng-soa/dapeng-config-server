@@ -1,8 +1,8 @@
 /*=============================全局*/
 /* 自定义滚动条样式 */
-/*::-webkit-scrollbar {
-    width: 4px;
-    border-radius: 100%;
+::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -10,6 +10,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
     background-color: #f2f2f0;
 }
 
@@ -20,7 +21,10 @@
 ::-webkit-scrollbar-thumb:active {
     background-color: #f2f2f0
 }
-}*/
+
+html {
+    overflow-x: hidden !important;
+}
 
 body {
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
@@ -46,8 +50,8 @@ body.model-opened {
 /*=============================只能调整垂直大小*/
 textarea {
     resize: vertical !important;
-    min-height: 120px;
-    max-height: 500px;
+    /*min-height: 120px;
+    max-height: 500px;*/
 }
 
 pre {
@@ -263,7 +267,7 @@ table {
 }
 
 #struct-model .struct-model-container {
-    width: 70%;
+    width: 75%;
     height: 90%;
     max-width: 1200px;
     background: #fff;
@@ -382,11 +386,11 @@ table {
  */
 .fixed-footer-btn {
     position: fixed;
-    bottom: 0;
+    bottom: -20px;
     background-color: #fff;
     border-top: 1px solid #ccc;
-    left: 10px;
-    right: 10px;
+    left: 0;
+    right: 0;
     /*padding: 10px;*/
     z-index: 1400;
 }
@@ -398,6 +402,7 @@ table {
 .diff-tit {
     position: fixed;
     z-index: 1300;
+    top: -20px;
     left: 0;
     right: 0;
     background-color: #FFF;
@@ -502,14 +507,13 @@ table {
     margin-bottom: 0 !important;
 }
 
-.bootstrap-tagsinput{
+.bootstrap-tagsinput {
     width: 100%;
 }
-
 
 /**
 =======================fix css
  */
-.layui-layer{
+.layui-layer {
     top: 40% !important;
 }

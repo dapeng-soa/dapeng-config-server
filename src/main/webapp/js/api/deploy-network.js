@@ -50,6 +50,7 @@ function viewNetworkOrEditByID(id, op) {
         initModelContext(context, function () {
             bsTable.refresh();
         });
+        setTextareaFull();
     }, "json");
 }
 
@@ -80,6 +81,7 @@ function openLinkDeployHosts(netId, name) {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
     initDeployHosts(netId);
 }
 
@@ -260,6 +262,7 @@ openAddNetWorkModle = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
 };
 
 var netWorkActionFormatter = function (value, row) {

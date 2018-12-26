@@ -95,6 +95,7 @@ openViewParamsModel = function (id) {
             context += getFormatedJsonHTML(JSON.parse(params));
             initModelContext(context, function () {
             });
+            setTextareaFull();
         } else {
             showMessage(ERROR, res.msg);
         }

@@ -298,6 +298,7 @@ viewOrEditByID = function (id, viewOrEdit) {
         initModelContext(context, function () {
             bsTable.refresh();
         });
+        setTextareaFull();
         initTags(data.tags);
     }, "json")
 };
@@ -352,6 +353,7 @@ processSysRealConfig = function (cid, service) {
         initModelContext(context, function () {
             bsTable.refresh();
         });
+        setTextareaFull();
     }, "json");
 };
 
@@ -465,6 +467,7 @@ openAddConfig = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
     initTags();
 };
 
@@ -475,4 +478,5 @@ openPublishHistory = function (serviceName) {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
 };

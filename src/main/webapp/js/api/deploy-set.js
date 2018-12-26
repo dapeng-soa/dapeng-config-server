@@ -78,10 +78,53 @@ openAddSubEnvBySetId = function (setId, op) {
             initModelContext(context, function () {
                 bsTable.refresh();
             });
+            setTextareaFull();
             $(".selectpicker").selectpicker('refresh');
+            setTimeout(function () {
+                initSubEnvUploader(setId);
+            }, 200);
         }
     }, "json");
 };
+
+initSubEnvUploader = function (setId) {
+    var uploader = WebUploader.create({
+
+        // swf文件路径
+        swf: '/plugins/web-uploader/Uploader.swf',
+
+        // 文件接收服务端。
+        server: basePath + '/api/deploy-set/importSubEnv/' + setId,
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#importSubEnv',
+
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false
+    });
+    uploader.on('fileQueued', function (file) {
+        uploader.upload();
+    });
+
+    uploader.on('uploadSuccess', function (file, response) {
+        showMessage(SUCCESS, file.name + response.msg);
+        closeModel();
+    });
+
+    uploader.on('uploadError', function (file, reason) {
+        showMessage(ERROR, file.name + "导入失败,错误码" + reason);
+    });
+
+    uploader.on('uploadComplete', function (file) {
+        $('#' + file.id).find('.progress').fadeOut();
+    });
+
+    uploader.on('uploadProgress', function (file, percentage) {
+
+    });
+};
+
 /**
  * 导出某个环境的subEnv数据
  * @param setId
@@ -136,6 +179,7 @@ openAddDeploySetModle = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
     addCopySetSelectInit();
 };
 
@@ -228,6 +272,7 @@ viewDeploySetEditByID = function (id, op) {
         initModelContext(context, function () {
             bsTable.refresh()
         });
+        setTextareaFull();
         initSetBuildHosts(id, res.context.buildHost);
     }, "json");
 };

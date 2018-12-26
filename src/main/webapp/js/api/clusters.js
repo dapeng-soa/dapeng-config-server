@@ -143,5 +143,6 @@ openAddCluster = function () {
     var context = config1.exportAddClusterContext("add");
     // 初始化弹窗
     initModelContext(context, refresh);
+    setTextareaFull();
 };
 

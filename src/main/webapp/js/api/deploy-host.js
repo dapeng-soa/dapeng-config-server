@@ -127,6 +127,7 @@ openAddDeployHostModle = function () {
         bsTable.refresh();
         initHostSelectTags();
     });
+    setTextareaFull();
     initSetList();
     initTags();
 };
@@ -218,6 +219,7 @@ viewDeployHostOrEditByID = function (id, op) {
             bsTable.refresh();
             initHostSelectTags();
         });
+        setTextareaFull();
         initSetList(res.context.setId);
         initTags(res.context.labels);
     }, "json");

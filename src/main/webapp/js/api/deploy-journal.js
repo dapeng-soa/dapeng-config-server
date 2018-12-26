@@ -155,6 +155,7 @@ viewDeployJournal = function (id) {
         var context = deploy.exportViewDeployJournalContext(res.context);
         // 初始化弹窗
         initModelContext(context);
+        setTextareaFull();
     }, "json");
 };
 
@@ -182,6 +183,7 @@ viewDeployJournalYml = function (id, unitId, hostId, serviceId) {
                     var context = deploy.exportViewDeployJournalContext(id);
                     initModelContext(context, function () {
                     });
+                    setTextareaFull();
                     setTimeout(function () {
                         diffTxt(res2.context.yml, yaml)
                     }, 300);

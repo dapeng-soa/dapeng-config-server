@@ -55,7 +55,7 @@ module api {
                     <div class="form-group">
                         <label class="col-sm-2 control-label">ENV:</label>
                         <div class="col-sm-9">
-                            <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" >${type != c.add ? data.env : ""}</textarea>
                             <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -91,7 +91,7 @@ appName:goodsService
                     <div class="form-group">
                         <label class="col-sm-2 control-label">备注:</label>
                         <div class="col-sm-9">
-                            <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
+                            <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" >${type != c.add ? data.remark : ""}</textarea>
                         </div>
                     </div>
                    
@@ -129,6 +129,7 @@ appName:goodsService
                             ${type !== c.view ? `
                         <div style="margin-top: 10px" class="icon-add"><a href="#" onclick="addSubFromBySet(${setId})"><span class="glyphicon glyphicon-plus"></span></a>点击新增配置</div>
                     <span class="input-group-btn panel-button-group text-center">
+                    <span id="importSubEnv" class="btn">导入</span>
                   <button type="button" class="btn btn-success" onclick="exportSubEnvs(${setId})">导出</button>  
                     <button type="button" class="btn btn-success" onclick="saveSubEnvs(${setId})">保存</button>
                     </span>
@@ -286,7 +287,7 @@ dapengsoa/redis-wzx:3.2.3.1(错误,无需填写镜像TAG)
                         <div class="form-group">
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" >${type != c.add ? data.env : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -307,7 +308,7 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">VOLUMES:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" >${type != c.add ? data.volumes : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -327,7 +328,7 @@ VOLUMES(挂载卷):
                         <div class="form-group">
                             <label class="col-sm-2 control-label">PORTS:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" >${type != c.add ? data.ports : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -348,7 +349,7 @@ PORTS(映射端口):
                         <div class="form-group">
                             <label class="col-sm-2 control-label">composeLabels:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="composeLabels-area" class="form-control" rows="10">${type != c.add ? data.composeLabels : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="composeLabels-area" class="form-control" >${type != c.add ? data.composeLabels : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -365,7 +366,7 @@ project.owner=struy
                         <div class="form-group">
                             <label class="col-sm-2 control-label">dockerExtras:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" >${type != c.add ? data.dockerExtras : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -381,7 +382,7 @@ restart: on-failure:3
                         <div class="form-group">
                             <label class="col-sm-2 control-label">备注:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" >${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
                          ${type == c.add ? `
@@ -492,7 +493,7 @@ host1 192.168.0.666
                         <div class="form-group">
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" >${type != c.add ? data.env : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -512,7 +513,7 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">备注:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" >${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
                         ${type == c.add ? `
@@ -654,7 +655,7 @@ zookeeper:3.4.11
                         <div class="form-group">
                             <label class="col-sm-2 control-label">ENV:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" rows="10">${type != c.add ? data.env : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="env-area" class="form-control" >${type != c.add ? data.env : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -676,7 +677,7 @@ appName:goodsService
                         <div class="form-group">
                             <label class="col-sm-2 control-label">VOLUMES:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" rows="10">${type != c.add ? data.volumes : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="volumes-area" class="form-control" >${type != c.add ? data.volumes : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -696,7 +697,7 @@ VOLUMES(挂载卷):
                         <div class="form-group">
                             <label class="col-sm-2 control-label">PORTS:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" rows="10">${type != c.add ? data.ports : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="ports-area" class="form-control" >${type != c.add ? data.ports : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -716,7 +717,7 @@ PORTS(映射端口):
                         <div class="form-group">
                             <label class="col-sm-2 control-label">dockerExtras:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" rows="10">${type != c.add ? data.dockerExtras : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="dockerExtras-area" class="form-control" >${type != c.add ? data.dockerExtras : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">
@@ -882,7 +883,7 @@ restart: on-failure:3
                 <span>运行配置(只读)</span>
                 <span>当前版本(只读)</span>
                 </div>
-                <div id="mergely" style="margin:20px 0;">
+                <div id="mergely">
                 </div>
                 <div class="fixed-footer-btn" >
                 </div>
@@ -1013,7 +1014,7 @@ restart: on-failure:3
                 <span>运行配置(只读)[${realDeployTime}]</span>
                 <span>当前版本(只读)[${realUpdateTime}]</span>
                 </div>
-                <div id="mergely" style="margin:30px 0;">
+                <div id="mergely">
                 </div>
                 <div class="fixed-footer-btn" >
                 <span class="input-group-btn panel-button-group text-center">
@@ -1142,13 +1143,13 @@ ${data.extra == 1 ? '否' : '是'}
                         <div class="form-group">
                             <label class="col-sm-2 control-label">文件内容:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="fileContext" class="form-control" rows="10">${type != c.add ? data.fileContext : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="fileContext" class="form-control" >${type != c.add ? data.fileContext : ""}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">备注:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" >${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
                         ${type == c.add ? `
@@ -1291,7 +1292,7 @@ ${data.extra == 1 ? '否' : '是'}
                         <div class="form-group">
                             <label class="col-sm-2 control-label">备注:</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" rows="10">${type != c.add ? data.remark : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="remark-area" class="form-control" >${type != c.add ? data.remark : ""}</textarea>
                             </div>
                         </div>
                          ${type == c.add ? `
@@ -1409,7 +1410,7 @@ B类地址:从172.16.0.0到172.31.255.255
                         <div class="form-group">
                             <label class="col-sm-2 control-label">opt(网桥选项)</label>
                             <div class="col-sm-9">
-                                <textarea ${type == c.view ? "disabled" : ""} id="opt" class="form-control" rows="10">${type != c.add ? data.opt : ""}</textarea>
+                                <textarea ${type == c.view ? "disabled" : ""} id="opt" class="form-control" >${type != c.add ? data.opt : ""}</textarea>
                                 <div class="advance-format-item">
                                 <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
                                 <div class="advance-format-content">

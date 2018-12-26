@@ -60,18 +60,20 @@ window.VIEW = "view";
 window.ADD = "add";
 window.EDIT = "edit";
 
-layui.use('element', function () {
-    var element = layui.element;
+window.setTextareaFull = function () {
+    setTimeout(function () {
+        $('textarea.form-control').each(function () {
+            this.setAttribute('style', 'height:' + (this.scrollHeight) + 'px;overflow-y:hidden;');
+        }).on('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        })
+    }, 200);
+};
 
-    //一些事件监听
-    element.on('nav(filter)', function (elem) {
-        console.log(elem); //得到当前点击的DOM对象
-    });
+window.clearTextareaFull = function () {
 
-    element.on('collapse(filter)', function (data) {
-
-    });
-});
+};
 
 window.layer = {};
 

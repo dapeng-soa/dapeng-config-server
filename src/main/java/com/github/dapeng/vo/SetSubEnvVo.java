@@ -8,7 +8,7 @@ package com.github.dapeng.vo;
 
 public class SetSubEnvVo {
     private String serviceName;
-    private String env;
+    private String subEnv;
 
     public String getServiceName() {
         return serviceName;
@@ -18,11 +18,11 @@ public class SetSubEnvVo {
         this.serviceName = serviceName;
     }
 
-    public String getEnv() {
-        return env;
+    public String getSubEnv() {
+        return subEnv;
     }
 
-    public void setEnv(String env) {
-        this.env = env;
+    public void setSubEnv(String subEnv) {
+        this.subEnv = subEnv;
     }
 }

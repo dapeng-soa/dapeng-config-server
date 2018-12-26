@@ -18,6 +18,7 @@ function viewServiceFilesOrEditByID(id, op) {
         initModelContext(context, function () {
             bsTable.refresh();
         });
+        setTextareaFull();
     }, "json");
 }
 
@@ -48,6 +49,7 @@ function openLinkDeployUnits(fid, name) {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
     initDeployUnits();
     initViewSetSelect();
     initViewServiceSelect();
@@ -279,6 +281,7 @@ openAddServiceFileModle = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
 };
 
 var serviceFileActionFormatter = function (value, row) {

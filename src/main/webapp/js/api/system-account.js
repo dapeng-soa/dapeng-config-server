@@ -105,6 +105,7 @@ viewSystemUserOrEditByID = function (id, op) {
         initModelContext(context, function () {
             bsTable.refresh();
         });
+        setTextareaFull();
     }, "json");
 };
 
@@ -113,6 +114,7 @@ openLinkRole = function (id, name) {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
     initSystemRole(id);
 };
 
@@ -235,6 +237,7 @@ addSystemUser = function () {
     initModelContext(context, function () {
         bsTable.refresh();
     });
+    setTextareaFull();
 };
 
 saveSystemUser = function () {
