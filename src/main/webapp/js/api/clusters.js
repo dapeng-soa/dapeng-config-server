@@ -13,39 +13,39 @@ function initClusters() {
 }
 
 setColumns = function () {
-  return [{
-      checkbox: false,
-      visible: false//是否显示复选框
-  }, {
-      field: 'id',
-      title: '#',
-      formatter: indexFormatter
+    return [{
+        checkbox: false,
+        visible: false//是否显示复选框
+    }, {
+        field: 'id',
+        title: '#',
+        formatter: indexFormatter
 
-  }, {
-      field: 'zkHost',
-      title: 'zookeeper集群地址'
-  }, {
-      field: 'remark',
-      title: '描述'
-  }, {
-      field: 'influxdbHost',
-      title: 'influxdb',
-  }, {
-      field: 'createdAt',
-      title: '添加时间',
-      sortable: true
-  }, {
-      field: 'updatedAt',
-      title: '修改时间',
-      sortable: true
-  }, {
-      field: 'id',
-      title: '操作',
-      width: 160,
-      align: 'center',
-      valign: 'middle',
-      formatter: clustersActionFormatter
-  }]
+    }, {
+        field: 'zkHost',
+        title: 'zookeeper集群地址'
+    }, {
+        field: 'remark',
+        title: '描述'
+    }, {
+        field: 'influxdbHost',
+        title: 'influxdb',
+    }, {
+        field: 'createdAt',
+        title: '添加时间',
+        sortable: true
+    }, {
+        field: 'updatedAt',
+        title: '修改时间',
+        sortable: true
+    }, {
+        field: 'id',
+        title: '操作',
+        width: 160,
+        align: 'center',
+        valign: 'middle',
+        formatter: clustersActionFormatter
+    }]
 };
 
 /**
@@ -60,26 +60,24 @@ clustersActionFormatter = function (value, row, index) {
  * 查看或者删除集群
  */
 viewClusterOrEditByID = function (cid, op) {
-    layer.msg("暂无权限");
+    showMessage(ERROR, "暂无权限");
 };
 
 /**
  * 删除单个集群
  */
 delCluster = function (cid) {
-    bodyAbs();
     layer.confirm('确定删除？', {
         btn: ['确认', '取消']
     }, function () {
         var url = basePath + "/api/cluster/del/" + cid
         $.post(url, function (res) {
-            layer.msg(res.msg);
-            refresh();
+            showMessage(INFO, res.msg);
+            layer.close(index);
+            bsTable.refresh();
         }, "json");
-        rmBodyAbs();
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何改动");
     });
 };
 
@@ -97,7 +95,7 @@ saveCluster = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             refresh();
         }
@@ -128,14 +126,14 @@ processClusterData = function () {
  * 清空输入
  */
 clearClusterInput = function () {
-    bodyAbs();
     layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $("textarea.form-control,input.form-control").val("");
-        layer.msg("已清空");
+        showMessage(SUCCESS, "已清空");
+        layer.close(index);
     }, function () {
-        layer.msg("取消清空");
+        showMessage(WARN, "取消清空");
     });
 };
 

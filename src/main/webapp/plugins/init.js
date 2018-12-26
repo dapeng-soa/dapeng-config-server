@@ -96,7 +96,7 @@ window.result = function (res) {
     if (res.code === SUCCESS_CODE) {
         return res.context;
     } else {
-        layer.msg(res.msg);
+        showMessage(ERROR, res.msg);
         return false;
     }
 };
@@ -125,6 +125,12 @@ window.diffTxt = function (current, old) {
 };
 
 window.showMessage = function (type, mesage, title) {
+    toastr.options = {
+        positionClass: "toast-bottom-right",
+        timeOut: "2000",
+        closeButton: true
+    }
+
     switch (type) {
         case SUCCESS:
             if (title) {

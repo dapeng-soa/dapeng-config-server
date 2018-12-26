@@ -49,12 +49,12 @@ initUploader = function () {
     });
 
     uploader.on('uploadSuccess', function (file, response) {
-        layer.msg(file.name + response.msg);
+        showMessage(SUCCESS, file.name + response.msg);
         bsTable.refresh();
     });
 
     uploader.on('uploadError', function (file, reason) {
-        layer.msg(file.name + "导入失败,错误码" + reason);
+        showMessage(ERROR, file.name + "导入失败,错误码" + reason);
         bsTable.refresh();
     });
 
@@ -163,7 +163,7 @@ saveDeployService = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -174,14 +174,14 @@ saveDeployService = function () {
  * 清空配置
  */
 clearDeployServiceInput = function () {
-    bodyAbs();
     layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $("textarea.form-control").val("");
-        layer.msg("已清空");
+        showMessage(SUCCESS, "已清空");
+        layer.close(index);
     }, function () {
-        layer.msg("取消清空");
+        showMessage(WARN, "取消清空");
     });
 };
 
@@ -242,7 +242,7 @@ editedDeployService = function (id) {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -250,10 +250,9 @@ editedDeployService = function (id) {
 };
 
 delDeployService = function (id, name) {
-    bodyAbs();
     layer.confirm('删除服务' + name + '？', {
         btn: ['删除', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/deploy-service/del/" + id;
         var settings = {
             type: "post",
@@ -262,15 +261,14 @@ delDeployService = function (id, name) {
             contentType: "application/json"
         };
         $.ajax(settings).done(function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             if (res.code === SUCCESS_CODE) {
-                refresh();
+                bsTable.refresh();
+                layer.close(index);
             }
-            rmBodyAbs();
         });
     }, function () {
-        layer.msg("未做任何变更");
-        rmBodyAbs();
+        showMessage(INFO, "未做任何变更");
     });
 };
 

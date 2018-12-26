@@ -92,7 +92,7 @@ function InitMonitorTable() {
             $("[data-toggle='tooltip']").tooltip();
         },
         onLoadError: function () {
-            layer.msg("数据加载失败");
+            showMessage(ERROR, "数据加载失败");
         },
         // 双击行事件
         onDblClickRow: function (row) {

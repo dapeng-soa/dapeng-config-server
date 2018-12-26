@@ -128,7 +128,7 @@ saveconfig = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -141,10 +141,9 @@ saveconfig = function () {
  */
 delConfig = function (id) {
 
-    bodyAbs();
     layer.confirm('删除此当前配置？', {
         btn: ['删除', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/config/delete/" + id;
         var settings = {
             type: "post",
@@ -153,15 +152,14 @@ delConfig = function (id) {
             contentType: "application/json"
         };
         $.ajax(settings).done(function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             if (res.code === SUCCESS_CODE) {
                 refresh();
+                layer.close(index);
             }
-            rmBodyAbs();
         });
     }, function () {
-        layer.msg("未做任何变更");
-        rmBodyAbs();
+        showMessage(INFO, "未做任何变更");
     });
 };
 
@@ -179,7 +177,7 @@ editedConfig = function (id) {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -249,7 +247,6 @@ publishConfig = function (id) {
                 html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>';
             }
             html += '</select>';
-            bodyAbs();
             // 选择集群发布
             layer.open({
                 type: 1,
@@ -261,13 +258,13 @@ publishConfig = function (id) {
                     processPublishConfig(id, $("#nodeSelect").find("option:selected").val());
                     layer.close(index);
                 }, btn2: function (index, layero) {
-                    layer.msg("取消发布");
+                    showMessage(WARN, "取消发布");
                 }, cancel: function () {
-                    layer.msg("取消发布");
+                    showMessage(WARN, "取消发布");
+                    ;
                     //return false 开启该代码可禁止点击该按钮关闭
                 }
             });
-            rmBodyAbs();
         }
     }, "json");
 };
@@ -281,7 +278,7 @@ processPublishConfig = function (id, cid) {
     $.post(url, {
         cid: cid
     }, function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             bsTable.refresh();
         }
@@ -319,7 +316,6 @@ viewRealConfig = function (service) {
                 html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '</option>';
             }
             html += '</select>';
-            bodyAbs();
             // 选择集群发布
             layer.open({
                 type: 1,
@@ -330,13 +326,12 @@ viewRealConfig = function (service) {
                     layer.close(index);
                     processSysRealConfig($("#nodeSelect").find("option:selected").val(), service);
                 }, btn2: function (index, layero) {
-                    layer.msg("操作取消");
+                    showMessage(WARN, "操作取消");
                 }, cancel: function () {
-                    layer.msg("操作取消");
+                    showMessage(WARN, "操作取消");
                     //return false 开启该代码可禁止点击该按钮关闭
                 }
             });
-            rmBodyAbs();
         }
     }, "json");
 
@@ -367,7 +362,7 @@ processSysRealConfig = function (cid, service) {
 rollback = function (id) {
     var url = basePath + "/api/config/rollback/" + id;
     $.post(url, function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         bsTable.refresh();
     }, "json")
 };
@@ -403,9 +398,10 @@ processConfigData = function () {
 clearConfigInput = function () {
     layer.confirm('清空已填写配置？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $("textarea.form-control").val("");
-        layer.msg("已清空");
+        showMessage(INFO, "已清空");
+        layer.close(index);
     }, function () {
         layer.msg("取消清空");
     });
@@ -447,17 +443,17 @@ batchUpdateRouter = function () {
                         }
                     });
                 } else {
-                    layer.msg("请填写新的分支名！");
+                    showMessage(WARN, "请填写新的路由！");
                 }
             }, btn2: function (index, layero) {
-                layer.msg("操作取消");
+                showMessage(WARN, "操作取消");
             }, cancel: function () {
-                layer.msg("操作取消");
+                showMessage(WARN, "操作取消");
             }
         });
 
     } else {
-        showMessage(ERROR, "未选中任何数据", "警告")
+        showMessage(WARN, "未选中任何数据", "警告")
     }
 };
 

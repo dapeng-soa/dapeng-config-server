@@ -88,7 +88,6 @@ openAddSubEnvBySetId = function (setId, op) {
  */
 exportSubEnvs = function (setId) {
     window.open(basePath + "/api/deploy-set/download-subenv/" + setId);
-    layer.msg("");
 };
 
 /**
@@ -109,7 +108,7 @@ saveSubEnvs = function (setId) {
     });
     for (s in subEnv) {
         if (Number(subEnv[s].serviceId) === 0) {
-            layer.msg("存在未选择服务的配置，请检查");
+            showMessage(WARN, "存在未选择服务的配置，请检查");
             return;
         }
     }
@@ -122,7 +121,7 @@ saveSubEnvs = function (setId) {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -162,7 +161,7 @@ saveDeploySet = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -189,14 +188,14 @@ addSubFromBySet = function (setId) {
  * 清空配置
  */
 clearDeploySetInput = function () {
-    bodyAbs();
     layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $("textarea.form-control").val("");
-        layer.msg("已清空");
+        showMessage(SUCCESS, "已清空");
+        layer.close(index);
     }, function () {
-        layer.msg("取消清空");
+        showMessage(WARN, "取消清空");
     });
 };
 
@@ -259,7 +258,7 @@ editedDeploySet = function (id) {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -267,19 +266,16 @@ editedDeploySet = function (id) {
 };
 
 delDeploySet = function (id) {
-    bodyAbs();
     layer.confirm('确定删除？', {
         btn: ['确认', '取消']
     }, function () {
         var url = basePath + "/api/deploy-set/del/" + id;
         $.post(url, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             bsTable.refresh();
         }, "json");
-        rmBodyAbs();
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何改动");
     });
 };
 

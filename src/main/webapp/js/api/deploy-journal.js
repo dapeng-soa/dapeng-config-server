@@ -198,26 +198,25 @@ viewDeployJournalYml = function (id, unitId, hostId, serviceId) {
  */
 rollbackDeploy = function (jid, host, service) {
     var url = basePath + "/api/deploy/rollbackRealService";
-    bodyAbs();
     layer.confirm('回滚服务[' + host + ':' + service + ']?', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $$.post(url, {jid: jid}, function (res) {
             if (res.code === SUCCESS_CODE) {
                 socket.emit(DEPLOY, JSON.stringify(res.context));
-                layer.msg("操作已发送");
+                showMessage(SUCCESS, "操作已发送");
+                layer.close(index);
                 openConloseView();
-                rmBodyAbs();
             }
         })
     }, function () {
-        layer.msg("操作取消");
+        showMessage(INFO, "操作取消");
     });
 };
 
 
 delDeployJournal = function () {
-    layer.msg("暂无权限")
+    showMessage(WARN, "暂无权限")
 };
 
 var initViewSetSelect = function () {

@@ -96,7 +96,7 @@ openViewParamsModel = function (id) {
             initModelContext(context, function () {
             });
         } else {
-            layer.msg(res.msg);
+            showMessage(ERROR, res.msg);
         }
     });
 };

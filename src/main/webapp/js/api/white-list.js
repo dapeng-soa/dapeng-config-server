@@ -51,7 +51,7 @@ nodeChanged = function (obj) {
 addWhiteItem = function () {
     var text = $("#white-list-text").val();
     if (text === "" || text === undefined || text.trim() === "") {
-        layer.msg("请填写白名单");
+        showMessage(WARN, "请填写白名单");
         return;
     }
     var curl = basePath + "/api/clusters";
@@ -63,7 +63,6 @@ addWhiteItem = function () {
                 html += '<option value="' + res.context[i].id + '">' + res.context[i].zkHost + '(' + res.context[i].remark + ')</option>';
             }
             html += '</select>';
-            bodyAbs();
             // 选择集群添加
             layer.open({
                 type: 1,
@@ -74,13 +73,12 @@ addWhiteItem = function () {
                     layer.close(index);
                     processAddWhiteList($("#nodeSelect").find("option:selected").val());
                 }, btn2: function (index, layero) {
-                    layer.msg("操作取消");
+                    showMessage(WARN, "操作取消");
                 }, cancel: function () {
-                    layer.msg("操作取消");
+                    showMessage(WARN, "操作取消");
                     //return false 开启该代码可禁止点击该按钮关闭
                 }
             });
-            rmBodyAbs();
         }
     }, "json");
 
@@ -96,7 +94,7 @@ processAddWhiteList = function (cid) {
         cid: cid,
         service: text
     }, function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             refreshWhiteList();
         }
@@ -109,24 +107,22 @@ processAddWhiteList = function (cid) {
  * 删除白名单
  */
 delWhiteItem = function (service) {
-    bodyAbs();
     layer.confirm('删除白名单\n[' + service + ']?', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         url = basePath + "/api/white/del";
         $.post(url, {
             cid: $("#whiteNodeSelect").find("option:selected").val(),
             path: service
         }, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             if (res.code === SUCCESS_CODE) {
+                layer.close(index);
                 refreshWhiteList();
             }
-            rmBodyAbs();
         }, "json")
     }, function () {
-        layer.msg("未做任何变更");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何变更");
     });
 };
 

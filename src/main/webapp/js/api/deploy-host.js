@@ -144,7 +144,7 @@ saveDeployHost = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -173,14 +173,14 @@ viewInitSetList = function () {
  * 清空配置
  */
 clearDeployHostInput = function () {
-    bodyAbs();
     layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $("textarea.form-control").val("");
-        layer.msg("已清空");
+        showMessage(INFO, "已清空");
+        layer.close(index);
     }, function () {
-        layer.msg("取消清空");
+        showMessage(WARN, "取消清空");
     });
 };
 
@@ -238,7 +238,7 @@ editedDeployHost = function (id) {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -246,10 +246,9 @@ editedDeployHost = function (id) {
 };
 
 delDeployHost = function (id, name) {
-    bodyAbs();
     layer.confirm('删除节点' + name + '？', {
         btn: ['删除', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/deploy-host/del/" + id;
         var settings = {
             type: "post",
@@ -258,15 +257,14 @@ delDeployHost = function (id, name) {
             contentType: "application/json"
         };
         $.ajax(settings).done(function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             if (res.code === SUCCESS_CODE) {
-                refresh();
+                bsTable.refresh();
+                layer.close(index);
             }
-            rmBodyAbs();
         });
     }, function () {
-        layer.msg("未做任何变更");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何变更");
     });
 };
 

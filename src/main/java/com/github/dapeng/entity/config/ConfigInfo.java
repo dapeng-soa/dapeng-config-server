@@ -77,14 +77,6 @@ public class ConfigInfo {
     @Column(name = "tags")
     private String tags;
 
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setUpdatedBy(Long updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
     public String getTags() {
         return tags;
     }

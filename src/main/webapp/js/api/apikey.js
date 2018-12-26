@@ -76,31 +76,29 @@ genKey = function () {
 };
 
 openSendApiKey = function (id) {
-    bodyAbs();
     layer.open({
         type: 1,
         title: '下发ApiKey至',
-        area: ['300px', 'auto'],
+        area: ['500px', 'auto'],
         content: config1.exportApiKeySend(),
         btn: ['下发', '取消'],
         yes: function (index, layero) {
             var mail = $("#sendKeyEmail").val();
-            if ( mail!==undefined && mail !== ""){
+            if (mail !== undefined && mail !== "") {
                 var url = basePath + "/api/apikey/send/" + id;
                 $.post(url, {email: mail}, function (res) {
-                    layer.msg(res.msg);
+                    showMessage(SUCCESS, res.msg);
                     layer.close(index);
-                },"json")
-            }else {
-                layer.msg("请填写邮箱！");
+                }, "json")
+            } else {
+                showMessage(WARN, "请填写邮箱！");
             }
         }, btn2: function (index, layero) {
-            layer.msg("操作取消");
+            showMessage(INFO, "操作取消");
         }, cancel: function () {
-            layer.msg("操作取消");
+            showMessage(INFO, "操作取消");
         }
     });
-    rmBodyAbs();
 };
 
 /**
@@ -159,7 +157,7 @@ saveApiKey = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             refresh();
         }
@@ -170,14 +168,14 @@ saveApiKey = function () {
  * 清空配置
  */
 clearApiKeyInput = function () {
-    bodyAbs();
     layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $("textarea.form-control").val("");
-        layer.msg("已清空");
+        showMessage(SUCCESS, "已清空");
+        layer.close(index);
     }, function () {
-        layer.msg("取消清空");
+        showMessage(INFO, "取消清空");
     });
 };
 
@@ -230,7 +228,7 @@ editedApiKey = function (id) {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             refresh();
         }
@@ -238,7 +236,7 @@ editedApiKey = function (id) {
 };
 
 delApiKey = function () {
-    layer.msg("暂无权限")
+    showMessage(ERROR, "暂无权限")
 };
 
 

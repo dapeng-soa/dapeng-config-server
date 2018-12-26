@@ -209,7 +209,11 @@ public class ConfigRestController {
                 throw new Exception("路由配置格式错误，请检查！");
             }
             List<ConfigInfo> infoList = repository.findAll(dto.getIds());
-            infoList.forEach(x -> x.setRouterConfig(dto.getRouter()));
+            infoList.forEach(x -> {
+                x.setRouterConfig(dto.getRouter());
+                x.setStatus(ConfigStatus.PASS.key());
+                x.setUpdatedAt(DateUtil.now());
+            });
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
         } catch (Exception e) {

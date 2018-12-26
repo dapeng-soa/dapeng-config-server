@@ -82,21 +82,19 @@ systemUserActionFormatter = function (value, row, index) {
 };
 
 resetUserPwd = function (id, username) {
-    bodyAbs();
     layer.confirm('重置用户' + username + '密码为默认(当前用户名)？', {
         btn: ['重置', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/system-user/reset-password/" + id;
         $$.post(url, {}, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             if (res.code === SUCCESS_CODE) {
+                layer.close(index);
                 bsTable.refresh();
             }
         });
-        rmBodyAbs();
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何改动");
     });
 };
 
@@ -193,19 +191,18 @@ setRoleColumns = function () {
 linkingRole = function (userId, roles) {
     var url = basePath + "/api/system-user/link-role";
     $$.post(url, JSON.stringify({userId: userId, roleIds: roles}), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
     }, "application/json");
 };
 
 unLinkingRole = function (userId, roles) {
     var url = basePath + "/api/system-user/unlink-role";
     $$.post(url, JSON.stringify({userId: userId, roleIds: roles}), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
     }, "application/json");
 };
 
 disabledSystemUser = function (id, username, status) {
-    bodyAbs();
     var title = "";
     switch (status) {
         case 0:
@@ -219,18 +216,17 @@ disabledSystemUser = function (id, username, status) {
     }
     layer.confirm(title, {
         btn: ['执行', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/system-user/switch-status/" + id;
         $$.post(url, {}, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             if (res.code === SUCCESS_CODE) {
+                layer.close(index);
                 bsTable.refresh();
             }
         });
-        rmBodyAbs();
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何改动");
     });
 };
 
@@ -244,7 +240,7 @@ addSystemUser = function () {
 saveSystemUser = function () {
     var url = basePath + "/api/system-user/add";
     $$.post(url, JSON.stringify(processSystemUserData()), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -276,7 +272,7 @@ clearSystemUserInput = function () {
 editedSystemUser = function (id) {
     var url = basePath + "/api/system-user/edit/" + id;
     $$.post(url, JSON.stringify(processSystemUserData()), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }

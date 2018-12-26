@@ -21,7 +21,7 @@
                 <p class="left-panel-title">服务管理</p>
                 <span class="input-group-btn panel-button-group">
                     <span id="thelist"></span>
-                    <button type="button" id="picker" class="btn btn-sm">导入服务</button>
+                    <span id="picker" class="btn btn-sm">导入服务</span>
                     <button type="button" class="btn btn-warning" onclick="exportBatchService()">导出服务</button>
                     <button type="button" class="btn btn-primary" onclick="openAddDeployServiceModle()">新增</button>
                 </span>
@@ -29,7 +29,8 @@
         </div>
         <div id="deploy-service-tableToolbar">
             <span>tags过滤： <span style="display: inline-block;width: 120px">
-                <select class="form-control selectpicker" data-live-search="true"  onchange="execServiceTagChanged(this)" id="deployServiceTags" >
+                <select class="form-control selectpicker" data-live-search="true" onchange="execServiceTagChanged(this)"
+                        id="deployServiceTags">
 
             </select>
             </span></span>

@@ -26,27 +26,25 @@ function viewServiceFilesOrEditByID(id, op) {
  * @param id
  */
 function delServiceFiles(id) {
-    bodyAbs();
     layer.confirm('确定删除？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/deploy-file/del/" + id;
         $.post(url, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
+            layer.close(index);
             bsTable.refresh();
         }, "json");
-        rmBodyAbs();
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(INFO, "未做任何改动");
     });
 }
 
 /**
  * 打开关联部署单元
  */
-function openLinkDeployUnits(fid,name) {
-    var context = sf.exportFileLinkUnitContext(fid,name);
+function openLinkDeployUnits(fid, name) {
+    var context = sf.exportFileLinkUnitContext(fid, name);
     initModelContext(context, function () {
         bsTable.refresh();
     });
@@ -74,7 +72,7 @@ function linkDeployUnits(fileId) {
             fid: fileId
         });
         $$.post(url, data, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             unitTable.refresh();
         }, "application/json")
     } else {
@@ -99,7 +97,7 @@ function unLinkDeployUnits(fileId) {
             fid: fileId
         });
         $$.post(url, data, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
             unitTable.refresh();
         }, "application/json")
     } else {
@@ -284,13 +282,13 @@ openAddServiceFileModle = function () {
 };
 
 var serviceFileActionFormatter = function (value, row) {
-    return sf.exportServiceFileAction(value,row.fileExtName+":"+row.fileName);
+    return sf.exportServiceFileAction(value, row.fileExtName + ":" + row.fileName);
 };
 
 saveServiceFile = function () {
     var url = basePath + "/api/deploy-file/add";
     $$.post(url, JSON.stringify(processServiceFileData()), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -318,7 +316,7 @@ clearServiceFileInput = function () {
 editedServiceFile = function (id) {
     var url = basePath + "/api/deploy-file/edit/" + id;
     $$.post(url, JSON.stringify(processServiceFileData()), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }

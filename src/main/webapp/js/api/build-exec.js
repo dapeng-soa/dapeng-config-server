@@ -110,10 +110,10 @@ var execBuildService = function (taskId) {
     $$.post(url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {
             socket.emit(BUILD, JSON.stringify(res.context));
-            layer.msg("正在构建");
+            showMessage(SUCCESS, "正在构建");
             getBuildListReq();
         } else {
-            layer.msg(res.msg);
+            showMessage(ERROR, res.msg);
         }
     })
 };

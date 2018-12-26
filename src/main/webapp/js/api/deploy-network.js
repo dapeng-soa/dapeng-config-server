@@ -58,19 +58,17 @@ function viewNetworkOrEditByID(id, op) {
  * @param id
  */
 function delNetwork(id) {
-    bodyAbs();
     layer.confirm('确定删除？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/deploy-network/del/" + id;
         $.post(url, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
+            layer.close(index);
             bsTable.refresh();
         }, "json");
-        rmBodyAbs();
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何改动");
     });
 }
 
@@ -245,14 +243,14 @@ var setColumns = function () {
 linkingHost = function (netId, hostIds) {
     var url = basePath + "/api/deploy-network/link-host";
     $$.post(url, JSON.stringify({netId: netId, hostIds: hostIds}), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
     }, "application/json");
 };
 
 unLinkingHost = function (netId, hostIds) {
     var url = basePath + "/api/deploy-network/unlink-host";
     $$.post(url, JSON.stringify({netId: netId, hostIds: hostIds}), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
     }, "application/json");
 };
 
@@ -271,7 +269,7 @@ var netWorkActionFormatter = function (value, row) {
 saveNetWork = function () {
     var url = basePath + "/api/deploy-network/add";
     $$.post(url, JSON.stringify(processNetWorkData()), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -299,21 +297,18 @@ clearNetWorkInput = function () {
  * 同步网络至各个绑定的节点
  */
 sysNetworkToHost = function (netId, name) {
-    bodyAbs();
     layer.confirm('确定将网络配置:' + name + '同步至绑定节点?', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/deploy-network/sync-network/" + netId;
         $.get(url, function (res) {
-            console.log(res);
             socket.emit(SYNC_NETWORK, JSON.stringify(res.context));
         }, "json");
-        rmBodyAbs();
         openConloseView();
-        layer.msg("操作已发送");
+        showMessage(SUCCESS, "操作已发送");
+        layer.close(index);
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何改动");
     });
 };
 
@@ -321,7 +316,7 @@ sysNetworkToHost = function (netId, name) {
 editedNetWork = function (id) {
     var url = basePath + "/api/deploy-network/edit/" + id;
     $$.post(url, JSON.stringify(processNetWorkData()), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }

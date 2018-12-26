@@ -12,7 +12,7 @@ var changePwd = function () {
         newPwd: newPwd,
         confirmPwd: confirmNewPwd
     }), function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             setTimeout(function () {
                 refresh();

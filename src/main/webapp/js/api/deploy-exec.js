@@ -314,16 +314,14 @@ stopService = function (unitId) {
     var url = basePath + "/api/deploy/stopRealService";
     $$.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            bodyAbs();
             layer.confirm('停止服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
                 btn: ['停止', '取消']
-            }, function () {
+            }, function (index) {
                 socket.emit(STOP, JSON.stringify(res.context));
-                layer.msg("操作已发送");
-                rmBodyAbs();
+                showMessage(SUCCESS, "操作已发送");
+                layer.close(index);
             }, function () {
-                layer.msg("操作取消");
-                rmBodyAbs();
+                showMessage(WARN, "操作取消");
             });
         }
     });
@@ -338,16 +336,14 @@ restartService = function (unitId) {
     var url = basePath + "/api/deploy/restartRealService";
     $$.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            bodyAbs();
             layer.confirm('重启服务[' + res.context.ip + ':' + res.context.serviceName + ']?', {
                 btn: ['重启', '取消']
-            }, function () {
+            }, function (index) {
                 socket.emit(RESTART, JSON.stringify(res.context));
-                layer.msg("操作已发送");
-                rmBodyAbs();
+                showMessage(SUCCESS, "操作已发送");
+                layer.close(index);
             }, function () {
-                layer.msg("操作取消");
-                rmBodyAbs();
+                showMessage(WARN, "操作取消");
             });
         }
     })
@@ -362,16 +358,14 @@ rmServiceContainer = function (unitId) {
     var url = basePath + "/api/deploy-unit/event_rep/" + unitId;
     $$.get(url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {
-            bodyAbs();
             layer.confirm('移除[' + res.context.ip + ':' + res.context.serviceName + ']容器?', {
                 btn: ['移除', '取消']
-            }, function () {
+            }, function (index) {
                 socket.emit(RM_CONTAINER, JSON.stringify(res.context));
-                layer.msg("操作已发送");
-                rmBodyAbs();
+                showMessage(SUCCESS, "操作已发送");
+                layer.close(index);
             }, function () {
-                layer.msg("操作取消");
-                rmBodyAbs();
+                showMessage(WARN, "操作取消");
             });
         }
     })
@@ -388,6 +382,7 @@ execServiceUpdate = function (unitId) {
     $$.get(url, req, function (res) {
         if (res.code === SUCCESS_CODE) {
             socket.emit(DEPLOY, JSON.stringify(res.context));
+            showMessage(SUCCESS, "操作已发送");
             closeModel();
         }
     });
@@ -396,7 +391,7 @@ execServiceUpdate = function (unitId) {
  * 取消升级
  */
 cancelServiceUpdate = function () {
-    layer.msg("取消升级");
+    showMessage(WARN, "取消升级");
     closeModel();
 };
 
@@ -405,7 +400,7 @@ cancelServiceUpdate = function () {
  */
 downloadYaml = function (unitId) {
     window.open(basePath + "/api/deploy-unit/download-yml/" + unitId);
-    layer.msg("下载成功");
+    showMessage(SUCCESS, "取消升级");
 };
 
 

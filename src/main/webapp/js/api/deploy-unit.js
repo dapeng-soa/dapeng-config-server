@@ -90,7 +90,6 @@ modifyBatchBranch = function () {
         $.each(selected, function (index, em) {
             ids.push(em.id);
         });
-        bodyAbs();
         var modifyBatchBranchDom = "modifyBatchBranchDom";
         layer.open({
             type: 1,
@@ -121,15 +120,14 @@ modifyBatchBranch = function () {
                         }
                     });
                 } else {
-                    layer.msg("请填写新的分支名！");
+                    showMessage(ERROR, "请填写新的分支名！");
                 }
             }, btn2: function (index, layero) {
-                layer.msg("操作取消");
+                showMessage(WARN, "操作取消");
             }, cancel: function () {
-                layer.msg("操作取消");
+                showMessage(WARN, "操作取消");
             }
         });
-        rmBodyAbs();
     } else {
         showMessage(WARN, "未选中任何数据", "警告")
     }
@@ -146,7 +144,6 @@ modifyBatchTag = function () {
         $.each(selected, function (index, em) {
             ids.push(em.id);
         });
-        bodyAbs();
         var modifyBatchTagInputId = "modifyBatchTagInputId";
         var modifyBatchPublishTagInputId = "modifyBatchPublishTagInputId";
         layer.open({
@@ -179,17 +176,16 @@ modifyBatchTag = function () {
                         }
                     });
                 } else {
-                    layer.msg("请填写tag！");
+                    showMessage(ERROR, "请填写tag！");
                 }
             }, btn2: function (index, layero) {
-                layer.msg("操作取消");
+                showMessage(WARN, "操作取消");
             }, cancel: function () {
-                layer.msg("操作取消");
+                showMessage(WARN, "操作取消");
             }
         });
-        rmBodyAbs();
     } else {
-        showMessage(ERROR, "未选中任何数据", "警告")
+        showMessage(WARN, "未选中任何数据", "警告")
     }
 };
 
@@ -218,7 +214,7 @@ saveDeployUnit = function () {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -229,14 +225,14 @@ saveDeployUnit = function () {
  * 清空配置
  */
 clearDeployUnitInput = function () {
-    bodyAbs();
     layer.confirm('将清空当前所有输入？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         $("textarea.form-control").val("");
-        layer.msg("已清空");
+        showMessage(SUCCESS, "已清空");
+        layer.close(index);
     }, function () {
-        layer.msg("取消清空");
+        showMessage(WARN, "取消清空");
     });
 };
 
@@ -302,7 +298,7 @@ editedDeployUnit = function (id) {
         contentType: "application/json"
     };
     $.ajax(settings).done(function (res) {
-        layer.msg(res.msg);
+        showMessage(INFO, res.msg);
         if (res.code === SUCCESS_CODE) {
             closeModel();
         }
@@ -310,19 +306,17 @@ editedDeployUnit = function (id) {
 };
 
 delDeployUnit = function (id) {
-    bodyAbs();
     layer.confirm('确定删除？', {
         btn: ['确认', '取消']
-    }, function () {
+    }, function (index) {
         var url = basePath + "/api/deploy-unit/del/" + id;
         $.post(url, function (res) {
-            layer.msg(res.msg);
+            showMessage(INFO, res.msg);
+            layer.close(index);
             bsTable.refresh();
         }, "json");
-        rmBodyAbs();
     }, function () {
-        layer.msg("未做任何改动");
-        rmBodyAbs();
+        showMessage(WARN, "未做任何改动");
     });
 };
 
