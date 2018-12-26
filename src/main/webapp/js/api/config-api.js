@@ -28,8 +28,8 @@ function InitMainTable() {
 
 setColumns = function () {
     return [{
-        checkbox: false,
-        visible: false                  //是否显示复选框
+        checkbox: true,
+        visible: true                  //是否显示复选框
     }, {
         field: 'id',
         title: '#',
@@ -259,7 +259,7 @@ publishConfig = function (id) {
                 yes: function (index, layero) {
 
                     processPublishConfig(id, $("#nodeSelect").find("option:selected").val());
-
+                    layer.close(index);
                 }, btn2: function (index, layero) {
                     layer.msg("取消发布");
                 }, cancel: function () {
@@ -283,7 +283,7 @@ processPublishConfig = function (id, cid) {
     }, function (res) {
         layer.msg(res.msg);
         if (res.code === SUCCESS_CODE) {
-            refresh();
+            bsTable.refresh();
         }
     }, "json")
 };
@@ -300,7 +300,6 @@ viewOrEditByID = function (id, viewOrEdit) {
         var context = config.exportAddConfigContext(viewOrEdit, biz = res.context.serviceName, data = res.context);
         initModelContext(context, function () {
             bsTable.refresh();
-            //initSelectTags();
         });
         initTags(data.tags);
     }, "json")
@@ -369,7 +368,7 @@ rollback = function (id) {
     var url = basePath + "/api/config/rollback/" + id;
     $.post(url, function (res) {
         layer.msg(res.msg);
-        refresh();
+        bsTable.refresh();
     }, "json")
 };
 
@@ -412,16 +411,63 @@ clearConfigInput = function () {
     });
 };
 
+batchUpdateRouter = function () {
+    var selected = bsTable.getAllSelections();
+    var ids = [];
+    if (selected.length !== 0) {
+        $.each(selected, function (index, em) {
+            ids.push(em.id);
+        });
+        layer.open({
+            type: 1,
+            title: '填写新的路由',
+            area: ['700px', 'auto'],
+            content: '<div><blockquote><span class="text-danger">注意:批量修改存在风险，请确认选择的服务是否可以配置相同路由！</span></blockquote><textarea class="form-control" id="modifyBatchRouterDom"></textarea></div>',
+            btn: ['修改', '取消'],
+            yes: function (index, layero) {
+                var router = $("#modifyBatchRouterDom").val();
+                if (router !== undefined && router !== "") {
+                    console.log(router);
+                    var url = basePath + "/api/config/batchUpdateRouter";
+                    var p = JSON.stringify({router: router, ids: ids});
+                    var settings = {
+                        type: "post",
+                        url: url,
+                        data: p,
+                        dataType: "json",
+                        contentType: "application/json"
+                    };
+                    $.ajax(settings).done(function (res) {
+                        if (res.code === SUCCESS_CODE) {
+                            showMessage(SUCCESS, res.msg, "修改成功");
+                            bsTable.refresh();
+                            layer.close(index);
+                        } else {
+                            showMessage(ERROR, res.msg, "修改失败");
+                        }
+                    });
+                } else {
+                    layer.msg("请填写新的分支名！");
+                }
+            }, btn2: function (index, layero) {
+                layer.msg("操作取消");
+            }, cancel: function () {
+                layer.msg("操作取消");
+            }
+        });
+
+    } else {
+        showMessage(ERROR, "未选中任何数据", "警告")
+    }
+};
+
 /**
  * 打开添加配置弹窗
  */
 openAddConfig = function () {
-    // 导出弹窗内容模版
     var context = config.exportAddConfigContext("add");
-    // 初始化弹窗
     initModelContext(context, function () {
         bsTable.refresh();
-        //initSelectTags();
     });
     initTags();
 };
@@ -429,9 +475,7 @@ openAddConfig = function () {
 
 openPublishHistory = function (serviceName) {
 
-    // 导出弹窗内容模版
     var context = config.exportPublishHistoryContext(serviceName);
-    // 初始化弹窗
     initModelContext(context, function () {
         bsTable.refresh();
     });

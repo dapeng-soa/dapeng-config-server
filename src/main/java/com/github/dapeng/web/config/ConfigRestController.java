@@ -3,6 +3,7 @@ package com.github.dapeng.web.config;
 import com.github.dapeng.common.ConfigStatus;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.dto.ConfigInfoDto;
+import com.github.dapeng.dto.ModifyBatchRouterDto;
 import com.github.dapeng.dto.RealConfig;
 import com.github.dapeng.entity.config.ConfigInfo;
 import com.github.dapeng.entity.config.ConfigPublishHistory;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.github.dapeng.common.Commons.*;
+import static com.github.dapeng.util.NullUtil.isEmpty;
 
 /**
  * @author with struy.
@@ -107,7 +109,7 @@ public class ConfigRestController {
         list.forEach(x -> {
             String[] ts = x.getTags().split(",");
             for (String t : ts) {
-                if (!NullUtil.isEmpty(t)) {
+                if (!isEmpty(t)) {
                     tags.add(t);
                 }
             }
@@ -196,6 +198,27 @@ public class ConfigRestController {
     }
 
     /**
+     * 批量修改路由配置
+     */
+    @PostMapping("/config/batchUpdateRouter")
+    public ResponseEntity batchUpdateRouterConfig(@RequestBody ModifyBatchRouterDto dto) {
+        try {
+            boolean routerIsOk = isEmpty(dto.getRouter()) ?
+                    true : CheckConfigUtil.doCheckRouter(dto.getRouter());
+            if (!routerIsOk) {
+                throw new Exception("路由配置格式错误，请检查！");
+            }
+            List<ConfigInfo> infoList = repository.findAll(dto.getIds());
+            infoList.forEach(x -> x.setRouterConfig(dto.getRouter()));
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
+    /**
      * 分页获取配置信息
      *
      * @param
@@ -225,7 +248,7 @@ public class ConfigRestController {
     public ResponseEntity<?> publishConfig(@PathVariable Long id,
                                            @RequestParam Long cid) {
         ZkNode node = nodeRepository.findOne(cid);
-        if (!NullUtil.isEmpty(node)) {
+        if (!isEmpty(node)) {
             String host = node.getZkHost();
             return publish(host, id);
         } else if (cid == -1) {
@@ -249,7 +272,7 @@ public class ConfigRestController {
     @GetMapping(value = "/config/publish-history/{id}")
     public ResponseEntity<?> publishHistory(@PathVariable Long id) {
         ConfigInfo info = repository.getOne(id);
-        if (!NullUtil.isEmpty(info)) {
+        if (!isEmpty(info)) {
             List<ConfigPublishHistory> publishHistories = publishRepository.findAllByServiceName(info.getServiceName());
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, publishHistories));
@@ -278,7 +301,7 @@ public class ConfigRestController {
     public ResponseEntity<?> sysRealConfig(@RequestParam Long cid,
                                            @RequestParam String serviceName) {
         ZkNode node = nodeRepository.findOne(cid);
-        if (!NullUtil.isEmpty(node)) {
+        if (!isEmpty(node)) {
             try {
                 RealConfig realConfig = proccessSysConfig(node.getZkHost(), serviceName);
                 return ResponseEntity
@@ -377,25 +400,25 @@ public class ConfigRestController {
         }
 
         // 语法检查
-        boolean freqIsOk = NullUtil.isEmpty(cofig.getFreqConfig()) ?
+        boolean freqIsOk = isEmpty(cofig.getFreqConfig()) ?
                 true : CheckConfigUtil.doCheckFreq(cofig.getFreqConfig());
         if (!freqIsOk) {
             throw new Exception("限流配置格式错误，请检查！");
         }
 
-        boolean routerIsOk = NullUtil.isEmpty(cofig.getRouterConfig()) ?
+        boolean routerIsOk = isEmpty(cofig.getRouterConfig()) ?
                 true : CheckConfigUtil.doCheckRouter(cofig.getRouterConfig());
         if (!routerIsOk) {
             throw new Exception("路由配置格式错误，请检查！");
         }
 
-        boolean timeoutIsOk = NullUtil.isEmpty(cofig.getTimeoutConfig()) ?
+        boolean timeoutIsOk = isEmpty(cofig.getTimeoutConfig()) ?
                 true : CheckConfigUtil.doCheckConfig(cofig.getTimeoutConfig());
         if (!timeoutIsOk) {
             throw new Exception("超时配置格式错误，请检查！");
         }
 
-        boolean loadbalanceIsOk = NullUtil.isEmpty(cofig.getLoadbalanceConfig()) ?
+        boolean loadbalanceIsOk = isEmpty(cofig.getLoadbalanceConfig()) ?
                 true : CheckConfigUtil.doCheckConfig(cofig.getLoadbalanceConfig());
         if (!loadbalanceIsOk) {
             throw new Exception("负载均衡配置格式错误，请检查！");

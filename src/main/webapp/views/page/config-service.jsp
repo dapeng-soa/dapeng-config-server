@@ -21,13 +21,15 @@
             <div class="input-group">
                 <p class="left-panel-title">服务配置管理</p>
                 <span class="input-group-btn panel-button-group">
+                    <button type="button" class="btn btn-warning" onclick="batchUpdateRouter()">一键修改路由</button>
                     <button type="button" class="btn btn-primary" onclick="openAddConfig()">新增</button>
                 </span>
             </div>
         </div>
         <div id="config-tableToolbar">
             <span>tags过滤： <span style="display: inline-block;width: 120px">
-                <select class="form-control selectpicker" data-live-search="true"  onchange="execTagChanged(this)" id="configServiceTags" >
+                <select class="form-control selectpicker" data-live-search="true" onchange="execTagChanged(this)"
+                        id="configServiceTags">
 
             </select>
             </span></span>
