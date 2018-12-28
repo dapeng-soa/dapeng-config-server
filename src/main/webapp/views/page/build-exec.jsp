@@ -64,7 +64,7 @@
             </div>
             <div class="col-sm-3">
                 <p class="text-center">构建历史</p>
-                <div class="list-group" id="buildingList">
+                <div class="list-group" style="max-height: 600px;overflow-y: auto;" id="buildingList">
 
                 </div>
             </div>

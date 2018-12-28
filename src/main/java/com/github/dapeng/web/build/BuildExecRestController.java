@@ -199,14 +199,14 @@ public class BuildExecRestController {
             // 主机视图
             if (!isEmpty(setId)) {
                 if (!isEmpty(serviceId)) {
-                    List<TDeployUnit> units = unitRepository.findAllBySetIdAndServiceId(setId, serviceId);
+                    List<TDeployUnit> units = unitRepository.findAllBySetIdAndServiceIdOrderByUpdatedAtDesc(setId, serviceId);
                     buildTaskVos = toTaskList(units);
                 } else {
-                    List<TDeployUnit> units = unitRepository.findAllBySetId(setId);
+                    List<TDeployUnit> units = unitRepository.findAllBySetIdOrderByUpdatedAtDesc(setId);
                     buildTaskVos = toTaskList(units);
                 }
             } else {
-                List<TDeployUnit> units = unitRepository.findAll();
+                List<TDeployUnit> units = unitRepository.findByOrderByUpdatedAtDesc();
                 buildTaskVos = toTaskList(units);
             }
             return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, buildTaskVos));
@@ -261,7 +261,7 @@ public class BuildExecRestController {
             // 找不到则默认master
             List<TService> services = serviceRepository.findByName(s.getServiceName());
             if (!isEmpty(services)) {
-                List<TDeployUnit> units1 = unitRepository.findAllBySetIdAndServiceId(set.getId(), services.get(0).getId());
+                List<TDeployUnit> units1 = unitRepository.findAllBySetIdAndServiceIdOrderByUpdatedAtDesc(set.getId(), services.get(0).getId());
                 if (!isEmpty(units1)) {
                     String branch = units1.get(0).getBranch();
                     s.setBranchName(isEmpty(branch) ? "master" : branch);
