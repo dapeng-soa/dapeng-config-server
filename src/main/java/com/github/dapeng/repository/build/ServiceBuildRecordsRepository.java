@@ -28,14 +28,16 @@ public interface ServiceBuildRecordsRepository extends JpaRepository<TServiceBui
      * @param host
      * @return
      */
-    List<TServiceBuildRecords> findByAgentHostOrderByCreatedAtAsc(String host);
+    List<TServiceBuildRecords> findByAgentHostOrderByCreatedAtDesc(String host);
 
     /**
      * 根据任务id查找构建列表
      * @param taskId
      * @return
      */
-    List<TServiceBuildRecords> findByTaskIdOrderByCreatedAtAsc(Long taskId);
+    List<TServiceBuildRecords> findByTaskIdOrderByCreatedAtDesc(Long taskId);
+
+    List<TServiceBuildRecords> findByOrderByCreatedAtDesc();
 
     /**
      * 按照任务id和状态查找
@@ -45,7 +47,7 @@ public interface ServiceBuildRecordsRepository extends JpaRepository<TServiceBui
      */
     List<TServiceBuildRecords> findByTaskIdAndStatusIn(Long taskId, List<Long> status);
 
-    List<TServiceBuildRecords> findByBuildServiceAndAgentHost(String service,String host);
+    List<TServiceBuildRecords> findByBuildServiceAndAgentHostOrderByCreatedAtDesc(String service,String host);
 
     /**
      * 按照任务id删除

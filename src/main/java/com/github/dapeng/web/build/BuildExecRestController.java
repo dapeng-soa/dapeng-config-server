@@ -155,13 +155,13 @@ public class BuildExecRestController {
                 if (!isEmpty(serviceId)) {
                     TService service = serviceRepository.findOne(serviceId);
                     if (!isEmpty(service)) {
-                        records = buildRecordsRepository.findByBuildServiceAndAgentHost(service.getName(), IPUtils.transferIp(buildHost.getIp()));
+                        records = buildRecordsRepository.findByBuildServiceAndAgentHostOrderByCreatedAtDesc(service.getName(), IPUtils.transferIp(buildHost.getIp()));
                     }
                 } else {
-                    records = buildRecordsRepository.findByAgentHostOrderByCreatedAtAsc(IPUtils.transferIp(buildHost.getIp()));
+                    records = buildRecordsRepository.findByAgentHostOrderByCreatedAtDesc(IPUtils.transferIp(buildHost.getIp()));
                 }
             } else {
-                records = buildRecordsRepository.findAll();
+                records = buildRecordsRepository.findByOrderByCreatedAtDesc();
             }
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
@@ -174,7 +174,7 @@ public class BuildExecRestController {
     @GetMapping("/build/building-history-byTask/{taskId}")
     public ResponseEntity getBuildingHistoryByTask(@PathVariable Long taskId) {
         try {
-            List<TServiceBuildRecords> records = buildRecordsRepository.findByTaskIdOrderByCreatedAtAsc(taskId);
+            List<TServiceBuildRecords> records = buildRecordsRepository.findByTaskIdOrderByCreatedAtDesc(taskId);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
         } catch (Exception e) {
