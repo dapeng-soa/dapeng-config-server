@@ -58,10 +58,12 @@ module api {
             }
             for (let i in records) {
                 items += `
-                <a href="${window.basePath}/build/console/${records[i].id}" class="list-group-item">
+                <li class="list-group-item">
                     <p>
+                    <a href="${window.basePath}/build/console/${records[i].id}">
                     <i class="fa ${(records[i].status == 0 || records[i].status == 1) ? "text-primary fa-meh-o" : records[i].status == 3 ? "text-danger fa-frown-o" : "text-primary fa-smile-o"} " aria-hidden="true"></i>
                     <span class="build-number">#${size--}-${records[i].buildService}</span> <span class="build-date">${records[i].createdAt}</span>
+                    </a>
                     </p>
                     ${(records[i].status == 0 || records[i].status == 1) ? `
                     <div class="progress">
@@ -71,8 +73,10 @@ module api {
                             <span class="sr-only">40%</span>
                         </div>
                     </div>
-                    ` : ""}
-                </a>    
+                    ` : `
+                    <span onclick="rmRecord(${records[i].id})" class="glyphicon glyphicon-remove" style="position: absolute;z-index:9999;right: 5px;top: 40%;bottom: 0;padding:0 5px;cursor: pointer;"></span>
+                    `}
+                </li>    
                 `;
             }
             return items;

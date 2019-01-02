@@ -183,6 +183,13 @@ public class BuildExecRestController {
         }
     }
 
+    @PostMapping("/build/delRecord/{id}")
+    public ResponseEntity delRecord(@PathVariable Long id) {
+        buildRecordsRepository.delete(id);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, "操作成功"));
+    }
+
     /**
      * 构建任务从部署单元中来
      * 1.默认查询全部

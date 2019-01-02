@@ -139,6 +139,15 @@ var getBuildingListHtml = function (records) {
     $("#buildingList").html(context);
 };
 
+var rmRecord = function (id) {
+    var url = "/api/build/delRecord/" + id;
+    $$.post(url, {}, function (res) {
+        showMessage(INFO, res.msg);
+        getBuildListReq();
+    })
+};
+
+
 var getTaskBuildList = function (taskId) {
     window.clearInterval(hostTimer);
     window.clearInterval(taskTimer);
