@@ -188,6 +188,10 @@ var api;
         Deploy.prototype.exportDeployJournalActionContext = function (value, row) {
             return "<span class=\"link-button-table\">\n            " + (row.opFlag === 1 ? "<a href=\"javascript:void(0)\" title=\"\u56DE\u6EDA\"  onclick=\"rollbackDeploy(" + value + ",'" + row.hostName + "','" + row.serviceName + "')\"><i class=\"fa fa-reply-all\" aria-hidden=\"true\"></i></a>" : "-") + "\n            </span>";
         };
+        Deploy.prototype.exportDiffYamlContext = function (id1, id2, left, right) {
+            var c = this;
+            return "\n                <div class=\"diff-tit\" >\n                <span><a href=\"" + basePath + "/api/deploy-unit/download-yml/" + id2 + "\">" + right + "</a></span>\n                <span><a href=\"" + basePath + "/api/deploy-unit/download-yml/" + id1 + "\">" + left + "</a></span>\n                </div>\n                <div id=\"mergely\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                </div>\n            ";
+        };
         Deploy.prototype.exportViewDeployJournalContext = function () {
             var c = this;
             return "\n                <div class=\"diff-tit\" >\n                <span>\u8FD0\u884C\u914D\u7F6E(\u53EA\u8BFB)</span>\n                <span>\u5F53\u524D\u7248\u672C(\u53EA\u8BFB)</span>\n                </div>\n                <div id=\"mergely\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                </div>\n            ";

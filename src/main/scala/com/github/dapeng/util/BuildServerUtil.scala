@@ -92,6 +92,7 @@ object BuildServerUtil {
 
   def getSourceService(serviceYmlFile: String, imageName: String): DependServiceVo = {
     val content = Source.fromString(serviceYmlFile).getLines().toList
+    //FIXME 此处filter之后长度可能为空，head 错误
     val source = content.filter(_.trim.startsWith(SOURCE_SIGN)).head.split("=")
     val url = if (source.size < 2) "" else source(1)
     val (gitURL, gitName, serviceName, buildOperation) = getLabelDetail(url)

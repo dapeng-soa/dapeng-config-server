@@ -5,6 +5,7 @@ $(document).ready(function () {
 });
 var deploy = new api.Deploy();
 var bsTable = {};
+var $$ = new api.Api();
 
 function initDeployUnits() {
     var queryUrl = basePath + '/api/deploy-units';
@@ -128,6 +129,33 @@ modifyBatchBranch = function () {
                 showMessage(WARN, "操作取消");
             }
         });
+    } else {
+        showMessage(WARN, "未选中任何数据", "警告")
+    }
+};
+
+/**
+ * 对比配置
+ */
+diffYaml = function () {
+    var selected = bsTable.getAllSelections();
+    var ids = [];
+    if (selected.length !== 0) {
+        if (selected.length !== 2) {
+            showMessage(WARN, "请选中两个部署单元进行对比");
+        } else {
+            if (selected[0].serviceId === selected[1].serviceId) {
+                var url = basePath + "/api/deploy/diffYaml/" + selected[0].id + "/" + selected[1].id;
+                $$.$get(url, function (res) {
+                    var context = deploy.exportDiffYamlContext(selected[0].id, selected[1].id, res.context.unit1, res.context.unit2);
+                    initModelContext(context, function () {
+                    });
+                    diffTxt(res.context.yaml1, res.context.yaml2)
+                });
+            } else {
+                showMessage(WARN, "所选部署单元不属同一服务");
+            }
+        }
     } else {
         showMessage(WARN, "未选中任何数据", "警告")
     }

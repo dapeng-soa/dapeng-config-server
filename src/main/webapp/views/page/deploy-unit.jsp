@@ -20,7 +20,8 @@
             <div class="input-group">
                 <p class="left-panel-title">部署单元管理</p>
                 <span class="input-group-btn panel-button-group">
-                    <button type="button" class="btn btn-info" onclick="modifyBatchTag()">批量修改tag</button>
+                    <button type="button" class="btn btn-success" onclick="diffYaml()">对比配置</button>
+                    <button type="button" class="btn btn-warning" onclick="modifyBatchTag()">批量修改tag</button>
                     <button type="button" class="btn btn-info" onclick="modifyBatchBranch()">批量修改分支</button>
                     <button type="button" class="btn btn-primary" onclick="openAddDeployUnitModle()">新增</button>
                 </span>

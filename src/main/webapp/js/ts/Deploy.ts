@@ -875,6 +875,21 @@ restart: on-failure:3
             </span>`;
         }
 
+        public exportDiffYamlContext(id1, id2, left, right) {
+
+            let c = this;
+            return `
+                <div class="diff-tit" >
+                <span><a href="${basePath}/api/deploy-unit/download-yml/${id2}">${right}</a></span>
+                <span><a href="${basePath}/api/deploy-unit/download-yml/${id1}">${left}</a></span>
+                </div>
+                <div id="mergely">
+                </div>
+                <div class="fixed-footer-btn" >
+                </div>
+            `
+        }
+
         public exportViewDeployJournalContext() {
 
             let c = this;

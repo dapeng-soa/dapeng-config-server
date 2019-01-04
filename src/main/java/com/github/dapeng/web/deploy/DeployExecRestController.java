@@ -8,10 +8,7 @@ import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
 import com.github.dapeng.socket.entity.VolumesFile;
 import com.github.dapeng.util.*;
-import com.github.dapeng.vo.DeployHostVo;
-import com.github.dapeng.vo.DeployServiceVo;
-import com.github.dapeng.vo.DeploySubHostVo;
-import com.github.dapeng.vo.DeploySubServiceVo;
+import com.github.dapeng.vo.*;
 import com.github.dapeng.vo.compose.DockerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -287,8 +284,8 @@ public class DeployExecRestController {
         Long subEnvUpdateAt = !isEmpty(subEnvs) ? subEnvs.get(0).getUpdatedAt().getTime() : 0;
         Long unitUpdateAt = unitRepository.getOne(u.getId()).getUpdatedAt().getTime();
         Long filesUpdateAt = getFilesUpdateAt(u);
-        Long netUpdatAt = getNetworkUpdateAt(u);
-        Long[] times = {setUpdateAt, hostUpdateAt, hostsUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, filesUpdateAt, netUpdatAt, unitUpdateAt};
+        Long netUpdateAt = getNetworkUpdateAt(u);
+        Long[] times = {setUpdateAt, hostUpdateAt, hostsUpdateAt, serviceUpdateAt, serviceUpdateAt, subEnvUpdateAt, filesUpdateAt, netUpdateAt, unitUpdateAt};
         return Arrays.stream(times).max(Comparator.naturalOrder()).get();
     }
 
@@ -302,26 +299,7 @@ public class DeployExecRestController {
         TSet set = setRepository.getOne(unit.getSetId());
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
-        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-        List<TSetServiceEnv> envList = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(unit.getSetId(), unit.getServiceId());
-        TSetServiceEnv setSubEnv = new TSetServiceEnv();
-        if (!isEmpty(envList)) {
-            setSubEnv = envList.get(0);
-        }
-        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
-        List<String> files2Volumes = processFiles2Volumes(unit);
-        dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
-        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(host.getId());
-        String netName = "";
-        if (!isEmpty(byHostId)) {
-            TNetwork network = networkRepository.findOne(byHostId.get(0).getNetId());
-            if (!isEmpty(network)) {
-                netName = network.getNetworkName();
-            }
-        }
-        String composeContext = Composeutil.processComposeContext(dockerService1, netName);
-
+        String composeContext = genComposeContext(set, host, service, unit);
         String ip = IPUtils.transferIp(host.getIp());
         DeployVo dockerVo = new DeployVo();
         dockerVo.setLastModifyTime(lastUpdateAt(unit));
@@ -332,6 +310,29 @@ public class DeployExecRestController {
         journalRepository.saveAndFlush(toOperationJournal(unit, 1, composeContext));
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG, dockerVo));
+    }
+
+    @GetMapping("/deploy/diffYaml/{id1}/{id2}")
+    public ResponseEntity diffYaml(@PathVariable Long id1, @PathVariable Long id2) {
+        TDeployUnit unit = unitRepository.getOne(id1);
+        TSet set = setRepository.getOne(unit.getSetId());
+        THost host = hostRepository.getOne(unit.getHostId());
+        TService service = serviceRepository.getOne(unit.getServiceId());
+        TDeployUnit unit1 = unitRepository.getOne(id2);
+        TSet set1 = setRepository.getOne(unit1.getSetId());
+        THost host1 = hostRepository.getOne(unit1.getHostId());
+        TService service1 = serviceRepository.getOne(unit1.getServiceId());
+        String composeContext = genComposeContext(set, host, service, unit);
+        String composeContext1 = genComposeContext(set1, host1, service1, unit1);
+        DiffYamlVo vo = new DiffYamlVo();
+        vo.setUnit1(host.getName() + "_" + service.getName());
+        vo.setUnit2(host1.getName() + "_" + service1.getName());
+        vo.setUpdate1(unit.getUpdatedAt());
+        vo.setUpdate2(unit1.getUpdatedAt());
+        vo.setYaml1(composeContext);
+        vo.setYaml2(composeContext1);
+        return ResponseEntity
+                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, vo));
     }
 
     /**
@@ -504,29 +505,9 @@ public class DeployExecRestController {
         TSet set = setRepository.getOne(unit.getSetId());
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
-        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-        List<TSetServiceEnv> envList = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(unit.getSetId(), unit.getServiceId());
-        TSetServiceEnv setSubEnv = new TSetServiceEnv();
-        if (!isEmpty(envList)) {
-            setSubEnv = envList.get(0);
-        }
-        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
-        List<String> files2Volumes = processFiles2Volumes(unit);
-        dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
-        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(host.getId());
-        String netName = "";
-        if (!isEmpty(byHostId)) {
-            TNetwork network = networkRepository.findOne(byHostId.get(0).getNetId());
-            if (!isEmpty(network)) {
-                netName = network.getNetworkName();
-            }
-        }
-        String composeContext = Composeutil.processComposeContext(dockerService1, netName);
-
         DeployVo dockerVo = new DeployVo();
         dockerVo.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
-        dockerVo.setFileContent(composeContext);
+        dockerVo.setFileContent(genComposeContext(set, host, service, unit));
 
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, dockerVo));
@@ -545,28 +526,9 @@ public class DeployExecRestController {
         TSet set = setRepository.getOne(unit.getSetId());
         THost host = hostRepository.getOne(unit.getHostId());
         TService service = serviceRepository.getOne(unit.getServiceId());
-        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
-        List<TSetServiceEnv> envList = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(unit.getSetId(), unit.getServiceId());
-        TSetServiceEnv setSubEnv = new TSetServiceEnv();
-        if (!isEmpty(envList)) {
-            setSubEnv = envList.get(0);
-        }
-        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
-        List<String> files2Volumes = processFiles2Volumes(unit);
-        dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
-        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
-        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(host.getId());
-        String netName = "";
-        if (!isEmpty(byHostId)) {
-            TNetwork network = networkRepository.findOne(byHostId.get(0).getNetId());
-            if (!isEmpty(network)) {
-                netName = network.getNetworkName();
-            }
-        }
-        String composeContext = Composeutil.processComposeContext(dockerService1, netName);
         String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + (isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName()) + VersionUtil.version() + ".yml";
         // 将内容写入文件
-        Tools.writeStringToFile(path, composeContext);
+        Tools.writeStringToFile(path, genComposeContext(set, host, service, unit));
         // 下载
         try {
             DownloadUtil.downLoad(path, response, false);
@@ -576,7 +538,6 @@ public class DeployExecRestController {
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, COMMON_SUCCESS_MSG));
     }
-
 
     /**
      * 事件请求通用结构体
@@ -613,5 +574,36 @@ public class DeployExecRestController {
         request.setIp(ip);
         request.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         return request;
+    }
+
+    /**
+     * 通过unit获取yaml配置
+     *
+     * @param set
+     * @param host
+     * @param service
+     * @param unit
+     * @return
+     */
+    private String genComposeContext(TSet set, THost host, TService service, TDeployUnit unit) {
+        List<THost> hosts = hostRepository.findBySetId(unit.getSetId());
+        List<TSetServiceEnv> envList = subEnvRepository.findTop1BySetIdAndServiceIdOrderByUpdatedAtDesc(unit.getSetId(), unit.getServiceId());
+        TSetServiceEnv setSubEnv = new TSetServiceEnv();
+        if (!isEmpty(envList)) {
+            setSubEnv = envList.get(0);
+        }
+        DockerService dockerService1 = Composeutil.processServiceOfUnit(set, host, service, unit, setSubEnv);
+        List<String> files2Volumes = processFiles2Volumes(unit);
+        dockerService1.setVolumes(Composeutil.mergeList(files2Volumes, dockerService1.getVolumes()));
+        dockerService1.setExtra_hosts(Composeutil.processExtraHosts(hosts));
+        List<TNetworkHost> byHostId = networkHostRepository.findByHostId(host.getId());
+        String netName = "";
+        if (!isEmpty(byHostId)) {
+            TNetwork network = networkRepository.findOne(byHostId.get(0).getNetId());
+            if (!isEmpty(network)) {
+                netName = network.getNetworkName();
+            }
+        }
+        return Composeutil.processComposeContext(dockerService1, netName);
     }
 }
