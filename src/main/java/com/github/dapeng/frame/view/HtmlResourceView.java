@@ -17,7 +17,6 @@ public class HtmlResourceView extends InternalResourceView {
     public boolean checkResource(Locale locale) {
         File file = new File(this.getServletContext().getRealPath("/") + getUrl());
         // 判断该页面是否存在
-        //System.out.println("位置：HtmlResourceView.checkResource ==> " + file.getAbsolutePath() + "[= " + file.exists() + "]");
         return file.exists();
     }
 }
