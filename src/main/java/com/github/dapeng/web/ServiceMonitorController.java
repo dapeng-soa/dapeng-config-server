@@ -257,7 +257,9 @@ public class ServiceMonitorController {
                 .addScalar("ipList", StandardBasicTypes.STRING)
                 .addScalar("env", StandardBasicTypes.STRING)
                 .setResultTransformer(Transformers.aliasToBean(ServiceMonitorVo.class));
-        return nativeQuery.getResultList();
+        List<ServiceMonitorVo> res = nativeQuery.getResultList();
+        entityManager.close();
+        return res;
     }
 
     /**
@@ -281,7 +283,7 @@ public class ServiceMonitorController {
                 if (m.find()) {
                     port = m.group(1);
                 }
-                if(port==null){
+                if (port == null) {
                     continue;
                 }
                 for (String ip : ipArrs) {
