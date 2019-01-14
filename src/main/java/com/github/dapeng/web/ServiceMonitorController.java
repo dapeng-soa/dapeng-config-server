@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -43,8 +42,8 @@ import java.util.stream.Collectors;
  * @Date: 2018/8/1 11:37
  */
 
-@RestController
-@RequestMapping("/serviceMonitor")
+//@RestController
+//@RequestMapping("/serviceMonitor")
 public class ServiceMonitorController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceMonitorController.class);
