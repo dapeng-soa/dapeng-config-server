@@ -931,12 +931,13 @@ restart: on-failure:3
             let dep = this;
             let subView = "";
             for (let em of sub) {
-                let IdPrefix = viewType == dep.serviceView ? em.hostIp + em.containerName : obj.hostIp + em.containerName;
+                let host = viewType == dep.serviceView ? em.hostIp : obj.hostIp;
+                let IdPrefix = host + em.containerName;
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-4 col-xs-12">
                                 <p style="font-size: 18px;word-wrap: break-word;">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
                                 ${viewType == dep.serviceView ? `<p >${em.hostIp}</p>` : ""}
-                                <p>容器名：<span id="${IdPrefix}-ContainerName">${em.containerName}</span></p>
+                                <p>容器名：<a onclick="openTerminal('${em.containerName}','${host}')" href="javascript:void(0)"><span id="${IdPrefix}-ContainerName">${em.containerName}</span></a></p>
                                 <p>Tag：<span id="${IdPrefix}-ImageTag">none</span></p>
                             </div>
                             <div class="col-sm-6 col-xs-12">

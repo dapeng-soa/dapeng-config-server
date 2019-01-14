@@ -9,4 +9,11 @@ module api {
         time: Number;
         tag: string;
     }
+
+    export class CmdRequest {
+        sourceClientId: string;
+        ip: string;
+        containerId: string;
+        data: string;
+    }
 }

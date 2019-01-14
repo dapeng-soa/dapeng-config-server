@@ -69,10 +69,6 @@
 <script src="${basePath}/plugins/mergely/mergely.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/mergely/mergely.css">
 
-<%--xterm--%>
-<script src="${basePath}/plugins/xterm/xterm.min.js"></script>
-<link rel="stylesheet" href="${basePath}/plugins/xterm/xterm.min.css">
-
 <%--tagsinput--%>
 <script src="${basePath}/plugins/tagsinput/bootstrap-tagsinput.min.js"></script>
 <link rel="stylesheet" href="${basePath}/plugins/tagsinput/bootstrap-tagsinput.css">

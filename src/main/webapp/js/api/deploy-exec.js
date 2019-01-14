@@ -88,13 +88,13 @@ $(document).ready(function () {
     /**
      * 错误返回
      */
-    socket.on(ERROR_EVENT, function (data) {
+    /*socket.on(ERROR_EVENT, function (data) {
         if (data !== "") {
             openConloseView();
             var html = ansi.ansi_to_html(data);
             $$.consoleView(html);
         }
-    });
+    });*/
     /**
      * 监听已注册agent列表
      */
@@ -405,4 +405,15 @@ downloadYaml = function (unitId) {
     showMessage(SUCCESS, "取消升级");
 };
 
+var openTerminal = function (containerId, host) {
+    layer.open({
+        type: 2,
+        title: '终端-[' + host + '-' + containerId + ']',
+        shadeClose: true,
+        shade: false,
+        maxmin: true, //开启最大化最小化按钮
+        area: ['893px', '600px'],
+        content: '/container/terminal?containerId=' + containerId + '&host=' + host
+    });
+};
 

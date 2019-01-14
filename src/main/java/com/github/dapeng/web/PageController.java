@@ -312,4 +312,12 @@ public class PageController {
         model.addAttribute("currentConsole", one);
         return "page/build-console";
     }
+
+    @GetMapping(value = "/container/terminal")
+    public String containerTerminal(Model model) {
+        model.addAttribute("tagName", "deploy-exec");
+        model.addAttribute("sideName", "deploy-exec");
+        // 获取参数可做权限校验
+        return "page/container-terminal";
+    }
 }

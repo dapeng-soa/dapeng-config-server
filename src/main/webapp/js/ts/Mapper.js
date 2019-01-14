@@ -8,4 +8,10 @@ var api;
         return ServiceInfoRepose;
     }());
     api.ServiceInfoRepose = ServiceInfoRepose;
+    var CmdRequest = /** @class */ (function () {
+        function CmdRequest() {
+        }
+        return CmdRequest;
+    }());
+    api.CmdRequest = CmdRequest;
 })(api || (api = {}));
