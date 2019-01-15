@@ -14,6 +14,8 @@ module api {
         sourceClientId: string;
         ip: string;
         containerId: string;
+        width: string;
+        height: string;
         data: string;
     }
 }

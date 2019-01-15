@@ -408,12 +408,20 @@ downloadYaml = function (unitId) {
 var openTerminal = function (containerId, host) {
     layer.open({
         type: 2,
-        title: '终端-[' + host + '-' + containerId + ']',
-        shadeClose: true,
+        title: '>_终端-[' + host + '-' + containerId + ']',
+        shadeClose: false,
         shade: false,
-        maxmin: true, //开启最大化最小化按钮
-        area: ['893px', '600px'],
-        content: '/container/terminal?containerId=' + containerId + '&host=' + host
+        offset: '30px',
+        maxmin: false, //开启最大化最小化按钮
+        resize: false,
+        area: ['1000px', '660px'],
+        content: '/container/terminal?containerId=' + containerId + '&host=' + host,
+        cancel: function(index, layero){
+            if(confirm('确认关闭当前终端？')){ //只有当点击confirm框的确定时，该层才会关闭
+                layer.close(index)
+            }
+            return false;
+        }
     });
 };
 

@@ -12,6 +12,8 @@ $(document).ready(function () {
             request.sourceClientId = socket.id;
             request.ip = getRequest().host;
             request.containerId = getRequest().containerId;
+            request.width = $("#Terminal").width();
+            request.height = $("#Terminal").height();
             request.data = "";
             socket.emit(CMD_EVENT, JSON.stringify(request));
             showMessage(SUCCESS, "容器终端会话连接成功");
@@ -26,14 +28,16 @@ $(document).ready(function () {
         colors: Terminal.xtermColors
     });
     term.open(document.getElementById('Terminal'), true);
-    term.fit();
     term.attach(socket);
     term.focus();
+    term.fit();
     term.on('data', function (data) {
         var request = new api.CmdRequest();
         request.sourceClientId = socket.id;
         request.ip = getRequest().host;
         request.containerId = getRequest().containerId;
+        request.width = $("#Terminal").width();
+        request.height = $("#Terminal").height();
         request.data = data;
         socket.emit(CMD_EVENT, JSON.stringify(request));
     });
@@ -48,18 +52,20 @@ $(document).ready(function () {
             layer.close(index);
             window.refresh();
         }, function () {
-            open("/deploy/exec", '_self');
+            // 自己结束自己的生命
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
         });
     })
 });
 
-function getRequest () {
+function getRequest() {
     var url = location.search;
     var theRequest = {};
     if (url.indexOf("?") !== -1) {
         var str = url.substr(1);
         var strs = str.split("&");
-        for(var i = 0; i < strs.length; i ++) {
+        for (var i = 0; i < strs.length; i++) {
             theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
         }
     }
