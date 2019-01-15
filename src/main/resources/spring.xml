@@ -119,6 +119,8 @@
     </bean>
 
     <bean class="com.github.dapeng.util.BuildServerUtil"/>
+    <!--scala-sql-->
+    <bean id="configServerDatasource" class="com.github.dapeng.datasource.ConfigServerDataSource"/>
 
     <!--配置支持基于注解事务配置  -->
     <tx:annotation-driven/>
