@@ -1,7 +1,5 @@
 package com.github.dapeng.vo;
 
-import javax.persistence.Entity;
-
 /**
  * @Author: zhup
  * @Date: 2018/8/1 15:07

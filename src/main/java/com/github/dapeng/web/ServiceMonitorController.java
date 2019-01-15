@@ -2,13 +2,10 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
+import com.github.dapeng.datasource.ConfigServerQuery;
 import com.github.dapeng.util.GetServiceMonitorThread;
-import com.github.dapeng.util.InfluxDBUtil;
 import com.github.dapeng.util.ZkUtil;
-import com.github.dapeng.vo.MonitorHosts;
-import com.github.dapeng.vo.ServiceGroupVo;
-import com.github.dapeng.vo.ServiceMonitorVo;
-import com.github.dapeng.vo.Subservices;
+import com.github.dapeng.vo.*;
 import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
@@ -24,11 +21,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
@@ -42,8 +43,8 @@ import java.util.stream.Collectors;
  * @Date: 2018/8/1 11:37
  */
 
-//@RestController
-//@RequestMapping("/serviceMonitor")
+@RestController
+@RequestMapping("/serviceMonitor")
 public class ServiceMonitorController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ServiceMonitorController.class);
@@ -64,7 +65,7 @@ public class ServiceMonitorController {
     @ResponseBody
     @RequestMapping("/list")
     public Object serviceMonitorList() {
-        List<ServiceMonitorVo> baseServiceList = getBaseServiceList();
+        List<ServiceMonitorVo> baseServiceList = ConfigServerQuery.getBaseServiceList();
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         List<Map<String, Object>> resultList = resultList(monitorList);
         return resultList.stream().sorted((x, y) -> {
@@ -80,29 +81,6 @@ public class ServiceMonitorController {
             }
             return Integer.parseInt(xnode.get("nodeCount").toString()) - Integer.parseInt(ynode.get("nodeCount").toString());
         }).collect(Collectors.toList());
-    }
-
-
-    @ResponseBody
-    @RequestMapping("/influx")
-    public Object countInfoFromInflux() {
-        try {
-            InfluxDBUtil influxDBUtil = new InfluxDBUtil("admin", "admin", "http://10.10.10.37:8086", "dapengState");
-            /***
-             * 请求数前10名
-             */
-            String queryStr = "select sum(total_calls) from dapeng_service_process where time>now()-1m group by service_name limit 100";
-            List<HashMap<String, Object>> methodMaps = influxDBUtil.query(queryStr);
-            List<HashMap<String, Object>> collect = methodMaps.stream().sorted((x, y) -> {
-                String xValue = x.get("sum").toString();
-                String yValue = y.get("sum").toString();
-                return Integer.parseInt(xValue.substring(0, xValue.indexOf("."))) - Integer.parseInt(yValue.substring(0, yValue.indexOf(".")));
-            }).collect(Collectors.toList());
-            Collections.reverse(collect);
-        } catch (Exception e) {
-            LOGGER.info("influxdb连接异常");
-        }
-        return "";
     }
 
     /**
@@ -243,7 +221,7 @@ public class ServiceMonitorController {
      *
      * @return
      */
-    private List<ServiceMonitorVo> getBaseServiceList() {
+    private List<ServiceMonitorRes> getBaseServiceList() {
         Query nativeQuery = entityManager.createNativeQuery("\n" +
                 "select tdu.service_id AS serviceId,ts.name AS serviceName,group_concat(th.ip) AS ipList, ts.env \n" +
                 " from t_deploy_unit tdu left join t_host th on tdu.host_id=th.id\n" +
@@ -255,8 +233,8 @@ public class ServiceMonitorController {
                 .addScalar("serviceName", StandardBasicTypes.STRING)
                 .addScalar("ipList", StandardBasicTypes.STRING)
                 .addScalar("env", StandardBasicTypes.STRING)
-                .setResultTransformer(Transformers.aliasToBean(ServiceMonitorVo.class));
-        List<ServiceMonitorVo> res = nativeQuery.getResultList();
+                .setResultTransformer(Transformers.aliasToBean(ServiceMonitorRes.class));
+        List<ServiceMonitorRes> res = nativeQuery.getResultList();
         entityManager.close();
         return res;
     }
