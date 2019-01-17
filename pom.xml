@@ -80,13 +80,6 @@
             <version>${commons-lang3.version}</version>
         </dependency>
 
-        <!--influxdb-->
-        <dependency>
-            <groupId>org.influxdb</groupId>
-            <artifactId>influxdb-java</artifactId>
-            <version>${influxdb.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.github.dapeng</groupId>
             <artifactId>agent_server-api_2.12</artifactId>
