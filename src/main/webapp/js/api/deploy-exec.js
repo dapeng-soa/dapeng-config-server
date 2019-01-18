@@ -17,6 +17,7 @@ $(document).ready(function () {
              */
             socket.emit(WEB_REG, SOCKET_REG_INFO);
             showMessage(SUCCESS, "已建立与服务器的连接", "连接成功");
+            $("#deployMain a").removeClass("disable-pointer")
         }
     });
     initSetList();
@@ -88,13 +89,13 @@ $(document).ready(function () {
     /**
      * 错误返回
      */
-    /*socket.on(ERROR_EVENT, function (data) {
+    socket.on(ERROR_EVENT, function (data) {
         if (data !== "") {
             openConloseView();
             var html = ansi.ansi_to_html(data);
             $$.consoleView(html);
         }
-    });*/
+    });
     /**
      * 监听已注册agent列表
      */
@@ -313,6 +314,10 @@ checkService = function () {
  * @param unitId
  */
 stopService = function (unitId) {
+    if (!socket.isConnected) {
+        alert("服务器未连接,操作禁用!");
+        return;
+    }
     var url = basePath + "/api/deploy/stopRealService";
     $$.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
@@ -335,6 +340,10 @@ stopService = function (unitId) {
  * @param unitId
  */
 restartService = function (unitId) {
+    if (!socket.isConnected) {
+        alert("服务器未连接,操作禁用!");
+        return;
+    }
     var url = basePath + "/api/deploy/restartRealService";
     $$.post(url, {unitId: unitId}, function (res) {
         if (res.code === SUCCESS_CODE) {
@@ -357,6 +366,10 @@ restartService = function (unitId) {
  * @param unitId
  */
 rmServiceContainer = function (unitId) {
+    if (!socket.isConnected) {
+        alert("服务器未连接,操作禁用!");
+        return;
+    }
     var url = basePath + "/api/deploy-unit/event_rep/" + unitId;
     $$.get(url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {
@@ -377,6 +390,10 @@ rmServiceContainer = function (unitId) {
  * 执行升级
  */
 execServiceUpdate = function (unitId) {
+    if (!socket.isConnected) {
+        alert("服务器未连接,操作禁用!");
+        return;
+    }
     var url = basePath + "/api/deploy/updateRealService";
     var req = {
         unitId: unitId
@@ -406,6 +423,10 @@ downloadYaml = function (unitId) {
 };
 
 var openTerminal = function (containerId, host) {
+    if (!socket.isConnected) {
+        alert("服务器未连接,操作禁用!");
+        return;
+    }
     layer.open({
         type: 2,
         title: '>_终端-[' + host + '-' + containerId + ']',
@@ -416,8 +437,8 @@ var openTerminal = function (containerId, host) {
         resize: false,
         area: ['1000px', '660px'],
         content: '/container/terminal?containerId=' + containerId + '&host=' + host,
-        cancel: function(index, layero){
-            if(confirm('确认关闭当前终端？')){ //只有当点击confirm框的确定时，该层才会关闭
+        cancel: function (index, layero) {
+            if (confirm('确认关闭当前终端？')) { //只有当点击confirm框的确定时，该层才会关闭
                 layer.close(index)
             }
             return false;

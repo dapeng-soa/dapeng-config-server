@@ -106,6 +106,10 @@ getBuildTasks = function () {
 
 
 var execBuildService = function (taskId) {
+    if (!socket.isConnected) {
+        alert("服务器未连接,操作禁用！");
+        return;
+    }
     var url = basePath + "/api/build/exec-build/" + taskId;
     $$.post(url, {}, function (res) {
         if (res.code === SUCCESS_CODE) {

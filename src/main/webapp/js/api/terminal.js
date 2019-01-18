@@ -1,4 +1,20 @@
+var oldTime = new Date().getTime();
+var newTime = new Date().getTime();
+var outTime = 8 * 60 * 1000;
+
 $(document).ready(function () {
+    /* 鼠标移动事件 */
+    $(document).mouseover(function () {
+        oldTime = new Date().getTime();
+    });
+    function OutTime() {
+        newTime = new Date().getTime();
+        if (newTime - oldTime > outTime) {
+            showReconnection('因长时间未操作已断开连接，是否重连？');
+        }
+    }
+    window.setInterval(OutTime, 5000);
+
     var socket = io(socketUrl);
     // 打开终端
     socket.on(SOC_CONNECT, function () {
@@ -45,19 +61,26 @@ $(document).ready(function () {
         term.write(data);
     });
     socket.on(CMD_EXITED, function (data) {
-        console.log(data);
-        layer.confirm('已退出终端，是否重连？', {
-            btn: ['刷新重连', '关闭终端']
-        }, function (index) {
-            layer.close(index);
-            window.refresh();
-        }, function () {
-            // 自己结束自己的生命
-            var index = parent.layer.getFrameIndex(window.name);
-            parent.layer.close(index);
-        });
+        showReconnection('已退出终端，是否重连？');
     })
 });
+
+/**
+ * 重连
+ */
+function showReconnection(msg) {
+    layer.confirm(msg, {
+        btn: ['刷新重连', '关闭终端'],
+        closeBtn: false
+    }, function (index) {
+        layer.close(index);
+        window.refresh();
+    }, function () {
+        // 自己结束自己的生命
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    });
+}
 
 function getRequest() {
     var url = location.search;

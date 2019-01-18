@@ -143,22 +143,6 @@ var deployJournalActionFormatter = function (value, row, index) {
     return deploy.exportDeployJournalActionContext(value, row);
 };
 
-
-/**
- * 查看
- * @param id
- */
-viewDeployJournal = function (id) {
-    var url = basePath + "/api/deploy-journal/" + id;
-    $.get(url, function (res) {
-        // 导出弹窗内容模版
-        var context = deploy.exportViewDeployJournalContext(res.context);
-        // 初始化弹窗
-        initModelContext(context);
-        setTextareaFull();
-    }, "json");
-};
-
 /**
  * 预览yml
  * @param id
@@ -180,7 +164,7 @@ viewDeployJournalYml = function (id, unitId, hostId, serviceId) {
             $$.$get(url, function (res2) {
                 if (res2.code === SUCCESS_CODE) {
                     // 导出弹窗内容模版
-                    var context = deploy.exportViewDeployJournalContext(id);
+                    var context = deploy.exportViewDeployJournalContext();
                     initModelContext(context, function () {
                     });
                     setTextareaFull();
@@ -199,6 +183,10 @@ viewDeployJournalYml = function (id, unitId, hostId, serviceId) {
  * @param jid
  */
 rollbackDeploy = function (jid, host, service) {
+    if (!socket.isConnected) {
+        alert("服务器未连接,操作禁用!");
+        return;
+    }
     var url = basePath + "/api/deploy/rollbackRealService";
     layer.confirm('回滚服务[' + host + ':' + service + ']?', {
         btn: ['确认', '取消']
