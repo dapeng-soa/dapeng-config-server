@@ -1,5 +1,6 @@
 package com.github.dapeng.web;
 
+import com.github.dapeng.client.netty.RequestUtils;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
 import com.github.dapeng.datasource.ConfigServerQuery;
@@ -53,11 +54,11 @@ public class ServiceMonitorController {
     private Pattern pattern = Pattern.compile("soa_container_port=(\\d.*)");
     private Gson gson = new Gson();
 
-    ThreadPoolExecutor poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(SoaSystemEnvProperties.SOA_CORE_POOL_SIZE,
+   /* ThreadPoolExecutor poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(SoaSystemEnvProperties.SOA_CORE_POOL_SIZE,
             new ThreadFactoryBuilder()
                     .setDaemon(true)
                     .setNameFormat("dapeng-monitor-pool-%d")
-                    .build());
+                    .build());*/
 
     @Resource
     private EntityManager entityManager;
@@ -96,7 +97,7 @@ public class ServiceMonitorController {
         Map<String, String> ipNameMap = new HashMap<>(16);
         try {
             List<JsonObject> jsonObjectList = new ArrayList<>(16);
-            CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
+            //CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
             int k = 0;
             for (int i = 0; i < monitorList.size(); i++) {
                 ServiceGroupVo smlv = monitorList.get(i);
@@ -112,16 +113,29 @@ public class ServiceMonitorController {
 
                 for (int j = 0; j < hosts.size(); j++) {
                     MonitorHosts monitorHosts = hosts.get(j);
-                    k++;
+                    //k++;
                     ipNameMap.put(Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()), smlv.getService());
                     subservices.stream().forEach(x -> {
                         serviceIpMap.put(x.getName(), Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()));
                     });
-                    GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
-                    completionService.submit(getServiceMonitorThread);
+
+                    try {
+                        String romoteServiceEcho = RequestUtils.getRemoteServiceEcho(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
+                        try {
+                            JsonObject asJsonObject = new JsonParser().parse(romoteServiceEcho).getAsJsonObject();
+                            jsonObjectList.add(asJsonObject);
+                        } catch (JsonSyntaxException e) {
+                            LOGGER.error("echo返回不是json串", e);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("获取服务echo信息出现异常", e);
+                    }
+
+                    /*GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
+                    completionService.submit(getServiceMonitorThread);*/
                 }
             }
-            for (int i = 0; i < k; i++) {
+            /*for (int i = 0; i < k; i++) {
                 try {
                     String takeStr = completionService.take().get();
                     if (StringUtils.isNotBlank(takeStr)) {
@@ -136,7 +150,7 @@ public class ServiceMonitorController {
                     LOGGER.error("获取服务echo信息出现异常", e);
                     //e.printStackTrace();
                 }
-            }
+            }*/
             for (int i = 0; i < jsonObjectList.size(); i++) {
                 JsonObject object = jsonObjectList.get(i);
                 String serviceName = null;

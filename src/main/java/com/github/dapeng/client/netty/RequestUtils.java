@@ -12,6 +12,8 @@ import com.github.dapeng.metadata.getServiceMetadata_result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Future;
+
 /**
  * 调用远程服务的工具
  *
@@ -90,11 +92,36 @@ public class RequestUtils {
         //return "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
     }
 
+
+
+    public static String getRemoteServiceEchoAsync(String remoteIp, Integer remotePort, String serviceName, String version) {
+//        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
+        InvocationContextImpl invocationContext = (InvocationContextImpl) InvocationContextImpl.Factory.currentInstance();
+        invocationContext.callerMid("callEcho");
+        invocationContext.serviceName(serviceName);
+        invocationContext.versionName(version);
+        invocationContext.methodName(ECHO_METHOD);
+        SubPool subPool = SubPoolFactory.getSubPool(remoteIp, remotePort);
+        ClientRefManager.getInstance().registerClient(serviceName, version);
+        echo_result result = null;
+        try {
+            Future<echo_result> echo_resultFuture = subPool.getConnection().sendAsync(serviceName, version, ECHO_METHOD,
+                    new echo_args(),
+                    new echo_argsSerializer(),
+                    new echo_resultSerializer(), TIME_OUT);
+            return echo_resultFuture.get().getSuccess();
+        } catch (Exception e) {
+            logger.error("----- service[{}:{}:{}] get echo failed .. Cause : {}", serviceName, remoteIp, remotePort, e.getMessage(), e);
+            return "";
+        }
+        //return "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
+    }
+
     public static void main(String[] arg0) {
 //        JsonPost jsonPost = new JsonPost("com.github.dapeng.task.demo.service.DemoTask2Service", "1.0.0", "echo");
 //        jsonPost.callServiceMethod()
-        System.out.println(getRemoteServiceEcho("192.168.5.96", 9196, "com.github.dapeng.task.demo.service.DemoTask2Service", "1.0.0"));
-        System.out.println(getRemoteServiceEcho("192.168.5.96", 9196, "com.github.dapeng.task.demo.service.DemoTask2Service", "1.0.0"));
+        System.out.println(getRemoteServiceEcho("192.168.5.96", 9095, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
+        System.out.println(getRemoteServiceEcho("192.168.5.96", 9095, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
 //        System.out.println(getRemoteServiceEcho("192.168.5.184", 9195, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
     }
 }
