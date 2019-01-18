@@ -39,16 +39,16 @@
             </li>
         </security:authorize>
         <c:if test="${build_enable}">
-        <security:authorize access="hasAnyRole('ADMIN','OPS','DEV')">
-            <li class="layui-nav-item layui-nav-itemed">
-                <a href="javascript:void(0);"><i class="fa fa-recycle" aria-hidden="true"></i>持续集成</a>
-                <dl class="layui-nav-child">
-                    <dd class="${sideName == 'build-exec' ? 'layui-this' : ''}">
-                        <a href="${basePath}/build/exec"><i class="fa fa-bug" aria-hidden="true"></i>构建任务</a>
-                    </dd>
-                </dl>
-            </li>
-        </security:authorize>
+            <security:authorize access="hasAnyRole('ADMIN','OPS','DEV')">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:void(0);"><i class="fa fa-recycle" aria-hidden="true"></i>持续集成</a>
+                    <dl class="layui-nav-child">
+                        <dd class="${sideName == 'build-exec' ? 'layui-this' : ''}">
+                            <a href="${basePath}/build/exec"><i class="fa fa-bug" aria-hidden="true"></i>构建任务</a>
+                        </dd>
+                    </dl>
+                </li>
+            </security:authorize>
         </c:if>
         <security:authorize access="hasAnyRole('ADMIN','OPS','')">
             <li class="layui-nav-item layui-nav-itemed">
@@ -87,6 +87,11 @@
                 <a href="javascript:void(0);"><i class="fa fa-wrench" aria-hidden="true"></i>系统管理</a>
                 <dl class="layui-nav-child">
                     <security:authorize access="hasRole('ADMIN')">
+                        <dd class="${sideName == 'system-menus' ? 'layui-this' : ''}">
+                            <a href="${basePath}/system/menus"><i class="fa fa-users" aria-hidden="true"></i>菜单管理</a>
+                        </dd>
+                    </security:authorize>
+                    <security:authorize access="hasRole('ADMIN')">
                         <dd class="${sideName == 'system-account' ? 'layui-this' : ''}">
                             <a href="${basePath}/system/account"><i class="fa fa-users" aria-hidden="true"></i>账号管理</a>
                         </dd>
@@ -100,8 +105,6 @@
                 </dl>
             </li>
         </security:authorize>
-        <%--<li class="layui-nav-item"><a href="${basePath}/monitor"><i class="fa fa-tachometer" aria-hidden="true"></i>服务监控</a>
-        </li>--%>
     </ul>
     <a class="toggle-sidebar-btn" onclick="toggleSidebar()">
         <i class="fa fa-outdent" aria-hidden="true"></i>
