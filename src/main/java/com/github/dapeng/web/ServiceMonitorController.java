@@ -120,7 +120,7 @@ public class ServiceMonitorController {
                     });
 
                     try {
-                        String romoteServiceEcho = RequestUtils.getRemoteServiceEcho(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
+                        String romoteServiceEcho = RequestUtils.getRemoteServiceEchoAsync(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
                         try {
                             JsonObject asJsonObject = new JsonParser().parse(romoteServiceEcho).getAsJsonObject();
                             jsonObjectList.add(asJsonObject);
