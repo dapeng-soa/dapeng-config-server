@@ -64,8 +64,8 @@
         <dependency>
             <groupId>com.github.dapeng-soa</groupId>
             <artifactId>dapeng-open-api</artifactId>
-            <version>${dapeng.version}</version>
-            <exclusions>
+            <version>2.1.1</version>
+            <!--<exclusions>
                 <exclusion>
                     <groupId>com.github.dapeng</groupId>
                     <artifactId>dapeng-client-netty</artifactId>
@@ -86,7 +86,7 @@
                     <groupId>com.github.dapeng</groupId>
                     <artifactId>dapeng-utils</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
         <dependency>
             <groupId>com.github.dapeng-soa</groupId>
