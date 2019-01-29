@@ -1,6 +1,7 @@
 package com.github.dapeng.client.netty;
 
 import com.github.dapeng.core.InvocationContextImpl;
+import com.github.dapeng.core.SoaException;
 import com.github.dapeng.echo.echo_args;
 import com.github.dapeng.echo.echo_argsSerializer;
 import com.github.dapeng.echo.echo_result;
@@ -37,7 +38,7 @@ public class RequestUtils {
      * @param version
      * @return
      */
-    public static String getRemoteServiceMetadata(String remoteIp, Integer remotePort, String serviceName, String version) {
+    public static String getRemoteServiceMetadata(String remoteIp, Integer remotePort, String serviceName, String version) throws SoaException {
 //        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
         InvocationContextImpl invocationContext = (InvocationContextImpl) InvocationContextImpl.Factory.currentInstance();
         invocationContext.callerMid("callGetMetadata");
@@ -69,7 +70,7 @@ public class RequestUtils {
      * @param version
      * @return
      */
-    public static String getRemoteServiceEcho(String remoteIp, Integer remotePort, String serviceName, String version) {
+    public static String getRemoteServiceEcho(String remoteIp, Integer remotePort, String serviceName, String version) throws SoaException {
 //        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
         InvocationContextImpl invocationContext = (InvocationContextImpl) InvocationContextImpl.Factory.currentInstance();
         invocationContext.callerMid("callEcho");
@@ -94,7 +95,7 @@ public class RequestUtils {
 
 
 
-    public static String getRemoteServiceEchoAsync(String remoteIp, Integer remotePort, String serviceName, String version) {
+    public static String getRemoteServiceEchoAsync(String remoteIp, Integer remotePort, String serviceName, String version) throws SoaException {
 //        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
         InvocationContextImpl invocationContext = (InvocationContextImpl) InvocationContextImpl.Factory.currentInstance();
         invocationContext.callerMid("callEcho");
@@ -120,8 +121,8 @@ public class RequestUtils {
     public static void main(String[] arg0) {
 //        JsonPost jsonPost = new JsonPost("com.github.dapeng.task.demo.service.DemoTask2Service", "1.0.0", "echo");
 //        jsonPost.callServiceMethod()
-        System.out.println(getRemoteServiceEcho("192.168.5.96", 9095, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
-        System.out.println(getRemoteServiceEcho("192.168.5.96", 9095, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
+//        System.out.println(getRemoteServiceEcho("192.168.5.96", 9095, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
+//        System.out.println(getRemoteServiceEcho("192.168.5.96", 9095, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
 //        System.out.println(getRemoteServiceEcho("192.168.5.184", 9195, "com.github.dapeng.hello.service.HelloService", "1.0.0"));
     }
 }
