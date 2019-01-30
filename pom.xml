@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.github.dapeng-soa</groupId>
             <artifactId>dapeng-open-api</artifactId>
-            <version>2.1.1</version>
+            <version>${dapeng.version}</version>
             <!--<exclusions>
                 <exclusion>
                     <groupId>com.github.dapeng</groupId>
