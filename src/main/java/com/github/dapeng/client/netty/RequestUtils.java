@@ -95,7 +95,7 @@ public class RequestUtils {
 
 
 
-    public static String getRemoteServiceEchoAsync(String remoteIp, Integer remotePort, String serviceName, String version) throws SoaException {
+    public static Future<echo_result> getRemoteServiceEchoAsync(String remoteIp, Integer remotePort, String serviceName, String version) throws SoaException {
 //        InvocationContextImpl.Factory.currentInstance().sessionTid(DapengUtil.generateTid()).callerMid("InnerApiSite");
         InvocationContextImpl invocationContext = (InvocationContextImpl) InvocationContextImpl.Factory.currentInstance();
         invocationContext.callerMid("callEcho");
@@ -110,10 +110,10 @@ public class RequestUtils {
                     new echo_args(),
                     new echo_argsSerializer(),
                     new echo_resultSerializer(), TIME_OUT);
-            return echo_resultFuture.get().getSuccess();
+            return echo_resultFuture;
         } catch (Exception e) {
             logger.error("----- service[{}:{}:{}] get echo failed .. Cause : {}", serviceName, remoteIp, remotePort, e.getMessage(), e);
-            return "";
+            return null;
         }
         //return "shutdown / terminating / terminated[false / false / false] -activeCount / poolSize[0 / 6] -waitingTasks / completeTasks / totalTasks[0 / 6 / 6]";
     }

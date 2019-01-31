@@ -4,6 +4,7 @@ import com.github.dapeng.client.netty.RequestUtils;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
 import com.github.dapeng.datasource.ConfigServerQuery;
+import com.github.dapeng.echo.echo_result;
 import com.github.dapeng.util.GetServiceMonitorThread;
 import com.github.dapeng.util.ZkUtil;
 import com.github.dapeng.vo.*;
@@ -31,10 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -97,6 +95,7 @@ public class ServiceMonitorController {
         Map<String, String> ipNameMap = new HashMap<>(16);
         try {
             List<JsonObject> jsonObjectList = new ArrayList<>(16);
+            List<Future<echo_result>> futureList = new ArrayList<>();
             //CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
             int k = 0;
             for (int i = 0; i < monitorList.size(); i++) {
@@ -120,12 +119,9 @@ public class ServiceMonitorController {
                     });
 
                     try {
-                        String romoteServiceEcho = RequestUtils.getRemoteServiceEchoAsync(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
-                        try {
-                            JsonObject asJsonObject = new JsonParser().parse(romoteServiceEcho).getAsJsonObject();
-                            jsonObjectList.add(asJsonObject);
-                        } catch (JsonSyntaxException e) {
-                            LOGGER.error("echo返回不是json串", e);
+                        if(!CheckConnectInfo.set.contains(monitorHosts.getIp()+":"+monitorHosts.getPort())){
+                            Future<echo_result> remoteServiceEchoAsync = RequestUtils.getRemoteServiceEchoAsync(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
+                            futureList.add(remoteServiceEchoAsync);
                         }
                     } catch (Exception e) {
                         LOGGER.error("获取服务echo信息出现异常", e);
@@ -135,6 +131,18 @@ public class ServiceMonitorController {
                     completionService.submit(getServiceMonitorThread);*/
                 }
             }
+
+            for(Future<echo_result> echo:futureList){
+                try {
+                    String echoString = echo.get().getSuccess();
+                    JsonObject asJsonObject = new JsonParser().parse(echoString).getAsJsonObject();
+                    jsonObjectList.add(asJsonObject);
+                } catch (JsonSyntaxException e) {
+                    LOGGER.error("echo返回不是json串", e);
+                }
+            }
+
+
             /*for (int i = 0; i < k; i++) {
                 try {
                     String takeStr = completionService.take().get();
