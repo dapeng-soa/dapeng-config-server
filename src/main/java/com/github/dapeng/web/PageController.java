@@ -47,33 +47,6 @@ public class PageController {
         return "redirect:me";
     }
 
-    @GetMapping("/maple")
-    public String maple(Model model) {
-        model.addAttribute("tagName", "index");
-        return "maple";
-    }
-
-
-    /**
-     * 登录
-     *
-     * @return
-     */
-   /* @GetMapping(value = "/error")
-    public String error() {
-        return "redirect:login";
-    }*/
-
-    /**
-     * 登出
-     *
-     * @return
-     */
-    @GetMapping(value = "/logout")
-    public String logout() {
-        return "redirect:login?logout";
-    }
-
     /**
      * 登录
      *
@@ -109,10 +82,17 @@ public class PageController {
         return "page/system-log";
     }
 
+    @GetMapping(value = "/system/menus")
+    public String systemMenus(Model model) {
+        model.addAttribute("tagName", "system-menus");
+        model.addAttribute("sideName", "system-menus");
+        return "page/system-menus";
+    }
+
     @GetMapping(value = "/me")
     public String accountMe(Model model) {
-        UserDetails user = userDetailsService.loadUserByUsername(SecurityUtil.me());
-        model.addAttribute("me", user);
+        /*UserDetails user = userDetailsService.loadUserByUsername(SecurityUtil.me());*/
+        /*model.addAttribute("me", user);*/
         return "page/system-me";
     }
 
@@ -317,7 +297,6 @@ public class PageController {
     public String containerTerminal(Model model) {
         model.addAttribute("tagName", "deploy-exec");
         model.addAttribute("sideName", "deploy-exec");
-        // 获取参数可做权限校验
         return "page/container-terminal";
     }
 }

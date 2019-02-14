@@ -136,4 +136,15 @@
         </aop:aspect>
     </aop:config>
 
+
+    <!--自定义的filter-->
+    <bean class="com.github.dapeng.config.CustomerAccessDecisionManager" id="customerAccessDecisionManager"/>
+    <bean class="com.github.dapeng.config.CustomerInvocationSecurityMetadataSource"
+          id="customerInvocationSecurityMetadataSource">
+        <constructor-arg name="configServerDataSource" ref="configServerDatasource"/>
+    </bean>
+    <bean class="com.github.dapeng.config.CustomerFilterSecurityInterceptor">
+        <property name="accessDecisionManager" ref="customerAccessDecisionManager"/>
+        <property name="securityMetadataSource" ref="customerInvocationSecurityMetadataSource"/>
+    </bean>
 </beans>

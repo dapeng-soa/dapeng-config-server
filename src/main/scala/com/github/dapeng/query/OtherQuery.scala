@@ -1,11 +1,11 @@
-package com.github.dapeng.datasource
+package com.github.dapeng.query
 
 import java.util
 
-import com.github.dapeng.datasource.ConfigServerDataSource._
-import com.github.dapeng.vo.{ServiceMonitorRes, ServiceMonitorVo}
+import com.github.dapeng.datasource.ConfigServerDataSource.mysqlData
+import com.github.dapeng.entity.ServiceMonitorRes
+import com.github.dapeng.vo.ServiceMonitorVo
 import wangzx.scala_commons.sql._
-
 
 /**
   * @author with struy.
@@ -14,7 +14,7 @@ import wangzx.scala_commons.sql._
   */
 
 
-object ConfigServerQuery {
+object OtherQuery {
   def getBaseServiceList: java.util.List[ServiceMonitorVo] = {
     val lists = new util.ArrayList[ServiceMonitorVo](16)
 

@@ -25,7 +25,7 @@ public class ConfigServerApplication {
     public static void main(String[] args) {
         PropertiesUtil.loadProperties();
         new SpringApplicationBuilder()
-                .bannerMode(Banner.Mode.CONSOLE)
+                .bannerMode(Banner.Mode.LOG)
                 .sources(ConfigServerApplication.class)
                 .run(args);
     }

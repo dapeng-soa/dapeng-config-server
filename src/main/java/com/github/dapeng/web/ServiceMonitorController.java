@@ -2,7 +2,8 @@ package com.github.dapeng.web;
 
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
-import com.github.dapeng.datasource.ConfigServerQuery;
+import com.github.dapeng.entity.ServiceMonitorRes;
+import com.github.dapeng.query.OtherQuery;
 import com.github.dapeng.util.GetServiceMonitorThread;
 import com.github.dapeng.util.ZkUtil;
 import com.github.dapeng.vo.*;
@@ -65,7 +66,7 @@ public class ServiceMonitorController {
     @ResponseBody
     @RequestMapping("/list")
     public Object serviceMonitorList() {
-        List<ServiceMonitorVo> baseServiceList = ConfigServerQuery.getBaseServiceList();
+        List<ServiceMonitorVo> baseServiceList = OtherQuery.getBaseServiceList();
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         List<Map<String, Object>> resultList = resultList(monitorList);
         return resultList.stream().sorted((x, y) -> {

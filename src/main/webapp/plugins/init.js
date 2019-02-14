@@ -77,11 +77,13 @@ window.setTextareaFull = function () {
 window.clearTextareaFull = function () {
 
 };
-
-window.layer = {};
-
+/*layui loader*/
+window.layui = layui;
 layui.use('layer', function () {
-    window.layui = layui.layer;
+    window.layer = layui.layer;
+});
+layui.use('element', function () {
+    window.element = layui.element;
 });
 
 // 刷新页面
@@ -255,6 +257,11 @@ window.initTags = function (data) {
         this.columns = columns;
         this.height = 700;                      //默认表格高度700
         this.data = {};
+        this.search = true;
+        this.shade = false;
+        this.shadeBox = new ShadeBox('#' + bstableId);
+        this.showColumns = true;
+        this.showRefresh = true;
         this.showFullscreen = false;
         this.onLoadSuccess = function () {
         };
@@ -307,10 +314,10 @@ window.initTags = function (data) {
                     pageNumber: 1,                  //初始化加载第一页，默认第一页
                     pageSize: 15,               //每页的记录行数（*）
                     pageList: [5, 10, 15, 20, 30, 40, 50],    //可供选择的每页的行数（*）
-                    search: true,              //是否显示表格搜索，此搜索是客户端搜索，不会进服务端
+                    search: this.search,              //是否显示表格搜索，此搜索是客户端搜索，不会进服务端
                     strictSearch: false,         //设置为 true启用 全匹配搜索，否则为模糊搜索
-                    showColumns: true,          //是否显示所有的列
-                    showRefresh: true,          //是否显示刷新按钮
+                    showColumns: this.showColumns,          //是否显示所有的列
+                    showRefresh: this.showRefresh,          //是否显示刷新按钮
                     minimumCountColumns: 2,     //最少允许的列数
                     clickToSelect: true,        //是否启用点击选中行
                     searchOnEnterKey: false,     //设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
@@ -333,7 +340,17 @@ window.initTags = function (data) {
                     onCheckAll: this.onCheckAll, // 全选所有的行时触发
                     onUncheckAll: this.onUncheckAll // 反选所有的行时触发
                 });
+            if (this.shade) {
+                this.shadeBox.add();
+            }
             return this;
+        },
+        setShadeBox: function (bool) {
+            if (!this.shadeBox.shaded && bool) {
+                this.shadeBox.add();
+            } else if (this.shadeBox.shaded && !bool) {
+                this.shadeBox.remove();
+            }
         },
         /**
          * 向后台传递的自定义参数
@@ -543,3 +560,39 @@ Date.prototype.pattern = function (fmt) {
 window.getScrollHeight = function () {
     return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
 };
+
+
+(function () {
+    var ShadeBox = function (sourceId) {
+        this.sourceId = sourceId;
+        this.id = "_shade_box";
+        this.opacity = 0.5;
+        this.shaded = false;
+    };
+    ShadeBox.prototype = {
+        /**
+         * 添加遮罩
+         */
+        add: function () {
+            $("<div id='" + this.id + "' style='opacity:" + this.opacity + ";background:#FFF'></div>").css({
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 300,
+                height: '100%',
+                width: '100%'
+            }).appendTo(this.sourceId);
+            this.shaded = true;
+            return this;
+        },
+        /**
+         * 去除遮罩
+         */
+        remove: function () {
+            $(this.sourceId + " #" + this.id).remove();
+            this.shaded = false;
+            return this;
+        }
+    };
+    window.ShadeBox = ShadeBox;
+}());

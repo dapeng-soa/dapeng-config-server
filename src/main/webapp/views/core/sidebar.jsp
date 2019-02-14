@@ -12,14 +12,14 @@
             </span>
         </div>
         <p>
-            <security:authentication property="principal.username"/>
+            <%--<security:authentication property="principal.username"/>--%>
         </p>
         <a class="header-icon-item" href="${basePath}/logout">
             <span>登出</span><i class="fa fa-sign-out" aria-hidden="true"></i>
         </a>
     </div>
     <ul class="layui-nav layui-nav-tree menu-left" lay-filter="test">
-        <security:authorize access="hasAnyRole('ADMIN','OPS')">
+        <security:authorize access="permitAll()">
             <li class="layui-nav-item layui-nav-itemed">
                 <a href="javascript:void(0);"><i class="fa fa-cogs" aria-hidden="true"></i>配置管理</a>
                 <dl class="layui-nav-child">
@@ -39,7 +39,7 @@
             </li>
         </security:authorize>
         <c:if test="${build_enable}">
-            <security:authorize access="hasAnyRole('ADMIN','OPS','DEV')">
+            <security:authorize access="permitAll()">
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:void(0);"><i class="fa fa-recycle" aria-hidden="true"></i>持续集成</a>
                     <dl class="layui-nav-child">
@@ -50,7 +50,7 @@
                 </li>
             </security:authorize>
         </c:if>
-        <security:authorize access="hasAnyRole('ADMIN','OPS','')">
+        <security:authorize access="permitAll()">
             <li class="layui-nav-item layui-nav-itemed">
                 <a href="javascript:void(0);"><i class="fa fa-paper-plane" aria-hidden="true"></i>发布部署</a>
                 <dl class="layui-nav-child">
@@ -82,13 +82,13 @@
                 </dl>
             </li>
         </security:authorize>
-        <security:authorize access="hasAnyRole('ADMIN','OPS')">
+        <security:authorize access="permitAll()">
             <li class="layui-nav-item layui-nav-itemed">
                 <a href="javascript:void(0);"><i class="fa fa-wrench" aria-hidden="true"></i>系统管理</a>
                 <dl class="layui-nav-child">
-                    <security:authorize access="hasRole('ADMIN')">
+                    <security:authorize access="permitAll()">
                         <dd class="${sideName == 'system-menus' ? 'layui-this' : ''}">
-                            <a href="${basePath}/system/menus"><i class="fa fa-users" aria-hidden="true"></i>菜单管理</a>
+                            <a href="${basePath}/system/menus"><i class="fa fa-bars" aria-hidden="true"></i>菜单管理</a>
                         </dd>
                     </security:authorize>
                     <security:authorize access="hasRole('ADMIN')">

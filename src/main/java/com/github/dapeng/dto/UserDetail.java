@@ -5,12 +5,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author struy
  */
 public class UserDetail implements UserDetails {
 
+    private Long id;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
@@ -38,6 +40,8 @@ public class UserDetail implements UserDetails {
     private String nickname;
 
     private String remark;
+
+    private List<String> menus;
 
 
     public void setUsername(String username) {
@@ -140,5 +144,21 @@ public class UserDetail implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public List<String> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(List<String> menus) {
+        this.menus = menus;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

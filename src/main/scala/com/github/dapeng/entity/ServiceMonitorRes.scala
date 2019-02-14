@@ -1,4 +1,4 @@
-package com.github.dapeng.vo
+package com.github.dapeng.entity
 
 /**
   * @author with struy.
