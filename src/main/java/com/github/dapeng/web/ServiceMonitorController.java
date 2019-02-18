@@ -1,19 +1,18 @@
 package com.github.dapeng.web;
 
+import com.github.dapeng.client.netty.RequestUtils;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
 import com.github.dapeng.entity.ServiceMonitorRes;
 import com.github.dapeng.query.OtherQuery;
-import com.github.dapeng.util.GetServiceMonitorThread;
+import com.github.dapeng.echo.echo_result;
 import com.github.dapeng.util.ZkUtil;
 import com.github.dapeng.vo.*;
 import com.google.common.base.Joiner;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.ZooKeeper;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
@@ -31,10 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -54,11 +50,11 @@ public class ServiceMonitorController {
     private Pattern pattern = Pattern.compile("soa_container_port=(\\d.*)");
     private Gson gson = new Gson();
 
-    ThreadPoolExecutor poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(SoaSystemEnvProperties.SOA_CORE_POOL_SIZE,
+   /* ThreadPoolExecutor poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(SoaSystemEnvProperties.SOA_CORE_POOL_SIZE,
             new ThreadFactoryBuilder()
                     .setDaemon(true)
                     .setNameFormat("dapeng-monitor-pool-%d")
-                    .build());
+                    .build());*/
 
     @Resource
     private EntityManager entityManager;
@@ -97,7 +93,8 @@ public class ServiceMonitorController {
         Map<String, String> ipNameMap = new HashMap<>(16);
         try {
             List<JsonObject> jsonObjectList = new ArrayList<>(16);
-            CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
+            List<Future<echo_result>> futureList = new ArrayList<>();
+            //CompletionService<String> completionService = new ExecutorCompletionService<>(poolExecutor);
             int k = 0;
             for (int i = 0; i < monitorList.size(); i++) {
                 ServiceGroupVo smlv = monitorList.get(i);
@@ -113,16 +110,38 @@ public class ServiceMonitorController {
 
                 for (int j = 0; j < hosts.size(); j++) {
                     MonitorHosts monitorHosts = hosts.get(j);
-                    k++;
+                    //k++;
                     ipNameMap.put(Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()), smlv.getService());
                     subservices.stream().forEach(x -> {
                         serviceIpMap.put(x.getName(), Joiner.on(":").join(monitorHosts.getIp(), monitorHosts.getPort()));
                     });
-                    GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
-                    completionService.submit(getServiceMonitorThread);
+
+                    try {
+                        if(!CheckConnectInfo.set.contains(monitorHosts.getIp()+":"+monitorHosts.getPort())){
+                            Future<echo_result> remoteServiceEchoAsync = RequestUtils.getRemoteServiceEchoAsync(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
+                            futureList.add(remoteServiceEchoAsync);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("获取服务echo信息出现异常", e);
+                    }
+
+                    /*GetServiceMonitorThread getServiceMonitorThread = new GetServiceMonitorThread(monitorHosts.getIp(), Integer.parseInt(monitorHosts.getPort()), subservices.get(0).getName(), subservices.get(0).getVersion());
+                    completionService.submit(getServiceMonitorThread);*/
                 }
             }
-            for (int i = 0; i < k; i++) {
+
+            for(Future<echo_result> echo:futureList){
+                try {
+                    String echoString = echo.get().getSuccess();
+                    JsonObject asJsonObject = new JsonParser().parse(echoString).getAsJsonObject();
+                    jsonObjectList.add(asJsonObject);
+                } catch (JsonSyntaxException e) {
+                    LOGGER.error("echo返回不是json串", e);
+                }
+            }
+
+
+            /*for (int i = 0; i < k; i++) {
                 try {
                     String takeStr = completionService.take().get();
                     if (StringUtils.isNotBlank(takeStr)) {
@@ -137,7 +156,7 @@ public class ServiceMonitorController {
                     LOGGER.error("获取服务echo信息出现异常", e);
                     //e.printStackTrace();
                 }
-            }
+            }*/
             for (int i = 0; i < jsonObjectList.size(); i++) {
                 JsonObject object = jsonObjectList.get(i);
                 String serviceName = null;
