@@ -106,7 +106,7 @@ getBuildTasks = function () {
 
 
 var execBuildService = function (taskId) {
-    if (!socket.isConnected) {
+    if (!socket.connected) {
         alert("服务器未连接,操作禁用！");
         return;
     }

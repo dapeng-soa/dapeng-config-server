@@ -183,7 +183,7 @@ viewDeployJournalYml = function (id, unitId, hostId, serviceId) {
  * @param jid
  */
 rollbackDeploy = function (jid, host, service) {
-    if (!socket.isConnected) {
+    if (!socket.connected) {
         alert("服务器未连接,操作禁用!");
         return;
     }

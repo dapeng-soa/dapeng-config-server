@@ -230,7 +230,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.10</version>
                 <configuration>
-                    <imageName>harbor.today36524.td/basic/dapeng-config-server:V2.1</imageName>
+                    <imageName>harbor.today36524.td/basic/dapeng-config-server:web-bash</imageName>
                     <dockerDirectory>${basedir}/docker</dockerDirectory>
                 </configuration>
                 <executions>
