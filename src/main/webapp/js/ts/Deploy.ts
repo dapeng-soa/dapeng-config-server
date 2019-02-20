@@ -840,6 +840,21 @@ restart: on-failure:3
             `
         }
 
+        public exportBatchAddUnitContent() {
+            return `
+            <div style="padding: 0 5px">
+                <div class="form-group" style="margin-top: 20px">
+                        <label for="batchAddSet">环境集:</label>
+                        <select class="form-control" id="batchAddSet" onchange="batchGenUnitSetChanged()"></select>
+                 </div>
+                <div class="form-group">
+                        <label for="batchAddHost">主机:</label>
+                        <select class="form-control"  id="batchAddHost"></select>
+                 </div>
+                 </div>
+            `
+        }
+
         public exportModifyBatchBranchContent(branchDomId) {
             return `
             <div style="padding: 0 5px">

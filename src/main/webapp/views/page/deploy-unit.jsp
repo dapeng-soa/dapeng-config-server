@@ -24,6 +24,7 @@
                     <button type="button" class="btn btn-warning" onclick="modifyBatchTag()">批量修改tag</button>
                     <button type="button" class="btn btn-info" onclick="modifyBatchBranch()">批量修改分支</button>
                     <button type="button" class="btn btn-primary" onclick="openAddDeployUnitModle()">新增</button>
+                    <button type="button" class="btn btn-default" onclick="openBatchGenUnit()">一键新增</button>
                 </span>
             </div>
         </div>
