@@ -230,6 +230,76 @@ openAddDeployUnitModle = function () {
     initServiceList();
 };
 
+openBatchGenUnit = function () {
+    layer.open({
+        type: 1,
+        title: '选择环境集和主机生成部署单元',
+        area: ['300px', '300px'],
+        content: deploy.exportBatchAddUnitContent(),
+        btn: ['生成', '取消'],
+        yes: function (index, layero) {
+            var setId = $("#batchAddSet").find("option:selected").val();
+            var hostId = $("#batchAddHost").find("option:selected").val();
+            console.log(setId, hostId);
+            if (setId !== undefined && setId !== "") {
+                var url = basePath + "/api/deploy-unit/batchGenUnit";
+                var settings = {
+                    type: "post",
+                    url: url,
+                    data: {setId: setId, hostId: hostId},
+                    dataType: "json"
+                };
+                $.ajax(settings).done(function (res) {
+                    if (res.code === SUCCESS_CODE) {
+                        showMessage(SUCCESS, res.msg, "修改成功");
+                        bsTable.refresh();
+                        layer.close(index);
+                    } else {
+                        showMessage(ERROR, res.msg, "修改失败");
+                    }
+                });
+            } else {
+                showMessage(ERROR, "请填写tag！");
+            }
+        }, btn2: function (index, layero) {
+            showMessage(WARN, "操作取消");
+        }, cancel: function () {
+            showMessage(WARN, "操作取消");
+        }
+    });
+
+    var curl = basePath + "/api/deploy-sets?sort=name&order=asc";
+    var s1 = new BzSelect(curl, "batchAddSet", "id", "name");
+    s1.after = function () {
+        batchGenUnitSetChanged();
+    };
+    s1.responseHandler = function (res) {
+        return res.context.content
+    };
+    s1.refresh = true;
+    s1.init();
+    initBatchGenHost();
+};
+
+initBatchGenHost = function () {
+    var setSelected = $("#batchAddSet").find("option:selected").val();
+    if (setSelected === undefined) {
+        setSelected = 0;
+    }
+    var curl = basePath + "/api/deploy-hosts/" + setSelected;
+    var ss = new BzSelect(curl, "batchAddHost", "id", "name");
+    ss.responseHandler = function (res) {
+        return res.context
+    };
+    ss.refresh = true;
+    ss.init();
+};
+
+
+batchGenUnitSetChanged = function () {
+    initBatchGenHost();
+};
+
 /**
  * 保存
  */
