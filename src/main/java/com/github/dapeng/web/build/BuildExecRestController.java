@@ -3,11 +3,13 @@ package com.github.dapeng.web.build;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.entity.build.TServiceBuildRecords;
+import com.github.dapeng.entity.build.TServiceBuildRecordsVo;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.entity.deploy.TSet;
 import com.github.dapeng.repository.build.ServiceBuildRecordsRepository;
+import com.github.dapeng.repository.build.ServiceBuildRecordsVoRepository;
 import com.github.dapeng.repository.deploy.DeployUnitRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
@@ -44,6 +46,9 @@ public class BuildExecRestController {
 
     @Autowired
     ServiceBuildRecordsRepository buildRecordsRepository;
+
+    @Autowired
+    ServiceBuildRecordsVoRepository buildRecordsVoRepository;
 
     @Autowired
     SetRepository setRepository;
@@ -142,7 +147,7 @@ public class BuildExecRestController {
     public ResponseEntity getBuildingList(@RequestParam(required = false) Long serviceId,
                                           @RequestParam(required = false) Long setId) {
         try {
-            List<TServiceBuildRecords> records = new ArrayList<>();
+            List<TServiceBuildRecordsVo> records = new ArrayList<>();
             if (!isEmpty(setId)) {
                 TSet set = setRepository.findOne(setId);
                 if (isEmpty(set)) {
@@ -155,13 +160,13 @@ public class BuildExecRestController {
                 if (!isEmpty(serviceId)) {
                     TService service = serviceRepository.findOne(serviceId);
                     if (!isEmpty(service)) {
-                        records = buildRecordsRepository.findByBuildServiceAndAgentHostOrderByCreatedAtDesc(service.getName(), IPUtils.transferIp(buildHost.getIp()));
+                        records = buildRecordsVoRepository.findByBuildServiceAndAgentHostOrderByCreatedAtDesc(service.getName(), IPUtils.transferIp(buildHost.getIp()));
                     }
                 } else {
-                    records = buildRecordsRepository.findByAgentHostOrderByCreatedAtDesc(IPUtils.transferIp(buildHost.getIp()));
+                    records = buildRecordsVoRepository.findByAgentHostOrderByCreatedAtDesc(IPUtils.transferIp(buildHost.getIp()));
                 }
             } else {
-                records = buildRecordsRepository.findByOrderByCreatedAtDesc();
+                records = buildRecordsVoRepository.findByOrderByCreatedAtDesc();
             }
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
@@ -174,7 +179,7 @@ public class BuildExecRestController {
     @GetMapping("/build/building-history-byTask/{taskId}")
     public ResponseEntity getBuildingHistoryByTask(@PathVariable Long taskId) {
         try {
-            List<TServiceBuildRecords> records = buildRecordsRepository.findByTaskIdOrderByCreatedAtDesc(taskId);
+            List<TServiceBuildRecordsVo> records = buildRecordsVoRepository.findByTaskIdOrderByCreatedAtDesc(taskId);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, records));
         } catch (Exception e) {

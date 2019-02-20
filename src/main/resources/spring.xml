@@ -127,6 +127,9 @@
 
     <!--操作日志记录Aop-->
     <bean class="com.github.dapeng.aop.LogAspect" id="logAspect"/>
+
+    <bean class="com.github.dapeng.web.CheckConnectInfo" init-method="init"/>
+
     <aop:config>
         <aop:aspect id="loggerAspect" ref="logAspect">
             <aop:around method="record" pointcut="(execution(* com.github.dapeng.web..*.add*(..))

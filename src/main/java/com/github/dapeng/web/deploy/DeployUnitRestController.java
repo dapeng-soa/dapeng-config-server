@@ -6,6 +6,7 @@ import com.github.dapeng.dto.ModifyBatchTagDto;
 import com.github.dapeng.dto.UnitDto;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import com.github.dapeng.entity.deploy.TFilesUnit;
+import com.github.dapeng.entity.deploy.THost;
 import com.github.dapeng.entity.deploy.TService;
 import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.util.Check;
@@ -341,6 +342,12 @@ public class DeployUnitRestController {
     @PostMapping(value = "deploy-unit/modify-batch")
     public ResponseEntity modifyDeployUnitTagBatch(@RequestBody ModifyBatchTagDto tagDto) {
         try {
+            if (isEmpty(tagDto.getPublishTag())) {
+                throw new Exception("镜像tag不能为空");
+            }
+            if (isEmpty(tagDto.getTag())) {
+                throw new Exception("发布tag不能为空");
+            }
             Check.hasChinese(tagDto.getTag(), "镜像tag");
             Check.hasChinese(tagDto.getPublishTag(), "发布tag");
             List<TDeployUnit> units = unitRepository.findAll(tagDto.getIds());
@@ -352,6 +359,45 @@ public class DeployUnitRestController {
             unitRepository.save(units);
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "批量修改镜像tag成功"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .ok(Resp.of(ERROR_CODE, e.getMessage()));
+        }
+    }
+
+    @PostMapping(value = "deploy-unit/batchGenUnit")
+    public ResponseEntity batchGenUnit(@RequestParam Long setId, @RequestParam Long hostId) {
+        try {
+            THost host = hostRepository.findOne(hostId);
+            if (isEmpty(host)) {
+                throw new Exception("未找到对应主机");
+            }
+            if (host.getSetId() != setId) {
+                throw new Exception("主机不属于所选环境");
+            }
+            List<TDeployUnit> units = new ArrayList<>();
+            List<TService> services = serviceRepository.findAll();
+            String emptyString = "";
+            for (TService service : services) {
+                TDeployUnit unit = new TDeployUnit();
+                unit.setSetId(setId);
+                unit.setHostId(hostId);
+                unit.setServiceId(service.getId());
+                unit.setBranch("master");
+                unit.setImageTag("latest");
+                unit.setGitTag(host.getName() + "-" + service.getName());
+                unit.setContainerName(service.getName());
+                unit.setCreatedAt(DateUtil.now());
+                unit.setUpdatedAt(DateUtil.now());
+                unit.setEnv(emptyString);
+                unit.setVolumes(emptyString);
+                unit.setDockerExtras(emptyString);
+                unit.setPorts(emptyString);
+                units.add(unit);
+            }
+            unitRepository.save(units);
+            return ResponseEntity
+                    .ok(Resp.of(SUCCESS_CODE, "批量生成部署单元成功"));
         } catch (Exception e) {
             return ResponseEntity
                     .ok(Resp.of(ERROR_CODE, e.getMessage()));
