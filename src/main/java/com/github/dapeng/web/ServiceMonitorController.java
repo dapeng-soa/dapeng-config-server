@@ -68,7 +68,8 @@ public class ServiceMonitorController {
         return resultList.stream().sorted((x, y) -> {
             HashMap xnode = (HashMap) x.get("node");
             HashMap ynode = (HashMap) y.get("node");
-            if (Integer.parseInt(xnode.get("nodeCount").toString()) == Integer.parseInt(ynode.get("nodeCount").toString())) {
+            if (Integer.parseInt(xnode.get("nodeCount").toString()) == Integer.parseInt(ynode.get("nodeCount").toString())
+                    &&Integer.parseInt(xnode.get("nodeCount").toString())!=0&&Integer.parseInt(ynode.get("nodeCount").toString())!=0) {
                 HashMap xtask = (HashMap) x.get("tasks");
                 HashMap ytask = (HashMap) y.get("tasks");
                 if (Integer.parseInt(xtask.get("waitingQueue").toString()) == Integer.parseInt(ytask.get("waitingQueue").toString())) {
