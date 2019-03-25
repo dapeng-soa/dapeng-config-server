@@ -158,6 +158,18 @@ public class PageController {
 
 
     /**
+     * 配置管理-路由配置
+     *
+     * @return
+     */
+    @GetMapping(value = "/config/route")
+    public String route(Model model) {
+        model.addAttribute("tagName", "config");
+        model.addAttribute("sideName", "config-route");
+        return "page/config-route";
+    }
+
+    /**
      * 发布部署
      *
      * @return

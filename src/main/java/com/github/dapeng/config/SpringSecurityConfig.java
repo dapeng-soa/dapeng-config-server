@@ -28,24 +28,32 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private CustomerFilterSecurityInterceptor customerFilterSecurityInterceptor;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(customerFilterSecurityInterceptor, FilterSecurityInterceptor.class);
         http.headers().frameOptions().disable();
-        http.csrf().disable().formLogin()
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/config/route").permitAll()
+                .antMatchers("/api/route/**").permitAll()
+                .antMatchers("/config/**").hasAnyRole("ADMIN", "OPS")
+                .antMatchers("/serviceMonitor/**").permitAll()
+                .antMatchers("/monitor/**").hasAnyRole("ADMIN")
+                .antMatchers("/deploy/**").hasAnyRole("ADMIN", "OPS")
+                .antMatchers("/clusters/**").hasAnyRole("ADMIN", "OPS")
+                .antMatchers("/system/account").hasAnyRole("ADMIN")
+                .antMatchers("/system/log").hasAnyRole("ADMIN", "OPS")
+                .antMatchers("/me/**").hasAnyRole("ADMIN", "OPS", "DEV")
+                .antMatchers("/build/** ").hasAnyRole("ADMIN", "OPS", "DEV")
+                .antMatchers("/api/**").hasAnyRole("ADMIN", "OPS", "DEV")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/me")
+                .permitAll()
                 .and()
                 .logout()
-                .and()
-                .authorizeRequests()
-                .accessDecisionManager(customerFilterSecurityInterceptor.getAccessDecisionManager())
-                .anyRequest()
-                .authenticated();
-
+                .permitAll();
     }
 
 
@@ -60,7 +68,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/resources/**", "/plugins/**", "/css/**", "/js/**", "/images/**","/");
+                .antMatchers("/resources/**", "/plugins/**", "/css/**", "/js/**", "/images/**");
     }
 
 }
