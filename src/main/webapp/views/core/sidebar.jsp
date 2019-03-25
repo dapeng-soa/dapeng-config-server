@@ -35,6 +35,9 @@
                     <dd class="${sideName == 'config-apikey' ? 'layui-this' : ''}">
                         <a href="${basePath}/config/apikey"><i class="fa fa-unlock" aria-hidden="true"></i>*ApiKey*</a>
                     </dd>
+                    <dd class="${sideName == 'config-route' ? 'layui-this' : ''}">
+                        <a href="${basePath}/route/rule"><i class="fa fa-unlock" aria-hidden="true"></i>*路由生成*</a>
+                    </dd>
                 </dl>
             </li>
         </security:authorize>
