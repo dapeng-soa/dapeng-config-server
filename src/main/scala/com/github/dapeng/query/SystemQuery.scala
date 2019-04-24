@@ -3,7 +3,7 @@ package com.github.dapeng.query
 import java.util
 
 import com.github.dapeng.datasource.ConfigServerDataSource.mysqlData
-import com.github.dapeng.entity.{TRoleMenu, Tmenu}
+import com.github.dapeng.entity.{TRole, TRoleMenu, Tmenu}
 import wangzx.scala_commons.sql._
 
 import scala.collection.JavaConverters._
@@ -20,6 +20,14 @@ object SystemQuery {
       sql"""
            select * from t_menu
          """)
+  }
+
+  def getMenuList: util.List[Tmenu] = {
+    mysqlData.rows[Tmenu]( sql""" select * from t_menu """).asJava
+  }
+
+  def getRoleListByMenuID(mid: Long ): util.List[TRole] = {
+    mysqlData.rows[TRole]( sql""" select r.* from t_role_menu m left join t_role r on m.role_id = r.id where menu_id = $mid""").asJava
   }
 
   def getMenuRoules(mid: Long): List[TRoleMenu] = {

@@ -1,5 +1,6 @@
 package com.github.dapeng.util;
 
+import com.github.dapeng.config.CustomerInvocationSecurityMetadataSource;
 import com.github.dapeng.dto.UserDetail;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +30,7 @@ public class SecurityUtil {
         return getUserDetail().getMenus();
     }
 
-    public static Long id(){
+    public static Long id() {
         return getUserDetail().getId();
     }
 
@@ -53,4 +54,13 @@ public class SecurityUtil {
             throw new Exception("操作权限不足");
         }
     }
+
+    /**
+     * 刷新权限
+     */
+    public static void reloadPermissionSourceMap() throws Exception {
+        //刷新权限缓存
+        CustomerInvocationSecurityMetadataSource.loadResourceDefine();
+    }
+
 }

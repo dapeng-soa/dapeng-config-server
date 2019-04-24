@@ -315,6 +315,7 @@ public class UserController {
                 }
             });
             roleUserRepository.save(roleUsers);
+            SecurityUtil.reloadPermissionSourceMap();
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "角色关联成功"));
         } catch (Exception e) {
@@ -342,6 +343,8 @@ public class UserController {
             dto.getRoleIds().forEach(rid -> {
                 roleUserRepository.deleteByUserIdAndRoleId(dto.getUserId(), rid);
             });
+
+            SecurityUtil.reloadPermissionSourceMap();
             return ResponseEntity
                     .ok(Resp.of(SUCCESS_CODE, "解除关联成功"));
         } catch (Exception e) {

@@ -7,6 +7,7 @@ import com.github.dapeng.common.{Commons, Resp}
 import com.github.dapeng.dto.MenuRoleDto
 import com.github.dapeng.entity.{TRoleMenu, Tmenu}
 import com.github.dapeng.query.SystemQuery
+import com.github.dapeng.util.SecurityUtil
 import com.github.dapeng.vo.{JMenuVo, JRoleMenuVo}
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
@@ -35,6 +36,7 @@ class SystemWeb {
   @PostMapping(Array("/system-menu/add"))
   def addMenu(@RequestBody vo: JMenuVo): ResponseEntity[Resp] = {
     SystemActionSql.insertMenu(vo)
+    SecurityUtil.reloadPermissionSourceMap()
     ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG))
   }
 
@@ -47,6 +49,7 @@ class SystemWeb {
   @PostMapping(Array("/system-menu/edit/{id}"))
   def editMenu(@RequestBody vo: JMenuVo, @PathVariable id: Long): ResponseEntity[Resp] = {
     SystemActionSql.updateMenu(id, vo)
+    SecurityUtil.reloadPermissionSourceMap()
     ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.COMMON_SUCCESS_MSG))
   }
 
@@ -87,11 +90,13 @@ class SystemWeb {
   @PostMapping(Array("/system-menu-role/link-role"))
   def linkRole(@RequestBody dto: MenuRoleDto): Unit = {
     SystemActionSql.insertMenuRoles(dto)
+    SecurityUtil.reloadPermissionSourceMap()
   }
 
   @PostMapping(Array("/system-menu-role/unlink-role"))
   def unlinkRole(@RequestBody dto: MenuRoleDto): Unit = {
     SystemActionSql.deleteMenuRoles(dto)
+    SecurityUtil.reloadPermissionSourceMap()
   }
 
   private def getChildMenus(parentId: Long, menus: List[Tmenu]): java.util.List[JMenuVo] = {

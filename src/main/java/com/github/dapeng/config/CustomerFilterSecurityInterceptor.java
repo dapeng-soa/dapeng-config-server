@@ -1,7 +1,5 @@
 package com.github.dapeng.config;
 
-import javax.servlet.*;
-
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
@@ -9,6 +7,7 @@ import org.springframework.security.access.intercept.InterceptorStatusToken;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 
+import javax.servlet.*;
 import java.io.IOException;
 
 /**
@@ -19,7 +18,7 @@ import java.io.IOException;
 public class CustomerFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 
     private FilterInvocationSecurityMetadataSource securityMetadataSource;
-
+    private boolean rejectPublicInvocations = true;
 
     @Override
     public Class<?> getSecureObjectClass() {
@@ -65,5 +64,10 @@ public class CustomerFilterSecurityInterceptor extends AbstractSecurityIntercept
 
     public void setSecurityMetadataSource(FilterInvocationSecurityMetadataSource newSource) {
         this.securityMetadataSource = newSource;
+    }
+
+    @Override
+    public boolean isRejectPublicInvocations() {
+        return rejectPublicInvocations;
     }
 }
