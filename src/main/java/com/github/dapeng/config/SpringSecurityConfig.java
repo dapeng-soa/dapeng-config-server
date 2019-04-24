@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator;
 
 
 /**
@@ -19,17 +20,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private DefaultWebInvocationPrivilegeEvaluator defaultWebInvocationPrivilegeEvaluator;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                /*.antMatchers("/").permitAll()
+                .antMatchers("/config/route").permitAll()
+                .antMatchers("/api/route/**").permitAll()
                 .antMatchers("/config/**").hasAnyRole("ADMIN", "OPS")
                 .antMatchers("/serviceMonitor/**").permitAll()
                 .antMatchers("/monitor/**").hasAnyRole("ADMIN")
@@ -39,7 +46,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/system/log").hasAnyRole("ADMIN", "OPS")
                 .antMatchers("/me/**").hasAnyRole("ADMIN", "OPS", "DEV")
                 .antMatchers("/build/** ").hasAnyRole("ADMIN", "OPS", "DEV")
-                .antMatchers("/api/**").hasAnyRole("ADMIN", "OPS", "DEV")
+                .antMatchers("/api/**").hasAnyRole("ADMIN", "OPS", "DEV")*/
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -60,8 +67,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
+        //添加 <security:authorize url='/config/clusters'> 过滤器
+        web.privilegeEvaluator(defaultWebInvocationPrivilegeEvaluator);
+        web.ignoring()
                 .antMatchers("/resources/**", "/plugins/**", "/css/**", "/js/**", "/images/**");
     }
 

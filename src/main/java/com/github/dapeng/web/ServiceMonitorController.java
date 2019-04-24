@@ -3,18 +3,16 @@ package com.github.dapeng.web;
 import com.github.dapeng.client.netty.RequestUtils;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.core.helper.SoaSystemEnvProperties;
-import com.github.dapeng.datasource.ConfigServerQuery;
+import com.github.dapeng.entity.ServiceMonitorRes;
+import com.github.dapeng.query.OtherQuery;
 import com.github.dapeng.echo.echo_result;
-import com.github.dapeng.util.GetServiceMonitorThread;
 import com.github.dapeng.util.ZkUtil;
 import com.github.dapeng.vo.*;
 import com.google.common.base.Joiner;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.zookeeper.ZooKeeper;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
@@ -64,7 +62,7 @@ public class ServiceMonitorController {
     @ResponseBody
     @RequestMapping("/list")
     public Object serviceMonitorList() {
-        List<ServiceMonitorVo> baseServiceList = ConfigServerQuery.getBaseServiceList();
+        List<ServiceMonitorVo> baseServiceList = OtherQuery.getBaseServiceList();
         List<ServiceGroupVo> monitorList = getServiceMonitorList(baseServiceList);
         List<Map<String, Object>> resultList = resultList(monitorList);
         return resultList.stream().sorted((x, y) -> {
