@@ -314,7 +314,7 @@ checkService = function () {
  * @param unitId
  */
 stopService = function (unitId) {
-    if (!socket.isConnected) {
+    if (!socket.connected) {
         alert("服务器未连接,操作禁用!");
         return;
     }
@@ -340,7 +340,7 @@ stopService = function (unitId) {
  * @param unitId
  */
 restartService = function (unitId) {
-    if (!socket.isConnected) {
+    if (!socket.connected) {
         alert("服务器未连接,操作禁用!");
         return;
     }
@@ -366,7 +366,7 @@ restartService = function (unitId) {
  * @param unitId
  */
 rmServiceContainer = function (unitId) {
-    if (!socket.isConnected) {
+    if (!socket.connected) {
         alert("服务器未连接,操作禁用!");
         return;
     }
@@ -390,7 +390,7 @@ rmServiceContainer = function (unitId) {
  * 执行升级
  */
 execServiceUpdate = function (unitId) {
-    if (!socket.isConnected) {
+    if (!socket.connected) {
         alert("服务器未连接,操作禁用!");
         return;
     }
@@ -423,7 +423,7 @@ downloadYaml = function (unitId) {
 };
 
 var openTerminal = function (containerId, host) {
-    if (!socket.isConnected) {
+    if (!socket.connected) {
         alert("服务器未连接,操作禁用!");
         return;
     }
