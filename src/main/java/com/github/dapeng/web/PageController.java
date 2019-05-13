@@ -4,10 +4,8 @@ import com.github.dapeng.entity.build.TServiceBuildRecords;
 import com.github.dapeng.repository.build.ServiceBuildRecordsRepository;
 import com.github.dapeng.repository.deploy.HostRepository;
 import com.github.dapeng.repository.deploy.ServiceRepository;
-import com.github.dapeng.util.SecurityUtil;
 import com.github.dapeng.web.system.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -167,6 +165,18 @@ public class PageController {
         model.addAttribute("tagName", "config");
         model.addAttribute("sideName", "config-route");
         return "page/config-route";
+    }
+
+    /**
+     * 服务注册实例
+     *
+     * @return
+     */
+    @GetMapping(value = "/config/runtime")
+    public String runtimeList(Model model) {
+        model.addAttribute("tagName", "config");
+        model.addAttribute("sideName", "config-runtime");
+        return "page/runtime-list";
     }
 
     /**

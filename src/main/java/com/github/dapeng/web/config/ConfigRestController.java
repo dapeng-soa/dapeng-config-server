@@ -8,11 +8,17 @@ import com.github.dapeng.dto.RealConfig;
 import com.github.dapeng.entity.config.ConfigInfo;
 import com.github.dapeng.entity.config.ConfigPublishHistory;
 import com.github.dapeng.entity.config.ZkNode;
+import com.github.dapeng.openapi.cache.ZookeeperClient;
 import com.github.dapeng.openapi.utils.Constants;
+import com.github.dapeng.registry.ServiceInfo;
 import com.github.dapeng.repository.config.ConfigInfoRepository;
 import com.github.dapeng.repository.config.ConfigPublishRepository;
 import com.github.dapeng.repository.config.ZkNodeRepository;
-import com.github.dapeng.util.*;
+import com.github.dapeng.util.CheckConfigUtil;
+import com.github.dapeng.util.DateUtil;
+import com.github.dapeng.util.VersionUtil;
+import com.github.dapeng.util.ZkUtil;
+import com.github.dapeng.vo.JMenuVo;
 import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -484,5 +491,53 @@ public class ConfigRestController {
         history.setPublishedAt(DateUtil.now());
         history.setPublishedBy(0);
         publishRepository.save(history);
+    }
+
+
+    /**
+     * 加载Zk Runtime List
+     *
+     * @return
+     */
+    @GetMapping(value = "/config/loadRuntimeService")
+    public ResponseEntity<?> sysRealConfig() {
+        List<JMenuVo> jMenuVos = new ArrayList<>();
+
+        ZookeeperClient.getServices().forEach((key, value) -> {
+//            System.out.println(key + " =>" + value);
+            JMenuVo jMenuVo = new JMenuVo();
+//            jMenuVo.setName(key);
+            jMenuVo.setText(key);
+            jMenuVo.setNodes(getServiceRuntime(value));
+            jMenuVos.add(jMenuVo);
+        });
+
+      /*  ServiceCache.getServices().forEach((key, value) -> {
+            System.out.println(value.getService().namespace + "." + value.getService().name);
+            ZooKeeper zooKeeper = null;
+            try {
+                zooKeeper = ZkUtil.createZkByHost(EnvUtil.prepareEnv());
+            } catch (Exception e) {
+                return ResponseEntity.ok(Resp.of(Commons.ERROR_CODE, e.getMessage(), null));
+            }
+            List<String> services = ZkUtil.getNodeChildren(zooKeeper, SERVICE_RUNTIME_PATH, false);
+        });*/
+
+        return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, jMenuVos));
+    }
+
+
+    public List<JMenuVo> getServiceRuntime(List<ServiceInfo> runtimes) {
+        List<JMenuVo> runtimeNodes = new ArrayList<>();
+        if (runtimes != null && !runtimes.isEmpty()) {
+            for (ServiceInfo serviceInfo : runtimes) {
+                JMenuVo _runtime = new JMenuVo();
+                String node = serviceInfo.host + ":" + serviceInfo.port + ":" + serviceInfo.versionName;
+//                _runtime.setName(node);
+                _runtime.setText(node);
+                runtimeNodes.add(_runtime);
+            }
+        }
+        return runtimeNodes;
     }
 }

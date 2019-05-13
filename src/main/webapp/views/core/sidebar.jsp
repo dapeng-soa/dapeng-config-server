@@ -59,6 +59,13 @@
                             <a href="${basePath}/config/route"><i class="fa fa-unlock" aria-hidden="true"></i>*路由生成*</a>
                         </dd>
                     </security:authorize>
+
+                    <security:authorize url='/config/runtime'>
+                        <dd class="${sideName == 'config-runtime' ? 'layui-this' : ''}">
+                            <a href="${basePath}/config/runtime"><i class="fa fa-unlock" aria-hidden="true"></i>*服务实例*</a>
+                        </dd>
+                    </security:authorize>
+
                 </dl>
             </li>
         </security:authorize>
