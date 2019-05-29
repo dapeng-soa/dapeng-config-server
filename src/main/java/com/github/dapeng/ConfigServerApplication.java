@@ -28,8 +28,8 @@ public class ConfigServerApplication {
         
         System.out.println("位置：ConfigServerApplication.main ==>  ********************************************** ");
         //初始化元数据
-        ZkBootstrap zkBootstrap = new ZkBootstrap();
-        zkBootstrap.init();
+        /*ZkBootstrap zkBootstrap = new ZkBootstrap();
+        zkBootstrap.init();*/
 
         System.out.println("位置：ConfigServerApplication.main ==>  **********************************************  ENDENDEND");
 

@@ -156,4 +156,6 @@
         <constructor-arg ref="filterSecurityInterceptor" />
         <!--<constructor-arg name="securityInterceptor" ref="filterSecurityInterceptor" />-->
     </bean>
+
+    <bean class="com.github.dapeng.openapi.cache.ZkBootstrap" init-method="init"/>
 </beans>
