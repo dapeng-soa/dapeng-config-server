@@ -2,6 +2,8 @@ package com.github.dapeng;
 
 import com.github.dapeng.openapi.cache.ZkBootstrap;
 import com.github.dapeng.util.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,15 +25,17 @@ import java.util.List;
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class ConfigServerApplication {
 
+    private static Logger logger = LoggerFactory.getLogger(ConfigServerApplication.class);
+
     public static void main(String[] args) {
         PropertiesUtil.loadProperties();
-        
-        System.out.println("位置：ConfigServerApplication.main ==>  ********************************************** ");
+
+        logger.info("位置：ConfigServerApplication.main ==>  ********************************************** ");
         //初始化元数据
         /*ZkBootstrap zkBootstrap = new ZkBootstrap();
         zkBootstrap.init();*/
 
-        System.out.println("位置：ConfigServerApplication.main ==>  **********************************************  ENDENDEND");
+        logger.info("位置：ConfigServerApplication.main ==>  **********************************************  ENDENDEND");
 
         //启动配置中心
         new SpringApplicationBuilder()
