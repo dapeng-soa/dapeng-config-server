@@ -25,9 +25,13 @@ public class ConfigServerApplication {
 
     public static void main(String[] args) {
         PropertiesUtil.loadProperties();
+        
+        System.out.println("位置：ConfigServerApplication.main ==>  ********************************************** ");
         //初始化元数据
         ZkBootstrap zkBootstrap = new ZkBootstrap();
         zkBootstrap.init();
+
+        System.out.println("位置：ConfigServerApplication.main ==>  **********************************************  ENDENDEND");
 
         //启动配置中心
         new SpringApplicationBuilder()

@@ -51,7 +51,7 @@ public class RouteRestController {
             routeInitData.setStoreList(loadStoreList());
         }
 
-        return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.SAVE_SUCCESS_MSG, routeInitData));
+        return ResponseEntity.ok(Resp.of(Commons.SUCCESS_CODE, Commons.LOADED_DATA, routeInitData));
     }
 
 
