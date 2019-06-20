@@ -142,7 +142,8 @@
 
     <!--自定义的filter-->
     <bean class="com.github.dapeng.config.CustomerAccessDecisionManager" id="customerAccessDecisionManager"/>
-    <bean class="com.github.dapeng.config.CustomerInvocationSecurityMetadataSource" id="customerInvocationSecurityMetadataSource">
+    <bean class="com.github.dapeng.config.CustomerInvocationSecurityMetadataSource"
+          id="customerInvocationSecurityMetadataSource">
         <constructor-arg name="configServerDataSource" ref="configServerDatasource"/>
     </bean>
 
@@ -151,11 +152,11 @@
         <property name="securityMetadataSource" ref="customerInvocationSecurityMetadataSource"/>
     </bean>
 
-<!-- <security:authorize url='/admin'>   customerFilterSecurityInterceptor 是我们自己实现权限拦截所定义的一个bean -->
+    <!-- <security:authorize url='/admin'>   customerFilterSecurityInterceptor 是我们自己实现权限拦截所定义的一个bean -->
     <bean class="org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator">
-        <constructor-arg ref="filterSecurityInterceptor" />
+        <constructor-arg ref="filterSecurityInterceptor"/>
         <!--<constructor-arg name="securityInterceptor" ref="filterSecurityInterceptor" />-->
     </bean>
 
-    <!--<bean class="com.github.dapeng.openapi.cache.ZkBootstrap" init-method="init"/>-->
+    <bean class="com.github.dapeng.openapi.cache.ZkBootstrap" init-method="init"/>
 </beans>
