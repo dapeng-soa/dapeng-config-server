@@ -1,7 +1,7 @@
 version: '2'
 services:
   configServer:
-    image: docker.today36524.com.cn:5000/basic/dapeng-config-server:V2.0
+    image: harbor.today36524.td/basic/dapeng-config-server:k8s-1.0
     container_name: configServer
     restart: on-failure:3
     stop_grace_period: 30s
