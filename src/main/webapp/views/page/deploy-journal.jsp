@@ -32,20 +32,20 @@
                 </select>
             </span></span>
 
-            <span>节点： <span style="display: inline-block;width: 120px">
+            <span>&nbsp;&nbsp;命名空间： <span style="display: inline-block;width: 120px">
                 <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitHostChanged()"
                         id="hostSelectView">
 
                 </select>
             </span></span>
 
-            <span>服务： <span style="display: inline-block;width: 120px">
+            <span>&nbsp;&nbsp;服务： <span style="display: inline-block;width: 120px">
                 <select data-live-search="true" class="selectpicker form-control" onchange="viewUnitServiceChanged()"
                         id="serviceSelectView">
 
                 </select>
             </span></span>
-            <span>操作类型： <span style="display: inline-block;width: 120px">
+            <span>&nbsp;&nbsp;操作类型： <span style="display: inline-block;width: 120px">
                 <select data-live-search="true" class="selectpicker form-control" onchange="viewOpTypeChanged()"
                         id="opTypeView">
                     <option value="0" selected>请选择</option>

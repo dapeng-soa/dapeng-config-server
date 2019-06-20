@@ -41,11 +41,11 @@ setColumns = function () {
 
     }, {
         field: 'name',
-        title: '节点名',
+        title: '空间名',
         sortable: true
     }, {
         field: 'ip',
-        title: '节点host'
+        title: '(Agent-Client)IP地址'
     }, {
         field: 'setName',
         title: '所属环境集'

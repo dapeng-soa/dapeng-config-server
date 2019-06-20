@@ -115,7 +115,7 @@
 
                     <security:authorize url="/deploy/host">
                         <dd class="${sideName == 'deploy-host' ? 'layui-this' : ''}">
-                            <a href="${basePath}/deploy/host"><i class="fa fa-linux" aria-hidden="true"></i>节点管理</a>
+                            <a href="${basePath}/deploy/host"><i class="fa fa-linux" aria-hidden="true"></i>空间管理</a>
                         </dd>
                     </security:authorize>
 

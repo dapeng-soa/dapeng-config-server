@@ -39,6 +39,13 @@ $(document).ready(function () {
      * 获取yaml配置返回
      */
     socket.on(GET_YAML_FILE_RESP, function (data) {
+        if (data === DAPENBG_EVENT_HEAD) {
+            return;
+        }
+        if (data === DAPENBG_EVENT_TAIL) {
+            console.info("*************************yaml 文件接受结束****************")
+            return ;
+        }
         yaml += data + "\n";
     });
 
@@ -280,9 +287,24 @@ serviceYamlPreview = function (deployTime, updateTime, unitId, viewType) {
                     initModelContext(context, function () {
                         //refresh()
                     });
+
                     setTextareaFull();
                     setTimeout(function () {
-                        diff = diffTxt(res2.context.fileContent, yaml)
+                        // diff = diffTxt(res2.context.fileContent, yaml)
+
+                        convertYaml(res2.context.fileContent, function (left_yamlInfo) {
+                            // console.info("left_yamlInfo:" + left_yamlInfo)
+                            // console.info("yaml:" + yaml)
+                            if (yaml === "") {
+                                showMessage(WARN, "历史yaml信息加载失败！");
+                                diff = diffTxt(left_yamlInfo, "历史yaml信息加载失败")
+                            } else {
+                                convertYaml(yaml, function (rigth_yamlInfo) {
+                                    diff = diffTxt(left_yamlInfo, rigth_yamlInfo)
+                                })
+                            }
+                        });
+
                     }, 300);
                 }
             });

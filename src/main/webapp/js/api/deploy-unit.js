@@ -47,7 +47,7 @@ setColumns = function () {
         title: '容器名'
     }, {
         field: 'serviceName',
-        title: 'service'
+        title: '服务名'
     }, {
         field: 'imageTag',
         title: '镜像tag'
@@ -56,10 +56,10 @@ setColumns = function () {
         title: '分支'
     }, {
         field: 'setName',
-        title: 'set'
+        title: '环境集'
     }, {
         field: 'hostName',
-        title: 'host'
+        title: '命名空间'
     }, {
         field: 'createdAt',
         title: '添加时间',
@@ -150,7 +150,14 @@ diffYaml = function () {
                     var context = deploy.exportDiffYamlContext(selected[0].id, selected[1].id, res.context.unit1, res.context.unit2);
                     initModelContext(context, function () {
                     });
-                    diffTxt(res.context.yaml1, res.context.yaml2)
+
+                    //比较配置
+                    //diffTxt(res.context.yaml1, res.context.yaml2);
+                    convertYaml(res.context.yaml1, function (left_yamlInfo) {
+                        convertYaml(res.context.yaml2, function (rigth_yamlInfo) {
+                            diff = diffTxt(left_yamlInfo, rigth_yamlInfo)
+                        })
+                    });
                 });
             } else {
                 showMessage(WARN, "所选部署单元不属同一服务");

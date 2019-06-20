@@ -3,6 +3,7 @@ package com.github.dapeng.web.deploy;
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.core.helper.IPUtils;
 import com.github.dapeng.entity.deploy.*;
+import com.github.dapeng.k8s.yaml.YamlParseUtils;
 import com.github.dapeng.repository.deploy.*;
 import com.github.dapeng.socket.entity.DeployRequest;
 import com.github.dapeng.socket.entity.DeployVo;
@@ -305,6 +306,10 @@ public class DeployExecRestController {
         dockerVo.setLastModifyTime(lastUpdateAt(unit));
         dockerVo.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         dockerVo.setFileContent(composeContext);
+        //生成k8sYaml 内容
+        dockerVo.setK8sYamlContent(YamlParseUtils.buildK8sYamlByContext(composeContext));
+        dockerVo.setNameSpace(host.getName());
+
         dockerVo.setIp(ip);
         dockerVo.setVolumesFiles(processVolumesFile(unit));
         journalRepository.saveAndFlush(toOperationJournal(unit, 1, composeContext));
@@ -446,7 +451,9 @@ public class DeployExecRestController {
         dockerVo.setLastModifyTime(journal.getCreatedAt().getTime());
         dockerVo.setServiceName(isEmpty(unit) || isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         dockerVo.setFileContent(journal.getYml());
+        dockerVo.setK8sYamlContent(YamlParseUtils.buildK8sYamlByContext(journal.getYml()));
         dockerVo.setIp(ip);
+        dockerVo.setNameSpace(host.getName());
 
         TOperationJournal newJournal = new TOperationJournal();
         if (isEmpty(unit)) {
@@ -507,10 +514,13 @@ public class DeployExecRestController {
         TService service = serviceRepository.getOne(unit.getServiceId());
         DeployVo dockerVo = new DeployVo();
         dockerVo.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
-        dockerVo.setFileContent(genComposeContext(set, host, service, unit));
 
-        return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, dockerVo));
+
+        //生成K8s Yaml
+        dockerVo.setFileContent(genComposeContext(set, host, service, unit));
+//        dockerVo.setFileContent(YamlParseUtils.buildK8sYamlByContext(genComposeContext(set, host, service, unit)));
+
+        return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, dockerVo));
     }
 
     /**
@@ -528,7 +538,8 @@ public class DeployExecRestController {
         TService service = serviceRepository.getOne(unit.getServiceId());
         String path = System.getProperty("java.io.tmpdir") + "/" + host.getName() + "_" + (isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName()) + VersionUtil.version() + ".yml";
         // 将内容写入文件
-        Tools.writeStringToFile(path, genComposeContext(set, host, service, unit));
+        // Tools.writeStringToFile(path, genComposeContext(set, host, service, unit));
+        Tools.writeStringToFile(path, YamlParseUtils.buildK8sYamlByContext(genComposeContext(set, host, service, unit)));
         // 下载
         try {
             DownloadUtil.downLoad(path, response, false);
@@ -559,6 +570,7 @@ public class DeployExecRestController {
         DeployRequest request = new DeployRequest();
         String ip = isEmpty(host) ? "-" : IPUtils.transferIp(host.getIp());
         request.setIp(ip);
+        request.setNamespace(host.getName());
         request.setServiceName(isEmpty(service) ? "-" : service.getName());
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, request));
@@ -572,6 +584,7 @@ public class DeployExecRestController {
         DeployRequest request = new DeployRequest();
         String ip = IPUtils.transferIp(host.getIp());
         request.setIp(ip);
+        request.setNamespace(host.getName());
         request.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
         return request;
     }

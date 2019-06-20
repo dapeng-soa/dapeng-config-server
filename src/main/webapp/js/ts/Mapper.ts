@@ -3,6 +3,7 @@
 module api {
     export class ServiceInfoRepose {
         ip: string;
+        nameSpace: string;
         serviceName: string;
         socketId: string;
         status: boolean;

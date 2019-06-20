@@ -1,6 +1,5 @@
 package com.github.dapeng;
 
-import com.github.dapeng.openapi.cache.ZkBootstrap;
 import com.github.dapeng.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +29,9 @@ public class ConfigServerApplication {
     public static void main(String[] args) {
         PropertiesUtil.loadProperties();
 
-        logger.info("位置：ConfigServerApplication.main ==>  ********************************************** ");
         //初始化元数据
         /*ZkBootstrap zkBootstrap = new ZkBootstrap();
         zkBootstrap.init();*/
-
-        logger.info("位置：ConfigServerApplication.main ==>  **********************************************  ENDENDEND");
 
         //启动配置中心
         new SpringApplicationBuilder()

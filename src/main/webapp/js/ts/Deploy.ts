@@ -411,12 +411,12 @@ restart: on-failure:3
             return `
            <div class="panel-header window-header">
                     <div class="input-group">
-                        <p class="left-panel-title">${type == c.add ? "添加节点" : (type == c.edit ? "修改节点" : (type == c.view ? "节点详情" : ""))}</p>
+                        <p class="left-panel-title">${type == c.add ? "添加空间" : (type == c.edit ? "修改空间" : (type == c.view ? "空间详情" : ""))}</p>
                     </div>
                 </div>
                 <div class="form-horizontal" style="margin-top: 81px;">
                     <div class="form-group">
-                            <label class="col-sm-2 control-label">节点名称:</label>
+                            <label class="col-sm-2 control-label">空间名称:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="name" class="col-sm-2 form-control" value="${type != c.add ? data.name : ""}">
                                 <div class="advance-format-item">
@@ -434,7 +434,7 @@ host1 192.168.0.666
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">IP地址:</label>
+                            <label class="col-sm-2 control-label">(Agent-Client)IP地址:</label>
                             <div class="col-sm-9">
                                 <input type="text" ${type == c.view ? "disabled" : ""} id="ip" class="col-sm-2 form-control" value="${type != c.add ? data.ip : ""}">
                             </div>
@@ -571,7 +571,7 @@ appName:goodsService
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">所属主机:</label>
+                            <label class="col-sm-2 control-label">命名空间:</label>
                             <div class="col-sm-9">
                                <select ${type == c.view || type == c.edit ? "disabled" : ""} onchange="addUnitHostChanged(this)" id="hostSelect" data-live-search="true" class="selectpicker col-sm-2 form-control">
                                 </select>
@@ -947,7 +947,8 @@ restart: on-failure:3
             let subView = "";
             for (let em of sub) {
                 let host = viewType == dep.serviceView ? em.hostIp : obj.hostIp;
-                let IdPrefix = host + em.containerName;
+                let hostName = viewType == dep.serviceView ? em.hostName : obj.hostName;
+                let IdPrefix = hostName + em.containerName.toLowerCase();
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-4 col-xs-12">
                                 <p style="font-size: 18px;word-wrap: break-word;">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
@@ -982,12 +983,14 @@ restart: on-failure:3
          */
         public processServiceStatus(realInfo: ServiceInfoRepose) {
             let t = this;
+
+            let host = realInfo.nameSpace;
             // 构造domID
-            let configUpdateId = t.el(`${realInfo.ip + realInfo.serviceName}-configUpdateTime`);
-            let deployTimeId = t.el(`${realInfo.ip + realInfo.serviceName}-deployTime`);
-            let serviceStatusId = t.el(`${realInfo.ip + realInfo.serviceName}-serviceStatus`);
-            let needUpdateId = t.el(`${realInfo.ip + realInfo.serviceName}-needUpdate`);
-            let imageTag = t.el(`${realInfo.ip + realInfo.serviceName}-ImageTag`);
+            let configUpdateId = t.el(`${host + realInfo.serviceName}-configUpdateTime`);
+            let deployTimeId = t.el(`${host + realInfo.serviceName}-deployTime`);
+            let serviceStatusId = t.el(`${host + realInfo.serviceName}-serviceStatus`);
+            let needUpdateId = t.el(`${host + realInfo.serviceName}-needUpdate`);
+            let imageTag = t.el(`${host + realInfo.serviceName}-ImageTag`);
 
             if (configUpdateId != null && deployTimeId != null && serviceStatusId != null && needUpdateId != null) {
                 let realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);

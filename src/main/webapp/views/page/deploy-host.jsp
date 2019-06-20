@@ -18,7 +18,7 @@
     <div class="container-right-context animated fadeIn">
         <div class="panel-header">
             <div class="input-group">
-                <p class="left-panel-title">节点管理</p>
+                <p class="left-panel-title">空间管理</p>
                 <span class="input-group-btn panel-button-group">
                     <button type="button" class="btn btn-primary" onclick="openAddDeployHostModle()">新增</button>
                 </span>

@@ -1,0 +1,417 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    workload.user.cattle.io/workloadselector: Reconcile
+  name: adminservice
+  #namespace: sandbox-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adminservice
+  template:
+    metadata:
+      labels:
+         app: adminservice
+    spec:
+      containers:
+      - image: harbor.today36524.td/biz/admin_service:latest
+        name: adminservice
+        volumeMounts:
+         - name: dapeng-container-logs
+           mountPath: /dapeng-container/logs
+         - name: fluent-bit-db
+           mountPath: /fluent-bit/db
+         - name: data-shm
+           mountPath: /data/shm
+
+        ports:
+        - containerPort: 9083
+          protocol: TCP
+        env:
+        - name: apm_enable
+          value: "false"
+        - name: cas_server_url
+          value: "https://sso.today36524.com"
+        - name: container_ip
+          value: "10.100.95.50"
+        - name: DB_ADMIN_PASSWD
+          value: "sbpass987654"
+        - name: DB_ADMIN_URL
+          value: "jdbc:mysql://10.100.95.50:6033/admin_db?useUnicode=true&zeroDateTimeBehavior=convertToNull&autoReconnect＝true"
+        - name: DB_ADMIN_USER
+          value: "sbuser"
+        - name: DB_CATEGORYDB_PASSWD
+          value: "sbpass987654"
+        - name: DB_CATEGORYDB_URL
+          value: "jdbc:mysql://10.100.95.50:6033/category_db?useUnicode=true&autoReconnect＝true"
+        - name: DB_CATEGORYDB_USER
+          value: "sbuser"
+        - name: DB_CENTER_STORES_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_CENTER_STORES_URL
+          value: "jdbc:mysql://10.100.95.50:3350/stores_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_CENTER_STORES_USER
+          value: "dev_user"
+        - name: DB_CHECK_ACCOUNT_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_CHECK_ACCOUNT_URL
+          value: "jdbc:mysql://10.100.95.50:3350/check_account_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: DB_CHECK_ACCOUNT_USER
+          value: "dev_user"
+        - name: DB_COMMONDATADB_PASSWD
+          value: "sbpass987654"
+        - name: DB_COMMONDATADB_URL
+          value: "jdbc:mysql://10.100.95.50:6033/common_data_db?useUnicode=true&zeroDateTimeBehavior=convertToNull&autoReconnect＝true"
+        - name: DB_COMMONDATADB_USER
+          value: "sbuser"
+        - name: DB_COMMONDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_COMMONDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/common_db?useUnicode=true&zeroDateTimeBehavior=convertToNull"
+        - name: DB_COMMONDB_USER
+          value: "dev_user"
+        - name: DB_DAILYREPORTDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_DAILYREPORTDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_DAILYREPORTDB_USER
+          value: "dev_user"
+        - name: DB_FINANCE_CAPITAL_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_FINANCE_CAPITAL_URL
+          value: "jdbc:mysql://10.100.95.50:3350/finance_capital_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: DB_FINANCE_CAPITAL_USER
+          value: "dev_user"
+        - name: DB_FINANCE_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_FINANCE_REPORT_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_FINANCE_REPORT_URL
+          value: "jdbc:mysql://10.100.95.50:3350/finance_report_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: DB_FINANCE_REPORT_USER
+          value: "dev_user"
+        - name: DB_FINANCE_TASK_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_FINANCE_TASK_URL
+          value: "jdbc:mysql://10.100.95.50:3350/finance_task_db?useUnicode=true&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: DB_FINANCE_TASK_USER
+          value: "dev_user"
+        - name: DB_FINANCE_URL
+          value: "jdbc:mysql://10.100.95.50:3350/finance?useUnicode=true&failOverReadOnly=false&autoReconnect=true"
+        - name: DB_FINANCE_USER
+          value: "dev_user"
+        - name: DB_GOODSDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_GOODSDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/goods_db?useUnicode=true&zeroDateTimeBehavior=convertToNull"
+        - name: DB_GOODSDB_USER
+          value: "dev_user"
+        - name: DB_HIVE_FINANCE_PASSWD
+          value: ""
+        - name: DB_HIVE_FINANCE_URL
+          value: "jdbc:hive2://192.168.71.127:10000/finance?hive.mapred.mode=nonstrict"
+        - name: DB_HIVE_FINANCE_USER
+          value: "goods"
+        - name: DB_HIVE_ORDER_PASSWD
+          value: ""
+        - name: DB_HIVE_ORDER_URL
+          value: "jdbc:hive2://192.168.71.127:10000/ods?hive.mapred.mode=nonstrict"
+        - name: DB_HIVE_ORDER_USER
+          value: "goods"
+        - name: DB_JOURNAL_DATA_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_JOURNAL_DATA_URL
+          value: "jdbc:mysql://10.100.95.50:3350/journal_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull"
+        - name: DB_JOURNAL_DATA_USER
+          value: "dev_user"
+        - name: DB_MEMBER_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_MEMBER_PR_PASSWD
+          value: "sbpass987654"
+        - name: DB_MEMBER_PR_USER
+          value: "sbuser"
+        - name: DB_MEMBER_URL
+          value: "jdbc:mysql://10.100.95.50:3350/member?useUnicode=true&characterEncoding=utf8"
+        - name: DB_MEMBER_USER
+          value: "dev_user"
+        - name: DB_MEMBE_PR_URL
+          value: "jdbc:mysql://10.100.95.50:6033/member?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect＝true"
+        - name: DB_NEWSTOCK_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_NEWSTOCK_URL
+          value: "jdbc:mysql://10.100.95.50:3350/stock_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_NEWSTOCK_USER
+          value: "dev_user"
+        - name: DB_ORDER_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_ORDER_URL
+          value: "jdbc:mysql://10.100.95.50:3350/order_db?useUnicode=true&failOverReadOnly=false&autoReconnect=true"
+        - name: DB_ORDER_USER
+          value: "dev_user"
+        - name: DB_OUTWARD_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_OUTWARD_URL
+          value: "jdbc:mysql://10.100.95.50:3350/outward_db?useUnicode=true&failOverReadOnly=false&autoReconnect=true"
+        - name: DB_OUTWARD_USER
+          value: "dev_user"
+        - name: DB_PRESTO_FINANCE_PASSWD
+          value: ""
+        - name: DB_PRESTO_FINANCE_URL
+          value: "jdbc:presto://192.168.71.127:9090/hive/finance"
+        - name: DB_PRESTO_FINANCE_USER
+          value: "goods"
+        - name: DB_PRESTO_ORDER_PASSWD
+          value: ""
+        - name: DB_PRESTO_ORDER_URL
+          value: "jdbc:presto://192.168.71.127:9090/hive/ods"
+        - name: DB_PRESTO_ORDER_USER
+          value: "goods"
+        - name: DB_PUBLICKEY
+          value: "xx"
+        - name: DB_PURCHASEDB_PASSWD
+          value: "sbpass987654"
+        - name: DB_PURCHASEDB_URL
+          value: "jdbc:mysql://10.100.95.50:6033/purchase_db?useUnicode=true&failOverReadOnly=false&autoReconnect=true"
+        - name: DB_PURCHASEDB_USER
+          value: "sbuser"
+        - name: DB_RECOMMENDDB_PASSWD
+          value: "today-36524"
+        - name: DB_RECOMMENDDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/recommend_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_RECOMMENDDB_USER
+          value: "root"
+        - name: DB_STOCKDB_PASSWD
+          value: "today-36524"
+        - name: DB_STOCKDB_URL
+          value: "jdbc:mysql://10.100.191.99:3350/stock_db?useUnicode=true&characterEncoding=utf8&failOverReadOnly=false&autoReconnect＝true"
+        - name: DB_STOCKDB_USER
+          value: "root"
+        - name: DB_STOCK_PASSWD
+          value: "sbpass987654"
+        - name: DB_STOCK_SUMMARY_PASSWD_0
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_PASSWD_1
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_PASSWD_2
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_PASSWD_3
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_PASSWD_4
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_PASSWD_5
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_PASSWD_6
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_PASSWD_7
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: DB_STOCK_SUMMARY_URL_0
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_URL_1
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_URL_2
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_URL_3
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_URL_4
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_URL_5
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_URL_6
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_URL_7
+          value: "jdbc:mysql://10.100.95.50:3350/daily_statistics_db?useUnicode=true&characterEncoding=utf8"
+        - name: DB_STOCK_SUMMARY_USER_0
+          value: "dev_user"
+        - name: DB_STOCK_SUMMARY_USER_1
+          value: "dev_user"
+        - name: DB_STOCK_SUMMARY_USER_2
+          value: "dev_user"
+        - name: DB_STOCK_SUMMARY_USER_3
+          value: "dev_user"
+        - name: DB_STOCK_SUMMARY_USER_4
+          value: "dev_user"
+        - name: DB_STOCK_SUMMARY_USER_5
+          value: "dev_user"
+        - name: DB_STOCK_SUMMARY_USER_6
+          value: "dev_user"
+        - name: DB_STOCK_SUMMARY_USER_7
+          value: "dev_user"
+        - name: DB_STOCK_URL
+          value: "jdbc:mysql://10.100.95.50:6033/stock_db?useUnicode=true&failOverReadOnly=false&autoReconnect=true"
+        - name: DB_STOCK_USER
+          value: "sbuser"
+        - name: DB_SUPPLIERDB_PASSWD
+          value: "sbpass987654"
+        - name: DB_SUPPLIERDB_URL
+          value: "jdbc:mysql://10.100.95.50:6033/supplier_db?useUnicode=true&zeroDateTimeBehavior=convertToNull&autoReconnect＝true"
+        - name: DB_SUPPLIERDB_USER
+          value: "sbuser"
+        - name: DB_TD_MARKET_PASSWD
+          value: "today-36524"
+        - name: DB_TD_MARKET_URL
+          value: "jdbc:mysql://10.100.95.50:3350/td_market?useUnicode=true&characterEncoding=utf8"
+        - name: DB_TD_MARKET_USER
+          value: "root"
+        - name: DB_TD_MINI_PASSWD
+          value: "today-36524"
+        - name: DB_TD_MINI_URL
+          value: "jdbc:mysql://10.100.95.50:3350/td_mini?useUnicode=true&characterEncoding=utf8"
+        - name: DB_TD_MINI_USER
+          value: "root"
+        - name: DB_TD_STORE_PASSWD
+          value: "today-36524"
+        - name: DB_TD_STORE_URL
+          value: "jdbc:mysql://10.100.95.50:3350/td_store?useUnicode=true&characterEncoding=utf8"
+        - name: DB_TD_STORE_USER
+          value: "root"
+        - name: E_JAVA_OPTS
+          value: "-Dname=adminService -Xms256M -Xmx256M -Xss256K -XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=256M -Dio.netty.leakDetectionLevel=advanced"
+        - name: fluentBitGcInfoPath
+          value: "/dapeng-container/logs/gc*.log"
+        - name: fluentbitGcInfoTag
+          value: "gcInfoTag"
+        - name: fluentBitLogPath
+          value: "/dapeng-container/logs/*.log"
+        - name: fluentBitLogPathExclude
+          value: "/dapeng-container/logs/fluent*.log,/dapeng-container/logs/console.log,/dapeng-container/logs/gc*.log"
+        - name: fluentbitParserRegex
+          value: "(?<logtime>^d{2}-d{2} d{2}:d{2}:d{2} d{3}) (?<threadPool>[^ ]+|Check idle connection Thread) (?<level>[^ ]+) [(?<sessionTid>w*)] - (?<message>.*)"
+        - name: fluentbitTag
+          value: "dapeng"
+        - name: fluent_bit_enable
+          value: "false"
+        - name: host_ip
+          value: "10.100.95.50"
+        - name: kafka_consumer_host
+          value: "10.100.95.50:9092"
+        - name: kafka_producer_host
+          value: "10.100.95.50:9092"
+        - name: LANG
+          value: "zh_CN.UTF-8"
+        - name: pingying_redis_ip_or_master_name
+          value: "10.100.226.227"
+        - name: pingying_redis_port_or_sentinels
+          value: "8003"
+        - name: pinying_redis_host_ip
+          value: "10.100.226.227"
+        - name: pinying_redis_host_port
+          value: "8003"
+        - name: pinying_redis_host_timeout
+          value: "2000"
+        - name: pinying_redis_master_name
+          value: "master-2"
+        - name: pinying_redis_sentinels
+          value: "10.100.95.50:27001"
+        - name: pinying_redis_type
+          value: "1"
+        - name: READ_ONLY_DB_CATEGORYDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_CATEGORYDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/category_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: READ_ONLY_DB_CATEGORYDB_USER
+          value: "dev_user"
+        - name: READ_ONLY_DB_GOODSDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_GOODSDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/goods_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull"
+        - name: READ_ONLY_DB_GOODSDB_USER
+          value: "dev_user"
+        - name: READ_ONLY_DB_MEMBER_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_MEMBER_URL
+          value: "jdbc:mysql://10.100.95.50:3350/member?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: READ_ONLY_DB_MEMBER_USER
+          value: "dev_user"
+        - name: READ_ONLY_DB_ORDERDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_ORDERDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/order_db?useUnicode=true&failOverReadOnly=false&autoReconnect=true"
+        - name: READ_ONLY_DB_ORDERDB_USER
+          value: "dev_user"
+        - name: READ_ONLY_DB_ORDER_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_ORDER_URL
+          value: "jdbc:mysql://10.100.95.50:3350/order_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: READ_ONLY_DB_ORDER_USER
+          value: "dev_user"
+        - name: READ_ONLY_DB_PURCHASEDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_PURCHASEDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/purchase_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: READ_ONLY_DB_PURCHASEDB_USER
+          value: "dev_user"
+        - name: READ_ONLY_DB_STOCK_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_STOCK_URL
+          value: "jdbc:mysql://10.100.95.50:3350/stock_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: READ_ONLY_DB_STOCK_USER
+          value: "dev_user"
+        - name: READ_ONLY_DB_SUPPLIERDB_PASSWD
+          value: "GJbeuZBL9rp2Q9lfPinakTw6awBc70"
+        - name: READ_ONLY_DB_SUPPLIERDB_URL
+          value: "jdbc:mysql://10.100.95.50:3350/supplier_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+        - name: READ_ONLY_DB_SUPPLIERDB_USER
+          value: "dev_user"
+        - name: redis_host_ip
+          value: "10.100.226.227"
+        - name: redis_host_port
+          value: "8002"
+        - name: redis_host_timeout
+          value: "2000"
+        - name: redis_ip_or_master_name
+          value: "10.100.226.227"
+        - name: redis_master_name
+          value: "master-1"
+        - name: redis_port_or_sentinels
+          value: "8002"
+        - name: redis_sentinels
+          value: "10.100.95.50:27001"
+        - name: redis_type
+          value: "1"
+        - name: serviceName
+          value: "adminService"
+        - name: slow_service_check_enable
+          value: "true"
+        - name: soa_container_ip
+          value: "10.100.95.50"
+        - name: soa_container_port
+          value: "9083"
+        - name: soa_core_pool_size
+          value: "100"
+        - name: soa_freq_limit_enable
+          value: "false"
+        - name: soa_freq_shm_data
+          value: "/data/shm/shm.data"
+        - name: soa_jmxrmi_enable
+          value: "false"
+        - name: soa_monitor_enable
+          value: "false"
+        - name: soa_service_timeout
+          value: "10000"
+        - name: soa_transactional_enable
+          value: "false"
+        - name: soa_zookeeper_host
+          value: "10.100.95.50:2181"
+        - name: TZ
+          value: "CST-8"
+
+      restartPolicy: Always
+      #dnsConfig:
+        #nameservers:
+          # - 10.100.95.50
+      volumes:
+       - name: dapeng-container-logs
+         nfs:
+          server: 10.100.95.50
+          path: /data/logs/dapeng/admin-service
+       - name: fluent-bit-db
+         nfs:
+          server: 10.100.95.50
+          path: /data/var/fluent/adminService
+       - name: data-shm
+         nfs:
+          server: 10.100.95.50
+          path: /data/var/shm
+

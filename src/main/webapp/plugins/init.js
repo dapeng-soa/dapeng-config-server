@@ -1,6 +1,12 @@
 // 后台返回状态码
 window.SUCCESS_CODE = 200;
 window.ERROR_CODE = 4004;
+
+window.DAPENBG_EVENT_HEAD = "DAPENBG_EVENT_HEAD";
+window.DAPENBG_EVENT_TAIL = "DAPENBG_EVENT_TAIL";
+
+
+
 // socket 注册信息
 window.SOCKET_REG_INFO = "web:192.168.0.666";
 // socket 系统事件消息类型
@@ -41,7 +47,6 @@ window.CMD_EXITED = "cmdExited";
 window.ERROR_EVENT = "errorEvent";
 // 常用状态
 window.SUCCESS = "success";
-window.WARN = "warn";
 window.WARN = "warn";
 window.ERROR = "error";
 window.INFO = "info";
@@ -108,6 +113,20 @@ window.result = function (res) {
     }
 };
 
+// 文本差异对比
+window.convertYaml = function (yamlContext, successHandler) {
+    var url = basePath + "/api/k8s/yaml-convert";
+    var result = "";
+    $$.post(url, yamlContext, function (res) {
+        if (res.code === SUCCESS_CODE) {
+            result = res.context;
+        } else {
+            showMessage(ERROR, "k8s-yaml 转化失败：" + res.msg);
+            result = "";
+        }
+        successHandler(result);
+    }, "application/json");
+}
 
 // 文本差异对比
 window.diffTxt = function (current, old) {

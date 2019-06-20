@@ -41,6 +41,13 @@ $(document).ready(function () {
      * 获取yaml配置返回
      */
     socket.on(GET_YAML_FILE_RESP, function (data) {
+        if (data === DAPENBG_EVENT_HEAD) {
+            return;
+        }
+        if (data === DAPENBG_EVENT_TAIL) {
+            console.info("*************************yaml 文件接受结束****************")
+            return;
+        }
         yaml += data + "\n";
     });
 
@@ -92,7 +99,7 @@ setColumns = function () {
         sortable: true
     }, {
         field: 'serviceName',
-        title: 'service'
+        title: '服务名'
     }, {
         field: 'imageTag',
         title: '镜像tag'
@@ -108,10 +115,10 @@ setColumns = function () {
         formatter: ymlFormatter
     }, {
         field: 'setName',
-        title: 'set'
+        title: '环境集'
     }, {
         field: 'hostName',
-        title: 'host'
+        title: '命名空间'
     }, {
         field: 'createdAt',
         title: '添加时间',
@@ -168,8 +175,19 @@ viewDeployJournalYml = function (id, unitId, hostId, serviceId) {
                     initModelContext(context, function () {
                     });
                     setTextareaFull();
+
                     setTimeout(function () {
-                        diffTxt(res2.context.yml, yaml)
+                        //diffTxt(res2.context.yml, yaml)
+                        convertYaml(res2.context.yml, function (left_yamlInfo) {
+                            if (yaml === "") {
+                                showMessage(WARN, "历史yaml信息加载失败！");
+                                diff = diffTxt(left_yamlInfo, "历史yaml信息加载失败")
+                            } else {
+                                convertYaml(yaml, function (rigth_yamlInfo) {
+                                    diff = diffTxt(left_yamlInfo, rigth_yamlInfo)
+                                })
+                            }
+                        });
                     }, 300);
                     closeConloseView();
                 }
@@ -193,6 +211,9 @@ rollbackDeploy = function (jid, host, service) {
     }, function (index) {
         $$.post(url, {jid: jid}, function (res) {
             if (res.code === SUCCESS_CODE) {
+
+
+                console.info(res.context)
                 socket.emit(DEPLOY, JSON.stringify(res.context));
                 showMessage(SUCCESS, "操作已发送");
                 layer.close(index);
