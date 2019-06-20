@@ -6,7 +6,7 @@
     <groupId>com.github.dapeng</groupId>
     <artifactId>dapeng-config-server</artifactId>
     <version>2.0.6</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>dapeng-config-server</name>
     <description>dapeng-config-server</description>
@@ -200,7 +200,7 @@
     </dependencies>
 
     <build>
-        <finalName>ROOT</finalName>
+        <finalName>dapeng-config-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -217,7 +217,7 @@
                         <configuration>
                             <!-- copy child's output files into target/docker -->
                             <tasks>
-                                <copy file="${project.build.directory}/ROOT.war" todir="${basedir}/docker/apps">
+                                <copy file="${project.build.directory}/dapeng-config-server.jar" todir="${basedir}/docker/apps">
                                 </copy>
                             </tasks>
                         </configuration>

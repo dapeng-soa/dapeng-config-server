@@ -17,7 +17,7 @@ import static com.github.dapeng.common.Commons.SUCCESS_CODE;
  */
 @RestController
 @RequestMapping("/api")
-//@Transactional(rollbackFor = Exception.class)
+//@Transactional(rollbackFor = Exception.class)docker
 public class K8sRestController {
 
     @PostMapping("/k8s/yaml-convert")
