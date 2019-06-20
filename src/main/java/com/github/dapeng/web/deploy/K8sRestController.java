@@ -22,7 +22,7 @@ public class K8sRestController {
 
     @PostMapping("/k8s/yaml-convert")
     public ResponseEntity<?> convertK8sYaml(@RequestBody String yamlContext) {
-        System.out.println(yamlContext);
+        System.out.println("******************************************接收到xml参数：\n"+yamlContext);
         return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, YamlParseUtils.buildK8sYamlByContext(yamlContext)));
     }
 }

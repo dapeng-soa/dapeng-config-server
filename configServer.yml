@@ -15,6 +15,7 @@ services:
       - "6800:8080"
     volumes:
       - "/data/logs/dapeng-config-server/:/usr/local/tomcat/logs"
+      - "/data/logs/dapeng-config-server/:/usr/local/tomcat/bin/logs"
     labels:
       - project.source=
       - project.extra=public-image
