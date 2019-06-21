@@ -1,6 +1,8 @@
 package com.github.dapeng.k8s.yaml;
 
 import com.github.dapeng.k8s.yaml.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -16,7 +18,7 @@ import java.util.Map;
  * @Created 2019-06-04 21:00
  */
 public class YamlParseUtils {
-
+    private static final Logger logger = LoggerFactory.getLogger(YamlParseUtils.class);
     private static String K8S_ATTR_PREFIX = "k8s-";
 
     public static List<ServiceConfig> parseYaml(Map<String, Object> yamlData) {
@@ -136,8 +138,8 @@ public class YamlParseUtils {
 
     public static String buildK8sYaml(List<ServiceConfig> serviceConfigList) {
 //        String template_info = FileUtils.readFromeFile("E:\\workspace\\test\\src\\main\\java\\com\\today\\yaml\\k8sYaml\\template.yaml");
-        String template_info = FileUtils.readFromeFile("src\\main\\resources\\k8s-template.yaml");
-
+        //String template_info = FileUtils.readFromeFile("src\\main\\resources\\k8s-template.yaml");
+        String template_info = FileUtils.getResourceFileContext("k8s-template.yaml");
 
         ServiceConfig serviceConfig = serviceConfigList.get(0);
 //        HashMap<String, String> volumnsMap = YamlParseUtils.buildK8sVolums(serviceConfig);

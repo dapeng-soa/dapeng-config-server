@@ -12,10 +12,9 @@ services:
       - soa_zookeeper_host=127.0.0.1:2181
       - JAVA_OPTS= -Dname=configServer -Xms512M -Xmx512M -Xss256K -Dfile.encoding=UTF-8 -Dsun.jun.encoding=UTF-8
     ports:
-      - "6800:8080"
+      - "6800:8888"
     volumes:
-      - "/data/logs/dapeng-config-server/:/usr/local/tomcat/logs"
-      - "/data/logs/dapeng-config-server/:/usr/local/tomcat/bin/logs"
+      - "/data/logs/dapeng-config-server/:/dapeng-config-server/logs"
     labels:
       - project.source=
       - project.extra=public-image

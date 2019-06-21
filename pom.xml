@@ -198,13 +198,61 @@
         </dependency>
 
     </dependencies>
-
     <build>
         <finalName>dapeng-config-server</finalName>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <resources>
+            <!-- 打包时将jsp文件拷贝到META-INF目录下-->
+            <resource>
+                <!-- 指定resources插件处理哪个目录下的资源文件 -->
+                <directory>src/main/webapp</directory>
+                <!--注意此次必须要放在此目录下才能被访问到-->
+                <targetPath>META-INF/resources</targetPath>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <!-- spring-boot:run 中文乱码解决 -->
+                    <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>
+                    <mainClass>com.github.dapeng.ConfigServerApplication</mainClass>
+                </configuration>
+                <version>1.4.2.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -217,7 +265,8 @@
                         <configuration>
                             <!-- copy child's output files into target/docker -->
                             <tasks>
-                                <copy file="${project.build.directory}/dapeng-config-server.jar" todir="${basedir}/docker/apps">
+                                <copy file="${project.build.directory}/dapeng-config-server.jar"
+                                      todir="${basedir}/docker/apps">
                                 </copy>
                             </tasks>
                         </configuration>
@@ -259,6 +308,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -275,14 +325,6 @@
                 </executions>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
                 </configuration>
             </plugin>
         </plugins>

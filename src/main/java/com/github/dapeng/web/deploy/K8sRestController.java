@@ -2,6 +2,8 @@ package com.github.dapeng.web.deploy;
 
 import com.github.dapeng.common.Resp;
 import com.github.dapeng.k8s.yaml.YamlParseUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,10 +21,13 @@ import static com.github.dapeng.common.Commons.SUCCESS_CODE;
 @RequestMapping("/api")
 //@Transactional(rollbackFor = Exception.class)docker
 public class K8sRestController {
+    private static final Logger logger = LoggerFactory.getLogger(K8sRestController.class);
 
     @PostMapping("/k8s/yaml-convert")
     public ResponseEntity<?> convertK8sYaml(@RequestBody String yamlContext) {
-        System.out.println("******************************************接收到xml参数：\n"+yamlContext);
+//        logger.info("******************************************接收到xml参数：\n" + yamlContext);
+//        logger.info("******************************************转换 xml参数：\n" + YamlParseUtils.buildK8sYamlByContext(yamlContext));
+//        return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, YamlParseUtils.buildK8sYamlByContext(yamlContext)));
         return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, YamlParseUtils.buildK8sYamlByContext(yamlContext)));
     }
 }
