@@ -197,7 +197,7 @@ var api;
         };
         Deploy.prototype.exportViewDeployJournalContext = function () {
             var c = this;
-            return "\n                <div class=\"diff-tit\" >\n                <span>\u8FD0\u884C\u914D\u7F6E(\u53EA\u8BFB)</span>\n                <span>\u5F53\u524D\u7248\u672C(\u53EA\u8BFB)</span>\n                </div>\n                <div id=\"mergely\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                </div>\n            ";
+            return "\n                <div class=\"diff-tit\" >\n                <span>\u8FD0\u884C\u914D\u7F6E(\u53EA\u8BFB)</span>\n                <span>\u56DE\u6EDA\u7248\u672C(\u53EA\u8BFB)</span>\n                </div>\n                <div id=\"mergely\">\n                </div>\n                <div class=\"fixed-footer-btn\" >\n                </div>\n            ";
         };
         /**
          * 服务/主机视图

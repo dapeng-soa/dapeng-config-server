@@ -911,7 +911,7 @@ restart: on-failure:3
             return `
                 <div class="diff-tit" >
                 <span>运行配置(只读)</span>
-                <span>当前版本(只读)</span>
+                <span>回滚版本(只读)</span>
                 </div>
                 <div id="mergely">
                 </div>

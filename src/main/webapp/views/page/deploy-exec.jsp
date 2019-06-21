@@ -37,7 +37,7 @@
                 <select id="viewType" data-live-search="true" class="selectpicker form-control"
                         onchange="execViewTypeChanged(this)">
                     <option value="1" selected>服务视图</option>
-                    <option value="2">主机视图</option>
+                    <option value="2">空间视图</option>
                 </select>
             </span></span>
             <span style="line-height: 250%" id="viewTypeLabel">服务：</span>
