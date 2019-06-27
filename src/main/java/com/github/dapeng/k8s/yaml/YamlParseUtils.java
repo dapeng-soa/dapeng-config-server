@@ -192,7 +192,9 @@ public class YamlParseUtils {
         HashMap<String, String> volumnMap = new HashMap<String, String>();
         if (serviceConfig.getVolumnEntities() != null && !serviceConfig.getVolumnEntities().isEmpty()) {
             for (VolumnEntity volumnEntity : serviceConfig.getVolumnEntities()) {
-                String label = volumnEntity.getContainerPath().substring(1).replaceAll("/", "-");
+                String _label = volumnEntity.getContainerPath().substring(1).replaceAll("/", "-");
+                String label = serviceConfig.getServiceName().toLowerCase() + "-" + _label;
+
                 volumeMountBuffer.append(volumeMountTemplate.replaceAll("@LABEL@", label).replaceAll("@CONTAINER_PATH@", volumnEntity.getContainerPath())).append("\n");
                 volumeBuffer.append(volumeTemplate.replaceAll("@LABEL@", label).replaceAll("@SERVER_PATH@", volumnEntity.getServerPath()).replaceAll("@IP@", serviceConfig.getIp())).append("\n");
 //                System.out.println("位置：YamlParseUtils.buildK8sVolums ==> " + "[label = " + label + "]");
@@ -249,7 +251,9 @@ public class YamlParseUtils {
 
         if (serviceConfig.getVolumnEntities() != null && !serviceConfig.getVolumnEntities().isEmpty()) {
             for (VolumnEntity volumnEntity : serviceConfig.getVolumnEntities()) {
-                String label = volumnEntity.getContainerPath().substring(1).replaceAll("/", "-");
+                String _label = volumnEntity.getContainerPath().substring(1).replaceAll("/", "-");
+                String label = serviceConfig.getServiceName().toLowerCase() + "-" + _label;
+
                 String nameSpace = serviceConfig.getNameSpaceEntities().get(0).getName();
                 volumeMountBuffer.append(volumeMountTemplate.replaceAll("@NAMESPACE@", nameSpace).replaceAll("@LABEL@", label).replaceAll("@CONTAINER_PATH@", volumnEntity.getContainerPath())).append("\n");
                 volumeBuffer.append(volumeTemplate.replaceAll("@NAMESPACE@", nameSpace).replaceAll("@LABEL@", label).replaceAll("@SERVER_PATH@", volumnEntity.getServerPath()).replaceAll("@IP@", serviceConfig.getIp())).append("\n");
