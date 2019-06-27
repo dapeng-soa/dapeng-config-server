@@ -297,7 +297,12 @@ public class DeploySetRestController {
         subEnvs.forEach(x -> {
             ids.add(x.getServiceId());
         });
-        List<TService> services = serviceRepository.findAllByIdNotIn(ids);
+        List<TService> services = null;
+        if (ids.isEmpty()) {
+            services = serviceRepository.findAll();
+        } else {
+            services = serviceRepository.findAllByIdNotIn(ids);
+        }
         return ResponseEntity
                 .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, services));
     }
