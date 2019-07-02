@@ -137,19 +137,27 @@ public class YamlParseUtils {
     public static String buildK8sYaml(List<ServiceConfig> serviceConfigList) {
 //        String template_info = FileUtils.readFromeFile("E:\\workspace\\test\\src\\main\\java\\com\\today\\yaml\\k8sYaml\\template.yaml");
         //String template_info = FileUtils.readFromeFile("src\\main\\resources\\k8s-template.yaml");
-        String template_info = FileUtils.getResourceFileContext("k8s-template.yaml");
+        String template_info = FileUtils.getResourceFileContext("k8s-template-rbd.yaml");
 
         ServiceConfig serviceConfig = serviceConfigList.get(0);
-//        HashMap<String, String> volumnsMap = YamlParseUtils.buildK8sVolums(serviceConfig);
-        K8sYamlVolumn k8sYamlVolumn = YamlParseUtils.buildK8sCommonVolums(serviceConfig);
+        //HashMap<String, String> volumnsMap = YamlParseUtils.buildK8sVolums(serviceConfig);
+        K8sYamlVolumn k8sYamlVolumn = YamlParseUtils.buildK8sRbdVolums(serviceConfig);
+        //K8sYamlVolumn k8sYamlVolumn = YamlParseUtils.buildK8sCommonVolums(serviceConfig);
 //        System.out.println(volumnsMap.get("volumeMounts"));
 //        System.out.println(volumnsMap.get("volumes"));
 
         template_info = template_info.replaceAll("@NAMESPACE@", serviceConfig.getNameSpaceEntities().get(0).getName());
 
+        /** nfs 生成文件挂载
+         template_info = template_info.replaceAll("@VOLUME_MOUNT@", k8sYamlVolumn.getVolumeMounts());
+         template_info = template_info.replaceAll("@VOLUME@", k8sYamlVolumn.getVolumes());
+         template_info = template_info.replaceAll("@PVPC_VOLUME@", k8sYamlVolumn.getVolumePvpcs());
+         */
+        //rbd 生成文件挂载
         template_info = template_info.replaceAll("@VOLUME_MOUNT@", k8sYamlVolumn.getVolumeMounts());
         template_info = template_info.replaceAll("@VOLUME@", k8sYamlVolumn.getVolumes());
-        template_info = template_info.replaceAll("@PVPC_VOLUME@", k8sYamlVolumn.getVolumePvpcs());
+        template_info = template_info.replaceAll("@PVC_VOLUME@", k8sYamlVolumn.getVolumePvpcs());
+
 
         template_info = template_info.replaceAll("@SERVICE_NAME@", serviceConfig.getServiceName().toLowerCase());
 
@@ -217,6 +225,7 @@ public class YamlParseUtils {
                 "kind: PersistentVolume\n" +
                 "metadata:\n" +
                 "  name: @LABEL@\n" +
+                "  namespace: @NAMESPACE@\n" +
                 "spec:\n" +
                 "  capacity:\n" +
                 "    storage: 100Mi\n" +
@@ -273,6 +282,62 @@ public class YamlParseUtils {
             }
         }
         return new K8sYamlVolumn(volumeMountTemplate, volumeTemplate, pvpcTemplate);
+    }
+
+    public static K8sYamlVolumn buildK8sRbdVolums(ServiceConfig serviceConfig) {
+        String volumeMountTemplate = "         - name: @LABEL@\n" +
+                "           mountPath: @CONTAINER_PATH@";
+
+        String volumeTemplate = "      - name: @LABEL@\n" +
+                "        persistentVolumeClaim:\n" +
+                "          claimName: @LABEL@-pvc";
+
+        String pvcTemplate = "---\n" +
+                "kind: PersistentVolumeClaim\n" +
+                "apiVersion: v1\n" +
+                "metadata:\n" +
+                "  namespace: @NAMESPACE@\n" +
+                "  name: @LABEL@-pvc\n" +
+                "  annotations:\n" +
+                "    volume.beta.kubernetes.io/storage-class: \"@FILE_SAVE_TYPE@\"\n" +
+                "spec:\n" +
+                "  storageClassName: @FILE_SAVE_TYPE@\n" +
+                "  accessModes:\n" +
+                "    - ReadWriteMany\n" +
+                "  resources:\n" +
+                "    requests:\n" +
+                "      storage: 1Gi";
+
+        StringBuffer volumeMountBuffer = new StringBuffer();
+        StringBuffer volumeBuffer = new StringBuffer();
+        StringBuffer pvcBuffer = new StringBuffer();
+
+        if (serviceConfig.getVolumnEntities() != null && !serviceConfig.getVolumnEntities().isEmpty()) {
+            for (VolumnEntity volumnEntity : serviceConfig.getVolumnEntities()) {
+                String _label = volumnEntity.getContainerPath().substring(1).replaceAll("/", "-");
+                String label = serviceConfig.getServiceName().toLowerCase() + "-" + _label;
+
+                String nameSpace = serviceConfig.getNameSpaceEntities().get(0).getName();
+                volumeMountBuffer.append(volumeMountTemplate.replaceAll("@NAMESPACE@", nameSpace).replaceAll("@LABEL@", label).replaceAll("@CONTAINER_PATH@", volumnEntity.getContainerPath())).append("\n");
+                volumeBuffer.append(volumeTemplate.replaceAll("@NAMESPACE@", nameSpace).replaceAll("@LABEL@", label).replaceAll("@SERVER_PATH@", volumnEntity.getServerPath()).replaceAll("@IP@", serviceConfig.getIp())).append("\n");
+                pvcBuffer.append(pvcTemplate.replaceAll("@NAMESPACE@", nameSpace).replaceAll("@LABEL@", label).replaceAll("@SERVER_PATH@", volumnEntity.getServerPath()).replaceAll("@IP@", serviceConfig.getIp())).append("\n");
+//                System.out.println("位置：YamlParseUtils.buildK8sVolums ==> " + "[label = " + label + "]");
+//                System.out.println(volumnEntity.getServerPath() + "=>" + volumnEntity.getContainerPath());
+            }
+        }
+
+        volumeMountTemplate = volumeMountBuffer.toString();
+        volumeTemplate = volumeBuffer.toString();
+        pvcTemplate = pvcBuffer.toString();
+        //替换K8S_Attr Map
+        if (serviceConfig.getK8sAttrMap() != null && !serviceConfig.getK8sAttrMap().isEmpty()) {
+            for (String key : serviceConfig.getK8sAttrMap().keySet()) {
+                volumeMountTemplate = volumeMountTemplate.replaceAll("@" + key + "@", serviceConfig.getK8sAttrMap().get(key));
+                volumeTemplate = volumeTemplate.replaceAll("@" + key + "@", serviceConfig.getK8sAttrMap().get(key));
+                pvcTemplate = pvcTemplate.replaceAll("@" + key + "@", serviceConfig.getK8sAttrMap().get(key));
+            }
+        }
+        return new K8sYamlVolumn(volumeMountTemplate, volumeTemplate, pvcTemplate);
     }
 
     public static String buildK8sEnvironments(ServiceConfig serviceConfig) {
