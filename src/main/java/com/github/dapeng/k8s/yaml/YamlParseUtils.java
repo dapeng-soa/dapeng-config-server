@@ -8,10 +8,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author huyj
@@ -31,11 +28,12 @@ public class YamlParseUtils {
             Map<String, Object> environmentMap = ((Map<String, Object>) value.get("environment"));
             serviceConfig.setNameSpaceEntities(parseNamespace((List<String>) value.get("extra_hosts")));
             serviceConfig.setServiceName((String) value.get("container_name"));
-            serviceConfig.setIp((String) environmentMap.get("host_ip"));
+
+            String hostIp = environmentMap.get("host_ip") != null ? (String) environmentMap.get("host_ip") : (String) environmentMap.get("soa_container_ip");
+            serviceConfig.setIp(hostIp == null ? "127.0.0.1" : hostIp);
             serviceConfig.setPortEntities(parsePort((List<String>) value.get("ports")));
             serviceConfig.setImage((String) value.get("image"));
             serviceConfig.setVolumnEntities(parseVolumns((List<String>) value.get("volumes")));
-
 
             //筛选 k8s-前缀变量
             /*Map<String, String> k8sAttrMap = new HashMap<>();
