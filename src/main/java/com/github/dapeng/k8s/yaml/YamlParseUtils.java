@@ -17,6 +17,13 @@ import java.util.*;
 public class YamlParseUtils {
     private static final Logger logger = LoggerFactory.getLogger(YamlParseUtils.class);
     private static String K8S_ATTR_PREFIX = "k8s-";
+    private static HashMap<String, String> K8S_DEFAULT_CONFIG = new HashMap();
+
+    YamlParseUtils() {
+        K8S_DEFAULT_CONFIG.put("REPLICAS", "1");
+        K8S_DEFAULT_CONFIG.put("NFS-SERVER", "10.100.57.186");
+        K8S_DEFAULT_CONFIG.put("FILE_SAVE_TYPE", "rbd");
+    }
 
     public static List<ServiceConfig> parseYaml(Map<String, Object> yamlData) {
         final List<ServiceConfig> serviceConfigList = new ArrayList<>();
@@ -179,6 +186,10 @@ public class YamlParseUtils {
         /*String buildYamlPath = "E:\\workspace\\test\\src\\main\\java\\com\\today\\yaml\\k8sYaml\\" + serviceConfig.getServiceName() + ".yaml";
         FileUtils.saveFile(buildYamlPath, template_info);
         System.out.println(buildYamlPath);*/
+
+
+        //替换没有设置的默认值
+        template_info = replaceK8sDefaultConfig(template_info);
         return template_info;
     }
 
@@ -351,5 +362,16 @@ public class YamlParseUtils {
             }
         }
         return environmentsBuffer.toString();
+    }
+
+
+    public static String replaceK8sDefaultConfig(String context) {
+        String finalContext = context;
+        if (K8S_DEFAULT_CONFIG != null && !K8S_DEFAULT_CONFIG.isEmpty()) {
+            for (String key : K8S_DEFAULT_CONFIG.keySet()) {
+                finalContext = finalContext.replaceAll(key, K8S_DEFAULT_CONFIG.get(key));
+            }
+        }
+        return finalContext;
     }
 }
