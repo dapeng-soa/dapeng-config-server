@@ -9,6 +9,7 @@ module api {
         status: boolean;
         time: Number;
         tag: string;
+        replicasInfo: string;
     }
 
     export class CmdRequest {

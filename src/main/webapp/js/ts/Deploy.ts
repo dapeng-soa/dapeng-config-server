@@ -959,7 +959,7 @@ restart: on-failure:3
                             <div class="col-sm-6 col-xs-12">
                                 <p>配置更新时间：<span id="${IdPrefix}-configUpdateTime" data-real-configUpdateBy="${em.configUpdateBy}">${dep.unix2Time(em.configUpdateBy)}</span></p>
                                 <p>主机服务时间：<span id="${IdPrefix}-deployTime">${em.deployTime}</span></p>
-                                <p>服务状态：<span id="${IdPrefix}-serviceStatus">${dep.realStatus(em.serviceStatus)}</span></p>
+                                <p>服务状态：<span id="${IdPrefix}-serviceStatus">${dep.realStatus(em.serviceStatus)}:${dep.replicasInfo(em.replicasInfo)}</span></p>
                                 <p>需要更新：<span id="${IdPrefix}-needUpdate">${dep.updateStatus(em.needUpdate)}</span></p>
                                 </div>
                                 <div class="col-sm-2 col-xs-12">
@@ -996,7 +996,7 @@ restart: on-failure:3
                 let realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);
                 let updateStatus = realInfo.time !== realConfigupdateby;
                 deployTimeId.innerHTML = t.unix2Time(realInfo.time);
-                serviceStatusId.innerHTML = t.realStatus(realInfo.status ? 1 : 2);
+                serviceStatusId.innerHTML = t.realStatus(realInfo.status ? 1 : 2) + " &nbsp;&nbsp;" + t.replicasInfo(realInfo.replicasInfo);
                 needUpdateId.innerHTML = t.updateStatus(updateStatus);
                 imageTag.innerHTML = realInfo.tag
             }
@@ -1010,12 +1010,22 @@ restart: on-failure:3
         private realStatus(status: Number) {
             switch (status) {
                 case 1:
-                    return `<span style="color: #00AA00"><i class="fa fa-cog icon-spin" aria-hidden="true"></i>运行</span>`;
+                    return `<span style="color: #00AA00"><i class="fa fa-free-code-camp" aria-hidden="true"></i>运行</span>`;
                 case 2:
-                    return `<span style="color:#ff4d4d"><i class="fa fa-pause-circle" aria-hidden="true"></i>停止</span>`;
+                    return `<span style="color:#ff4d4d"><i class="fa fa-power-off" aria-hidden="true"></i>停止</span>`;
                 default:
-                    return `<span style="color:#ffd248"><i class="fa fa-pause-circle" aria-hidden="true"></i>未知</span>`;
+                    return `<span style="color:#ffd248"><i class="fa fa-question-circle" aria-hidden="true"></i>未知</span>`;
             }
+        }
+
+        /**
+         * 副本状态
+         * @param {string} status
+         * @returns {string}
+         */
+        private replicasInfo(status: string) {
+            // return `<span style="color:#ff4d4d"><i class="fa fa-free-code-camp" aria-hidden="true"></i>${status}</span>`;
+            return `<span style="color:#ff4d4d"><i class="fa fa-sitemap" aria-hidden="true"></i>${status}</span>`;
         }
 
         /**

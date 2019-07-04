@@ -31,6 +31,7 @@ $(document).ready(function () {
      * 获取服务更新时间返回
      */
     socket.on(GET_SERVER_INFO_RESP, function (data) {
+
         // 将匹配页面元素的状态变化
         deploy.processServiceStatus(JSON.parse(data));
     });
