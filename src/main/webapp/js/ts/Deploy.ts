@@ -1024,7 +1024,17 @@ restart: on-failure:3
          * @returns {string}
          */
         private replicasInfo(status: string) {
-            // return `<span style="color:#ff4d4d"><i class="fa fa-free-code-camp" aria-hidden="true"></i>${status}</span>`;
+            if (status != undefined) {
+                //ready[1/1] available[1]
+                let matcher = /ready\[(.*)\/\d+\] available.*/;
+                let available = status.match(matcher)[1];
+                //console.info("available = " + available)
+                if (Number(available) > 0) {
+                    return `<span style="color: #00AA00"><i class="fa fa-sitemap" aria-hidden="true"></i>${status}</span>`;
+                } else {
+                    return `<span style="color:#ff4d4d"><i class="fa fa-sitemap" aria-hidden="true"></i>${status}</span>`;
+                }
+            }
             return `<span style="color:#ff4d4d"><i class="fa fa-sitemap" aria-hidden="true"></i>${status}</span>`;
         }
 
