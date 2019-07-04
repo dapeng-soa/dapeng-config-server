@@ -52,6 +52,12 @@ spec:
           protocol: TCP
         env:
 @ENVIRONMENTS@
+        - name: host_ip
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+
       restartPolicy: Always
       #dnsConfig:
         #nameservers:
