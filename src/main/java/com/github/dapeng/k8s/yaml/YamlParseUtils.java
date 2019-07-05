@@ -16,10 +16,13 @@ import java.util.*;
  */
 public class YamlParseUtils {
     private static final Logger logger = LoggerFactory.getLogger(YamlParseUtils.class);
-    private static String K8S_ATTR_PREFIX = "k8s-";
+    private final static String K8S_ATTR_PREFIX = "k8s-";
+    private final static String K8S_TEMPLATE_TYPE = "TEMPLATE_TYPE";
+    private final static String K8S_TEMPLATE_TYPE_NFS = "nfs";
+    private final static String K8S_TEMPLATE_TYPE_RBD = "rbd";
     private static HashMap<String, String> K8S_DEFAULT_CONFIG = new HashMap();
 
-    YamlParseUtils() {
+    static {
         K8S_DEFAULT_CONFIG.put("REPLICAS", "1");
         K8S_DEFAULT_CONFIG.put("NFS-SERVER", "10.100.57.186");
         K8S_DEFAULT_CONFIG.put("FILE_SAVE_TYPE", "rbd");
@@ -112,6 +115,14 @@ public class YamlParseUtils {
             }
         }
 
+        //设置k8s 模板
+        if (k8sAttrMap != null && k8sAttrMap.get(K8S_TEMPLATE_TYPE) != null) {
+            serviceConfig.setK8sTemplate(k8sAttrMap.get(K8S_TEMPLATE_TYPE));
+            k8sAttrMap.remove(K8S_TEMPLATE_TYPE);
+        } else {
+            serviceConfig.setK8sTemplate(K8S_TEMPLATE_TYPE_NFS);
+        }
+
         serviceConfig.setEnvironmentEntities(environmentEntityList);
         serviceConfig.setK8sAttrMap(k8sAttrMap);
         return serviceConfig;
@@ -144,28 +155,37 @@ public class YamlParseUtils {
     public static String buildK8sYaml(List<ServiceConfig> serviceConfigList) {
 //        String template_info = FileUtils.readFromeFile("E:\\workspace\\test\\src\\main\\java\\com\\today\\yaml\\k8sYaml\\template.yaml");
         //String template_info = FileUtils.readFromeFile("src\\main\\resources\\k8s-template.yaml");
-        String template_info = FileUtils.getResourceFileContext("k8s-template-rbd.yaml");
 
         ServiceConfig serviceConfig = serviceConfigList.get(0);
         //HashMap<String, String> volumnsMap = YamlParseUtils.buildK8sVolums(serviceConfig);
-        K8sYamlVolumn k8sYamlVolumn = YamlParseUtils.buildK8sRbdVolums(serviceConfig);
-        //K8sYamlVolumn k8sYamlVolumn = YamlParseUtils.buildK8sCommonVolums(serviceConfig);
+
 //        System.out.println(volumnsMap.get("volumeMounts"));
 //        System.out.println(volumnsMap.get("volumes"));
 
+        String template_info = "";
+        switch (serviceConfig.getK8sTemplate()) {
+            case K8S_TEMPLATE_TYPE_NFS:
+                template_info = FileUtils.getResourceFileContext("k8s-template-nfs.yaml");
+                K8sYamlVolumn k8sYamlVolumn_nfs = YamlParseUtils.buildK8sCommonVolums(serviceConfig);
+                //nfs 生成文件挂载
+                template_info = template_info.replaceAll("@VOLUME_MOUNT@", k8sYamlVolumn_nfs.getVolumeMounts());
+                template_info = template_info.replaceAll("@VOLUME@", k8sYamlVolumn_nfs.getVolumes());
+                template_info = template_info.replaceAll("@PVPC_VOLUME@", k8sYamlVolumn_nfs.getVolumePvpcs());
+                break;
+            case K8S_TEMPLATE_TYPE_RBD:
+                //rbd 生成文件挂载
+                template_info = FileUtils.getResourceFileContext("k8s-template-rbd.yaml");
+
+                K8sYamlVolumn k8sYamlVolumn_rbd = YamlParseUtils.buildK8sRbdVolums(serviceConfig);
+                template_info = template_info.replaceAll("@VOLUME_MOUNT@", k8sYamlVolumn_rbd.getVolumeMounts());
+                template_info = template_info.replaceAll("@VOLUME@", k8sYamlVolumn_rbd.getVolumes());
+                template_info = template_info.replaceAll("@PVC_VOLUME@", k8sYamlVolumn_rbd.getVolumePvpcs());
+                break;
+            default:
+                break;
+        }
+
         template_info = template_info.replaceAll("@NAMESPACE@", serviceConfig.getNameSpaceEntities().get(0).getName());
-
-        /** nfs 生成文件挂载
-         template_info = template_info.replaceAll("@VOLUME_MOUNT@", k8sYamlVolumn.getVolumeMounts());
-         template_info = template_info.replaceAll("@VOLUME@", k8sYamlVolumn.getVolumes());
-         template_info = template_info.replaceAll("@PVPC_VOLUME@", k8sYamlVolumn.getVolumePvpcs());
-         */
-        //rbd 生成文件挂载
-        template_info = template_info.replaceAll("@VOLUME_MOUNT@", k8sYamlVolumn.getVolumeMounts());
-        template_info = template_info.replaceAll("@VOLUME@", k8sYamlVolumn.getVolumes());
-        template_info = template_info.replaceAll("@PVC_VOLUME@", k8sYamlVolumn.getVolumePvpcs());
-
-
         template_info = template_info.replaceAll("@SERVICE_NAME@", serviceConfig.getServiceName().toLowerCase());
 
         template_info = template_info.replaceAll("@IMAGE@", serviceConfig.getImage());
@@ -181,7 +201,7 @@ public class YamlParseUtils {
         }
 
         //替换副本 (没有设置就 默认为1)
-        template_info = template_info.replaceAll("@REPLICAS@", "1");
+        //template_info = template_info.replaceAll("@REPLICAS@", "1");
 
         /*String buildYamlPath = "E:\\workspace\\test\\src\\main\\java\\com\\today\\yaml\\k8sYaml\\" + serviceConfig.getServiceName() + ".yaml";
         FileUtils.saveFile(buildYamlPath, template_info);
@@ -369,7 +389,7 @@ public class YamlParseUtils {
         String finalContext = context;
         if (K8S_DEFAULT_CONFIG != null && !K8S_DEFAULT_CONFIG.isEmpty()) {
             for (String key : K8S_DEFAULT_CONFIG.keySet()) {
-                finalContext = finalContext.replaceAll(key, K8S_DEFAULT_CONFIG.get(key));
+                finalContext = finalContext.replaceAll("@" + key + "@", K8S_DEFAULT_CONFIG.get(key));
             }
         }
         return finalContext;

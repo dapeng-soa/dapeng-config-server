@@ -8,7 +8,8 @@ import java.util.Map;
  * @Created 2019-06-04 21:49
  */
 public class ServiceConfig {
-    List<NameSpaceEntity> nameSpaceEntities;
+    private List<NameSpaceEntity> nameSpaceEntities;
+    private String k8sTemplate;
     private String serviceName;
     private String image;
     private String ip;
@@ -24,6 +25,14 @@ public class ServiceConfig {
 
     public void setNameSpaceEntities(List<NameSpaceEntity> nameSpaceEntities) {
         this.nameSpaceEntities = nameSpaceEntities;
+    }
+
+    public String getK8sTemplate() {
+        return k8sTemplate;
+    }
+
+    public void setK8sTemplate(String k8sTemplate) {
+        this.k8sTemplate = k8sTemplate;
     }
 
     public String getServiceName() {
