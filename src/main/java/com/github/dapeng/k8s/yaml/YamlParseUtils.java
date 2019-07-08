@@ -24,7 +24,7 @@ public class YamlParseUtils {
 
     static {
         K8S_DEFAULT_CONFIG.put("REPLICAS", "1");
-        K8S_DEFAULT_CONFIG.put("NFS-SERVER", "10.100.57.186");
+        K8S_DEFAULT_CONFIG.put("nfs-server", "10.100.57.186");
         K8S_DEFAULT_CONFIG.put("FILE_SAVE_TYPE", "rbd");
     }
 
@@ -41,7 +41,10 @@ public class YamlParseUtils {
 
             String hostIp = environmentMap.get("host_ip") != null ? (String) environmentMap.get("host_ip") : (String) environmentMap.get("soa_container_ip");
             serviceConfig.setIp(hostIp == null ? "127.0.0.1" : hostIp);
-            serviceConfig.setPortEntities(parsePort((List<String>) value.get("ports")));
+
+//            serviceConfig.setPortEntities(parsePort((List<String>) value.get("ports")));
+            serviceConfig.setPortEntities(parseSoaContainerPort((String) environmentMap.get("soa_container_port")));
+
             serviceConfig.setImage((String) value.get("image"));
             serviceConfig.setVolumnEntities(parseVolumns((List<String>) value.get("volumes")));
 
@@ -86,6 +89,12 @@ public class YamlParseUtils {
                 portEntityList.add(new PortEntity(portArr[0], portArr[1]));
             }
         }
+        return portEntityList;
+    }
+
+    public static List<PortEntity> parseSoaContainerPort(String soaContainerPort) {
+        List<PortEntity> portEntityList = new ArrayList<>();
+        portEntityList.add(new PortEntity(soaContainerPort, soaContainerPort));
         return portEntityList;
     }
 
