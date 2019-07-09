@@ -558,8 +558,7 @@ public class DeployExecRestController {
      */
     @GetMapping("/deploy-unit/event_rep/{unitId}")
     public ResponseEntity eventRep(@PathVariable Long unitId) {
-        return ResponseEntity
-                .ok(Resp.of(SUCCESS_CODE, LOADED_DATA, toDeployRequest(unitId)));
+        return ResponseEntity.ok(Resp.of(SUCCESS_CODE, LOADED_DATA, toDeployRequest(unitId)));
     }
 
     @GetMapping("/deploy-unit/event_rep")
@@ -586,6 +585,9 @@ public class DeployExecRestController {
         request.setIp(ip);
         request.setNamespace(host.getName());
         request.setServiceName(isEmpty(unit.getContainerName()) ? service.getName() : unit.getContainerName());
+
+        /*//名字换成 格式: 命名空间-服务名
+        request.setServiceName(host.getName() + "-" + request.getServiceName());*/
         return request;
     }
 

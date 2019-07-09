@@ -39,8 +39,8 @@ public class YamlParseUtils {
             serviceConfig.setNameSpaceEntities(parseNamespace((List<String>) value.get("extra_hosts")));
 
 
-            String nameSapce = serviceConfig.getNameSpaceEntities().get(0).getName();
-            String serviceName = nameSapce + "-" + value.get("container_name");
+            String nameSpace = serviceConfig.getNameSpaceEntities().get(0).getName();
+            String serviceName = nameSpace + "-" + value.get("container_name");
             serviceConfig.setServiceName(serviceName);
 
             String hostIp = environmentMap.get("host_ip") != null ? (String) environmentMap.get("host_ip") : (String) environmentMap.get("soa_container_ip");
@@ -50,7 +50,7 @@ public class YamlParseUtils {
             serviceConfig.setPortEntities(parseSoaContainerPort((String) environmentMap.get("soa_container_port")));
 
             serviceConfig.setImage((String) value.get("image"));
-            serviceConfig.setVolumnEntities(parseVolumns((List<String>) value.get("volumes")));
+            serviceConfig.setVolumnEntities(parseVolumns((List<String>) value.get("volumes"),nameSpace));
 
             //筛选 k8s-前缀变量
             /*Map<String, String> k8sAttrMap = new HashMap<>();
@@ -102,11 +102,12 @@ public class YamlParseUtils {
         return portEntityList;
     }
 
-    public static List<VolumnEntity> parseVolumns(List<String> volumesList) {
+    public static List<VolumnEntity> parseVolumns(List<String> volumesList,String nameSpace) {
         List<VolumnEntity> volumnEntityList = null;
         if (volumesList != null && !volumesList.isEmpty()) {
             volumnEntityList = new ArrayList<VolumnEntity>();
             for (String volumnItem : volumesList) {
+                volumnItem = volumnItem.replaceAll("@NAMESPACE@",nameSpace);
                 String[] volumnArr = volumnItem.split(":");
                 volumnEntityList.add(new VolumnEntity(volumnArr[0], volumnArr[1]));
             }

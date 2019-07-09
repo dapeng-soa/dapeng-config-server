@@ -317,8 +317,9 @@ VOLUMES(挂载卷):
 作用:应用容器与宿主机的目录映射
 书写格式:
 宿主机目录:容器目录
-/data/log:/data/log
+/data/logs/dapeng/@NAMESPACE@/finance-report-service:/dapeng-container/logs
 备注:
+@NAMESPACE@(区分大小写) 是命名空间占位符，生成yaml挂载目录时会替换成相应的密码空间
 服务的卷挂载最好是只针对当前服务所需要的配置即可，公共配置可配置到环境集
                                   </pre>
                                 </div>
@@ -948,7 +949,11 @@ restart: on-failure:3
             for (let em of sub) {
                 let host = viewType == dep.serviceView ? em.hostIp : obj.hostIp;
                 let hostName = viewType == dep.serviceView ? em.hostName : obj.hostName;
-                let IdPrefix = hostName + em.containerName.toLowerCase();
+
+                //let IdPrefix = hostName + em.containerName.toLowerCase();
+                //dom元素 id  格式：命名空间-服务名称 (小写)
+                let IdPrefix = hostName + "-" + em.containerName.toLowerCase();
+                //console.info(IdPrefix)
                 subView += `<div class="row" style="border-bottom: 1px solid gainsboro;padding: 10px 0;">
                             <div class="col-sm-4 col-xs-12">
                                 <p style="font-size: 18px;word-wrap: break-word;">${viewType == dep.serviceView ? em.hostName : em.serviceName}</p>
@@ -985,12 +990,15 @@ restart: on-failure:3
             let t = this;
 
             let host = realInfo.nameSpace;
+            // let domPrefix = host + realInfo.serviceName;
+            let domPrefix = realInfo.serviceName;
+             console.info(domPrefix)
             // 构造domID
-            let configUpdateId = t.el(`${host + realInfo.serviceName}-configUpdateTime`);
-            let deployTimeId = t.el(`${host + realInfo.serviceName}-deployTime`);
-            let serviceStatusId = t.el(`${host + realInfo.serviceName}-serviceStatus`);
-            let needUpdateId = t.el(`${host + realInfo.serviceName}-needUpdate`);
-            let imageTag = t.el(`${host + realInfo.serviceName}-ImageTag`);
+            let configUpdateId = t.el(`${domPrefix}-configUpdateTime`);
+            let deployTimeId = t.el(`${domPrefix}-deployTime`);
+            let serviceStatusId = t.el(`${domPrefix}-serviceStatus`);
+            let needUpdateId = t.el(`${domPrefix}-needUpdate`);
+            let imageTag = t.el(`${domPrefix}-ImageTag`);
 
             if (configUpdateId != null && deployTimeId != null && serviceStatusId != null && needUpdateId != null) {
                 let realConfigupdateby = Number(configUpdateId.dataset.realConfigupdateby);
