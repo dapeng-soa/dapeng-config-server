@@ -37,7 +37,11 @@ public class YamlParseUtils {
             ServiceConfig serviceConfig = new ServiceConfig();
             Map<String, Object> environmentMap = ((Map<String, Object>) value.get("environment"));
             serviceConfig.setNameSpaceEntities(parseNamespace((List<String>) value.get("extra_hosts")));
-            serviceConfig.setServiceName((String) value.get("container_name"));
+
+
+            String nameSapce = serviceConfig.getNameSpaceEntities().get(0).getName();
+            String serviceName = nameSapce + "-" + value.get("container_name");
+            serviceConfig.setServiceName(serviceName);
 
             String hostIp = environmentMap.get("host_ip") != null ? (String) environmentMap.get("host_ip") : (String) environmentMap.get("soa_container_ip");
             serviceConfig.setIp(hostIp == null ? "127.0.0.1" : hostIp);
