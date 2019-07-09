@@ -964,7 +964,7 @@ restart: on-failure:3
                             <div class="col-sm-6 col-xs-12">
                                 <p>配置更新时间：<span id="${IdPrefix}-configUpdateTime" data-real-configUpdateBy="${em.configUpdateBy}">${dep.unix2Time(em.configUpdateBy)}</span></p>
                                 <p>主机服务时间：<span id="${IdPrefix}-deployTime">${em.deployTime}</span></p>
-                                <p>服务状态：<span id="${IdPrefix}-serviceStatus">${dep.realStatus(em.serviceStatus)}:${dep.replicasInfo(em.replicasInfo)}</span></p>
+                                <p>服务状态：<span id="${IdPrefix}-serviceStatus">${dep.realStatus(em.serviceStatus)} &nbsp;&nbsp; ${dep.replicasInfo(em.replicasInfo)}</span></p>
                                 <p>需要更新：<span id="${IdPrefix}-needUpdate">${dep.updateStatus(em.needUpdate)}</span></p>
                                 </div>
                                 <div class="col-sm-2 col-xs-12">
