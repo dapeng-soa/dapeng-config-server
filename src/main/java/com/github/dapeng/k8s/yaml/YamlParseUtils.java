@@ -50,7 +50,7 @@ public class YamlParseUtils {
             serviceConfig.setPortEntities(parseSoaContainerPort((String) environmentMap.get("soa_container_port")));
 
             serviceConfig.setImage((String) value.get("image"));
-            serviceConfig.setVolumnEntities(parseVolumns((List<String>) value.get("volumes"),nameSpace));
+            serviceConfig.setVolumnEntities(parseVolumns((List<String>) value.get("volumes"), nameSpace));
 
             //筛选 k8s-前缀变量
             /*Map<String, String> k8sAttrMap = new HashMap<>();
@@ -102,12 +102,12 @@ public class YamlParseUtils {
         return portEntityList;
     }
 
-    public static List<VolumnEntity> parseVolumns(List<String> volumesList,String nameSpace) {
+    public static List<VolumnEntity> parseVolumns(List<String> volumesList, String nameSpace) {
         List<VolumnEntity> volumnEntityList = null;
         if (volumesList != null && !volumesList.isEmpty()) {
             volumnEntityList = new ArrayList<VolumnEntity>();
             for (String volumnItem : volumesList) {
-                volumnItem = volumnItem.replaceAll("@NAMESPACE@",nameSpace);
+                volumnItem = volumnItem.replaceAll("@NAMESPACE@", nameSpace);
                 String[] volumnArr = volumnItem.split(":");
                 volumnEntityList.add(new VolumnEntity(volumnArr[0], volumnArr[1]));
             }
@@ -203,7 +203,9 @@ public class YamlParseUtils {
         template_info = template_info.replaceAll("@SERVICE_NAME@", serviceConfig.getServiceName().toLowerCase());
 
         template_info = template_info.replaceAll("@IMAGE@", serviceConfig.getImage());
-        template_info = template_info.replaceAll("@PORT@", serviceConfig.getPortEntities().get(0).getContainerPort());
+        if (serviceConfig.getPortEntities().get(0).getContainerPort() != null) {
+            template_info = template_info.replaceAll("@PORT@", serviceConfig.getPortEntities().get(0).getContainerPort());
+        }
         template_info = template_info.replaceAll("@IP@", serviceConfig.getIp());
         template_info = template_info.replaceAll("@ENVIRONMENTS@", YamlParseUtils.buildK8sEnvironments(serviceConfig));
 
