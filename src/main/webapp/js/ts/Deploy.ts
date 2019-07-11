@@ -992,7 +992,7 @@ restart: on-failure:3
             let host = realInfo.nameSpace;
             // let domPrefix = host + realInfo.serviceName;
             let domPrefix = realInfo.serviceName;
-             console.info(domPrefix)
+             // console.info(domPrefix)
             // 构造domID
             let configUpdateId = t.el(`${domPrefix}-configUpdateTime`);
             let deployTimeId = t.el(`${domPrefix}-deployTime`);

@@ -235,7 +235,7 @@ var api;
             var host = realInfo.nameSpace;
             // let domPrefix = host + realInfo.serviceName;
             var domPrefix = realInfo.serviceName;
-            console.info(domPrefix);
+            // console.info(domPrefix)
             // 构造domID
             var configUpdateId = t.el(domPrefix + "-configUpdateTime");
             var deployTimeId = t.el(domPrefix + "-deployTime");
