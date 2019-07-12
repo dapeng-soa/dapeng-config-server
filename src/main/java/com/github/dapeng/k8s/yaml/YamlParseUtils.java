@@ -46,8 +46,8 @@ public class YamlParseUtils {
             String hostIp = environmentMap.get("host_ip") != null ? (String) environmentMap.get("host_ip") : (String) environmentMap.get("soa_container_ip");
             serviceConfig.setIp(hostIp == null ? "127.0.0.1" : hostIp);
 
-//            serviceConfig.setPortEntities(parsePort((List<String>) value.get("ports")));
-            serviceConfig.setPortEntities(parseSoaContainerPort((String) environmentMap.get("soa_container_port")));
+            serviceConfig.setPortEntities(parsePort((List<String>) value.get("ports")));
+            //serviceConfig.setPortEntities(parseSoaContainerPort((String) environmentMap.get("soa_container_port")));
 
             serviceConfig.setImage((String) value.get("image"));
             serviceConfig.setVolumnEntities(parseVolumns((List<String>) value.get("volumes"), nameSpace));
@@ -204,7 +204,8 @@ public class YamlParseUtils {
 
         template_info = template_info.replaceAll("@IMAGE@", serviceConfig.getImage());
         if (serviceConfig.getPortEntities().get(0).getContainerPort() != null) {
-            template_info = template_info.replaceAll("@PORT@", serviceConfig.getPortEntities().get(0).getContainerPort());
+            template_info = template_info.replaceAll("@CONTAINER_PORT@", serviceConfig.getPortEntities().get(0).getContainerPort());
+            template_info = template_info.replaceAll("@SERVER_PORT@", serviceConfig.getPortEntities().get(0).getServerPort());
         }
         template_info = template_info.replaceAll("@IP@", serviceConfig.getIp());
         template_info = template_info.replaceAll("@ENVIRONMENTS@", YamlParseUtils.buildK8sEnvironments(serviceConfig));
