@@ -3,6 +3,7 @@ package com.github.dapeng.repository.deploy;
 import com.github.dapeng.entity.deploy.TDeployUnit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public interface DeployUnitRepository extends JpaRepository<TDeployUnit, Long>, 
 
     boolean existsAllByServiceId(long serviceId);
 
+    @Query(nativeQuery = true,value=" select * from t_deploy_unit order by updated_at desc limit 15 ;")
     List<TDeployUnit> findByOrderByUpdatedAtDesc();
 
     List<TDeployUnit> findTop1ByIdOrderByUpdatedAtDesc(Long id);
