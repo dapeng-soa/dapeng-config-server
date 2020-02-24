@@ -55,9 +55,9 @@
     <bean id="extraDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <!-- 基本属性 url、user、password -->
-        <property name="url" value="${DB_ADMIN_URL}"/>
-        <property name="username" value="${DB_ADMIN_USER}"/>
-        <property name="password" value="${DB_ADMIN_PASSWD}"/>
+        <property name="url" value="${DB_AUTH_URL}"/>
+        <property name="username" value="${DB_AUTH_USER}"/>
+        <property name="password" value="${DB_AUTH_PASSWD}"/>
 
         <!-- 配置初始化大小、最小、最大 -->
         <property name="initialSize" value="1"/>

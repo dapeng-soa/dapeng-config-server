@@ -1,7 +1,7 @@
 version: '2'
 services:
   configServer:
-    image: docker.today36524.com.cn:5000/basic/dapeng-config-server:V2.0
+    image: dapengsoa/dapeng-config-server:2.2.1
     container_name: configServer
     restart: on-failure:3
     stop_grace_period: 30s
@@ -14,8 +14,4 @@ services:
     ports:
       - "6800:8080"
     volumes:
-      - "/data/logs/dapeng-config-server/:/usr/local/tomcat/logs"
-    labels:
-      - project.source=
-      - project.extra=public-image
-      - project.depends=
+      - "~/data/logs/dapeng-config-server/:/usr/local/tomcat/logs"

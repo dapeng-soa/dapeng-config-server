@@ -18,7 +18,7 @@
         <%--<hr>--%>
         <div class="row footer-bottom">
             <ul class="list-inline text-center">
-                <a target="_blank" href="https://github.com/dapeng-soa">Copyright © 2018 Today中台架构</a>
+                <a target="_blank" href="https://github.com/dapeng-soa">Copyright © 2018~2020 dapeng-soa</a>
             </ul>
         </div>
     </div>

@@ -1,6 +1,6 @@
 BEGIN;
---t_users | pwd:today-36524
-INSERT INTO `t_users` VALUES ('1', 'admin', '9a8fe2f9f59093b02dade34aab295fd4', '0', '', '', '', '');
+--t_users | pwd:dapeng
+INSERT INTO `t_users` VALUES ('1', 'admin', '210ed3cf9a0ea07ae04e781fe424c087', '0', '', '', '', '');
 --t_role
 INSERT INTO `t_role` VALUES ('1', 'ADMIN', '超级管理员'), ('2', 'OPS', '运维人员'), ('3', 'DEV', '开发人员'), ('4', 'NORMAL', '普通账户');
 --t_role_user

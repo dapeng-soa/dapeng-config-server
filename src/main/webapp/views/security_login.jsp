@@ -10,11 +10,11 @@
         <h2 class="text-center" style="margin-bottom: 30px;color: #222">大鹏配置中心</h2>
         <div class="form-group">
             <label style="color: #222">用户名:</label>
-            <input type="text" class="form-control" name="username" value="admin" placeholder="Username">
+            <input type="text" class="form-control" name="username" placeholder="Username">
         </div>
         <div class="form-group">
             <label style="color: #222">密码:</label>
-            <input type="password" class="form-control" name="password" value="today-36524" placeholder="Password">
+            <input type="password" class="form-control" name="password" placeholder="Password">
         </div>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
         <input style="width: 100%" type="submit" class="btn btn-success" value="登录"/>
