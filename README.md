@@ -1,5 +1,6 @@
 # dapeng-config-server
 大鹏配置中心
+文档:[使用配置中心](https://dapeng-soa.github.io/docs/zh/config-server)
 
 ## 数据库初始化
 - [config_server_db_init.sql](https://github.com/dapeng-soa/dapeng-config-server/blob/master/sql/1_config_server_db_init.sql)

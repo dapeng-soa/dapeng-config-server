@@ -28,9 +28,6 @@ setColumns = function () {
         field: 'remark',
         title: '描述'
     }, {
-        field: 'influxdbHost',
-        title: 'influxdb',
-    }, {
         field: 'createdAt',
         title: '添加时间',
         sortable: true

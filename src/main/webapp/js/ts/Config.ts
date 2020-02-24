@@ -408,34 +408,7 @@ cookie配置：
                             <input type="text" ${type == c.view ? "disabled" : ""} id="remark" class="col-sm-2 form-control">${type != c.add ? data.remark : ""}</input>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">influxdb主机地址:</label>
-                        <div class="col-sm-9">
-                            <input type="text"  ${type == c.view ? "disabled" : ""} id="influxdbHost" class="form-control" >${type != c.add ? data.influxdbHost : ""}</input>
-                            <div class="advance-format-item">
-                                <p class="advance-format-title" onclick="toggleBlock(this)" ><span class="glyphicon glyphicon-question-sign"></span></p>
-                                <div class="advance-format-content">
-                                  <pre>
-influxdb为监控数据地址,默认端口为8086
-只需写host:127.0.0.1
-                                  </pre>
-                                </div>
-                              </div>
-                        </div>
-                        
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">influxdb用户名:</label>
-                        <div class="col-sm-9">
-                            <input ${type == c.view ? "disabled" : ""} id="influxdbUser" class="form-control">${type != c.add ? data.influxdbUser : ""}</input>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">influxdb密码:</label>
-                        <div class="col-sm-9">
-                            <input ${type == c.view ? "disabled" : ""} id="influxdbPass" class="form-control" >${type != c.add ? data.influxdbPass : ""}</input>
-                        </div>
-                    </div>
+                   
                     ${type == c.add ? `
                     <span class="input-group-btn panel-button-group text-center">
                     <button type="button" class="btn btn-success" onclick="saveCluster()">保存</button>
