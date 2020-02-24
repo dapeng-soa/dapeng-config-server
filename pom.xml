@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.dapeng</groupId>
+    <groupId>com.github.dapeng-soa</groupId>
     <artifactId>dapeng-config-server</artifactId>
-    <version>2.1.1</version>
+    <version>2.2.1</version>
     <packaging>war</packaging>
 
     <name>dapeng-config-server</name>
