@@ -79,6 +79,7 @@
         <property name="testOnReturn" value="false"/>
     </bean>
 
+    <bean class="com.github.dapeng.openapi.cache.ZkBootstrap" init-method="init"/>
 
     <!--配置 EntityManagerFactory -->
     <bean id="entityManagerFactory"

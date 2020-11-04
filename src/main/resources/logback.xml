@@ -14,7 +14,7 @@
     <appender name="DETAILFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/detail-dapeng-config-server-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/data/logs/detail-dapeng-config-server-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>

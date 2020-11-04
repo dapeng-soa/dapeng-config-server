@@ -28,7 +28,7 @@ services:
     ports:
       - "6800:8080"
     volumes:
-      - "~/data/logs/dapeng-config-server/:/usr/local/tomcat/logs"
+      - "~/data/logs/dapeng-config-server/:/data/logs/"
 ```
 > 其中 `deploy_socket_url` 为 [cs-agent-server](https://github.com/dapeng-soa/cs-agent-server) 启动地址
 

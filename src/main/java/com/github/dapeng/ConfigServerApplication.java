@@ -1,6 +1,5 @@
 package com.github.dapeng;
 
-import com.github.dapeng.openapi.cache.ZkBootstrap;
 import com.github.dapeng.util.PropertiesUtil;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -25,10 +24,6 @@ public class ConfigServerApplication {
 
     public static void main(String[] args) {
         PropertiesUtil.loadProperties();
-        //初始化元数据
-        ZkBootstrap zkBootstrap = new ZkBootstrap();
-        zkBootstrap.init();
-
         //启动配置中心
         new SpringApplicationBuilder()
                 .bannerMode(Banner.Mode.LOG)
